@@ -84,9 +84,9 @@ return new class extends Migration
         Schema::create(self::TABLE_ORG_USER, function (Blueprint $table) {
             $table->id();
             $table->foreignId('org_id')
-                ->delete('cascade');
+                ->cascadeOnDelete();
             $table->foreignId('user_id')
-                ->delete('cascade');
+                ->cascadeOnDelete();
             $table->timestamp('joined_at')
                 ->useCurrent();
             $table->unique(['org_id', 'user_id']);
@@ -130,7 +130,7 @@ return new class extends Migration
         Schema::create(self::TABLE_ASSET_ACCOUNT, function (Blueprint $table) {
             $table->id();
             $table->foreignId('asset_id')
-                ->delete('cascade');
+                ->cascadeOnDelete();
             $table->string('name', 100);
             $table->text('vault_path')
                 ->nullable();
@@ -142,7 +142,7 @@ return new class extends Migration
         Schema::create(self::TABLE_ASSET_ACCESS_GRANT, function (Blueprint $table) {
             $table->id();
             $table->foreignId('asset_id')
-                ->delete('cascade');
+                ->cascadeOnDelete();
             $table->foreignId('user_id')
                 ->nullable();
             $table->foreignId('user_group_id')
@@ -161,15 +161,15 @@ return new class extends Migration
         Schema::create(self::TABLE_REQUEST, function (Blueprint $table) {
             $table->id();
             $table->foreignId('org_id')
-                ->delete('restrict');
+                ->restrictOnDelete();
             $table->foreignId('asset_id')
-                ->delete('restrict');
+                ->restrictOnDelete();
             $table->foreignId('asset_account_id')
                 ->nullable()
-                ->delete('restrict');
+                ->restrictOnDelete();
             $table->foreignId('requester_id')
                 ->constrained('users')
-                ->delete('restrict');
+                ->restrictOnDelete();
             $table->timestamp('start_datetime');
             $table->timestamp('end_datetime');
             $table->unsignedSmallInteger('duration');
@@ -197,27 +197,27 @@ return new class extends Migration
                 ->constrained('users');
             $table->timestamp('approved_at')
                 ->nullable()
-                ->delete('restrict');
+                ->restrictOnDelete();
             $table->unsignedMediumInteger('rejected_by')
                 ->nullable()
                 ->constrained('users');
             $table->timestamp('rejected_at')
                 ->nullable()
-                ->delete('restrict');
+                ->restrictOnDelete();
             $this->addBlameableColumns($table);
         });
 
         Schema::create(self::TABLE_SESSION, function (Blueprint $table) {
             $table->id();
             $table->foreignId('org_id')
-                ->delete('restrict');
+                ->restrictOnDelete();
             $table->foreignId('request_id')
-                ->delete('restrict');
+                ->restrictOnDelete();
             $table->foreignId('asset_id')
-                ->delete('restrict');
+                ->restrictOnDelete();
             $table->foreignId('requester_id')
                 ->constrained('users')
-                ->delete('restrict');
+                ->restrictOnDelete();
             $table->foreignId('approver_id')
                 ->constrained('users');
             $table->timestamp('start_datetime');
@@ -245,17 +245,20 @@ return new class extends Migration
                 ->default(SessionStatus::SCHEDULED->value);
             $table->foreignId('checkin_by')
                 ->nullable()
-                ->constrained('users');
+                ->constrained('users')
+                ->restrictOnDelete();
             $table->timestamp('checkin_at')
                 ->nullable();
             $table->foreignId('terminated_by')
                 ->nullable()
-                ->constrained('users');
+                ->constrained('users')
+                ->restrictOnDelete();
             $table->timestamp('terminated_at')
                 ->nullable();
             $table->foreignId('ended_by')
                 ->nullable()
-                ->constrained('users');
+                ->constrained('users')
+                ->restrictOnDelete();
             $table->timestamp('ended_at')
                 ->nullable();
             $this->addBlameableColumns($table);
@@ -264,15 +267,15 @@ return new class extends Migration
         Schema::create(self::TABLE_SESSION_AUDIT, function (Blueprint $table) {
             $table->id();
             $table->foreignId('org_id')
-                ->delete('cascade');
+                ->cascadeOnDelete();
             $table->foreignId('session_id')
-                ->delete('cascade');
+                ->cascadeOnDelete();
             $table->foreignId('request_id')
-                ->delete('cascade');
+                ->cascadeOnDelete();
             $table->foreignId('asset_id')
-                ->delete('cascade');
+                ->cascadeOnDelete();
             $table->foreignId('user_id')
-                ->delete('cascade');
+                ->cascadeOnDelete();
             $table->text('query_text');
             $table->timestamp('query_timestamp');
             $table->timestamp('created_at')
@@ -283,7 +286,7 @@ return new class extends Migration
         Schema::create(self::TABLE_USER_ACCESS_RESTRICTION, function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')
-                ->delete('cascade');
+                ->cascadeOnDelete();
             // $table->foreignId('user_group_id')
             //     ->delete('cascade');
             $table->enum('type', array_column(RestrictionType::cases(), 'value'));
@@ -302,10 +305,10 @@ return new class extends Migration
         Schema::create(self::TABLE_ACTION_AUDIT, function (Blueprint $table) {
             $table->id();
             $table->foreignId('org_id')
-                ->delete('cascade');
+                ->cascadeOnDelete();
             $table->foreignId('user_id')
                 ->nullable()
-                ->delete('cascade');
+                ->cascadeOnDelete();
             $table->string('action_type', 100);
             $table->string('entity_type', 100)
                 ->nullable();

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Org;
-use App\Http\Requests\StoreOrgRequest;
-use App\Http\Requests\UpdateOrgRequest;
-use App\Http\Resources\OrgCollection;
-use App\Http\Resources\OrgResource;
+use App\Http\Requests\Org\StoreOrgRequest;
+use App\Http\Requests\Org\UpdateOrgRequest;
+use App\Http\Resources\Org\OrgCollection;
+use App\Http\Resources\Org\OrgResource;
 use Illuminate\Support\Facades\Auth;
 
 class OrgController

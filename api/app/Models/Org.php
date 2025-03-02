@@ -30,6 +30,12 @@ class Org extends Model
         'deleted_at' => 'datetime',
     ];
 
+    public static $attributeLabels = [
+        'name' => 'Name',
+        'description' => 'Description',
+        'status' => 'Status',
+    ];
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);

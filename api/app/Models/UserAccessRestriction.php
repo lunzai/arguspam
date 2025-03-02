@@ -28,6 +28,13 @@ class UserAccessRestriction extends Model
         'value' => 'array',
     ];
 
+    public static $attributeLabels = [
+        'user_id' => 'User',
+        'type' => 'Type',
+        'value' => 'Value',
+        'status' => 'Status',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

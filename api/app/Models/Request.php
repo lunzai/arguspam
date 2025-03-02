@@ -55,6 +55,30 @@ class Request extends Model
         'scope' => RequestScope::class,
     ];
 
+    public static $attributeLabels = [
+        'org_id' => 'Organization',
+        'asset_id' => 'Asset',
+        'asset_account_id' => 'Account',
+        'requester_id' => 'Requester',
+        'start_datetime' => 'Start',
+        'end_datetime' => 'End',
+        'duration' => 'Duration',
+        'reason' => 'Reason',
+        'intended_query' => 'Intended Query',
+        'scope' => 'Scope',
+        'is_access_sensitive_data' => 'Is Access Sensitive Data',
+        'sensitive_data_note' => 'Sensitive Data Note',
+        'approver_note' => 'Approver Note',
+        'approver_risk_rating' => 'Approver Risk Rating',
+        'ai_note' => 'AI Note',
+        'ai_risk_rating' => 'AI Risk Rating',
+        'status' => 'Status',
+        'approved_by' => 'Approved By',
+        'approved_at' => 'Approved At',
+        'rejected_by' => 'Rejected By',
+        'rejected_at' => 'Rejected At',
+    ];
+
     public function org(): BelongsTo
     {
         return $this->belongsTo(Org::class);

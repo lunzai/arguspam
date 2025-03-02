@@ -33,6 +33,13 @@ class UserGroup extends Model
         'deleted_at' => 'datetime',
     ];
 
+    public static $attributeLabels = [
+        'org_id' => 'Organization',
+        'name' => 'Name',
+        'description' => 'Description',
+        'status' => 'Status',
+    ];
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);

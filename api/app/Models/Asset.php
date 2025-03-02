@@ -38,6 +38,16 @@ class Asset extends Model
         'status' => Status::class,
     ];
 
+    public static $attributeLabels = [
+        'org_id' => 'Organization',
+        'name' => 'Name',
+        'description' => 'Description',
+        'status' => 'Status',
+        'host' => 'Host',
+        'port' => 'Port',
+        'dbms' => 'DBMS',
+    ];
+
     public function org(): BelongsTo
     {
         return $this->belongsTo(Org::class);

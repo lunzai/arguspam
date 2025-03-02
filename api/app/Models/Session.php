@@ -57,6 +57,32 @@ class Session extends Model
         'status' => Status::class,
     ];
 
+    public static $attributeLabels = [
+        'org_id' => 'Organization',
+        'request_id' => 'Request',
+        'asset_id' => 'Asset',
+        'requester_id' => 'Requester',
+        'start_datetime' => 'Start',
+        'end_datetime' => 'End',
+        'scheduled_end_datetime' => 'Scheduled End',
+        'requested_duration' => 'Requested Duration',
+        'actual_duration' => 'Actual Duration',
+        'is_jit' => 'Is JIT',
+        'account_name' => 'Account',
+        'jit_vault_path' => 'JIT Vault Path',
+        'session_note' => 'Session Note',
+        'is_expired' => 'Is Expired',
+        'is_terminated' => 'Is Terminated',
+        'is_checkin' => 'Is Checkin',
+        'status' => 'Status',
+        'checkin_by' => 'Checkin By',
+        'checkin_at' => 'Checkin At',
+        'terminated_by' => 'Terminated By',
+        'terminated_at' => 'Terminated At',
+        'ended_at' => 'Ended At',
+        'ended_by' => 'Ended By',
+    ];
+
     public function org(): BelongsTo
     {
         return $this->belongsTo(Org::class);

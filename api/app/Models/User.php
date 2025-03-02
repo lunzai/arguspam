@@ -59,6 +59,15 @@ class User extends Authenticatable
         ];
     }
 
+    public static $attributeLabels = [
+        'name' => 'Name',
+        'email' => 'Email',
+        'password' => 'Password',
+        'status' => 'Status',
+        'two_factor_enabled' => 'MFA',
+        'last_login_at' => 'Last Login At',
+    ];
+
     public function orgs(): BelongsToMany
     {
         return $this->belongsToMany(Org::class);

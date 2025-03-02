@@ -26,6 +26,13 @@ class AssetAccount extends Model
         'deleted_at' => 'datetime',
     ];
 
+    public static $attributeLabels = [
+        'asset_id' => 'Asset',
+        'name' => 'Name',
+        'vault_path' => 'Vault Path',
+        'is_default' => 'Is Default',
+    ];
+
     public function asset(): BelongsTo
     {
         return $this->belongsTo(Asset::class);

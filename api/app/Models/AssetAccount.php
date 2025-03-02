@@ -21,6 +21,9 @@ class AssetAccount extends Model
 
     protected $casts = [
         'is_default' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
 
     public function asset(): BelongsTo

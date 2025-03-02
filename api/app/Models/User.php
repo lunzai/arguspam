@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Enums\AssetAccessRole;
+use App\Enums\Status;
 
 class User extends Authenticatable
 {
@@ -50,6 +51,11 @@ class User extends Authenticatable
             'last_login_at' => 'datetime',
             'two_factor_enabled' => 'boolean',
             'password' => 'hashed',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
+            'deleted_at' => 'datetime',
+            'last_login_at' => 'datetime',
+            'status' => Status::class,
         ];
     }
 

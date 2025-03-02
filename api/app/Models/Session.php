@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Enums\Status;
 
 class Session extends Model
 {
@@ -47,6 +48,13 @@ class Session extends Model
         'is_expired' => 'boolean',
         'is_terminated' => 'boolean',
         'is_checkin' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+        'checkin_at' => 'datetime',
+        'terminated_at' => 'datetime',
+        'ended_at' => 'datetime',
+        'status' => Status::class,
     ];
 
     public function org(): BelongsTo

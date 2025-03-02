@@ -23,6 +23,7 @@ class SessionAudit extends Model
 
     protected $casts = [
         'query_timestamp' => 'datetime',
+        'created_at' => 'datetime',
     ];
 
     public function org(): BelongsTo

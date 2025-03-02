@@ -4,9 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Enums\Status;
+use App\Enums\RestrictionType;
 
 class UserAccessRestriction extends Model
 {
     /** @use HasFactory<\Database\Factories\UserAccessRestrictionFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'user_id',
+        'type',
+        'value',
+        'status',
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'status' => Status::class,
+        'type' => RestrictionType::class,
+        'value' => 'array',
+    ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }

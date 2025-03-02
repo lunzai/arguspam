@@ -6,11 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\Org;
+use App\Enums\AssetAccessRole;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Enums\Dbms;
+use App\Enums\Status;
 
 class Asset extends Model
 {
     /** @use HasFactory<\Database\Factories\AssetFactory> */
     use HasFactory;
+
+    use SoftDeletes;
 
     protected $fillable = [
         'org_id',
@@ -20,6 +28,14 @@ class Asset extends Model
         'host',
         'port',
         'dbms',
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+        'dbms' => Dbms::class,
+        'status' => Status::class,
     ];
 
     public function org(): BelongsTo
@@ -45,5 +61,39 @@ class Asset extends Model
     public function sessions(): HasMany
     {
         return $this->hasMany(Session::class);
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'asset_access_grants');
+    }
+
+    public function userGroups(): BelongsToMany
+    {
+        return $this->belongsToMany(UserGroup::class, 'asset_access_grants');
+    }
+
+    public function approverUserGroups(): BelongsToMany
+    {
+        return $this->userGroups()
+            ->wherePivot('role', AssetAccessRole::APPROVER->value);
+    }
+
+    public function requesterUserGroups(): BelongsToMany
+    {
+        return $this->userGroups()
+            ->wherePivot('role', AssetAccessRole::REQUESTER->value);
+    }
+
+    public function approverUsers(): BelongsToMany
+    {
+        return $this->users()
+            ->wherePivot('role', AssetAccessRole::APPROVER->value);
+    }
+
+    public function requesterUsers(): BelongsToMany
+    {
+        return $this->users()
+            ->wherePivot('role', AssetAccessRole::REQUESTER->value);
     }
 }

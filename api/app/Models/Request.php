@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Enums\Status;
+use App\Enums\RiskRating;
+use App\Enums\RequestScope;
 
 class Request extends Model
 {
@@ -41,6 +44,15 @@ class Request extends Model
         'start_datetime' => 'datetime',
         'end_datetime' => 'datetime',
         'is_access_sensitive_data' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+        'approved_at' => 'datetime',
+        'rejected_at' => 'datetime',
+        'status' => Status::class,
+        'approver_risk_rating' => RiskRating::class,
+        'ai_risk_rating' => RiskRating::class,
+        'scope' => RequestScope::class,
     ];
 
     public function org(): BelongsTo

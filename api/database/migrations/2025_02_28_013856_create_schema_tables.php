@@ -4,6 +4,15 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use App\Enums\AssetAccessRole;
+use App\Enums\Status;
+use App\Enums\Dbms;
+use App\Enums\AuditAction;
+use App\Enums\RequestScope;
+use App\Enums\RequestStatus;
+use App\Enums\SessionStatus;
+use App\Enums\RiskRating;
+use App\Enums\RestrictionType;
 
 return new class extends Migration
 {
@@ -11,7 +20,7 @@ return new class extends Migration
     private const TABLE_USER = 'users';
     private const TABLE_ORG_USER = 'org_user';
     private const TABLE_USER_GROUP = 'user_groups';
-    private const TABLE_USER_GROUP_USER = 'user_group_user';
+    private const TABLE_USER_GROUP_USER = 'user_user_group';
     private const TABLE_ASSET = 'assets';
     private const TABLE_ASSET_ACCOUNT = 'asset_accounts';
     private const TABLE_ASSET_ACCESS_GRANT = 'asset_access_grants';
@@ -21,25 +30,19 @@ return new class extends Migration
     private const TABLE_USER_ACCESS_RESTRICTION = 'user_access_restrictions';
     private const TABLE_ACTION_AUDIT = 'actions_audits';
 
-    private $enumStatus = ['active', 'inactive'];
-    private $enumRequestStatus = ['pending', 'approved', 'rejected', 'expired'];
-    private $enumSessionStatus = ['scheduled', 'active', 'expired', 'terminated', 'ended'];
-    private $enumAssetAccessRole = ['requester', 'approver'];
-    private $enumRequestScope = ['ReadOnly', 'ReadWrite', 'DDL', 'DML', 'All'];
-    private $enumDbms = ['mysql', 'postgresql', 'sqlserver', 'oracle', 'mongodb', 'redis', 'mariadb'];
-    private $enumRiskRating = ['low', 'medium', 'high', 'critical'];
-    private $enumRestrictionType = ['ip', 'location', 'time'];
-
     private function addBlameableColumns(Blueprint $table)
     {
-        $table->unsignedMediumInteger('created_by');
+        $table->unsignedMediumInteger('created_by')
+            ->nullable();
         $table->timestamp('created_at')
             ->nullable()
-            ->default(DB::raw('CURRENT_TIMESTAMP'));
-        $table->unsignedMediumInteger('updated_by');
+            ->useCurrent();
+        $table->unsignedMediumInteger('updated_by')
+            ->nullable();
         $table->timestamp('updated_at')
             ->nullable()
-            ->default(DB::raw('CURRENT_TIMESTAMP'));
+            ->useCurrentOnUpdate()
+            ->useCurrent();
     }
 
     private function addSoftDeletes(Blueprint $table)
@@ -59,8 +62,8 @@ return new class extends Migration
             $table->string('name', 100);
             $table->text('description')
                 ->nullable();
-            $table->enum('status', $this->enumStatus)
-                ->default('active');
+            $table->enum('status', array_column(Status::cases(), 'value'))
+                ->default(Status::ACTIVE->value);
             $this->addBlameableColumns($table);
             $this->addSoftDeletes($table);
         });
@@ -70,8 +73,8 @@ return new class extends Migration
             $table->boolean('two_factor_enabled')
                 ->after('password')
                 ->default(false);
-            $table->enum('status', $this->enumStatus)
-                ->default('active');
+            $table->enum('status', array_column(Status::cases(), 'value'))
+                ->default(Status::ACTIVE->value);
             $table->timestamp('last_login_at')
                 ->nullable();
             $this->addBlameableColumns($table);
@@ -84,7 +87,8 @@ return new class extends Migration
                 ->delete('cascade');
             $table->foreignId('user_id')
                 ->delete('cascade');
-            $table->timestamp('joined_at');
+            $table->timestamp('joined_at')
+                ->useCurrent();
             $table->unique(['org_id', 'user_id']);
         });
 
@@ -95,8 +99,8 @@ return new class extends Migration
             $table->string('name', 100);
             $table->text('description')
                 ->nullable();
-            $table->enum('status', $this->enumStatus)
-                ->default('active');
+            $table->enum('status', array_column(Status::cases(), 'value'))
+                ->default(Status::ACTIVE->value);
             $this->addBlameableColumns($table);
             $this->addSoftDeletes($table);
         });
@@ -114,11 +118,11 @@ return new class extends Migration
             $table->string('name', 100);
             $table->text('description')
                 ->nullable();
-            $table->enum('status', $this->enumStatus)
-                ->default('active');
+            $table->enum('status', array_column(Status::cases(), 'value'))
+                ->default(Status::ACTIVE->value);
             $table->string('host', 255);
             $table->unsignedSmallInteger('port');
-            $table->enum('dbms', $this->enumDbms);
+            $table->enum('dbms', array_column(Dbms::cases(), 'value'));
             $this->addBlameableColumns($table);
             $this->addSoftDeletes($table);
         });
@@ -143,7 +147,7 @@ return new class extends Migration
                 ->nullable();
             $table->foreignId('user_group_id')
                 ->nullable();
-            $table->enum('role', $this->enumAssetAccessRole);
+            $table->enum('role', array_column(AssetAccessRole::cases(), 'value'));
             $this->addBlameableColumns($table);
             $table->unique(['asset_id', 'user_id', 'user_group_id', 'role']);
         });
@@ -166,26 +170,28 @@ return new class extends Migration
             $table->foreignId('requester_id')
                 ->constrained('users')
                 ->delete('restrict');
-            $table->dateTimeTz('start_datetime');
-            $table->dateTimeTz('end_datetime');
+            $table->timestamp('start_datetime');
+            $table->timestamp('end_datetime');
             $table->unsignedSmallInteger('duration');
             $table->text('reason');
             $table->text('intended_query')
                 ->nullable();
-            $table->enum('scope', $this->enumRequestScope);
+            $table->enum('scope', array_column(RequestScope::cases(), 'value'))
+                ->default(RequestScope::READ_ONLY->value);
             $table->boolean('is_access_sensitive_data')
                 ->default(false);
             $table->text('sensitive_data_note')
                 ->nullable();
             $table->text('approver_note')
                 ->nullable();
-            $table->enum('approver_risk_rating', $this->enumRiskRating)
+            $table->enum('approver_risk_rating', array_column(RiskRating::cases(), 'value'))
                 ->nullable();
             $table->text('ai_note')
                 ->nullable();
-            $table->enum('ai_risk_rating', $this->enumRiskRating)
+            $table->enum('ai_risk_rating', array_column(RiskRating::cases(), 'value'))
                 ->nullable();
-            $table->enum('status', $this->enumRequestStatus);
+            $table->enum('status', array_column(RequestStatus::cases(), 'value'))
+                ->default(RequestStatus::PENDING->value);
             $table->unsignedMediumInteger('approved_by')
                 ->nullable()
                 ->constrained('users');
@@ -214,10 +220,10 @@ return new class extends Migration
                 ->delete('restrict');
             $table->foreignId('approver_id')
                 ->constrained('users');
-            $table->dateTimeTz('start_datetime');
-            $table->dateTimeTz('end_datetime')
+            $table->timestamp('start_datetime');
+            $table->timestamp('end_datetime')
                 ->nullable();
-            $table->dateTimeTz('scheduled_end_datetime');
+            $table->timestamp('scheduled_end_datetime');
             $table->unsignedSmallInteger('requested_duration');
             $table->unsignedSmallInteger('actual_duration')
                 ->nullable();
@@ -235,7 +241,8 @@ return new class extends Migration
                 ->default(false);
             $table->boolean('is_checkin')
                 ->default(false);
-            $table->enum('status', $this->enumSessionStatus);
+            $table->enum('status', array_column(SessionStatus::cases(), 'value'))
+                ->default(SessionStatus::SCHEDULED->value);
             $table->foreignId('checkin_by')
                 ->nullable()
                 ->constrained('users');
@@ -267,10 +274,10 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->delete('cascade');
             $table->text('query_text');
-            $table->dateTimeTz('query_timestamp');
+            $table->timestamp('query_timestamp');
             $table->timestamp('created_at')
                 ->nullable()
-                ->default(DB::raw('CURRENT_TIMESTAMP'));
+                ->useCurrent();
         });
 
         Schema::create(self::TABLE_USER_ACCESS_RESTRICTION, function (Blueprint $table) {
@@ -279,10 +286,10 @@ return new class extends Migration
                 ->delete('cascade');
             // $table->foreignId('user_group_id')
             //     ->delete('cascade');
-            $table->enum('type', $this->enumRestrictionType);
+            $table->enum('type', array_column(RestrictionType::cases(), 'value'));
             $table->json('value');
-            $table->enum('status', $this->enumStatus)
-                ->default('active');
+            $table->enum('status', array_column(Status::cases(), 'value'))
+                ->default(Status::ACTIVE->value);
             $this->addBlameableColumns($table);
         });
 
@@ -316,7 +323,8 @@ return new class extends Migration
             $table->json('additional_data')
                 ->nullable();
             $table->timestamp('created_at')
-                ->nullable();
+                ->nullable()
+                ->useCurrent();
         });
     }
 
@@ -336,7 +344,6 @@ return new class extends Migration
         Schema::dropIfExists(self::TABLE_USER_GROUP_USER);
         Schema::dropIfExists(self::TABLE_USER_GROUP);
         Schema::dropIfExists(self::TABLE_ORG_USER);
-        Schema::dropIfExists(self::TABLE_USER);
         Schema::dropIfExists(self::TABLE_ORG);
     }
 };

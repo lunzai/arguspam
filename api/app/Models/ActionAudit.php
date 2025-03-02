@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Enums\AuditAction;
 
 class ActionAudit extends Model
 {
@@ -23,6 +24,14 @@ class ActionAudit extends Model
         'ip_address',
         'user_agent',
         'additional_data',
+    ];
+
+    protected $casts = [
+        'additional_data' => 'array',
+        'previous_state' => 'array',
+        'new_state' => 'array',
+        'created_at' => 'datetime',
+        'action_type' => AuditAction::class,
     ];
 
     public function org(): BelongsTo

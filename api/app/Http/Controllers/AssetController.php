@@ -2,47 +2,53 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Resources\Asset\AssetCollection;
+use App\Http\Resources\Asset\AssetResource;
+use App\Models\Asset;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Asset\StoreAssetRequest;
+use App\Http\Requests\Asset\UpdateAssetRequest;
 
 class AssetController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return new AssetCollection(
+            Asset::paginate(config('constants.pagination.per_page'))
+        );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreAssetRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $validated['created_by'] = Auth::id();
+        $asset = Asset::create($validated);
+
+        return new AssetResource($asset);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        return new AssetResource(Asset::findOrFail($id));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(UpdateAssetRequest $request, string $id)
     {
-        //
+        $asset = Asset::findOrFail($id);
+        $validated = $request->validated();
+        $validated['updated_by'] = Auth::id();
+        $asset->update($validated);
+
+        return new AssetResource($asset);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $asset = Asset::findOrFail($id);
+        $asset->deleted_by = Auth::id();
+        $asset->save();
+        $asset->delete();
+
+        return response()->noContent();
     }
 }

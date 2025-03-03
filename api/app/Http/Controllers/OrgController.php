@@ -11,9 +11,6 @@ use Illuminate\Support\Facades\Auth;
 
 class OrgController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return new OrgCollection(
@@ -21,9 +18,6 @@ class OrgController extends Controller
         );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreOrgRequest $request)
     {
         $validated = $request->validated();
@@ -33,17 +27,11 @@ class OrgController extends Controller
         return new OrgResource($org);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         return new OrgResource(Org::findOrFail($id));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateOrgRequest $request, string $id)
     {
         $org = Org::findOrFail($id);
@@ -54,9 +42,6 @@ class OrgController extends Controller
         return new OrgResource($org);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         $org = Org::findOrFail($id);

@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Resources\UserGroup\UserGroupCollection;
 use App\Http\Resources\UserGroup\UserGroupResource;
 use App\Models\UserGroup;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\UserGroup\StoreUserGroupRequest;
+use App\Http\Requests\UserGroup\UpdateUserGroupRequest;
 
 class UserGroupController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return new UserGroupCollection(
@@ -19,35 +18,37 @@ class UserGroupController extends Controller
         );
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreUserGroupRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $validated['created_by'] = Auth::id();
+        $userGroup = UserGroup::create($validated);
+
+        return new UserGroupResource($userGroup);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         return new UserGroupResource(UserGroup::findOrFail($id));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(UpdateUserGroupRequest $request, string $id)
     {
-        //
+        $userGroup = UserGroup::findOrFail($id);
+        $validated = $request->validated();
+        $validated['updated_by'] = Auth::id();
+        $userGroup->update($validated);
+
+        return new UserGroupResource($userGroup);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $userGroup = UserGroup::findOrFail($id);
+        $userGroup->deleted_by = Auth::id();
+        $userGroup->save();
+        $userGroup->delete();
+
+        return response()->noContent();
     }
 }

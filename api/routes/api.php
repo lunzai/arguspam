@@ -6,9 +6,10 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\AuditController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\SessionAuditController;
 
 Route::get('/', function () {
     return response()->json(['message' => 'Hello World']);
@@ -28,6 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
         'sessions' => SessionController::class,
         'users' => UserController::class,
         'user-groups' => UserGroupController::class,
+        'audits' => AuditController::class,
+        'session-audits' => SessionAuditController::class,
     ]);
 });
 

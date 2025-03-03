@@ -39,7 +39,7 @@ return new class extends Migration
 
     private const TABLE_USER_ACCESS_RESTRICTION = 'user_access_restrictions';
 
-    private const TABLE_ACTION_AUDIT = 'actions_audits';
+    private const TABLE_ACTION_AUDIT = 'action_audits';
 
     private function addBlameableColumns(Blueprint $table)
     {

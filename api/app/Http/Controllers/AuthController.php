@@ -21,11 +21,16 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $request->validated($request->all());
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        $request->validated();
+        $attempt = Auth::attemptWhen(
+            $request->only('email', 'password'),
+            function (User $user) {
+                return $user->isActive();
+            }
+        );
+        if (!$attempt) {
             return $this->unauthorized('The provided credentials are incorrect.');
         }
-
         $user = User::where('email', $request->email)->first();
         $token = $user->createToken(
             'auth_token',

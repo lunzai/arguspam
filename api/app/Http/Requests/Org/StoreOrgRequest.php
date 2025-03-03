@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Org;
 
 use App\Enums\Status;
+use App\Models\Org;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
-use App\Models\Org;
 
 class StoreOrgRequest extends FormRequest
 {

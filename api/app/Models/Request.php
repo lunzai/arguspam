@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\RequestScope;
+use App\Enums\RiskRating;
+use App\Enums\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Enums\Status;
-use App\Enums\RiskRating;
-use App\Enums\RequestScope;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Request extends Model
 {

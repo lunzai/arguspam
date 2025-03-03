@@ -1,33 +1,44 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 use App\Enums\AssetAccessRole;
-use App\Enums\Status;
 use App\Enums\Dbms;
-use App\Enums\AuditAction;
 use App\Enums\RequestScope;
 use App\Enums\RequestStatus;
-use App\Enums\SessionStatus;
-use App\Enums\RiskRating;
 use App\Enums\RestrictionType;
+use App\Enums\RiskRating;
+use App\Enums\SessionStatus;
+use App\Enums\Status;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
     private const TABLE_ORG = 'orgs';
+
     private const TABLE_USER = 'users';
+
     private const TABLE_ORG_USER = 'org_user';
+
     private const TABLE_USER_GROUP = 'user_groups';
+
     private const TABLE_USER_GROUP_USER = 'user_user_group';
+
     private const TABLE_ASSET = 'assets';
+
     private const TABLE_ASSET_ACCOUNT = 'asset_accounts';
+
     private const TABLE_ASSET_ACCESS_GRANT = 'asset_access_grants';
+
     private const TABLE_REQUEST = 'requests';
+
     private const TABLE_SESSION = 'sessions';
+
     private const TABLE_SESSION_AUDIT = 'session_audits';
+
     private const TABLE_USER_ACCESS_RESTRICTION = 'user_access_restrictions';
+
     private const TABLE_ACTION_AUDIT = 'actions_audits';
 
     private function addBlameableColumns(Blueprint $table)
@@ -48,7 +59,7 @@ return new class extends Migration
     private function addSoftDeletes(Blueprint $table)
     {
         $table->unsignedMediumInteger('deleted_by')
-                ->nullable();
+            ->nullable();
         $table->softDeletes('deleted_at');
     }
 
@@ -91,7 +102,6 @@ return new class extends Migration
                 ->useCurrent();
             $table->unique(['org_id', 'user_id']);
         });
-
 
         Schema::create(self::TABLE_USER_GROUP, function (Blueprint $table) {
             $table->id();

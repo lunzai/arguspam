@@ -2,22 +2,25 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\Org;
-use App\Models\UserGroup;
+use App\Enums\AssetAccessRole;
 use App\Models\Asset;
 use App\Models\AssetAccount;
+use App\Models\Org;
+use App\Models\User;
+use App\Models\UserGroup;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Enums\AssetAccessRole;
 
 class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
     private const ORG_COUNT = 3;
+
     private const USER_COUNT = 20;
+
     private const USER_GROUP_COUNT = 5;
+
     private const ASSET_COUNT = 10;
 
     /**
@@ -69,10 +72,10 @@ class DatabaseSeeder extends Seeder
 
             $asset->users()->attach([
                 ...$assetOrgUsers->take($requesterCount)
-                    ->mapWithKeys(fn($user) => [$user->id => ['role' => AssetAccessRole::REQUESTER->value]])
+                    ->mapWithKeys(fn ($user) => [$user->id => ['role' => AssetAccessRole::REQUESTER->value]])
                     ->all(),
                 ...$assetOrgUsers->skip($requesterCount)
-                    ->mapWithKeys(fn($user) => [$user->id => ['role' => AssetAccessRole::APPROVER->value]])
+                    ->mapWithKeys(fn ($user) => [$user->id => ['role' => AssetAccessRole::APPROVER->value]])
                     ->all(),
             ]);
             $assets[] = $asset;

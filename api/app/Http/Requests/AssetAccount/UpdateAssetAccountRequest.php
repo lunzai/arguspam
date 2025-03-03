@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\AssetAccount;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Models\AssetAccount;
+use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateAssetAccountRequest extends FormRequest
 {

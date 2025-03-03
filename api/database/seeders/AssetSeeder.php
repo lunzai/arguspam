@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Asset;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Asset;
 
 class AssetSeeder extends Seeder
 {

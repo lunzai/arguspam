@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\User;
 use App\Enums\Status;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,6 +19,7 @@ class OrgFactory extends Factory
     public function definition(): array
     {
         $userId = User::first()?->id ?? User::factory();
+
         return [
             'name' => fake()->sentence(3),
             'description' => fake()->optional()->paragraph(),

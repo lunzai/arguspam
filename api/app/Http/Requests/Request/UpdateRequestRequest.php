@@ -2,12 +2,12 @@
 
 namespace App\Http\Requests\Request;
 
+use App\Enums\RequestScope;
+use App\Enums\RequestStatus;
+use App\Enums\RiskRating;
+use App\Models\Request;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
-use App\Enums\RequestScope;
-use App\Enums\RiskRating;
-use App\Enums\RequestStatus;
-use App\Models\Request;
 
 class UpdateRequestRequest extends FormRequest
 {

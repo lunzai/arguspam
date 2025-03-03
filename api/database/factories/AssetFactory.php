@@ -3,10 +3,10 @@
 namespace Database\Factories;
 
 use App\Enums\Dbms;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Org;
 use App\Enums\Status;
+use App\Models\Org;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Asset>
@@ -21,8 +21,9 @@ class AssetFactory extends Factory
     public function definition(): array
     {
         $user = User::first()?->id ?? User::factory();
+
         return [
-            'org_id' =>Org::factory(),
+            'org_id' => Org::factory(),
             'name' => fake()->sentence(3),
             'description' => fake()->optional()->paragraph(),
             'status' => Status::ACTIVE->value,

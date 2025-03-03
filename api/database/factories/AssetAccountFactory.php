@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\Asset;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AssetAccount>
@@ -20,6 +20,7 @@ class AssetAccountFactory extends Factory
     {
         $name = fake()->bothify('???-####');
         $user = User::first()?->id ?? User::factory();
+
         return [
             'asset_id' => Asset::factory(),
             'name' => $name,

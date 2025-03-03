@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Models\Org;
 use App\Http\Requests\Org\StoreOrgRequest;
 use App\Http\Requests\Org\UpdateOrgRequest;
 use App\Http\Resources\Org\OrgCollection;
 use App\Http\Resources\Org\OrgResource;
+use App\Models\Org;
 use Illuminate\Support\Facades\Auth;
 
-class OrgController
+class OrgController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -27,6 +27,7 @@ class OrgController
         $validated = $request->validated();
         $validated['created_by'] = Auth::id();
         $org = Org::create($validated);
+
         return new OrgResource($org);
     }
 
@@ -36,6 +37,7 @@ class OrgController
     public function show(string $id)
     {
         $org = Org::findOrFail($id);
+
         return new OrgResource($org);
     }
 
@@ -48,6 +50,7 @@ class OrgController
         $validated = $request->validated();
         $validated['updated_by'] = Auth::id();
         $org->update($validated);
+
         return new OrgResource($org);
     }
 
@@ -60,6 +63,7 @@ class OrgController
         $org->deleted_by = Auth::id();
         $org->save();
         $org->delete();
+
         return response()->noContent();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum AuditAction : string
+enum AuditAction: string
 {
     case VIEW = 'view';
     case CREATE = 'create';

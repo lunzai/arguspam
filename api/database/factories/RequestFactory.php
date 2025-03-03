@@ -3,14 +3,13 @@
 namespace Database\Factories;
 
 use App\Enums\RequestScope;
-use App\Models\Org;
-use App\Models\Asset;
-use App\Models\AssetAccount;
-use App\Models\User;
 use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Asset;
+use App\Models\Org;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Request>
@@ -50,6 +49,7 @@ class RequestFactory extends Factory
     public function sensitiveData(): static
     {
         $isSensitiveData = $this->faker->boolean();
+
         return $this->state(fn (array $attributes) => [
             'is_access_sensitive_data' => $isSensitiveData,
             'sensitive_data_note' => $isSensitiveData ? fake()->paragraph() : null,
@@ -59,6 +59,7 @@ class RequestFactory extends Factory
     public function approved(): static
     {
         $this->approverNodeAndRiskRating();
+
         return $this->state(fn (array $attributes) => [
             'status' => RequestStatus::APPROVED->value,
             'approved_by' => User::inRandomOrder()->first()?->id ?? User::factory(),
@@ -69,6 +70,7 @@ class RequestFactory extends Factory
     public function rejected(): static
     {
         $this->approverNodeAndRiskRating();
+
         return $this->state(fn (array $attributes) => [
             'status' => RequestStatus::REJECTED->value,
             'rejected_by' => User::inRandomOrder()->first()?->id ?? User::factory(),

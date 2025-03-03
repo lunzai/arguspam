@@ -4,9 +4,9 @@ namespace App\Http\Requests\Asset;
 
 use App\Enums\Dbms;
 use App\Enums\Status;
+use App\Models\Asset;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
-use App\Models\Asset;
 
 class UpdateAssetRequest extends FormRequest
 {

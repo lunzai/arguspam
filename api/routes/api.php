@@ -1,19 +1,38 @@
 <?php
 
+use App\Http\Controllers\AssetController;
+use App\Http\Controllers\OrgController;
+use App\Http\Controllers\RequestController;
+use App\Http\Controllers\SessionController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserGroupController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OrgController;
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
-    return 'Hello World';
+    return response()->json(['message' => 'Hello World']);
 });
 
-//Route::apiResource('organizations', OrgController::class);
+Route::prefix('auth')->group(function () {
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->middleware('auth:sanctum');
+});
 
+// Route::middleware('auth:sanctum')->group(function () {
+//     // Route::get('/test', function () {
+//     //     return 'Hello World';
+//     // })->prefix('auth');
+//     Route::apiResources([
+//         'assets' => AssetController::class,
+//         'organizations' => OrgController::class,
+//         'requests' => RequestController::class,
+//         'sessions' => SessionController::class,
+//         'users' => UserController::class,
+//         'user-groups' => UserGroupController::class,
+//     ]);
+// });
 
 /**
  * Org

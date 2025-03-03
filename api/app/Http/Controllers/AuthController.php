@@ -2,32 +2,39 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use App\Traits\ApiResponses;
 
-class AuthController
+class AuthController extends Controller
 {
+    use ApiResponses;
+
+    public function test()
+    {
+        return $this->success('Hello successful', ['token' => '123']);
+    }
+
     public function login(LoginRequest $request)
     {
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
+        $request->validated($request->all());
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return $this->unauthorized('The provided credentials are incorrect.');
         }
 
-        return $user->createToken('auth_token')->plainTextToken;
+        $user = User::where('email', $request->email)->first();
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return $this->success(['token' => $token], 'Login successful');
     }
 
     public function logout(Request $request)
     {
+        $user = $request->user();
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Logged out successfully']);
+        return $this->ok('Logged out successfully');
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\User;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 
 class UserCreate extends Command
@@ -30,6 +30,7 @@ class UserCreate extends Command
         $password = $this->argument('password');
         if (strlen($password) < 8) {
             $this->error('Password must be at least 8 characters long');
+
             return 1;
         }
 
@@ -40,7 +41,7 @@ class UserCreate extends Command
         ]);
 
         $this->info('User created successfully');
-        $this->info('Name: ' . $user->name);
-        $this->info('Email: ' . $user->email);
+        $this->info('Name: '.$user->name);
+        $this->info('Email: '.$user->email);
     }
 }

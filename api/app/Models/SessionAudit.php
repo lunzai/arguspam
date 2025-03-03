@@ -18,7 +18,7 @@ class SessionAudit extends Model
         'asset_id',
         'user_id',
         'query_text',
-        'query_timestamp'
+        'query_timestamp',
     ];
 
     protected $casts = [

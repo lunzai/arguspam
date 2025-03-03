@@ -3,9 +3,9 @@
 namespace App\Http\Resources\UserAccessRestriction;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Http\Resources\Collection;
 
-class UserAccessRestrictionCollection extends ResourceCollection
+class UserAccessRestrictionCollection extends Collection
 {
     /**
      * Transform the resource collection into an array.

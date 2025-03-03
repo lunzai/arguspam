@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\UserGroup\UserGroupCollection;
+use App\Http\Resources\UserGroup\UserGroupResource;
+use App\Models\UserGroup;
 
 class UserGroupController extends Controller
 {
@@ -11,7 +14,9 @@ class UserGroupController extends Controller
      */
     public function index()
     {
-        //
+        return new UserGroupCollection(
+            UserGroup::paginate(config('constants.pagination.per_page'))
+        );
     }
 
     /**
@@ -27,7 +32,7 @@ class UserGroupController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return new UserGroupResource(UserGroup::findOrFail($id));
     }
 
     /**

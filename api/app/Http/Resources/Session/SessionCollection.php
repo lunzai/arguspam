@@ -3,9 +3,9 @@
 namespace App\Http\Resources\Session;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Http\Resources\Collection;
 
-class SessionCollection extends ResourceCollection
+class SessionCollection extends Collection
 {
     /**
      * Transform the resource collection into an array.

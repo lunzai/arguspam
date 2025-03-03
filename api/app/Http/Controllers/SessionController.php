@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\Session\SessionCollection;
+use App\Http\Resources\Session\SessionResource;
+use App\Models\Session;
 
 class SessionController extends Controller
 {
@@ -11,7 +14,9 @@ class SessionController extends Controller
      */
     public function index()
     {
-        //
+        return new SessionCollection(
+            Session::paginate(config('constants.pagination.per_page'))
+        );
     }
 
     /**
@@ -27,7 +32,7 @@ class SessionController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return new SessionResource(Session::findOrFail($id));
     }
 
     /**

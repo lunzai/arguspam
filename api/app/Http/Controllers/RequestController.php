@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Resources\Request\RequestCollection;
+use App\Http\Resources\Request\RequestResource;
+use App\Models\Request as RequestModel;
 
 class RequestController extends Controller
 {
@@ -11,7 +14,9 @@ class RequestController extends Controller
      */
     public function index()
     {
-        //
+        return new RequestCollection(
+            RequestModel::paginate(config('constants.pagination.per_page'))
+        );
     }
 
     /**
@@ -27,7 +32,7 @@ class RequestController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return new RequestResource(RequestModel::findOrFail($id));
     }
 
     /**

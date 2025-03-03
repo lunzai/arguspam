@@ -3,9 +3,9 @@
 namespace App\Http\Resources\UserGroup;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Http\Resources\Collection;
 
-class UserGroupCollection extends ResourceCollection
+class UserGroupCollection extends Collection
 {
     /**
      * Transform the resource collection into an array.

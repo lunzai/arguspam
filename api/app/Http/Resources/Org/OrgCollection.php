@@ -3,9 +3,9 @@
 namespace App\Http\Resources\Org;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Http\Resources\Collection;
 
-class OrgCollection extends ResourceCollection
+class OrgCollection extends Collection
 {
     /**
      * Transform the resource collection into an array.

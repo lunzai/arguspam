@@ -3,9 +3,9 @@
 namespace App\Http\Resources\SessionAudit;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Http\Resources\Collection;
 
-class SessionAuditCollection extends ResourceCollection
+class SessionAuditCollection extends Collection
 {
     /**
      * Transform the resource collection into an array.

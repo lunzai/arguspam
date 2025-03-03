@@ -20,19 +20,16 @@ Route::prefix('auth')->group(function () {
         ->middleware('auth:sanctum');
 });
 
-// Route::middleware('auth:sanctum')->group(function () {
-//     // Route::get('/test', function () {
-//     //     return 'Hello World';
-//     // })->prefix('auth');
-//     Route::apiResources([
-//         'assets' => AssetController::class,
-//         'organizations' => OrgController::class,
-//         'requests' => RequestController::class,
-//         'sessions' => SessionController::class,
-//         'users' => UserController::class,
-//         'user-groups' => UserGroupController::class,
-//     ]);
-// });
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResources([
+        'assets' => AssetController::class,
+        'organizations' => OrgController::class,
+        'requests' => RequestController::class,
+        'sessions' => SessionController::class,
+        'users' => UserController::class,
+        'user-groups' => UserGroupController::class,
+    ]);
+});
 
 /**
  * Org

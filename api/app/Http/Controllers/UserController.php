@@ -2,16 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Traits\ApiResponses;
+use App\Http\Resources\User\UserCollection;
+use App\Http\Resources\User\UserResource;
 
 class UserController extends Controller
 {
+    use ApiResponses;
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        // return $this->success(User::all()->paginate(10));
+        return new UserCollection(
+            User::paginate(config('constants.pagination.per_page'))
+        );
     }
 
     /**
@@ -27,7 +36,8 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // return $this->success(User::find($id));
+        return new UserResource(User::findOrFail($id));
     }
 
     /**

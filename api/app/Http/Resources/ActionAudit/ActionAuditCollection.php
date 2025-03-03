@@ -3,9 +3,9 @@
 namespace App\Http\Resources\ActionAudit;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Http\Resources\Collection;
 
-class ActionAuditCollection extends ResourceCollection
+class ActionAuditCollection extends Collection
 {
     /**
      * Transform the resource collection into an array.

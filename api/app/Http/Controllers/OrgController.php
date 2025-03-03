@@ -16,7 +16,9 @@ class OrgController extends Controller
      */
     public function index()
     {
-        return new OrgCollection(Org::paginate(10));
+        return new OrgCollection(
+            Org::paginate(config('constants.pagination.per_page'))
+        );
     }
 
     /**
@@ -36,9 +38,7 @@ class OrgController extends Controller
      */
     public function show(string $id)
     {
-        $org = Org::findOrFail($id);
-
-        return new OrgResource($org);
+        return new OrgResource(Org::findOrFail($id));
     }
 
     /**

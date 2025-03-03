@@ -3,9 +3,9 @@
 namespace App\Http\Resources\Request;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Http\Resources\Collection;
 
-class RequestCollection extends ResourceCollection
+class RequestCollection extends Collection
 {
     /**
      * Transform the resource collection into an array.

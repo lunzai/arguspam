@@ -3,9 +3,9 @@
 namespace App\Http\Resources\AssetAccessGrant;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Http\Resources\Collection;
 
-class AssetAccessGrantCollection extends ResourceCollection
+class AssetAccessGrantCollection extends Collection
 {
     /**
      * Transform the resource collection into an array.

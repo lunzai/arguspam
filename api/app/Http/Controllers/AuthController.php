@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\ApiResponses;
+use App\Events\UserLoggedIn;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -25,7 +27,13 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $request->email)->first();
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $token = $user->createToken(
+            'auth_token',
+            ['*'],
+            now()->addMinutes(60*24)
+        )->plainTextToken;
+        UserLoggedIn::dispatch($user);
+        Log::info('About to dispatch UserLoggedIn');
 
         return $this->success(['token' => $token], 'Login successful');
     }

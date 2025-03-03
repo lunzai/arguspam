@@ -3,9 +3,9 @@
 namespace App\Http\Resources\Asset;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Http\Resources\Collection;
 
-class AssetCollection extends ResourceCollection
+class AssetCollection extends Collection
 {
     /**
      * Transform the resource collection into an array.

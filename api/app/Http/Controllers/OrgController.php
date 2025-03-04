@@ -8,11 +8,16 @@ use App\Http\Resources\Org\OrgCollection;
 use App\Http\Resources\Org\OrgResource;
 use App\Models\Org;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\IsExpandable;
 
 class OrgController extends Controller
 {
+    use IsExpandable;
+
     public function index()
     {
+        $org = Org::query();
+        $this->applyExpands($org);
         return new OrgCollection(
             Org::paginate(config('constants.pagination.per_page'))
         );
@@ -29,7 +34,9 @@ class OrgController extends Controller
 
     public function show(string $id)
     {
-        return new OrgResource(Org::findOrFail($id));
+        $org = Org::query();
+        $this->applyExpands($org);
+        return new OrgResource($org->findOrFail($id));
     }
 
     public function update(UpdateOrgRequest $request, string $id)

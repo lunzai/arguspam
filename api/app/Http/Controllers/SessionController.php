@@ -7,19 +7,26 @@ use App\Http\Resources\Session\SessionCollection;
 use App\Http\Resources\Session\SessionResource;
 use App\Models\Session;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\IsExpandable;
 
 class SessionController extends Controller
 {
+    use IsExpandable;
+
     public function index()
     {
+        $session = Session::query();
+        $this->applyExpands($session);
         return new SessionCollection(
-            Session::paginate(config('constants.pagination.per_page'))
+            $session->paginate(config('constants.pagination.per_page'))
         );
     }
 
     public function show(string $id)
     {
-        return new SessionResource(Session::findOrFail($id));
+        $session = Session::query();
+        $this->applyExpands($session);
+        return new SessionResource($session->findOrFail($id));
     }
 
     public function update(UpdateSessionRequest $request, string $id)

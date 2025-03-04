@@ -2,9 +2,8 @@
 
 namespace App\Http\Resources\Org;
 
-use Illuminate\Http\Request;
 use App\Http\Resources\Collection;
-use App\Http\Resources\Org\OrgResource;
+use Illuminate\Http\Request;
 
 class OrgCollection extends Collection
 {

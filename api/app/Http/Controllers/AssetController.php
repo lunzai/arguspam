@@ -8,11 +8,16 @@ use App\Http\Resources\Asset\AssetCollection;
 use App\Http\Resources\Asset\AssetResource;
 use App\Models\Asset;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\IsExpandable;
 
 class AssetController extends Controller
 {
+    use IsExpandable;
+
     public function index()
     {
+        $asset = Asset::query();
+        $this->applyExpands($asset);
         return new AssetCollection(
             Asset::paginate(config('constants.pagination.per_page'))
         );
@@ -29,7 +34,9 @@ class AssetController extends Controller
 
     public function show(string $id)
     {
-        return new AssetResource(Asset::findOrFail($id));
+        $asset = Asset::query();
+        $this->applyExpands($asset);
+        return new AssetResource($asset->findOrFail($id));
     }
 
     public function update(UpdateAssetRequest $request, string $id)

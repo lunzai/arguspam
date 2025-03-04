@@ -7,14 +7,19 @@ use App\Http\Requests\UserGroup\UpdateUserGroupRequest;
 use App\Http\Resources\UserGroup\UserGroupCollection;
 use App\Http\Resources\UserGroup\UserGroupResource;
 use App\Models\UserGroup;
+use App\Traits\IsExpandable;
 use Illuminate\Support\Facades\Auth;
 
 class UserGroupController extends Controller
 {
+    use IsExpandable;
+
     public function index()
     {
+        $userGroup = UserGroup::query();
+        $this->applyExpands($userGroup);
         return new UserGroupCollection(
-            UserGroup::paginate(config('constants.pagination.per_page'))
+            $userGroup->paginate(config('constants.pagination.per_page'))
         );
     }
 
@@ -29,7 +34,9 @@ class UserGroupController extends Controller
 
     public function show(string $id)
     {
-        return new UserGroupResource(UserGroup::findOrFail($id));
+        $userGroup = UserGroup::query();
+        $this->applyExpands($userGroup);
+        return new UserGroupResource($userGroup->findOrFail($id));
     }
 
     public function update(UpdateUserGroupRequest $request, string $id)

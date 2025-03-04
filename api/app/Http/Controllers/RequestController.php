@@ -8,16 +8,21 @@ use App\Http\Resources\Request\RequestCollection;
 use App\Http\Resources\Request\RequestResource;
 use App\Models\Request as RequestModel;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\IsExpandable;
 
 class RequestController extends Controller
 {
+    use IsExpandable;
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $request = RequestModel::query();
+        $this->applyExpands($request);
         return new RequestCollection(
-            RequestModel::paginate(config('constants.pagination.per_page'))
+            $request->paginate(config('constants.pagination.per_page'))
         );
     }
 
@@ -32,7 +37,9 @@ class RequestController extends Controller
 
     public function show(string $id)
     {
-        return new RequestResource(RequestModel::findOrFail($id));
+        $request = RequestModel::query();
+        $this->applyExpands($request);
+        return new RequestResource($request->findOrFail($id));
     }
 
     public function update(UpdateRequestRequest $request, string $id)

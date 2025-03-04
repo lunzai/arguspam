@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\HasExpandable;
 
 class UserGroup extends Model
 {
     /** @use HasFactory<\Database\Factories\UserGroupFactory> */
-    use HasFactory;
+    use HasFactory, HasExpandable;
 
     protected $fillable = [
         'org_id',
@@ -35,6 +36,14 @@ class UserGroup extends Model
         'name' => 'Name',
         'description' => 'Description',
         'status' => 'Status',
+    ];
+
+    protected $expandable = [
+        'users',
+        'assetAccessGrants',
+        'org',
+        'createdBy',
+        'updatedBy',
     ];
 
     public function users(): BelongsToMany

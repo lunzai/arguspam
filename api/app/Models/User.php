@@ -12,11 +12,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Traits\HasExpandable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, HasStatus, Notifiable;
+    use HasApiTokens, HasFactory, HasStatus, Notifiable, HasExpandable;
 
     protected $fillable = [
         'name',
@@ -33,6 +34,17 @@ class User extends Authenticatable
         'deleted_by',
         'two_factor_secret',
         'two_factor_recovery_codes',
+    ];
+
+    protected $expandable = [
+        'orgs',
+        'userGroups',
+        'assetAccessGrants',
+        'approverAssetAccessGrants',
+        'requesterAssetAccessGrants',
+        'requests',
+        'sessions',
+        'accessRestrictions',
     ];
 
     protected function casts(): array

@@ -8,16 +8,22 @@ use App\Http\Resources\User\UserCollection;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\Traits\ApiResponses;
+use App\Traits\IsExpandable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    use ApiResponses;
+    use ApiResponses, IsExpandable;
 
     public function index()
     {
+        Log::info('user listing');
+        $user = User::query();
+        $this->applyExpands($user);
+        Log::info('user listing after applyExpands');
         return new UserCollection(
-            User::paginate(config('constants.pagination.per_page'))
+            $user->paginate(config('constants.pagination.per_page'))
         );
     }
 
@@ -32,8 +38,9 @@ class UserController extends Controller
 
     public function show(string $id)
     {
-        // return $this->success(User::find($id));
-        return new UserResource(User::findOrFail($id));
+        $user = User::query();
+        $this->applyExpands($user);
+        return new UserResource($user->findOrFail($id));
     }
 
     public function update(UpdateUserRequest $request, string $id)

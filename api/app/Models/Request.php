@@ -10,11 +10,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Traits\HasExpandable;
 
 class Request extends Model
 {
     /** @use HasFactory<\Database\Factories\RequestFactory> */
-    use HasFactory;
+    use HasFactory, HasExpandable;
 
     protected $fillable = [
         'org_id',
@@ -77,6 +78,18 @@ class Request extends Model
         'approved_at' => 'Approved At',
         'rejected_by' => 'Rejected By',
         'rejected_at' => 'Rejected At',
+    ];
+
+    protected $expandable = [
+        'org',
+        'asset',
+        'assetAccount',
+        'requester',
+        'approver',
+        'session',
+        'audits',
+        'createdBy',
+        'updatedBy',
     ];
 
     public function org(): BelongsTo

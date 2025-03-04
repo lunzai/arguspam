@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\HasExpandable;
 
 class SessionAudit extends Model
 {
     /** @use HasFactory<\Database\Factories\SessionAuditFactory> */
-    use HasFactory;
+    use HasFactory, HasExpandable;
 
     protected $fillable = [
         'org_id',
@@ -24,6 +25,14 @@ class SessionAudit extends Model
     protected $casts = [
         'query_timestamp' => 'datetime',
         'created_at' => 'datetime',
+    ];
+
+    protected $expandable = [
+        'org',
+        'session',
+        'request',
+        'asset',
+        'user',
     ];
 
     public function org(): BelongsTo

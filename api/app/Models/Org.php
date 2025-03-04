@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\HasExpandable;
 
 class Org extends Model
 {
     /** @use HasFactory<\Database\Factories\OrgFactory> */
-    use HasFactory, SoftDeletes;
+    use HasFactory, HasExpandable, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -34,6 +35,18 @@ class Org extends Model
         'name' => 'Name',
         'description' => 'Description',
         'status' => 'Status',
+    ];
+
+    protected $expandable = [
+        'users',
+        'userGroups',
+        'assets',
+        'requests',
+        'sessions',
+        'sessionAudits',
+        'actionAudits',
+        'createdBy',
+        'updatedBy',
     ];
 
     public function users(): BelongsToMany

@@ -7,11 +7,12 @@ use App\Enums\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\HasExpandable;
 
 class UserAccessRestriction extends Model
 {
     /** @use HasFactory<\Database\Factories\UserAccessRestrictionFactory> */
-    use HasFactory;
+    use HasFactory, HasExpandable;
 
     protected $fillable = [
         'user_id',
@@ -33,6 +34,12 @@ class UserAccessRestriction extends Model
         'type' => 'Type',
         'value' => 'Value',
         'status' => 'Status',
+    ];
+
+    protected $expandable = [
+        'user',
+        'createdBy',
+        'updatedBy',
     ];
 
     public function user(): BelongsTo

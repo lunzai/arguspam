@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Traits\HasExpandable;
 
 class AssetAccount extends Model
 {
     /** @use HasFactory<\Database\Factories\AssetAccountFactory> */
-    use HasFactory;
+    use HasFactory, HasExpandable;
 
     protected $fillable = [
         'asset_id',
@@ -31,6 +32,12 @@ class AssetAccount extends Model
         'name' => 'Name',
         'vault_path' => 'Vault Path',
         'is_default' => 'Is Default',
+    ];
+
+    protected $expandable = [
+        'asset',
+        'createdBy',
+        'updatedBy',
     ];
 
     public function asset(): BelongsTo

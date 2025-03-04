@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use App\Traits\HasExpandable;
 
 class Session extends Model
 {
     /** @use HasFactory<\Database\Factories\SessionFactory> */
-    use HasFactory;
+    use HasFactory, HasExpandable;
 
     protected $fillable = [
         'org_id',
@@ -81,6 +82,19 @@ class Session extends Model
         'terminated_at' => 'Terminated At',
         'ended_at' => 'Ended At',
         'ended_by' => 'Ended By',
+    ];
+
+    protected $expandable = [
+        'org',
+        'request',
+        'asset',
+        'requester',
+        'checkinBy',
+        'terminatedBy',
+        'endedBy',
+        'audits',
+        'createdBy',
+        'updatedBy',
     ];
 
     public function org(): BelongsTo

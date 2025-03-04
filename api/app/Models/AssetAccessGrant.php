@@ -6,11 +6,12 @@ use App\Enums\AssetAccessRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\HasExpandable;
 
 class AssetAccessGrant extends Model
 {
     /** @use HasFactory<\Database\Factories\AssetAccessGrantFactory> */
-    use HasFactory;
+    use HasFactory, HasExpandable;
 
     protected $fillable = [
         'asset_id',
@@ -24,6 +25,14 @@ class AssetAccessGrant extends Model
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
         'role' => AssetAccessRole::class,
+    ];
+
+    protected $expandable = [
+        'asset',
+        'user',
+        'userGroup',
+        'createdBy',
+        'updatedBy',
     ];
 
     public function asset(): BelongsTo

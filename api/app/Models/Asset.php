@@ -11,11 +11,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Traits\HasExpandable;
 
 class Asset extends Model
 {
     /** @use HasFactory<\Database\Factories\AssetFactory> */
-    use HasFactory;
+    use HasFactory, HasExpandable;
 
     use SoftDeletes;
 
@@ -45,6 +46,22 @@ class Asset extends Model
         'host' => 'Host',
         'port' => 'Port',
         'dbms' => 'DBMS',
+    ];
+
+    protected $expandable = [
+        'org',
+        'accounts',
+        'accessGrants',
+        'requests',
+        'sessions',
+        'users',
+        'userGroups',
+        'approverUserGroups',
+        'requesterUserGroups',
+        'approverUsers',
+        'requesterUsers',
+        'createdBy',
+        'updatedBy',
     ];
 
     public function org(): BelongsTo

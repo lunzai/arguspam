@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\RequestScope;
 use App\Enums\RiskRating;
 use App\Enums\Status;
+use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,7 +16,7 @@ use App\Traits\HasExpandable;
 class Request extends Model
 {
     /** @use HasFactory<\Database\Factories\RequestFactory> */
-    use HasFactory, HasExpandable;
+    use HasFactory, HasExpandable, HasBlamable;
 
     protected $fillable = [
         'org_id',
@@ -23,7 +24,7 @@ class Request extends Model
         'asset_account_id',
         'requester_id',
         'start_datetime',
-        'end_datetime',
+        // 'end_datetime',
         'duration',
         'reason',
         'intended_query',
@@ -32,13 +33,13 @@ class Request extends Model
         'sensitive_data_note',
         'approver_note',
         'approver_risk_rating',
-        'ai_note',
-        'ai_risk_rating',
+        // 'ai_note',
+        // 'ai_risk_rating',
         'status',
-        'approved_by',
-        'approved_at',
-        'rejected_by',
-        'rejected_at',
+        // 'approved_by',
+        // 'approved_at',
+        // 'rejected_by',
+        // 'rejected_at',
     ];
 
     protected $casts = [

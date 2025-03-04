@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\AssetAccessRole;
+use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,7 +12,7 @@ use App\Traits\HasExpandable;
 class AssetAccessGrant extends Model
 {
     /** @use HasFactory<\Database\Factories\AssetAccessGrantFactory> */
-    use HasFactory, HasExpandable;
+    use HasFactory, HasExpandable, HasBlamable;
 
     protected $fillable = [
         'asset_id',

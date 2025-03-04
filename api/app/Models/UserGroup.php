@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Status;
+use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,15 +14,13 @@ use App\Traits\HasExpandable;
 class UserGroup extends Model
 {
     /** @use HasFactory<\Database\Factories\UserGroupFactory> */
-    use HasFactory, HasExpandable;
+    use HasFactory, HasExpandable, HasBlamable;
 
     protected $fillable = [
         'org_id',
         'name',
         'description',
         'status',
-        'created_by',
-        'updated_by',
     ];
 
     protected $casts = [

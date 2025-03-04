@@ -9,19 +9,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Traits\HasExpandable;
+use App\Traits\HasBlamable;
 
 class Org extends Model
 {
     /** @use HasFactory<\Database\Factories\OrgFactory> */
-    use HasFactory, HasExpandable, SoftDeletes;
+    use HasFactory, HasExpandable, SoftDeletes, HasBlamable;
 
     protected $fillable = [
         'name',
         'description',
         'status',
-        'created_by',
-        'updated_by',
-        'deleted_by',
     ];
 
     protected $casts = [

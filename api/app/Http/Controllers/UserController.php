@@ -18,10 +18,8 @@ class UserController extends Controller
 
     public function index()
     {
-        Log::info('user listing');
         $user = User::query();
         $this->applyExpands($user);
-        Log::info('user listing after applyExpands');
         return new UserCollection(
             $user->paginate(config('constants.pagination.per_page'))
         );
@@ -47,7 +45,8 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $validated = $request->validated();
-        $validated['updated_by'] = Auth::id();
+        Log::info('validated', ['validated' => $validated]);
+        //$validated['updated_by'] = Auth::id();
         $user->update($validated);
 
         return new UserResource($user);

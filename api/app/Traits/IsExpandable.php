@@ -42,8 +42,6 @@ trait IsExpandable
         $allowed = method_exists($model, 'getExpandable')
             ? $model->getExpandable()
             : [];
-        Log::info('requested', ['requested' => $requested]);
-        Log::info('allowed', ['allowed' => $allowed]);
 
         return array_intersect($requested, $allowed);
     }
@@ -58,7 +56,6 @@ trait IsExpandable
     {
         $modelClass = get_class($query->getModel());
         $expands = $this->getAllowedExpands($modelClass);
-        Log::info('applyExpands', ['expands' => $expands]);
         if (!empty($expands)) {
             $query->with($expands);
         }

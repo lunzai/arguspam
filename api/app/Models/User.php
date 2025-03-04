@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\AssetAccessRole;
 use App\Enums\Status;
+use App\Traits\HasBlamable;
 use App\Traits\HasStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -17,14 +18,14 @@ use App\Traits\HasExpandable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, HasStatus, Notifiable, HasExpandable;
+    use HasApiTokens, HasFactory, HasStatus, Notifiable, HasExpandable, HasBlamable;
 
     protected $fillable = [
         'name',
         'email',
-        'password',
+        // 'password',
         'status',
-        'two_factor_enabled',
+        // 'two_factor_enabled',
     ];
 
     protected $hidden = [

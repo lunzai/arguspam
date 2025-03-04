@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\Status;
+use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,32 +14,32 @@ use App\Traits\HasExpandable;
 class Session extends Model
 {
     /** @use HasFactory<\Database\Factories\SessionFactory> */
-    use HasFactory, HasExpandable;
+    use HasFactory, HasExpandable, HasBlamable;
 
     protected $fillable = [
-        'org_id',
-        'request_id',
-        'asset_id',
-        'requester_id',
-        'start_datetime',
-        'end_datetime',
-        'scheduled_end_datetime',
-        'requested_duration',
-        'actual_duration',
-        'is_jit',
-        'account_name',
-        'jit_vault_path',
+        // 'org_id',
+        // 'request_id',
+        // 'asset_id',
+        // 'requester_id',
+        // 'start_datetime',
+        // 'end_datetime',
+        // 'scheduled_end_datetime',
+        // 'requested_duration',
+        // 'actual_duration',
+        // 'is_jit',
+        // 'account_name',
+        // 'jit_vault_path',
         'session_note',
-        'is_expired',
-        'is_terminated',
-        'is_checkin',
-        'status',
-        'checkin_by',
-        'checkin_at',
-        'terminated_by',
-        'terminated_at',
-        'ended_at',
-        'ended_by',
+        // 'is_expired',
+        // 'is_terminated',
+        // 'is_checkin',
+        // 'status',
+        // 'checkin_by',
+        // 'checkin_at',
+        // 'terminated_by',
+        // 'terminated_at',
+        // 'ended_at',
+        // 'ended_by',
     ];
 
     protected $casts = [

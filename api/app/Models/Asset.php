@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\AssetAccessRole;
 use App\Enums\Dbms;
 use App\Enums\Status;
+use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -16,7 +17,7 @@ use App\Traits\HasExpandable;
 class Asset extends Model
 {
     /** @use HasFactory<\Database\Factories\AssetFactory> */
-    use HasFactory, HasExpandable;
+    use HasFactory, HasExpandable, HasBlamable;
 
     use SoftDeletes;
 

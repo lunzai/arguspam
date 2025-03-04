@@ -6,21 +6,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\HasExpandable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\MassPrunable;
 
 class SessionAudit extends Model
 {
     /** @use HasFactory<\Database\Factories\SessionAuditFactory> */
-    use HasFactory, HasExpandable;
+    use HasFactory, HasExpandable, MassPrunable;
 
-    protected $fillable = [
-        'org_id',
-        'session_id',
-        'request_id',
-        'asset_id',
-        'user_id',
-        'query_text',
-        'query_timestamp',
-    ];
+    // protected $fillable = [
+    //     'org_id',
+    //     'session_id',
+    //     'request_id',
+    //     'asset_id',
+    //     'user_id',
+    //     'query_text',
+    //     'query_timestamp',
+    // ];
+
+    protected $guarded = [];
 
     protected $casts = [
         'query_timestamp' => 'datetime',
@@ -34,6 +38,11 @@ class SessionAudit extends Model
         'asset',
         'user',
     ];
+
+    public function prunable(): Builder
+    {
+        return static::where('created_at', '<', now()->subDays(365));
+    }
 
     public function org(): BelongsTo
     {

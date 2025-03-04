@@ -7,25 +7,29 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Traits\HasExpandable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\MassPrunable;
 
 class ActionAudit extends Model
 {
     /** @use HasFactory<\Database\Factories\ActionAuditFactory> */
-    use HasFactory, HasExpandable;
+    use HasFactory, HasExpandable, MassPrunable;
 
-    protected $fillable = [
-        'org_id',
-        'user_id',
-        'action_type',
-        'entity_type',
-        'entity_id',
-        'description',
-        'previous_state',
-        'new_state',
-        'ip_address',
-        'user_agent',
-        'additional_data',
-    ];
+    // protected $fillable = [
+    //     'org_id',
+    //     'user_id',
+    //     'action_type',
+    //     'entity_type',
+    //     'entity_id',
+    //     'description',
+    //     'previous_state',
+    //     'new_state',
+    //     'ip_address',
+    //     'user_agent',
+    //     'additional_data',
+    // ];
+
+    protected $guarded = [];
 
     protected $casts = [
         'additional_data' => 'array',
@@ -39,6 +43,11 @@ class ActionAudit extends Model
         'org',
         'user',
     ];
+
+    public function prunable(): Builder
+    {
+        return static::where('created_at', '<', now()->subDays(365));
+    }
 
     public function org(): BelongsTo
     {

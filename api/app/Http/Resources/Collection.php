@@ -20,7 +20,6 @@ class Collection extends ResourceCollection
 
     public function paginationInformation($request, $paginated, $default)
     {
-        Log::info('Pagination information', ['default' => $default]);
         unset(
             $default['links'],
             $default['meta']['links'],

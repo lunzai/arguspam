@@ -38,7 +38,6 @@ class AuthController extends Controller
             now()->addMinutes(60 * 24)
         )->plainTextToken;
         UserLoggedIn::dispatch($user);
-        Log::info('About to dispatch UserLoggedIn');
 
         return $this->success(['token' => $token], 'Login successful');
     }

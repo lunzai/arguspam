@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserGroup\StoreUserGroupRequest;
+use App\Http\Requests\UserGroup\UpdateUserGroupRequest;
 use App\Http\Resources\UserGroup\UserGroupCollection;
 use App\Http\Resources\UserGroup\UserGroupResource;
 use App\Models\UserGroup;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\UserGroup\StoreUserGroupRequest;
-use App\Http\Requests\UserGroup\UpdateUserGroupRequest;
 
 class UserGroupController extends Controller
 {

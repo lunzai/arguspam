@@ -26,6 +26,7 @@ class Collection extends ResourceCollection
             $default['meta']['links'],
             $default['meta']['path']
         );
+
         return $default;
     }
 }

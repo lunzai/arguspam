@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Asset\StoreAssetRequest;
+use App\Http\Requests\Asset\UpdateAssetRequest;
 use App\Http\Resources\Asset\AssetCollection;
 use App\Http\Resources\Asset\AssetResource;
 use App\Models\Asset;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\Asset\StoreAssetRequest;
-use App\Http\Requests\Asset\UpdateAssetRequest;
 
 class AssetController extends Controller
 {

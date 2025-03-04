@@ -14,6 +14,20 @@ class ActionAuditResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'orgId' => $this->org_id,
+            'userId' => $this->user_id,
+            'actionType' => $this->action_type,
+            'entityType' => $this->entity_type,
+            'entityId' => $this->entity_id,
+            'description' => $this->description,
+            'previousState' => $this->previous_state,
+            'newState' => $this->new_state,
+            'ipAddress' => $this->ip_address,
+            'userAgent' => $this->user_agent,
+            'additionalData' => $this->additional_data,
+            'createdAt' => $this->created_at,
+        ];
     }
 }

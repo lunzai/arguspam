@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use App\Traits\ApiResponses;
-use App\Http\Resources\User\UserCollection;
-use App\Http\Resources\User\UserResource;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
+use App\Http\Resources\User\UserCollection;
+use App\Http\Resources\User\UserResource;
+use App\Models\User;
+use App\Traits\ApiResponses;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {

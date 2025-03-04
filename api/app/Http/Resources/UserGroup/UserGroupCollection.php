@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\UserGroup;
 
-use Illuminate\Http\Request;
 use App\Http\Resources\Collection;
+use Illuminate\Http\Request;
 
 class UserGroupCollection extends Collection
 {

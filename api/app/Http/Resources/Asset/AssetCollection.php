@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\Asset;
 
-use Illuminate\Http\Request;
 use App\Http\Resources\Collection;
+use Illuminate\Http\Request;
 
 class AssetCollection extends Collection
 {

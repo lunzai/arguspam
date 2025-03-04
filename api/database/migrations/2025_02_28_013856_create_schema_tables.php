@@ -16,29 +16,17 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     private const TABLE_ORG = 'orgs';
-
     private const TABLE_USER = 'users';
-
     private const TABLE_ORG_USER = 'org_user';
-
     private const TABLE_USER_GROUP = 'user_groups';
-
     private const TABLE_USER_GROUP_USER = 'user_user_group';
-
     private const TABLE_ASSET = 'assets';
-
     private const TABLE_ASSET_ACCOUNT = 'asset_accounts';
-
     private const TABLE_ASSET_ACCESS_GRANT = 'asset_access_grants';
-
     private const TABLE_REQUEST = 'requests';
-
     private const TABLE_SESSION = 'sessions';
-
     private const TABLE_SESSION_AUDIT = 'session_audits';
-
     private const TABLE_USER_ACCESS_RESTRICTION = 'user_access_restrictions';
-
     private const TABLE_ACTION_AUDIT = 'action_audits';
 
     private function addBlameableColumns(Blueprint $table)

@@ -14,6 +14,16 @@ class SessionAuditResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'orgId' => $this->org_id,
+            'sessionId' => $this->session_id,
+            'requestId' => $this->request_id,
+            'assetId' => $this->asset_id,
+            'userId' => $this->user_id,
+            'queryText' => $this->query_text,
+            'queryTimestamp' => $this->query_timestamp,
+            'createdAt' => $this->created_at,
+        ];
     }
 }

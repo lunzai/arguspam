@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\ActionAudit;
 
-use Illuminate\Http\Request;
 use App\Http\Resources\Collection;
+use Illuminate\Http\Request;
 
 class ActionAuditCollection extends Collection
 {

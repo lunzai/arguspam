@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Resources\ActionAudit\ActionAuditCollection;
 use App\Http\Resources\ActionAudit\ActionAuditResource;
 use App\Models\ActionAudit;

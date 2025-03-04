@@ -14,6 +14,14 @@ class UserAccessRestrictionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'userId' => $this->user_id,
+            'type' => $this->type,
+            'value' => $this->value,
+            'status' => $this->status,
+            'createdAt' => $this->created_at,
+            'updatedAt' => $this->updated_at,
+        ];
     }
 }

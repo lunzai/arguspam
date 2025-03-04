@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Session\UpdateSessionRequest;
 use App\Http\Resources\Session\SessionCollection;
 use App\Http\Resources\Session\SessionResource;
 use App\Models\Session;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\Session\UpdateSessionRequest;
 
 class SessionController extends Controller
 {

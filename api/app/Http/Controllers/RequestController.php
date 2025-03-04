@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Request\StoreRequestRequest;
+use App\Http\Requests\Request\UpdateRequestRequest;
 use App\Http\Resources\Request\RequestCollection;
 use App\Http\Resources\Request\RequestResource;
 use App\Models\Request as RequestModel;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\Request\StoreRequestRequest;
-use App\Http\Requests\Request\UpdateRequestRequest;
 
 class RequestController extends Controller
 {

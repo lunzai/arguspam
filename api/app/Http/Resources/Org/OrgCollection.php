@@ -3,9 +3,10 @@
 namespace App\Http\Resources\Org;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Http\Resources\Collection;
+use App\Http\Resources\Org\OrgResource;
 
-class OrgCollection extends ResourceCollection
+class OrgCollection extends Collection
 {
     public $collects = OrgResource::class;
 

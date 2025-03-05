@@ -2,11 +2,14 @@
 
 namespace App\Http\Filters;
 
+use App\Traits\IncludeRelationships;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class QueryFilter
 {
+    use IncludeRelationships;
+
     protected Builder $builder;
     protected Request $request;
 
@@ -53,46 +56,6 @@ class QueryFilter
         }
 
         return $this->builder;
-    }
-
-    /**
-     * Check if a relation path is valid by recursively validating each segment
-     *
-     * @param  string  $modelClass  The starting model class
-     * @param  string  $relationPath  The dot-notation relation path (e.g., 'posts.comments.author')
-     * @return bool Whether the relation path is valid
-     */
-    protected function isValidRelation(string $modelClass, string $relationPath): bool
-    {
-        $segments = explode('.', $relationPath);
-        $currentModel = $modelClass;
-        $validPath = true;
-
-        foreach ($segments as $segment) {
-            // Check if current model has expandable property
-            if (property_exists($currentModel, 'includable')) {
-                $allowedRelations = $currentModel::includable;
-
-                // If this segment is not in allowed relations, path is invalid
-                if (!in_array($segment, $allowedRelations)) {
-                    $validPath = false;
-                    break;
-                }
-            }
-
-            // Get the related model for the next iteration
-            if (method_exists($currentModel, $segment)) {
-                $relationInstance = (new $currentModel)->$segment();
-                $relatedModelClass = get_class($relationInstance->getRelated());
-                $currentModel = $relatedModelClass;
-            } else {
-                // If relation method doesn't exist, path is invalid
-                $validPath = false;
-                break;
-            }
-        }
-
-        return $validPath;
     }
 
     public function apply(Builder $builder): Builder

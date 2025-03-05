@@ -5,7 +5,7 @@ namespace App\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
-trait IncludesRelationships
+trait IncludeRelationships
 {
     /**
      * Apply includes to a query based on request parameters
@@ -27,6 +27,15 @@ trait IncludesRelationships
         return $query;
     }
 
+    protected function getIncludableRelations(string $modelClass): array
+    {
+        if (property_exists($modelClass, 'includable')) {
+            return $modelClass::$includable;
+        }
+
+        return [];
+    }
+
     /**
      * Check if a relation path is valid by recursively validating each segment
      *
@@ -42,16 +51,11 @@ trait IncludesRelationships
 
         foreach ($segments as $segment) {
             // Check if current model has includable property
-            if (property_exists($currentModel, 'includable')) {
-                $allowedRelations = $currentModel::$includable;
-
-                // If this segment is not in allowed relations, path is invalid
-                if (!in_array($segment, $allowedRelations)) {
-                    $validPath = false;
-                    break;
-                }
+            $allowedRelations = $this->getIncludableRelations($currentModel);
+            if (!empty($allowedRelations) && !in_array($segment, $allowedRelations)) {
+                $validPath = false;
+                break;
             }
-
             // Get the related model for the next iteration
             if (method_exists($currentModel, $segment)) {
                 $relationInstance = (new $currentModel)->$segment();

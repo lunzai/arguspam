@@ -19,6 +19,11 @@
         <exclude name="PSR12.Operators.OperatorSpacing.NoSpaceAfter"/>
         <exclude name="PSR12.Traits.UseDeclaration.MultipleImport"/>
     </rule>
+
+    <!-- Disable rule requiring parentheses when instantiating a class -->
+    <rule ref="PSR12.Classes.ClassInstantiation.MissingParentheses">
+        <severity>0</severity>
+    </rule>
  
     <!-- Exclude line ending checks -->
     <rule ref="Generic.Files.LineEndings">

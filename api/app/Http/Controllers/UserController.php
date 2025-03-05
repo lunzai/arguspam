@@ -9,14 +9,14 @@ use App\Http\Resources\User\UserCollection;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\Traits\ApiResponses;
-use App\Traits\IncludesRelationships;
+use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    use ApiResponses, IncludesRelationships;
+    use ApiResponses, IncludeRelationships;
 
     public function index(UserFilter $filter): UserCollection
     {

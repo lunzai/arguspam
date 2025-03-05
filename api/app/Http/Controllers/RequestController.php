@@ -7,13 +7,13 @@ use App\Http\Requests\Request\UpdateRequestRequest;
 use App\Http\Resources\Request\RequestCollection;
 use App\Http\Resources\Request\RequestResource;
 use App\Models\Request as RequestModel;
-use App\Traits\IncludesRelationships;
+use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class RequestController extends Controller
 {
-    use IncludesRelationships;
+    use IncludeRelationships;
 
     /**
      * Display a listing of the resource.

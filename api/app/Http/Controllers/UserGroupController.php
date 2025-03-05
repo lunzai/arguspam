@@ -7,13 +7,13 @@ use App\Http\Requests\UserGroup\UpdateUserGroupRequest;
 use App\Http\Resources\UserGroup\UserGroupCollection;
 use App\Http\Resources\UserGroup\UserGroupResource;
 use App\Models\UserGroup;
-use App\Traits\IncludesRelationships;
+use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class UserGroupController extends Controller
 {
-    use IncludesRelationships;
+    use IncludeRelationships;
 
     public function index(): UserGroupCollection
     {

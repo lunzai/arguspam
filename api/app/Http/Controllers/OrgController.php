@@ -7,13 +7,13 @@ use App\Http\Requests\Org\UpdateOrgRequest;
 use App\Http\Resources\Org\OrgCollection;
 use App\Http\Resources\Org\OrgResource;
 use App\Models\Org;
-use App\Traits\IncludesRelationships;
+use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class OrgController extends Controller
 {
-    use IncludesRelationships;
+    use IncludeRelationships;
 
     public function index(): OrgCollection
     {

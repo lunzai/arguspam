@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\SessionAudit\SessionAuditCollection;
 use App\Http\Resources\SessionAudit\SessionAuditResource;
 use App\Models\SessionAudit;
-use App\Traits\IncludesRelationships;
+use App\Traits\IncludeRelationships;
 
 class SessionAuditController extends Controller
 {
-    use IncludesRelationships;
+    use IncludeRelationships;
 
     public function index(): SessionAuditCollection
     {

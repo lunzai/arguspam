@@ -7,13 +7,13 @@ use App\Http\Requests\Asset\UpdateAssetRequest;
 use App\Http\Resources\Asset\AssetCollection;
 use App\Http\Resources\Asset\AssetResource;
 use App\Models\Asset;
-use App\Traits\IncludesRelationships;
+use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class AssetController extends Controller
 {
-    use IncludesRelationships;
+    use IncludeRelationships;
 
     public function index(): AssetCollection
     {

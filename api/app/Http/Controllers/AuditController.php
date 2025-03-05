@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ActionAudit\ActionAuditCollection;
 use App\Http\Resources\ActionAudit\ActionAuditResource;
 use App\Models\ActionAudit;
-use App\Traits\IncludesRelationships;
+use App\Traits\IncludeRelationships;
 
 class AuditController extends Controller
 {
-    use IncludesRelationships;
+    use IncludeRelationships;
 
     public function index(): ActionAuditCollection
     {

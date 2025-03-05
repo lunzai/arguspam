@@ -6,13 +6,13 @@ use App\Http\Requests\Session\UpdateSessionRequest;
 use App\Http\Resources\Session\SessionCollection;
 use App\Http\Resources\Session\SessionResource;
 use App\Models\Session;
-use App\Traits\IncludesRelationships;
+use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class SessionController extends Controller
 {
-    use IncludesRelationships;
+    use IncludeRelationships;
 
     public function index(): SessionCollection
     {

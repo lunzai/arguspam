@@ -5,14 +5,12 @@ namespace App\Models;
 use App\Enums\AssetAccessRole;
 use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Traits\HasExpandable;
 
 class AssetAccessGrant extends Model
 {
     /** @use HasFactory<\Database\Factories\AssetAccessGrantFactory> */
-    use HasFactory, HasExpandable, HasBlamable;
+    use HasBlamable, HasFactory;
 
     protected $fillable = [
         'asset_id',
@@ -28,7 +26,7 @@ class AssetAccessGrant extends Model
         'role' => AssetAccessRole::class,
     ];
 
-    protected $expandable = [
+    public static $includable = [
         'asset',
         'user',
         'userGroup',

@@ -4,15 +4,13 @@ namespace App\Models;
 
 use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Traits\HasExpandable;
 
 class AssetAccount extends Model
 {
     /** @use HasFactory<\Database\Factories\AssetAccountFactory> */
-    use HasFactory, HasExpandable, HasBlamable;
+    use HasBlamable, HasFactory;
 
     protected $fillable = [
         'asset_id',
@@ -35,7 +33,7 @@ class AssetAccount extends Model
         'is_default' => 'Is Default',
     ];
 
-    protected $expandable = [
+    public static $includable = [
         'asset',
         'createdBy',
         'updatedBy',

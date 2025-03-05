@@ -3,17 +3,15 @@
 namespace App\Models;
 
 use App\Enums\AuditAction;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Traits\HasExpandable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\MassPrunable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ActionAudit extends Model
 {
     /** @use HasFactory<\Database\Factories\ActionAuditFactory> */
-    use HasFactory, HasExpandable, MassPrunable;
+    use HasFactory, MassPrunable;
 
     // protected $fillable = [
     //     'org_id',
@@ -39,7 +37,7 @@ class ActionAudit extends Model
         'action_type' => AuditAction::class,
     ];
 
-    protected $expandable = [
+    public static $includable = [
         'org',
         'user',
     ];

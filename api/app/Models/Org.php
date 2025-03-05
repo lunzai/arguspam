@@ -3,18 +3,16 @@
 namespace App\Models;
 
 use App\Enums\Status;
+use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Traits\HasExpandable;
-use App\Traits\HasBlamable;
 
 class Org extends Model
 {
     /** @use HasFactory<\Database\Factories\OrgFactory> */
-    use HasFactory, HasExpandable, SoftDeletes, HasBlamable;
+    use HasBlamable, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -35,7 +33,7 @@ class Org extends Model
         'status' => 'Status',
     ];
 
-    protected $expandable = [
+    public static $includable = [
         'users',
         'userGroups',
         'assets',

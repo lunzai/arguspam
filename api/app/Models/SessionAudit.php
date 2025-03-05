@@ -2,17 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use App\Traits\HasExpandable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\MassPrunable;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SessionAudit extends Model
 {
     /** @use HasFactory<\Database\Factories\SessionAuditFactory> */
-    use HasFactory, HasExpandable, MassPrunable;
+    use HasFactory, MassPrunable;
 
     // protected $fillable = [
     //     'org_id',
@@ -31,7 +29,7 @@ class SessionAudit extends Model
         'created_at' => 'datetime',
     ];
 
-    protected $expandable = [
+    public static $includable = [
         'org',
         'session',
         'request',

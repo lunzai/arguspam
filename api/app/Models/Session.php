@@ -5,16 +5,14 @@ namespace App\Models;
 use App\Enums\Status;
 use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Traits\HasExpandable;
 
 class Session extends Model
 {
     /** @use HasFactory<\Database\Factories\SessionFactory> */
-    use HasFactory, HasExpandable, HasBlamable;
+    use HasBlamable, HasFactory;
 
     protected $fillable = [
         // 'org_id',
@@ -85,7 +83,7 @@ class Session extends Model
         'ended_by' => 'Ended By',
     ];
 
-    protected $expandable = [
+    public static $includable = [
         'org',
         'request',
         'asset',

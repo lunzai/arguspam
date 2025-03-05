@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources\Asset;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Org\OrgResource;
 use App\Http\Resources\User\UserResource;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AssetResource extends JsonResource
 {

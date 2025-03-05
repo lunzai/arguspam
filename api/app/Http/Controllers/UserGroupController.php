@@ -7,23 +7,25 @@ use App\Http\Requests\UserGroup\UpdateUserGroupRequest;
 use App\Http\Resources\UserGroup\UserGroupCollection;
 use App\Http\Resources\UserGroup\UserGroupResource;
 use App\Models\UserGroup;
-use App\Traits\IsExpandable;
+use App\Traits\IncludesRelationships;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
 class UserGroupController extends Controller
 {
-    use IsExpandable;
+    use IncludesRelationships;
 
-    public function index()
+    public function index(): UserGroupCollection
     {
         $userGroup = UserGroup::query();
-        $this->applyExpands($userGroup);
+        // $this->applyExpands($userGroup);
+
         return new UserGroupCollection(
             $userGroup->paginate(config('constants.pagination.per_page'))
         );
     }
 
-    public function store(StoreUserGroupRequest $request)
+    public function store(StoreUserGroupRequest $request): UserGroupResource
     {
         $validated = $request->validated();
         $validated['created_by'] = Auth::id();
@@ -32,14 +34,15 @@ class UserGroupController extends Controller
         return new UserGroupResource($userGroup);
     }
 
-    public function show(string $id)
+    public function show(string $id): UserGroupResource
     {
         $userGroup = UserGroup::query();
-        $this->applyExpands($userGroup);
+        $this->applyIncludes($userGroup, request());
+
         return new UserGroupResource($userGroup->findOrFail($id));
     }
 
-    public function update(UpdateUserGroupRequest $request, string $id)
+    public function update(UpdateUserGroupRequest $request, string $id): UserGroupResource
     {
         $userGroup = UserGroup::findOrFail($id);
         $validated = $request->validated();
@@ -49,7 +52,7 @@ class UserGroupController extends Controller
         return new UserGroupResource($userGroup);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id): Response
     {
         $userGroup = UserGroup::findOrFail($id);
         $userGroup->deleted_by = Auth::id();

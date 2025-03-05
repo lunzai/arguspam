@@ -2,12 +2,12 @@
 
 namespace App\Http\Resources\Session;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Asset\AssetResource;
 use App\Http\Resources\Org\OrgResource;
 use App\Http\Resources\Request\RequestResource;
-use App\Http\Resources\Asset\AssetResource;
 use App\Http\Resources\User\UserResource;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class SessionResource extends JsonResource
 {

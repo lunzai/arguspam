@@ -6,30 +6,33 @@ use App\Http\Requests\Session\UpdateSessionRequest;
 use App\Http\Resources\Session\SessionCollection;
 use App\Http\Resources\Session\SessionResource;
 use App\Models\Session;
+use App\Traits\IncludesRelationships;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Traits\IsExpandable;
 
 class SessionController extends Controller
 {
-    use IsExpandable;
+    use IncludesRelationships;
 
-    public function index()
+    public function index(): SessionCollection
     {
         $session = Session::query();
-        $this->applyExpands($session);
+        // $this->applyExpands($session);
+
         return new SessionCollection(
             $session->paginate(config('constants.pagination.per_page'))
         );
     }
 
-    public function show(string $id)
+    public function show(string $id): SessionResource
     {
         $session = Session::query();
-        $this->applyExpands($session);
+        $this->applyIncludes($session, request());
+
         return new SessionResource($session->findOrFail($id));
     }
 
-    public function update(UpdateSessionRequest $request, string $id)
+    public function update(UpdateSessionRequest $request, string $id): SessionResource
     {
         $session = Session::findOrFail($id);
         $validated = $request->validated();
@@ -39,7 +42,7 @@ class SessionController extends Controller
         return new SessionResource($session);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id): Response
     {
         $session = Session::findOrFail($id);
         $session->deleted_by = Auth::id();

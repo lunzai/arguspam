@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\UserLoggedIn;
-use Illuminate\Support\Facades\Log;
 
 class UpdateUserLastLogin
 {

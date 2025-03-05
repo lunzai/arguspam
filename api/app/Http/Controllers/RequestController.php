@@ -7,26 +7,28 @@ use App\Http\Requests\Request\UpdateRequestRequest;
 use App\Http\Resources\Request\RequestCollection;
 use App\Http\Resources\Request\RequestResource;
 use App\Models\Request as RequestModel;
+use App\Traits\IncludesRelationships;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Traits\IsExpandable;
 
 class RequestController extends Controller
 {
-    use IsExpandable;
+    use IncludesRelationships;
 
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): RequestCollection
     {
         $request = RequestModel::query();
-        $this->applyExpands($request);
+        // $this->applyExpands($request);
+
         return new RequestCollection(
             $request->paginate(config('constants.pagination.per_page'))
         );
     }
 
-    public function store(StoreRequestRequest $request)
+    public function store(StoreRequestRequest $request): RequestResource
     {
         $validated = $request->validated();
         $validated['created_by'] = Auth::id();
@@ -35,14 +37,15 @@ class RequestController extends Controller
         return new RequestResource($request);
     }
 
-    public function show(string $id)
+    public function show(string $id): RequestResource
     {
         $request = RequestModel::query();
-        $this->applyExpands($request);
+        $this->applyIncludes($request, request());
+
         return new RequestResource($request->findOrFail($id));
     }
 
-    public function update(UpdateRequestRequest $request, string $id)
+    public function update(UpdateRequestRequest $request, string $id): RequestResource
     {
         $request = RequestModel::findOrFail($id);
         $validated = $request->validated();
@@ -52,7 +55,7 @@ class RequestController extends Controller
         return new RequestResource($request);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id): Response
     {
         $request = RequestModel::findOrFail($id);
         $request->deleted_by = Auth::id();

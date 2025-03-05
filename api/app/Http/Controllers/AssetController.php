@@ -7,23 +7,25 @@ use App\Http\Requests\Asset\UpdateAssetRequest;
 use App\Http\Resources\Asset\AssetCollection;
 use App\Http\Resources\Asset\AssetResource;
 use App\Models\Asset;
+use App\Traits\IncludesRelationships;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Traits\IsExpandable;
 
 class AssetController extends Controller
 {
-    use IsExpandable;
+    use IncludesRelationships;
 
-    public function index()
+    public function index(): AssetCollection
     {
         $asset = Asset::query();
-        $this->applyExpands($asset);
+        // $this->applyExpands($asset);
+
         return new AssetCollection(
             Asset::paginate(config('constants.pagination.per_page'))
         );
     }
 
-    public function store(StoreAssetRequest $request)
+    public function store(StoreAssetRequest $request): AssetResource
     {
         $validated = $request->validated();
         $validated['created_by'] = Auth::id();
@@ -32,14 +34,15 @@ class AssetController extends Controller
         return new AssetResource($asset);
     }
 
-    public function show(string $id)
+    public function show(string $id): AssetResource
     {
         $asset = Asset::query();
-        $this->applyExpands($asset);
+        $this->applyIncludes($asset, request());
+
         return new AssetResource($asset->findOrFail($id));
     }
 
-    public function update(UpdateAssetRequest $request, string $id)
+    public function update(UpdateAssetRequest $request, string $id): AssetResource
     {
         $asset = Asset::findOrFail($id);
         $validated = $request->validated();
@@ -49,7 +52,7 @@ class AssetController extends Controller
         return new AssetResource($asset);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id): Response
     {
         $asset = Asset::findOrFail($id);
         $asset->deleted_by = Auth::id();

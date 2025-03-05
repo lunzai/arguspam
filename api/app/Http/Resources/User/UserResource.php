@@ -2,13 +2,12 @@
 
 namespace App\Http\Resources\User;
 
-use App\Http\Resources\Org\OrgResource;
-use App\Http\Resources\UserGroup\UserGroupResource;
 use App\Http\Resources\AssetAccessGrant\AssetAccessGrantResource;
+use App\Http\Resources\Org\OrgResource;
 use App\Http\Resources\Request\RequestResource;
 use App\Http\Resources\Session\SessionResource;
 use App\Http\Resources\UserAccessRestriction\UserAccessRestrictionResource;
-use App\Http\Resources\ActionAudit\ActionAuditResource;
+use App\Http\Resources\UserGroup\UserGroupResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 

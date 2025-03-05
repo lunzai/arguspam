@@ -7,23 +7,25 @@ use App\Http\Requests\Org\UpdateOrgRequest;
 use App\Http\Resources\Org\OrgCollection;
 use App\Http\Resources\Org\OrgResource;
 use App\Models\Org;
+use App\Traits\IncludesRelationships;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Traits\IsExpandable;
 
 class OrgController extends Controller
 {
-    use IsExpandable;
+    use IncludesRelationships;
 
-    public function index()
+    public function index(): OrgCollection
     {
         $org = Org::query();
-        $this->applyExpands($org);
+        // $this->applyExpands($org);
+
         return new OrgCollection(
             Org::paginate(config('constants.pagination.per_page'))
         );
     }
 
-    public function store(StoreOrgRequest $request)
+    public function store(StoreOrgRequest $request): OrgResource
     {
         $validated = $request->validated();
         $validated['created_by'] = Auth::id();
@@ -32,14 +34,15 @@ class OrgController extends Controller
         return new OrgResource($org);
     }
 
-    public function show(string $id)
+    public function show(string $id): OrgResource
     {
         $org = Org::query();
-        $this->applyExpands($org);
+        $this->applyIncludes($org, request());
+
         return new OrgResource($org->findOrFail($id));
     }
 
-    public function update(UpdateOrgRequest $request, string $id)
+    public function update(UpdateOrgRequest $request, string $id): OrgResource
     {
         $org = Org::findOrFail($id);
         $validated = $request->validated();
@@ -49,7 +52,7 @@ class OrgController extends Controller
         return new OrgResource($org);
     }
 
-    public function destroy(string $id)
+    public function destroy(string $id): Response
     {
         $org = Org::findOrFail($id);
         $org->deleted_by = Auth::id();

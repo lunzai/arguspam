@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources\UserGroup;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\User\UserResource;
 use App\Http\Resources\AssetAccessGrant\AssetAccessGrantResource;
 use App\Http\Resources\Org\OrgResource;
+use App\Http\Resources\User\UserResource;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserGroupResource extends JsonResource
 {

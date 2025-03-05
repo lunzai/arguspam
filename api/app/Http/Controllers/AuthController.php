@@ -6,9 +6,9 @@ use App\Events\UserLoggedIn;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
 use App\Traits\ApiResponses;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -19,7 +19,7 @@ class AuthController extends Controller
         return $this->success('Hello successful', ['token' => '123']);
     }
 
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
         $request->validated();
         $attempt = Auth::attemptWhen(
@@ -42,7 +42,7 @@ class AuthController extends Controller
         return $this->success(['token' => $token], 'Login successful');
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): JsonResponse
     {
         $user = $request->user();
         $request->user()->currentAccessToken()->delete();

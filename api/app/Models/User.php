@@ -5,20 +5,21 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\AssetAccessRole;
 use App\Enums\Status;
+use App\Http\Filters\QueryFilter;
 use App\Traits\HasBlamable;
 use App\Traits\HasStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use App\Traits\HasExpandable;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, HasStatus, Notifiable, HasExpandable, HasBlamable;
+    use HasApiTokens, HasBlamable, HasFactory, HasStatus, Notifiable;
 
     protected $fillable = [
         'name',
@@ -37,7 +38,7 @@ class User extends Authenticatable
         'two_factor_recovery_codes',
     ];
 
-    protected $expandable = [
+    public static $includable = [
         'orgs',
         'userGroups',
         'assetAccessGrants',
@@ -71,6 +72,11 @@ class User extends Authenticatable
         'two_factor_enabled' => 'MFA',
         'last_login_at' => 'Last Login At',
     ];
+
+    public function scopeFilter(Builder $query, QueryFilter $filter)
+    {
+        return $filter->apply($query);
+    }
 
     public function orgs(): BelongsToMany
     {

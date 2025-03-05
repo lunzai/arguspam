@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources\AssetAccessGrant;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Asset\AssetResource;
 use App\Http\Resources\User\UserResource;
 use App\Http\Resources\UserGroup\UserGroupResource;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AssetAccessGrantResource extends JsonResource
 {

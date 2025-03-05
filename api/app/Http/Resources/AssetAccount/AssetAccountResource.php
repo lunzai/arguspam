@@ -5,9 +5,9 @@ namespace App\Http\Resources\AssetAccount;
 use App\Http\Resources\Asset\AssetResource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Resource;
 
-class AssetAccountResource extends JsonResource
+class AssetAccountResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -26,7 +26,7 @@ class AssetAccountResource extends JsonResource
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ],
-            $this->mergeWhen(count($this->resource->getRelations()) > 0, [
+            $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
                     'asset' => AssetResource::collection(
                         $this->whenLoaded('asset')

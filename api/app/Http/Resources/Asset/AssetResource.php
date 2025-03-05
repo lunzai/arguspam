@@ -5,9 +5,9 @@ namespace App\Http\Resources\Asset;
 use App\Http\Resources\Org\OrgResource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Resource;
 
-class AssetResource extends JsonResource
+class AssetResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -29,7 +29,7 @@ class AssetResource extends JsonResource
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ],
-            $this->mergeWhen(count($this->resource->getRelations()) > 0, [
+            $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
                     'org' => OrgResource::collection(
                         $this->whenLoaded('org')

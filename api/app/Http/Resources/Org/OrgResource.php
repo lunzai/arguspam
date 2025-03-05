@@ -4,9 +4,10 @@ namespace App\Http\Resources\Org;
 
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
+use App\Http\Resources\Resource;
 
-class OrgResource extends JsonResource
+class OrgResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -15,6 +16,10 @@ class OrgResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        Log::info('orgResource', [
+            'relations' => $this->resource->getRelations(),
+            'with' => $this->with,
+        ]);
         return [
             'attributes' => [
                 'id' => $this->id,
@@ -24,7 +29,7 @@ class OrgResource extends JsonResource
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ],
-            $this->mergeWhen(count($this->resource->getRelations()) > 0, [
+            $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
                     'createdBy' => UserResource::collection(
                         $this->whenLoaded('createdBy')

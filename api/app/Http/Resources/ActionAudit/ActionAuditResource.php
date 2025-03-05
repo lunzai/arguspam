@@ -5,9 +5,9 @@ namespace App\Http\Resources\ActionAudit;
 use App\Http\Resources\Org\OrgResource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Resource;
 
-class ActionAuditResource extends JsonResource
+class ActionAuditResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -32,7 +32,7 @@ class ActionAuditResource extends JsonResource
                 'additionalData' => $this->additional_data,
                 'createdAt' => $this->created_at,
             ],
-            $this->mergeWhen(count($this->resource->getRelations()) > 0, [
+            $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
                     'org' => OrgResource::collection(
                         $this->whenLoaded('org')

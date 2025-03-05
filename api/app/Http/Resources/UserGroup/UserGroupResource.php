@@ -5,10 +5,11 @@ namespace App\Http\Resources\UserGroup;
 use App\Http\Resources\AssetAccessGrant\AssetAccessGrantResource;
 use App\Http\Resources\Org\OrgResource;
 use App\Http\Resources\User\UserResource;
+use App\Http\Resources\Resource;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
-class UserGroupResource extends JsonResource
+class UserGroupResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -17,6 +18,10 @@ class UserGroupResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        Log::info('userGroupResource', [
+            'relations' => $this->resource->getRelations(),
+            'with' => $this->with,
+        ]);
         return [
             'attributes' => [
                 'id' => $this->id,
@@ -27,7 +32,7 @@ class UserGroupResource extends JsonResource
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
             ],
-            $this->mergeWhen(count($this->resource->getRelations()) > 0, [
+            $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
                     'users' => UserResource::collection(
                         $this->whenLoaded('users')

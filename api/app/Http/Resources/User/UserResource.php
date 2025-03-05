@@ -8,10 +8,11 @@ use App\Http\Resources\Request\RequestResource;
 use App\Http\Resources\Session\SessionResource;
 use App\Http\Resources\UserAccessRestriction\UserAccessRestrictionResource;
 use App\Http\Resources\UserGroup\UserGroupResource;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Resource;
 
-class UserResource extends JsonResource
+class UserResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -20,6 +21,10 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        Log::info('userResource', [
+            'relations' => $this->resource->getRelations(),
+            'with' => $this->with,
+        ]);
         return [
             'attributes' => [
                 'id' => $this->id,
@@ -35,7 +40,7 @@ class UserResource extends JsonResource
                     'updatedAt' => $this->updated_at,
                 ]),
             ],
-            $this->mergeWhen(count($this->resource->getRelations()) > 0, [
+            $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
                     'orgs' => OrgResource::collection(
                         $this->whenLoaded('orgs')

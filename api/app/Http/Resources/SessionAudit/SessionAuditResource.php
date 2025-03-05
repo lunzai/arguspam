@@ -8,9 +8,9 @@ use App\Http\Resources\Request\RequestResource;
 use App\Http\Resources\Session\SessionResource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Resource;
 
-class SessionAuditResource extends JsonResource
+class SessionAuditResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -31,7 +31,7 @@ class SessionAuditResource extends JsonResource
                 'queryTimestamp' => $this->query_timestamp,
                 'createdAt' => $this->created_at,
             ],
-            $this->mergeWhen(count($this->resource->getRelations()) > 0, [
+            $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
                     'org' => OrgResource::collection(
                         $this->whenLoaded('org')

@@ -4,8 +4,8 @@ namespace App\Http\Resources\UserGroup;
 
 use App\Http\Resources\AssetAccessGrant\AssetAccessGrantResource;
 use App\Http\Resources\Org\OrgResource;
-use App\Http\Resources\User\UserResource;
 use App\Http\Resources\Resource;
+use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -22,6 +22,7 @@ class UserGroupResource extends Resource
             'relations' => $this->resource->getRelations(),
             'with' => $this->with,
         ]);
+
         return [
             'attributes' => [
                 'id' => $this->id,

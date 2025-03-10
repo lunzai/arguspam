@@ -5,9 +5,9 @@ namespace App\Http\Resources\Request;
 use App\Http\Resources\Asset\AssetResource;
 use App\Http\Resources\AssetAccount\AssetAccountResource;
 use App\Http\Resources\Org\OrgResource;
+use App\Http\Resources\Resource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
-use App\Http\Resources\Resource;
 
 class RequestResource extends Resource
 {

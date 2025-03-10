@@ -18,7 +18,6 @@ class OrgController extends Controller
     public function index(): OrgCollection
     {
         $org = Org::query();
-        // $this->applyExpands($org);
 
         return new OrgCollection(
             Org::paginate(config('constants.pagination.per_page'))

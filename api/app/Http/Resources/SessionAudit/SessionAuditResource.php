@@ -5,10 +5,10 @@ namespace App\Http\Resources\SessionAudit;
 use App\Http\Resources\Asset\AssetResource;
 use App\Http\Resources\Org\OrgResource;
 use App\Http\Resources\Request\RequestResource;
+use App\Http\Resources\Resource;
 use App\Http\Resources\Session\SessionResource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
-use App\Http\Resources\Resource;
 
 class SessionAuditResource extends Resource
 {

@@ -3,9 +3,9 @@
 namespace App\Http\Resources\ActionAudit;
 
 use App\Http\Resources\Org\OrgResource;
+use App\Http\Resources\Resource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
-use App\Http\Resources\Resource;
 
 class ActionAuditResource extends Resource
 {

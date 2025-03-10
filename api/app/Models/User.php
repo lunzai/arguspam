@@ -73,9 +73,9 @@ class User extends Authenticatable
         'last_login_at' => 'Last Login At',
     ];
 
-    public function scopeFilter(Builder $query, QueryFilter $filter)
+    public function scopeFilter(Builder $builder, QueryFilter $filter)
     {
-        return $filter->apply($query);
+        return $filter->apply($builder);
     }
 
     public function orgs(): BelongsToMany

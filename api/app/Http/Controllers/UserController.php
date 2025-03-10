@@ -21,7 +21,6 @@ class UserController extends Controller
     public function index(UserFilter $filter): UserCollection
     {
         $user = User::filter($filter);
-        // $this->applyExpands($user);
 
         return new UserCollection(
             $user->paginate(config('constants.pagination.per_page'))

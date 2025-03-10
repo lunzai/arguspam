@@ -5,12 +5,12 @@ namespace App\Http\Resources\User;
 use App\Http\Resources\AssetAccessGrant\AssetAccessGrantResource;
 use App\Http\Resources\Org\OrgResource;
 use App\Http\Resources\Request\RequestResource;
+use App\Http\Resources\Resource;
 use App\Http\Resources\Session\SessionResource;
 use App\Http\Resources\UserAccessRestriction\UserAccessRestrictionResource;
 use App\Http\Resources\UserGroup\UserGroupResource;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
-use App\Http\Resources\Resource;
+use Illuminate\Support\Facades\Log;
 
 class UserResource extends Resource
 {
@@ -21,10 +21,11 @@ class UserResource extends Resource
      */
     public function toArray(Request $request): array
     {
-        Log::info('userResource', [
-            'relations' => $this->resource->getRelations(),
-            'with' => $this->with,
-        ]);
+        // Log::info('userResource', [
+        //     'relations' => $this->resource->getRelations(),
+        //     'with' => $this->with,
+        // ]);
+
         return [
             'attributes' => [
                 'id' => $this->id,

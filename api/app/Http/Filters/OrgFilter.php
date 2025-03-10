@@ -4,31 +4,24 @@ namespace App\Http\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class UserFilter extends QueryFilter
+class OrgFilter extends QueryFilter
 {
     protected array $sortable = [
-        'orgId',
         'name',
-        'email',
+        'description',
         'status',
         'createdAt' => 'created_at',
         'updatedAt' => 'updated_at',
-        'lastLoginAt' => 'last_login_at',
     ];
-
-    public function orgId(string $value): Builder
-    {
-        return $this->filterEqualOrIn('org_id', $value);
-    }
 
     public function name(string $value): Builder
     {
         return $this->filterLike('name', $value);
     }
 
-    public function email(string $value): Builder
+    public function description(string $value): Builder
     {
-        return $this->filterLike('email', $value);
+        return $this->filterLike('description', $value);
     }
 
     public function status(string $value): Builder
@@ -44,15 +37,5 @@ class UserFilter extends QueryFilter
     public function updatedAt(string $value): Builder
     {
         return $this->filterTimestamp('updated_at', $value);
-    }
-
-    public function lastLoginAt(string $value): Builder
-    {
-        return $this->filterTimestamp('last_login_at', $value);
-    }
-
-    public function twoFactorEnabled(string $value): Builder
-    {
-        return $this->filterEqual('two_factor_enabled', $value);
     }
 }

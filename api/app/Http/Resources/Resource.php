@@ -10,6 +10,7 @@ class Resource extends JsonResource
     {
         $relations = $this->resource->getRelations();
         unset($relations['pivot']);
+
         return count($relations) > 0;
     }
 }

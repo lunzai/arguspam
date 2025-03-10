@@ -3,10 +3,10 @@
 namespace App\Http\Resources\AssetAccessGrant;
 
 use App\Http\Resources\Asset\AssetResource;
+use App\Http\Resources\Resource;
 use App\Http\Resources\User\UserResource;
 use App\Http\Resources\UserGroup\UserGroupResource;
 use Illuminate\Http\Request;
-use App\Http\Resources\Resource;
 
 class AssetAccessGrantResource extends Resource
 {

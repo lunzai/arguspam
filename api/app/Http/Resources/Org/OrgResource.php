@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources\Org;
 
+use App\Http\Resources\Resource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use App\Http\Resources\Resource;
 
 class OrgResource extends Resource
 {
@@ -20,6 +20,7 @@ class OrgResource extends Resource
             'relations' => $this->resource->getRelations(),
             'with' => $this->with,
         ]);
+
         return [
             'attributes' => [
                 'id' => $this->id,

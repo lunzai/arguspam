@@ -5,9 +5,9 @@ namespace App\Http\Resources\Session;
 use App\Http\Resources\Asset\AssetResource;
 use App\Http\Resources\Org\OrgResource;
 use App\Http\Resources\Request\RequestResource;
+use App\Http\Resources\Resource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
-use App\Http\Resources\Resource;
 
 class SessionResource extends Resource
 {

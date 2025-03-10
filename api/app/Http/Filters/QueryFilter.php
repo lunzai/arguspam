@@ -2,20 +2,31 @@
 
 namespace App\Http\Filters;
 
-use App\Traits\IncludeRelationships;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
-class QueryFilter
+abstract class QueryFilter
 {
-    use IncludeRelationships;
-
     protected Builder $builder;
     protected Request $request;
+    protected array $sortable = [];
 
     public function __construct(Request $request)
     {
         $this->request = $request;
+    }
+
+    public function apply(Builder $builder): Builder
+    {
+        $this->builder = $builder;
+        foreach ($this->request->all() as $key => $value) {
+            if (method_exists($this, $key)) {
+                $this->$key($value);
+            }
+        }
+
+        return $this->builder;
     }
 
     public function filter(array $arr): Builder
@@ -32,12 +43,15 @@ class QueryFilter
     public function sort(string $value): Builder
     {
         $arr = explode(',', $value);
-        foreach ($arr as $key => $value) {
-            if ($value[0] === '-') {
-                $this->builder->orderBy(substr($key, 1), 'desc');
-            } else {
-                $this->builder->orderBy($key, 'asc');
+        foreach ($arr as $sort) {
+            $isDesc = str_starts_with($sort, '-');
+            $field = $isDesc ? substr($sort, 1) : $sort;
+            if (!in_array($field, $this->sortable) || array_key_exists($field, $this->sortable)) {
+                continue;
             }
+            $column = $this->sortable[$field] ?? $field;
+            $this->builder->orderBy($column, $isDesc ? 'desc' : 'asc');
+            // TODO: Sort by relation
         }
 
         return $this->builder;
@@ -46,11 +60,9 @@ class QueryFilter
     public function include(string $value): Builder
     {
         $relations = explode(',', $value);
-        $modelClass = get_class($this->builder->getModel());
 
         foreach ($relations as $relation) {
-            $relation = trim($relation);
-            if ($this->isValidRelation($modelClass, $relation)) {
+            if ($this->isValidRelation($relation)) {
                 $this->builder->with($relation);
             }
         }
@@ -58,15 +70,41 @@ class QueryFilter
         return $this->builder;
     }
 
-    public function apply(Builder $builder): Builder
+    protected function isValidRelation(string $relation): bool
     {
-        $this->builder = $builder;
-        foreach ($this->request->all() as $key => $value) {
-            if (method_exists($this, $key)) {
-                $this->$key($value);
-            }
+        return method_exists($this->builder->getModel(), Str::camel($relation));
+    }
+
+    protected function filterTimestamp(string $field, string $value): Builder
+    {
+        $arr = explode(',', $value);
+        if (count($arr) > 1) {
+            return $this->builder->whereBetween($field, [$arr[0], $arr[1]]);
+        }
+        if ($value[0] === '-') {
+            return $this->builder->where($field, '<=', substr($value, 1));
         }
 
-        return $this->builder;
+        return $this->builder->where($field, '>=', $value);
+    }
+
+    protected function filterLike(string $field, string $value): Builder
+    {
+        return $this->builder->where($field, 'like', '%'.$value.'%');
+    }
+
+    protected function filterEqualOrIn(string $field, string $value): Builder
+    {
+        $arr = explode(',', $value);
+        if (count($arr) === 1) {
+            return $this->builder->where($field, $arr[0]);
+        }
+
+        return $this->builder->whereIn($field, $arr);
+    }
+
+    protected function filterEqual(string $field, string $value): Builder
+    {
+        return $this->builder->where($field, $value);
     }
 }

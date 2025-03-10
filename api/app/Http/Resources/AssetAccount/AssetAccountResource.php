@@ -3,9 +3,9 @@
 namespace App\Http\Resources\AssetAccount;
 
 use App\Http\Resources\Asset\AssetResource;
+use App\Http\Resources\Resource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
-use App\Http\Resources\Resource;
 
 class AssetAccountResource extends Resource
 {

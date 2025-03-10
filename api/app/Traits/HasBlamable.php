@@ -28,25 +28,22 @@ trait HasBlamable
     protected static function bootHasBlamable(): void
     {
         static::creating(function ($model) {
-            if ($model->hasColumn($model->getCreatedByColumn())) {
-                $model->{$model->getCreatedByColumn()} = Auth::id();
+            $createdByColumn = $model->getCreatedByColumn();
+            $updatedByColumn = $model->getUpdatedByColumn();
+            if ($createdByColumn !== false) {
+                $model->{$createdByColumn} = Auth::id();
+            }
+            if ($updatedByColumn !== false) {
+                $model->{$updatedByColumn} = Auth::id();
             }
         });
 
         static::updating(function ($model) {
-            if ($model->hasColumn($model->getUpdatedByColumn())) {
-                $model->{$model->getUpdatedByColumn()} = Auth::id();
+            $updatedByColumn = $model->getUpdatedByColumn();
+            if ($updatedByColumn !== false) {
+                $model->{$updatedByColumn} = Auth::id();
             }
         });
-    }
-
-    /**
-     * Check if the model has a given column.
-     */
-    protected function hasColumn(string $column): bool
-    {
-        return in_array($column, $this->getFillable())
-            || in_array($column, array_keys($this->getCasts()));
     }
 
     /**

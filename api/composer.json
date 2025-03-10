@@ -63,6 +63,12 @@
             "dont-discover": [
                 "laravel/telescope"
             ]
+        },
+        "hooks": {
+            "pre-commit": [
+                "echo Running Laravel Pint...",
+                "vendor/bin/pint"
+            ]
         }
     },
     "config": {

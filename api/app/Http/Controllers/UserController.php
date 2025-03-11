@@ -23,7 +23,7 @@ class UserController extends Controller
         $user = User::filter($filter);
 
         return new UserCollection(
-            $user->paginate(config('constants.pagination.per_page'))
+            $user->paginate(config('pam.pagination.per_page'))
         );
     }
 

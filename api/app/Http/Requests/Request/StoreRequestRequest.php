@@ -45,8 +45,8 @@ class StoreRequestRequest extends FormRequest
             'duration' => [
                 'required',
                 'integer',
-                'min:'.config('constants.request.duration.min'),
-                'max:'.config('constants.request.duration.max'),
+                'min:'.config('pam.request.duration.min'),
+                'max:'.config('pam.request.duration.max'),
             ],
             'reason' => ['required', 'string', 'max:255'],
             'intended_query' => ['nullable', 'string'],

@@ -14,7 +14,7 @@ class AssetAccountController extends Controller
 
     public function index(Asset $asset): AssetAccountCollection
     {
-        $accounts = $asset->accounts()->paginate(config('constants.pagination.per_page'));
+        $accounts = $asset->accounts()->paginate(config('pam.pagination.per_page'));
 
         return new AssetAccountCollection($accounts);
     }

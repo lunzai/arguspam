@@ -21,7 +21,7 @@ class UserGroupController extends Controller
         // $this->applyExpands($userGroup);
 
         return new UserGroupCollection(
-            $userGroup->paginate(config('constants.pagination.per_page'))
+            $userGroup->paginate(config('pam.pagination.per_page'))
         );
     }
 

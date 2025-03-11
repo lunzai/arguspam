@@ -21,7 +21,7 @@ class AssetController extends Controller
         // $this->applyExpands($asset);
 
         return new AssetCollection(
-            Asset::paginate(config('constants.pagination.per_page'))
+            Asset::paginate(config('pam.pagination.per_page'))
         );
     }
 

@@ -17,7 +17,7 @@ class SessionAuditController extends Controller
         // $this->applyExpands($sessionAudit);
 
         return new SessionAuditCollection(
-            $sessionAudit->paginate(config('constants.pagination.per_page'))
+            $sessionAudit->paginate(config('pam.pagination.per_page'))
         );
     }
 

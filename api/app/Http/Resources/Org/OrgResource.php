@@ -27,8 +27,8 @@ class OrgResource extends Resource
                 'name' => $this->name,
                 'description' => $this->description,
                 'status' => $this->status,
-                'createdAt' => $this->created_at,
-                'updatedAt' => $this->updated_at,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [

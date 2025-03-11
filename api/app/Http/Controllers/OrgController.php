@@ -20,7 +20,7 @@ class OrgController extends Controller
         $org = Org::query();
 
         return new OrgCollection(
-            Org::paginate(config('constants.pagination.per_page'))
+            Org::paginate(config('pam.pagination.per_page'))
         );
     }
 

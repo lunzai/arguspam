@@ -24,7 +24,7 @@ class RequestController extends Controller
         // $this->applyExpands($request);
 
         return new RequestCollection(
-            $request->paginate(config('constants.pagination.per_page'))
+            $request->paginate(config('pam.pagination.per_page'))
         );
     }
 

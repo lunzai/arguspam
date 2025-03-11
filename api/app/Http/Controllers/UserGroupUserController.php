@@ -15,7 +15,7 @@ class UserGroupUserController extends Controller
     public function index(int $userGroupId): UserCollection
     {
         $userGroup = UserGroup::findOrFail($userGroupId);
-        $users = $userGroup->users()->paginate(config('constants.pagination.per_page'));
+        $users = $userGroup->users()->paginate(config('pam.pagination.per_page'));
 
         return new UserCollection($users);
     }

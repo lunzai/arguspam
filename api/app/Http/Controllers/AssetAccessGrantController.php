@@ -14,7 +14,7 @@ class AssetAccessGrantController extends Controller
 
     public function index(Asset $asset): AssetAccessGrantCollection
     {
-        $grants = $asset->accessGrants()->paginate(config('constants.pagination.per_page'));
+        $grants = $asset->accessGrants()->paginate(config('pam.pagination.per_page'));
 
         return new AssetAccessGrantCollection($grants);
     }

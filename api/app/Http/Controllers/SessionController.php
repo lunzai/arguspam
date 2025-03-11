@@ -20,7 +20,7 @@ class SessionController extends Controller
         // $this->applyExpands($session);
 
         return new SessionCollection(
-            $session->paginate(config('constants.pagination.per_page'))
+            $session->paginate(config('pam.pagination.per_page'))
         );
     }
 

@@ -17,7 +17,7 @@ class AuditController extends Controller
         // $this->applyExpands($actionAudit);
 
         return new ActionAuditCollection(
-            ActionAudit::paginate(config('constants.pagination.per_page'))
+            ActionAudit::paginate(config('pam.pagination.per_page'))
         );
     }
 

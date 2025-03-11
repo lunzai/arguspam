@@ -15,6 +15,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserGroupUserController;
 use Illuminate\Support\Facades\Route;
+// use App\Http\Middleware\EnsureOrganizationIdIsValid;
 
 Route::get('/', function () {
     return response()->json(['message' => 'Hello World']);
@@ -26,6 +27,14 @@ Route::prefix('auth')->group(function () {
         ->middleware('auth:sanctum');
 });
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('orgs.users', OrgUserController::class)
+        ->only(['index']);
+    Route::apiResource('user-groups.users', UserGroupUserController::class)
+        ->only(['index']);
+});
+
+// Route::middleware(['auth:sanctum', EnsureOrganizationIdIsValid::class])->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResources([
@@ -46,10 +55,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Relationals
     Route::apiResource('user-groups.users', UserGroupUserController::class)
-        ->only(['index', 'store', 'destroy']);
+        ->only(['store', 'destroy']);
 
     Route::apiResource('orgs.users', OrgUserController::class)
-        ->only(['index', 'store', 'destroy']);
+        ->only(['store', 'destroy']);
 
     Route::apiResource('orgs.user-groups', OrgUserGroupController::class)
         ->only(['index', 'store', 'destroy']);

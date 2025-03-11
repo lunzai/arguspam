@@ -18,12 +18,12 @@ class UserAccessRestrictionResource extends JsonResource
         return [
             'attributes' => [
                 'id' => $this->id,
-                'userId' => $this->user_id,
+                'user_id' => $this->user_id,
                 'type' => $this->type,
                 'value' => $this->value,
                 'status' => $this->status,
-                'createdAt' => $this->created_at,
-                'updatedAt' => $this->updated_at,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
             ],
             $this->mergeWhen(count($this->resource->getRelations()) > 0, [
                 'relationships' => [

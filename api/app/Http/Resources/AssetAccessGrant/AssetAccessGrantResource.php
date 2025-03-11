@@ -20,12 +20,12 @@ class AssetAccessGrantResource extends Resource
         return [
             'attributes' => [
                 'id' => $this->id,
-                'assetId' => $this->asset_id,
-                'userId' => $this->user_id,
-                'userGroupId' => $this->user_group_id,
+                'asset_id' => $this->asset_id,
+                'user_id' => $this->user_id,
+                'user_group_id' => $this->user_group_id,
                 'role' => $this->role,
-                'createdAt' => $this->created_at,
-                'updatedAt' => $this->updated_at,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [

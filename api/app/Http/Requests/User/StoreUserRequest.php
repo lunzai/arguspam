@@ -28,9 +28,9 @@ class StoreUserRequest extends FormRequest
                 'required',
                 'string',
                 'min:'.config('constants.password.min'),
-                'confirmed:passwordConfirmation',
+                'confirmed:password_confirmation',
             ],
-            'passwordConfirmation' => [
+            'password_confirmation' => [
                 'required',
                 'string',
                 'min:'.config('constants.password.min'),
@@ -44,7 +44,7 @@ class StoreUserRequest extends FormRequest
             'name' => 'Name',
             'email' => 'Email',
             'password' => 'Password',
-            'passwordConfirmation' => 'Password Confirmation',
+            'password_confirmation' => 'Password Confirmation',
         ];
     }
 }

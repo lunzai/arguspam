@@ -19,12 +19,12 @@ class AssetAccountResource extends Resource
         return [
             'attributes' => [
                 'id' => $this->id,
-                'assetId' => $this->asset_id,
+                'asset_id' => $this->asset_id,
                 'name' => $this->name,
-                'vaultPath' => $this->vault_path,
-                'isDefault' => $this->is_default,
-                'createdAt' => $this->created_at,
-                'updatedAt' => $this->updated_at,
+                'vault_path' => $this->vault_path,
+                'is_default' => $this->is_default,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [

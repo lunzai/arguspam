@@ -26,7 +26,7 @@ class StoreAssetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'orgId' => ['required', 'exists:App\Models\Org,id'],
+            'org_id' => ['required', 'exists:App\Models\Org,id'],
             'name' => ['required', 'string', 'max:100', 'min:2'],
             'description' => ['nullable', 'string'],
             'status' => ['required', new Enum(Status::class)],

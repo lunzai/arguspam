@@ -24,18 +24,18 @@ class ChangePasswordRequest extends FormRequest
         $minPasswordLength = config('constants.password.min');
 
         return [
-            'currentPassword' => ['required', 'string', 'min:'.$minPasswordLength, 'current_password:api'],
-            'newPassword' => ['required', 'string', 'min:'.$minPasswordLength, 'confirmed:newPasswordConfirmation'],
-            'newPasswordConfirmation' => ['required', 'string', 'min:'.$minPasswordLength],
+            'current_password' => ['required', 'string', 'min:'.$minPasswordLength, 'current_password:api'],
+            'new_password' => ['required', 'string', 'min:'.$minPasswordLength, 'confirmed:new_password_confirmation'],
+            'new_password_confirmation' => ['required', 'string', 'min:'.$minPasswordLength],
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'currentPassword' => 'Current Password',
-            'newPassword' => 'New Password',
-            'newPasswordConfirmation' => 'New Password Confirmation',
+            'current_password' => 'Current Password',
+            'new_password' => 'New Password',
+            'new_password_confirmation' => 'New Password Confirmation',
         ];
     }
 }

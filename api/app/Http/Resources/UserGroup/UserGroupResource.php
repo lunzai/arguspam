@@ -26,12 +26,12 @@ class UserGroupResource extends Resource
         return [
             'attributes' => [
                 'id' => $this->id,
-                'orgId' => $this->org_id,
+                'org_id' => $this->org_id,
                 'name' => $this->name,
                 'description' => $this->description,
                 'status' => $this->status,
-                'createdAt' => $this->created_at,
-                'updatedAt' => $this->updated_at,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [

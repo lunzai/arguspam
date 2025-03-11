@@ -22,6 +22,7 @@ class ChangePasswordRequest extends FormRequest
     public function rules(): array
     {
         $minPasswordLength = config('constants.password.min');
+
         return [
             'currentPassword' => ['required', 'string', 'min:'.$minPasswordLength, 'current_password:api'],
             'newPassword' => ['required', 'string', 'min:'.$minPasswordLength, 'confirmed:newPasswordConfirmation'],

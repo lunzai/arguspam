@@ -39,13 +39,13 @@ class UpdateRequestRequest extends FormRequest
             'end_datetime' => [
                 'required',
                 'date',
-                'after:start_datetime'
+                'after:start_datetime',
             ],
             'duration' => [
                 'required',
                 'integer',
                 'min:'.config('constants.request.duration.min'),
-                'max:'.config('constants.request.duration.max')
+                'max:'.config('constants.request.duration.max'),
             ],
             'reason' => ['required', 'string', 'max:255'],
             'intended_query' => ['nullable', 'string'],
@@ -54,7 +54,7 @@ class UpdateRequestRequest extends FormRequest
             'sensitive_data_note' => [
                 'nullable',
                 'string',
-                'required_if:is_access_sensitive_data,true'
+                'required_if:is_access_sensitive_data,true',
             ],
             'ai_note' => ['nullable', 'string'],
             'ai_risk_rating' => ['nullable', new Enum(RiskRating::class)],

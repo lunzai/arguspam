@@ -26,7 +26,7 @@ class StoreRequestRequest extends FormRequest
      */
     public function rules(): array
     {
-        #TODO: add validation for user's and group's asset and asset account
+        // TODO: add validation for user's and group's asset and asset account
         return [
             'org_id' => ['required', 'exists:App\Models\Org,id'],
             'asset_id' => ['required', 'exists:App\Models\Asset,id'],
@@ -40,13 +40,13 @@ class StoreRequestRequest extends FormRequest
             'end_datetime' => [
                 'required',
                 'date',
-                'after:start_datetime'
+                'after:start_datetime',
             ],
             'duration' => [
                 'required',
                 'integer',
                 'min:'.config('constants.request.duration.min'),
-                'max:'.config('constants.request.duration.max')
+                'max:'.config('constants.request.duration.max'),
             ],
             'reason' => ['required', 'string', 'max:255'],
             'intended_query' => ['nullable', 'string'],
@@ -55,7 +55,7 @@ class StoreRequestRequest extends FormRequest
             'sensitive_data_note' => [
                 'nullable',
                 'string',
-                'required_if:is_access_sensitive_data,true'
+                'required_if:is_access_sensitive_data,true',
             ],
             'ai_note' => ['nullable', 'string'],
             'ai_risk_rating' => ['nullable', new Enum(RiskRating::class)],

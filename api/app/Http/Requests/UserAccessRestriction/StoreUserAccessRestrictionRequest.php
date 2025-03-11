@@ -24,7 +24,7 @@ class StoreUserAccessRestrictionRequest extends FormRequest
      */
     public function rules(): array
     {
-        #TODO: refine value array validation
+        // TODO: refine value array validation
         return [
             'user_id' => ['required', 'exists:App\Models\User,id'],
             'type' => ['required', new Enum(RestrictionType::class)],

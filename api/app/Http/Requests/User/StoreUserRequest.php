@@ -28,12 +28,12 @@ class StoreUserRequest extends FormRequest
                 'required',
                 'string',
                 'min:'.config('constants.password.min'),
-                'confirmed:passwordConfirmation'
+                'confirmed:passwordConfirmation',
             ],
             'passwordConfirmation' => [
                 'required',
                 'string',
-                'min:'.config('constants.password.min')
+                'min:'.config('constants.password.min'),
             ],
         ];
     }

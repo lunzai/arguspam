@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\UserAccessRestriction;
 
+use App\Enums\RestrictionType;
+use App\Enums\Status;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateUserAccessRestrictionRequest extends FormRequest
 {
@@ -22,7 +25,10 @@ class UpdateUserAccessRestrictionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'user_id' => ['required', 'exists:App\Models\User,id'],
+            'type' => ['required', new Enum(RestrictionType::class)],
+            'value' => ['required', 'array'],
+            'status' => ['required', new Enum(Status::class)],
         ];
     }
 }

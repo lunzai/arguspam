@@ -31,14 +31,31 @@ class UpdateRequestRequest extends FormRequest
             'asset_id' => ['required', 'exists:App\Models\Asset,id'],
             'asset_account_id' => ['nullable', 'exists:App\Models\AssetAccount,id'],
             'requester_id' => ['required', 'exists:App\Models\User,id'],
-            'start_datetime' => ['required', 'date'],
-            'end_datetime' => ['required', 'date'],
-            'duration' => ['required', 'integer', 'min:1'],
+            'start_datetime' => [
+                'required',
+                'date',
+                'after:now',
+            ],
+            'end_datetime' => [
+                'required',
+                'date',
+                'after:start_datetime'
+            ],
+            'duration' => [
+                'required',
+                'integer',
+                'min:'.config('constants.request.duration.min'),
+                'max:'.config('constants.request.duration.max')
+            ],
             'reason' => ['required', 'string', 'max:255'],
             'intended_query' => ['nullable', 'string'],
             'scope' => ['required', new Enum(RequestScope::class)],
             'is_access_sensitive_data' => ['required', 'boolean'],
-            'sensitive_data_note' => ['nullable', 'string'],
+            'sensitive_data_note' => [
+                'nullable',
+                'string',
+                'required_if:is_access_sensitive_data,true'
+            ],
             'ai_note' => ['nullable', 'string'],
             'ai_risk_rating' => ['nullable', new Enum(RiskRating::class)],
             'status' => ['required', new Enum(RequestStatus::class)],

@@ -25,7 +25,7 @@ class StoreAssetAccountRequest extends FormRequest
         return [
             'asset_id' => ['required', 'exists:App\Models\Asset,id'],
             'name' => ['required', 'string', 'max:100', 'min:2'],
-            'vault_path' => ['nullable', 'string'],
+            'vault_path' => ['required', 'string'],
             'is_default' => ['required', 'boolean'],
         ];
     }

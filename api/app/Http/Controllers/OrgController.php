@@ -27,7 +27,6 @@ class OrgController extends Controller
     public function store(StoreOrgRequest $request): OrgResource
     {
         $validated = $request->validated();
-        $validated['created_by'] = Auth::id();
         $org = Org::create($validated);
 
         return new OrgResource($org);
@@ -45,7 +44,6 @@ class OrgController extends Controller
     {
         $org = Org::findOrFail($id);
         $validated = $request->validated();
-        $validated['updated_by'] = Auth::id();
         $org->update($validated);
 
         return new OrgResource($org);

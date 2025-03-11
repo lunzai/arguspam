@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\UserGroup;
 
+use App\Enums\Status;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class UpdateUserGroupRequest extends FormRequest
 {
@@ -22,7 +24,10 @@ class UpdateUserGroupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'org_id' => ['required', 'exists:App\Models\Org,id'],
+            'name' => ['required', 'string', 'max:100', 'min:2'],
+            'description' => ['nullable', 'string'],
+            'status' => ['required', new Enum(Status::class)],
         ];
     }
 }

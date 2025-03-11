@@ -24,7 +24,27 @@ class StoreUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:App\Models\User,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => [
+                'required',
+                'string',
+                'min:'.config('constants.password.min'),
+                'confirmed:passwordConfirmation'
+            ],
+            'passwordConfirmation' => [
+                'required',
+                'string',
+                'min:'.config('constants.password.min')
+            ],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'name' => 'Name',
+            'email' => 'Email',
+            'password' => 'Password',
+            'passwordConfirmation' => 'Password Confirmation',
         ];
     }
 }

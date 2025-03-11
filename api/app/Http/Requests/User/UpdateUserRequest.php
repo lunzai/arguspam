@@ -21,6 +21,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        #TODO: only admin can update email
         return [
             'name' => ['string', 'max:100'],
             'email' => ['string', 'email', 'max:255', 'unique:App\Models\User,email'],

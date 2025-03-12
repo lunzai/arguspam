@@ -19,8 +19,8 @@ class EnsureOrganizationIdIsValid
             return response()->json([
                 'message' => 'Organization ID is required',
                 'errors' => [
-                    'organization' => ['Organization ID header is missing']
-                ]
+                    'organization' => ['Organization ID header is missing'],
+                ],
             ], Response::HTTP_BAD_REQUEST);
         }
 
@@ -34,8 +34,8 @@ class EnsureOrganizationIdIsValid
             return response()->json([
                 'message' => 'Unauthorized access to organization',
                 'errors' => [
-                    'organization' => ['You do not have access to this organization']
-                ]
+                    'organization' => ['You do not have access to this organization'],
+                ],
             ], Response::HTTP_FORBIDDEN);
         }
         // Store org_id in request for later use

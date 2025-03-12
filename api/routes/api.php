@@ -15,6 +15,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserGroupUserController;
 use Illuminate\Support\Facades\Route;
+
 // use App\Http\Middleware\EnsureOrganizationIdIsValid;
 
 Route::get('/', function () {

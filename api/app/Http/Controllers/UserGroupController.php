@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\UserGroupFilter;
 use App\Http\Requests\UserGroup\StoreUserGroupRequest;
 use App\Http\Requests\UserGroup\UpdateUserGroupRequest;
 use App\Http\Resources\UserGroup\UserGroupCollection;
@@ -10,7 +11,6 @@ use App\Models\UserGroup;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Filters\UserGroupFilter;
 
 class UserGroupController extends Controller
 {

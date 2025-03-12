@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\ActionAuditFilter;
 use App\Http\Resources\ActionAudit\ActionAuditCollection;
 use App\Http\Resources\ActionAudit\ActionAuditResource;
-use App\Http\Filters\ActionAuditFilter;
 use App\Models\ActionAudit;
 use App\Traits\IncludeRelationships;
 

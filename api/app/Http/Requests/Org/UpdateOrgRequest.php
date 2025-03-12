@@ -33,9 +33,11 @@ class UpdateOrgRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $this->merge([
-            'status' => strtolower($this->status),
-        ]);
+        if ($this->has('status')) {
+            $this->merge([
+                'status' => strtolower($this->status),
+            ]);
+        }
     }
 
     public function attributes(): array

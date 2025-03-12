@@ -67,4 +67,18 @@ class UpdateRequestRequest extends FormRequest
     {
         return Request::$attributeLabels;
     }
+
+    protected function prepareForValidation()
+    {
+        if ($this->has('status')) {
+            $this->merge([
+                'status' => strtolower($this->status),
+            ]);
+        }
+        if ($this->has('scope')) {
+            $this->merge([
+                'scope' => strtolower($this->scope),
+            ]);
+        }
+    }
 }

@@ -30,4 +30,13 @@ class StoreUserGroupRequest extends FormRequest
             'status' => ['required', new Enum(Status::class)],
         ];
     }
+
+    protected function prepareForValidation()
+    {
+        if ($this->has('status')) {
+            $this->merge([
+                'status' => strtolower($this->status),
+            ]);
+        }
+    }
 }

@@ -40,4 +40,18 @@ class UpdateAssetRequest extends FormRequest
     {
         return Asset::$attributeLabels;
     }
+
+    protected function prepareForValidation()
+    {
+        if ($this->has('status')) {
+            $this->merge([
+                'status' => strtolower($this->status),
+            ]);
+        }
+        if ($this->has('dbms')) {
+            $this->merge([
+                'dbms' => strtolower($this->dbms),
+            ]);
+        }
+    }
 }

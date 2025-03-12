@@ -8,7 +8,7 @@ use App\Models\Asset;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 
-# TODO: REWRITE
+// TODO: REWRITE
 class AssetAccountController extends Controller
 {
     use IncludeRelationships;

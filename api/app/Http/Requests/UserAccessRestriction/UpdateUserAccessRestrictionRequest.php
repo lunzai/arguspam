@@ -31,4 +31,18 @@ class UpdateUserAccessRestrictionRequest extends FormRequest
             'status' => ['sometimes', new Enum(Status::class)],
         ];
     }
+
+    protected function prepareForValidation()
+    {
+        if ($this->has('status')) {
+            $this->merge([
+                'status' => strtolower($this->status),
+            ]);
+        }
+        if ($this->has('type')) {
+            $this->merge([
+                'type' => strtolower($this->type),
+            ]);
+        }
+    }
 }

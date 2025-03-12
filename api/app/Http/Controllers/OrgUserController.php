@@ -8,7 +8,7 @@ use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-# TODO: REWRITE
+// TODO: REWRITE
 class OrgUserController extends Controller
 {
     use IncludeRelationships;

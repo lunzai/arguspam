@@ -16,11 +16,6 @@ class OrgResource extends Resource
      */
     public function toArray(Request $request): array
     {
-        Log::info('orgResource', [
-            'relations' => $this->resource->getRelations(),
-            'with' => $this->with,
-        ]);
-
         return [
             'attributes' => [
                 'id' => $this->id,

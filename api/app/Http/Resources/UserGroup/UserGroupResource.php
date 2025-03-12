@@ -18,11 +18,6 @@ class UserGroupResource extends Resource
      */
     public function toArray(Request $request): array
     {
-        Log::info('userGroupResource', [
-            'relations' => $this->resource->getRelations(),
-            'with' => $this->with,
-        ]);
-
         return [
             'attributes' => [
                 'id' => $this->id,

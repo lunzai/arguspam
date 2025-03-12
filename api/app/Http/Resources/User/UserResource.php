@@ -21,11 +21,6 @@ class UserResource extends Resource
      */
     public function toArray(Request $request): array
     {
-        // Log::info('userResource', [
-        //     'relations' => $this->resource->getRelations(),
-        //     'with' => $this->with,
-        // ]);
-
         return [
             'attributes' => [
                 'id' => $this->id,

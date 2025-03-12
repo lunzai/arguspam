@@ -44,7 +44,6 @@ class OrgController extends Controller
     public function update(UpdateOrgRequest $request, string $id): OrgResource
     {
         $org = Org::findOrFail($id);
-        Log::info('OrgController@update', ['request' => $request]);
         $validated = $request->validated();
         $org->update($validated);
 

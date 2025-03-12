@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\UserGroup;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Enums\UserRole;
 
 class DatabaseSeeder extends Seeder
 {
@@ -30,8 +31,8 @@ class DatabaseSeeder extends Seeder
     {
         User::factory(2)
             ->sequence(
-                ['name' => 'Admin', 'email' => 'admin@admin.com'],
-                ['name' => 'Hean Luen', 'email' => 'heanluen@gmail.com'],
+                ['name' => 'Admin', 'email' => 'admin@admin.com', 'role' => UserRole::ADMIN],
+                ['name' => 'Hean Luen', 'email' => 'heanluen@gmail.com', 'role' => UserRole::ADMIN],
             )
             ->create();
 

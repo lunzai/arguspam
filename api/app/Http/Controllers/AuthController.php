@@ -5,20 +5,12 @@ namespace App\Http\Controllers;
 use App\Events\UserLoggedIn;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
-use App\Traits\ApiResponses;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    use ApiResponses;
-
-    public function test()
-    {
-        return $this->success('Hello successful', ['token' => '123']);
-    }
-
     public function login(LoginRequest $request): JsonResponse
     {
         $request->validated();

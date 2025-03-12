@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\AssetFilter;
 use App\Http\Requests\Asset\StoreAssetRequest;
 use App\Http\Requests\Asset\UpdateAssetRequest;
 use App\Http\Resources\Asset\AssetCollection;
@@ -15,10 +16,9 @@ class AssetController extends Controller
 {
     use IncludeRelationships;
 
-    public function index(): AssetCollection
+    public function index(AssetFilter $filter): AssetCollection
     {
-        $asset = Asset::query();
-        // $this->applyExpands($asset);
+        $asset = Asset::filter($filter);
 
         return new AssetCollection(
             Asset::paginate(config('pam.pagination.per_page'))
@@ -28,7 +28,6 @@ class AssetController extends Controller
     public function store(StoreAssetRequest $request): AssetResource
     {
         $validated = $request->validated();
-        $validated['created_by'] = Auth::id();
         $asset = Asset::create($validated);
 
         return new AssetResource($asset);
@@ -46,7 +45,6 @@ class AssetController extends Controller
     {
         $asset = Asset::findOrFail($id);
         $validated = $request->validated();
-        $validated['updated_by'] = Auth::id();
         $asset->update($validated);
 
         return new AssetResource($asset);

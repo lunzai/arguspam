@@ -10,15 +10,15 @@ use App\Models\UserGroup;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Filters\UserGroupFilter;
 
 class UserGroupController extends Controller
 {
     use IncludeRelationships;
 
-    public function index(): UserGroupCollection
+    public function index(UserGroupFilter $filter): UserGroupCollection
     {
-        $userGroup = UserGroup::query();
-        // $this->applyExpands($userGroup);
+        $userGroup = UserGroup::filter($filter);
 
         return new UserGroupCollection(
             $userGroup->paginate(config('pam.pagination.per_page'))
@@ -28,7 +28,6 @@ class UserGroupController extends Controller
     public function store(StoreUserGroupRequest $request): UserGroupResource
     {
         $validated = $request->validated();
-        $validated['created_by'] = Auth::id();
         $userGroup = UserGroup::create($validated);
 
         return new UserGroupResource($userGroup);
@@ -46,7 +45,6 @@ class UserGroupController extends Controller
     {
         $userGroup = UserGroup::findOrFail($id);
         $validated = $request->validated();
-        $validated['updated_by'] = Auth::id();
         $userGroup->update($validated);
 
         return new UserGroupResource($userGroup);

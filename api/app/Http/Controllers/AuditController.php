@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ActionAudit\ActionAuditCollection;
 use App\Http\Resources\ActionAudit\ActionAuditResource;
+use App\Http\Filters\ActionAuditFilter;
 use App\Models\ActionAudit;
 use App\Traits\IncludeRelationships;
 
@@ -11,10 +12,9 @@ class AuditController extends Controller
 {
     use IncludeRelationships;
 
-    public function index(): ActionAuditCollection
+    public function index(ActionAuditFilter $filter): ActionAuditCollection
     {
-        $actionAudit = ActionAudit::query();
-        // $this->applyExpands($actionAudit);
+        $actionAudit = ActionAudit::filter($filter);
 
         return new ActionAuditCollection(
             ActionAudit::paginate(config('pam.pagination.per_page'))

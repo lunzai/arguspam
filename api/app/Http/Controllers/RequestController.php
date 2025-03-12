@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\RequestFilter;
 use App\Http\Requests\Request\StoreRequestRequest;
 use App\Http\Requests\Request\UpdateRequestRequest;
 use App\Http\Resources\Request\RequestCollection;
@@ -18,10 +19,9 @@ class RequestController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): RequestCollection
+    public function index(RequestFilter $filter): RequestCollection
     {
-        $request = RequestModel::query();
-        // $this->applyExpands($request);
+        $request = RequestModel::filter($filter);
 
         return new RequestCollection(
             $request->paginate(config('pam.pagination.per_page'))
@@ -31,7 +31,6 @@ class RequestController extends Controller
     public function store(StoreRequestRequest $request): RequestResource
     {
         $validated = $request->validated();
-        $validated['created_by'] = Auth::id();
         $request = RequestModel::create($validated);
 
         return new RequestResource($request);
@@ -49,7 +48,6 @@ class RequestController extends Controller
     {
         $request = RequestModel::findOrFail($id);
         $validated = $request->validated();
-        $validated['updated_by'] = Auth::id();
         $request->update($validated);
 
         return new RequestResource($request);

@@ -8,15 +8,13 @@ use App\Http\Requests\User\UpdateUserRequest;
 use App\Http\Resources\User\UserCollection;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
-use App\Traits\ApiResponses;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
-    use ApiResponses, IncludeRelationships;
+    use IncludeRelationships;
 
     public function index(UserFilter $filter): UserCollection
     {
@@ -30,7 +28,6 @@ class UserController extends Controller
     public function store(StoreUserRequest $request): UserResource
     {
         $validated = $request->validated();
-        $validated['created_by'] = Auth::id();
         $user = User::create($validated);
 
         return new UserResource($user);
@@ -48,8 +45,6 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $validated = $request->validated();
-        Log::info('validated', ['validated' => $validated]);
-        // $validated['updated_by'] = Auth::id();
         $user->update($validated);
 
         return new UserResource($user);

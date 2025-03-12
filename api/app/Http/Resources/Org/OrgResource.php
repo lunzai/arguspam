@@ -5,7 +5,6 @@ namespace App\Http\Resources\Org;
 use App\Http\Resources\Resource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class OrgResource extends Resource
 {

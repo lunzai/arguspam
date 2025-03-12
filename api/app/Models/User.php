@@ -5,8 +5,10 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\AssetAccessRole;
 use App\Enums\Status;
+use App\Enums\UserRole;
 use App\Http\Filters\QueryFilter;
 use App\Traits\HasBlamable;
+use App\Traits\HasRole;
 use App\Traits\HasStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,11 +21,13 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasBlamable, HasFactory, HasStatus, Notifiable;
+    use HasApiTokens, HasBlamable, HasFactory,
+        HasRole, HasStatus, Notifiable;
 
     protected $fillable = [
         'name',
         'email',
+        'role',
         // 'password',
         'status',
         // 'two_factor_enabled',
@@ -61,6 +65,7 @@ class User extends Authenticatable
             'deleted_at' => 'datetime',
             'last_login_at' => 'datetime',
             'status' => Status::class,
+            'role' => UserRole::class,
         ];
     }
 
@@ -68,10 +73,16 @@ class User extends Authenticatable
         'name' => 'Name',
         'email' => 'Email',
         'password' => 'Password',
+        'role' => 'Role',
         'status' => 'Status',
         'two_factor_enabled' => 'MFA',
         'last_login_at' => 'Last Login At',
     ];
+
+    public function inOrg(Org $org): bool
+    {
+        return $this->orgs->contains($org);
+    }
 
     public function scopeFilter(Builder $builder, QueryFilter $filter)
     {

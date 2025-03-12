@@ -10,7 +10,6 @@ use App\Http\Resources\Session\SessionResource;
 use App\Http\Resources\UserAccessRestriction\UserAccessRestrictionResource;
 use App\Http\Resources\UserGroup\UserGroupResource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class UserResource extends Resource
 {

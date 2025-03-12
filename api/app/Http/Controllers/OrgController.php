@@ -10,7 +10,6 @@ use App\Models\Org;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class OrgController extends Controller
 {

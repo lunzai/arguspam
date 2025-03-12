@@ -7,7 +7,6 @@ use App\Http\Resources\Org\OrgResource;
 use App\Http\Resources\Resource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class UserGroupResource extends Resource
 {

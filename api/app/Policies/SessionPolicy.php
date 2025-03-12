@@ -12,7 +12,7 @@ class SessionPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->isAuditor();
     }
 
     /**
@@ -20,46 +20,48 @@ class SessionPolicy
      */
     public function view(User $user, Session $session): bool
     {
-        return false;
+        return $user->isAuditor() ||
+            $user->canRequest($session->asset) ||
+            $user->canApprove($session->asset);
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
-    {
-        return false;
-    }
+    // /**
+    //  * Determine whether the user can create models.
+    //  */
+    // public function create(User $user): bool
+    // {
+    //     return false;
+    // }
 
     /**
      * Determine whether the user can update the model.
      */
     public function update(User $user, Session $session): bool
     {
-        return false;
+        return $user->canApprove($session->asset);
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Session $session): bool
-    {
-        return false;
-    }
+    // /**
+    //  * Determine whether the user can delete the model.
+    //  */
+    // public function delete(User $user, Session $session): bool
+    // {
+    //     return false;
+    // }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Session $session): bool
-    {
-        return false;
-    }
+    // /**
+    //  * Determine whether the user can restore the model.
+    //  */
+    // public function restore(User $user, Session $session): bool
+    // {
+    //     return false;
+    // }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Session $session): bool
-    {
-        return false;
-    }
+    // /**
+    //  * Determine whether the user can permanently delete the model.
+    //  */
+    // public function forceDelete(User $user, Session $session): bool
+    // {
+    //     return false;
+    // }
 }

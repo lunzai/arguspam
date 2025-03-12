@@ -27,38 +27,39 @@ class UpdateRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'org_id' => ['required', 'exists:App\Models\Org,id'],
-            'asset_id' => ['required', 'exists:App\Models\Asset,id'],
-            'asset_account_id' => ['nullable', 'exists:App\Models\AssetAccount,id'],
-            'requester_id' => ['required', 'exists:App\Models\User,id'],
+            'org_id' => ['sometimes', 'exists:App\Models\Org,id'],
+            'asset_id' => ['sometimes', 'exists:App\Models\Asset,id'],
+            'asset_account_id' => ['sometimes', 'nullable', 'exists:App\Models\AssetAccount,id'],
+            'requester_id' => ['sometimes', 'exists:App\Models\User,id'],
             'start_datetime' => [
-                'required',
+                'sometimes',
                 'date',
                 'after:now',
             ],
             'end_datetime' => [
-                'required',
+                'sometimes',
                 'date',
                 'after:start_datetime',
             ],
             'duration' => [
-                'required',
+                'sometimes',
                 'integer',
                 'min:'.config('pam.request.duration.min'),
                 'max:'.config('pam.request.duration.max'),
             ],
-            'reason' => ['required', 'string', 'max:255'],
-            'intended_query' => ['nullable', 'string'],
-            'scope' => ['required', new Enum(RequestScope::class)],
-            'is_access_sensitive_data' => ['required', 'boolean'],
+            'reason' => ['sometimes', 'string', 'max:255'],
+            'intended_query' => ['sometimes', 'nullable', 'string'],
+            'scope' => ['sometimes', new Enum(RequestScope::class)],
+            'is_access_sensitive_data' => ['sometimes', 'boolean'],
             'sensitive_data_note' => [
+                'sometimes',
                 'nullable',
                 'string',
                 'required_if:is_access_sensitive_data,true',
             ],
-            'ai_note' => ['nullable', 'string'],
-            'ai_risk_rating' => ['nullable', new Enum(RiskRating::class)],
-            'status' => ['required', new Enum(RequestStatus::class)],
+            'ai_note' => ['sometimes', 'nullable', 'string'],
+            'ai_risk_rating' => ['sometimes', 'nullable', new Enum(RiskRating::class)],
+            'status' => ['sometimes', new Enum(RequestStatus::class)],
         ];
     }
 

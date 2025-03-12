@@ -23,10 +23,10 @@ class UpdateAssetAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'asset_id' => ['required', 'exists:App\Models\Asset,id'],
-            'name' => ['required', 'string', 'max:100', 'min:2'],
-            'vault_path' => ['required', 'string'],
-            'is_default' => ['required', 'boolean'],
+            'asset_id' => ['sometimes', 'exists:App\Models\Asset,id'],
+            'name' => ['sometimes', 'string', 'max:100', 'min:2'],
+            'vault_path' => ['sometimes', 'string'],
+            'is_default' => ['sometimes', 'boolean'],
         ];
     }
 

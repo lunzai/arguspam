@@ -25,9 +25,9 @@ class UpdateOrgRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:100', 'min:2'],
-            'description' => ['nullable', 'string'],
-            'status' => ['required', new Enum(Status::class)],
+            'name' => ['sometimes', 'string', 'max:100', 'min:2'],
+            'description' => ['sometimes', 'nullable', 'string'],
+            'status' => ['sometimes', new Enum(Status::class)],
         ];
     }
 

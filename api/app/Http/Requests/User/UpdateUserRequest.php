@@ -23,8 +23,8 @@ class UpdateUserRequest extends FormRequest
     {
         // TODO: only admin can update email
         return [
-            'name' => ['string', 'max:100'],
-            'email' => ['string', 'email', 'max:255', 'unique:App\Models\User,email'],
+            'name' => ['sometimes', 'string', 'max:100'],
+            'email' => ['sometimes', 'string', 'email', 'max:255', 'unique:App\Models\User,email'],
         ];
     }
 }

@@ -25,10 +25,10 @@ class UpdateUserAccessRestrictionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'exists:App\Models\User,id'],
-            'type' => ['required', new Enum(RestrictionType::class)],
-            'value' => ['required', 'array'],
-            'status' => ['required', new Enum(Status::class)],
+            'user_id' => ['sometimes', 'exists:App\Models\User,id'],
+            'type' => ['sometimes', new Enum(RestrictionType::class)],
+            'value' => ['sometimes', 'array'],
+            'status' => ['sometimes', new Enum(Status::class)],
         ];
     }
 }

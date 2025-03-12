@@ -22,7 +22,7 @@ class UpdateSessionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'session_note' => ['nullable', 'string', 'max:255'],
+            'session_note' => ['sometimes', 'nullable', 'string', 'max:255'],
         ];
     }
 }

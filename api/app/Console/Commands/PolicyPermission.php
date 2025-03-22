@@ -5,6 +5,10 @@ namespace App\Console\Commands;
 use App\Services\PolicyPermissionService;
 use Illuminate\Console\Command;
 
+use function Laravel\Prompts\table;
+use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\info;
+
 class PolicyPermission extends Command
 {
     protected $signature = 'permission:sync 
@@ -30,22 +34,18 @@ class PolicyPermission extends Command
         $this->showChanges($changes);
 
         if ($dryRun) {
-            $this->newLine();
-            $this->line('Dry run complete. No changes were made.');
-            $this->newLine();
-
+            info('Dry run complete. No changes were made.');
             return self::SUCCESS;
         }
 
         if ($removeOthers && $changes['to_remove']->isNotEmpty()) {
-            if (!$this->confirm('This will remove existing permissions. Continue?')) {
+            if (!confirm('This will remove existing permissions. Continue?')) {
                 return self::FAILURE;
             }
         }
 
         $this->service->syncPermissions($removeOthers);
-        $this->info('Permissions synced successfully!');
-
+        info('Permissions synced successfully!');
         return self::SUCCESS;
     }
 
@@ -56,8 +56,7 @@ class PolicyPermission extends Command
             $changes['to_remove']->isEmpty() &&
             $changes['unchanged']->isEmpty()
         ) {
-            $this->info('No permissions found in policies.');
-
+            info('No permissions found in policies.');
             return;
         }
 
@@ -82,7 +81,7 @@ class PolicyPermission extends Command
             ->sortBy(0)
             ->values();
 
-        $this->table(
+        table(
             ['Name', 'Description', 'Status'],
             $rows
         );

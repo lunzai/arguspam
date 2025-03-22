@@ -5,6 +5,10 @@ namespace App\Console\Commands;
 use App\Models\Permission;
 use Illuminate\Console\Command;
 
+use function Laravel\Prompts\confirm;
+use function Laravel\Prompts\info;
+use function Laravel\Prompts\warning;
+
 class PermissionFlush extends Command
 {
     protected $signature = 'permission:flush 
@@ -16,19 +20,22 @@ class PermissionFlush extends Command
         $count = Permission::count();
 
         if ($count === 0) {
-            $this->info('No permissions found in database.');
+            info('No permissions found in database.');
             return self::SUCCESS;
         }
-        $this->warn("Found {$count} permissions in database.");
+        warning("Found {$count} permissions in database.");
 
-        if (!$this->option('force') && !$this->confirm('Are you sure you want to delete all permissions?')) {
-            $this->info('Operation cancelled.');
+        if (
+            !$this->option('force') &&
+            !confirm(label: 'Are you sure you want to delete all permissions?', default: false)
+        ) {
+            info('Operation cancelled.');
             return self::SUCCESS;
         }
-        $this->info('Deleting permissions...');
+        info('Deleting permissions...');
         // Use delete() instead of truncate() to handle cascading deletes
         Permission::query()->delete();
-        $this->info('All permissions have been deleted.');
+        info('All permissions have been deleted.');
         return self::SUCCESS;
     }
 }

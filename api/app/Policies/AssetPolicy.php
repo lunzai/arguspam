@@ -2,11 +2,42 @@
 
 namespace App\Policies;
 
+use App\Enums\AssetAccessRole;
 use App\Models\Asset;
 use App\Models\User;
 
 class AssetPolicy
 {
+    public function request(User $user, Asset $asset): bool
+    {
+        return $this->hasAccessGrant($user, $asset, AssetAccessRole::REQUESTER);
+    }
+
+    public function approve(User $user, Asset $asset): bool
+    {
+        return $this->hasAccessGrant($user, $asset, AssetAccessRole::APPROVER);
+    }
+
+    private function hasAccessGrant(User $user, Asset $asset, AssetAccessRole $role): bool
+    {
+        return $asset->accessGrants()
+            ->where(function ($query) use ($user) {
+                $query->where(function ($q) use ($user) {
+                    // Direct user grant
+                    $q->where('user_id', $user->id)
+                        ->whereNull('user_group_id');
+                })
+                    ->orWhereIn('user_group_id', function ($q) use ($user) {
+                        // User's group grants
+                        $q->select('user_group_id')
+                            ->from('user_group_user')
+                            ->where('user_id', $user->id);
+                    });
+            })
+            ->where('role', $role)
+            ->exists();
+    }
+
     // /**
     //  * Determine whether the user can view any models.
     //  */

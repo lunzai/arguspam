@@ -7,61 +7,73 @@ use App\Models\User;
 
 class SessionPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
     public function viewAny(User $user): bool
     {
-        return $user->isAuditor();
+        return $user->hasAnyPermission('session:viewany');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, Session $session): bool
     {
-        return $user->isAuditor() ||
-            $user->canRequest($session->asset) ||
-            $user->canApprove($session->asset);
+        return $this->viewAny($user) ||
+            (
+                ($session->requester->is($user) || $user->canApproveAsset($user, $session->asset)) &&
+                $user->hasAnyPermission('session:view')
+            );
     }
 
-    // /**
-    //  * Determine whether the user can create models.
-    //  */
-    // public function create(User $user): bool
-    // {
-    //     return false;
-    // }
+    public function auditAny(User $user): bool
+    {
+        return $user->hasAnyPermission('session:auditany');
+    }
 
-    /**
-     * Determine whether the user can update the model.
-     */
+    public function updateAny(User $user): bool
+    {
+        return $user->hasAnyPermission('session:updateany');
+    }
+
     public function update(User $user, Session $session): bool
     {
-        return $user->canApprove($session->asset);
+        return $this->updateAny($user) ||
+            ($user->canApproveAsset($user, $session->asset) && $user->hasPermissionTo('session:update'));
     }
 
-    // /**
-    //  * Determine whether the user can delete the model.
-    //  */
-    // public function delete(User $user, Session $session): bool
-    // {
-    //     return false;
-    // }
+    public function terminateAny(User $user): bool
+    {
+        return $user->hasPermissionTo('session:terminateany');
+    }
 
-    // /**
-    //  * Determine whether the user can restore the model.
-    //  */
-    // public function restore(User $user, Session $session): bool
-    // {
-    //     return false;
-    // }
+    public function terminate(User $user, Session $session): bool
+    {
+        return $this->terminateAny($user) ||
+            (
+                $session->requester->isNot($user) &&
+                $user->canApproveAsset($user, $session->asset) &&
+                $user->hasPermissionTo('session:terminate')
+            );
+    }
 
-    // /**
-    //  * Determine whether the user can permanently delete the model.
-    //  */
-    // public function forceDelete(User $user, Session $session): bool
-    // {
-    //     return false;
-    // }
+    public function retrieveSecret(User $user, Session $session): bool
+    {
+        return $session->requester->is($user) && $user->hasPermissionTo('session:retrievesecret');
+    }
+
+    public function start(User $user, Session $session): bool
+    {
+        return $session->requester->is($user) && $user->hasPermissionTo('session:start');
+    }
+
+    public function end(User $user, Session $session): bool
+    {
+        return $session->requester->is($user) && $user->hasPermissionTo('session:end');
+    }
+
+    public function deleteAny(User $user): bool
+    {
+        return $user->hasPermissionTo('session:deleteany');
+    }
+
+    public function restoreAny(User $user): bool
+    {
+        return $user->hasPermissionTo('session:restoreany');
+    }
 }

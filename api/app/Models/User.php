@@ -5,10 +5,9 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\AssetAccessRole;
 use App\Enums\Status;
-use App\Enums\UserRole;
 use App\Http\Filters\QueryFilter;
 use App\Traits\HasBlamable;
-use App\Traits\HasRole;
+use App\Traits\HasRbac;
 use App\Traits\HasStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,12 +21,11 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasBlamable, HasFactory,
-        HasRole, HasStatus, Notifiable;
+        HasRbac, HasStatus, Notifiable;
 
     protected $fillable = [
         'name',
         'email',
-        'role',
         // 'password',
         'status',
         // 'two_factor_enabled',
@@ -51,6 +49,8 @@ class User extends Authenticatable
         'requests',
         'sessions',
         'accessRestrictions',
+        'roles',
+        'permissions',
     ];
 
     protected function casts(): array
@@ -65,7 +65,6 @@ class User extends Authenticatable
             'deleted_at' => 'datetime',
             'last_login_at' => 'datetime',
             'status' => Status::class,
-            'role' => UserRole::class,
         ];
     }
 
@@ -73,7 +72,6 @@ class User extends Authenticatable
         'name' => 'Name',
         'email' => 'Email',
         'password' => 'Password',
-        'role' => 'Role',
         'status' => 'Status',
         'two_factor_enabled' => 'MFA',
         'last_login_at' => 'Last Login At',
@@ -104,16 +102,74 @@ class User extends Authenticatable
         return $this->hasMany(AssetAccessGrant::class);
     }
 
-    public function approverAssetAccessGrants(): HasMany
+    // public function approverAssetAccessGrants(): HasMany
+    // {
+    //     return $this->assetAccessGrants()
+    //         ->where('role', AssetAccessRole::APPROVER->value);
+    // }
+
+    // public function requesterAssetAccessGrants(): HasMany
+    // {
+    //     return $this->assetAccessGrants()
+    //         ->where('role', AssetAccessRole::REQUESTER->value);
+    // }
+
+    public function requesterAssets(): BelongsToMany
     {
-        return $this->assetAccessGrants()
-            ->where('role', AssetAccessRole::APPROVER->value);
+        return $this->belongsToMany(
+            Asset::class,
+            'asset_access_grants',
+        )->where('asset_access_grants.role', AssetAccessRole::REQUESTER->value);
     }
 
-    public function requesterAssetAccessGrants(): HasMany
+    public function approverAssets(): BelongsToMany
     {
-        return $this->assetAccessGrants()
-            ->where('role', AssetAccessRole::REQUESTER->value);
+        return $this->belongsToMany(
+            Asset::class,
+            'asset_access_grants',
+        )->where('asset_access_grants.role', AssetAccessRole::APPROVER->value);
+    }
+
+    public function allRequesterAssets(): Builder
+    {
+        return $this->getAssetByRole(AssetAccessRole::REQUESTER);
+    }
+
+    public function allApproverAssets(): Builder
+    {
+        return $this->getAssetByRole(AssetAccessRole::APPROVER);
+    }
+
+    public function allAssets(): Builder
+    {
+        return Asset::where(function ($query) {
+            // Direct user access
+            $query->whereHas('accessGrants', function ($q) {
+                $q->where('user_id', $this->id);
+            });
+        })->orWhere(function ($query) {
+            // Access via groups
+            $query->whereHas('accessGrants', function ($q) {
+                $q->whereIn('user_group_id', $this->userGroups->pluck('id'));
+            });
+        })->distinct();
+    }
+
+    private function getAssetByRole(AssetAccessRole $role): Builder
+    {
+        return Asset::where(function ($query) use ($role) {
+            // Direct user access
+            $query->whereHas('accessGrants', function ($q) use ($role) {
+                $q->where('user_id', $this->id)
+                    ->where('role', $role->value);
+            });
+        })->orWhere(function ($query) use ($role) {
+            // Access via groups
+            $query->whereHas('accessGrants', function ($q) use ($role) {
+                $q->whereIn('user_group_id', $this->userGroups->pluck('id'))
+                    ->where('role', $role->value);
+            });
+        })->distinct();
     }
 
     public function requests(): HasMany

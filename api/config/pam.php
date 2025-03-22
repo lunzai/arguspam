@@ -6,7 +6,7 @@ return [
     | Organization
     |--------------------------------------------------------------------------
     |
-    | Default organization settings for API responses.
+    | Default organization settings.
     |
     */
     'org' => [
@@ -53,10 +53,23 @@ return [
     | Pagination
     |--------------------------------------------------------------------------
     |
-    | Default pagination settings for API responses.
+    | Default pagination settings.
     |
     */
     'pagination' => [
         'per_page' => 10,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | RBAC
+    |--------------------------------------------------------------------------
+    |
+    | Default RBAC settings.
+    |
+    */
+    'rbac' => [
+        'default_admin_role' => 'Admin',
+        'default_user_role' => 'User',
     ],
 ];

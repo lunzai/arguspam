@@ -3,6 +3,7 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -26,5 +27,15 @@ class UpdateUserRequest extends FormRequest
             'name' => ['sometimes', 'string', 'max:100'],
             'email' => ['sometimes', 'string', 'email', 'max:255', 'unique:App\Models\User,email'],
         ];
+    }
+
+    public function withValidator(Validator $validator)
+    {
+        // TODO: modify to exclude current user from removing their own admin status
+        // $validator->after(function ($validator) {
+        //     if ($this->user()->id === $this->route('user')->id) {
+        //         $validator->errors()->add('email', 'Admin email cannot be updated.');
+        //     }
+        // });
     }
 }

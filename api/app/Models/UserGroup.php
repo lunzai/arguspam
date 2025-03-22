@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AssetAccessRole;
 use App\Enums\Status;
 use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -61,6 +62,22 @@ class UserGroup extends Model
     public function assetAccessGrants(): HasMany
     {
         return $this->hasMany(AssetAccessGrant::class);
+    }
+
+    public function requesterAssets(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Asset::class,
+            'asset_access_grants',
+        )->where('asset_access_grants.role', AssetAccessRole::REQUESTER->value);
+    }
+
+    public function approverAssets(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Asset::class,
+            'asset_access_grants',
+        )->where('asset_access_grants.role', AssetAccessRole::APPROVER->value);
     }
 
     public function org(): BelongsTo

@@ -7,61 +7,70 @@ use App\Models\User;
 
 class RequestPolicy
 {
-    // /**
-    //  * Determine whether the user can view any models.
-    //  */
-    // public function viewAny(User $user): bool
-    // {
-    //     return false;
-    // }
+    public function viewAny(User $user): bool
+    {
+        return $user->hasAnyPermission('request:viewany');
+    }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, Request $request): bool
     {
-        return $user->isAuditor() ||
-            $user->id === $request->user_id ||
-            $user->canApprove($request->asset);
+        return $this->viewAny($user) ||
+            ($request->requester->is($user) && $user->hasAnyPermission('request:view'));
     }
 
-    // /**
-    //  * Determine whether the user can create models.
-    //  */
-    // public function create(User $user): bool
-    // {
-    //     return true;
-    // }
+    public function create(User $user): bool
+    {
+        return $user->hasAnyPermission('request:create');
+    }
 
-    /**
-     * Determine whether the user can update the model.
-     */
+    public function updateAny(User $user): bool
+    {
+        return $user->hasAnyPermission('request:updateany');
+    }
+
     public function update(User $user, Request $request): bool
     {
-        return $user->id === $request->user_id;
+        return $this->updateAny($user) ||
+            ($request->requester->is($user) && $user->hasAnyPermission('request:update'));
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, Request $request): bool
+    public function approveAny(User $user): bool
     {
-        return $user->id === $request->user_id;
+        return $user->hasPermissionTo('request:approveany');
     }
 
-    // /**
-    //  * Determine whether the user can restore the model.
-    //  */
-    // public function restore(User $user, Request $request): bool
-    // {
-    //     return false;
-    // }
+    public function approve(User $user, Request $request): bool
+    {
+        return $this->approveAny($user) ||
+            (
+                $request->requester->isNot($user) &&
+                $user->canApproveAsset($user, $request->asset) &&
+                $user->hasPermissionTo('request:approve')
+            );
+    }
 
-    // /**
-    //  * Determine whether the user can permanently delete the model.
-    //  */
-    // public function forceDelete(User $user, Request $request): bool
-    // {
-    //     return false;
-    // }
+    public function rejectAny(User $user): bool
+    {
+        return $user->hasPermissionTo('request:rejectany');
+    }
+
+    public function reject(User $user, Request $request): bool
+    {
+        return $this->rejectAny($user) ||
+            (
+                $request->requester->isNot($user) &&
+                $user->canApproveAsset($user, $request->asset) &&
+                $user->hasPermissionTo('request:reject')
+            );
+    }
+
+    public function deleteAny(User $user): bool
+    {
+        return $user->hasPermissionTo('request:deleteany');
+    }
+
+    public function restoreAny(User $user): bool
+    {
+        return $user->hasPermissionTo('request:restoreany');
+    }
 }

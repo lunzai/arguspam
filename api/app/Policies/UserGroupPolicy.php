@@ -7,59 +7,40 @@ use App\Models\UserGroup;
 
 class UserGroupPolicy
 {
-    // /**
-    //  * Determine whether the user can view any models.
-    //  */
-    // public function viewAny(User $user): bool
-    // {
-    //     return false;
-    // }
+    public function viewAny(User $user): bool
+    {
+        return $user->hasAnyPermission('usergroup:viewany');
+    }
 
-    // /**
-    //  * Determine whether the user can view the model.
-    //  */
-    // public function view(User $user, UserGroup $userGroup): bool
-    // {
-    //     return false;
-    // }
+    public function view(User $user, UserGroup $userGroup): bool
+    {
+        return $this->viewAny($user) ||
+            ($user->groups->contains($userGroup) && $user->hasAnyPermission('usergroup:view'));
+    }
 
-    // /**
-    //  * Determine whether the user can create models.
-    //  */
-    // public function create(User $user): bool
-    // {
-    //     return false;
-    // }
+    public function create(User $user): bool
+    {
+        return $user->hasAnyPermission('usergroup:create');
+    }
 
-    // /**
-    //  * Determine whether the user can update the model.
-    //  */
-    // public function update(User $user, UserGroup $userGroup): bool
-    // {
-    //     return false;
-    // }
+    public function updateAny(User $user): bool
+    {
+        return $user->hasAnyPermission('usergroup:updateany');
+    }
 
-    // /**
-    //  * Determine whether the user can delete the model.
-    //  */
-    // public function delete(User $user, UserGroup $userGroup): bool
-    // {
-    //     return false;
-    // }
+    public function update(User $user, UserGroup $userGroup): bool
+    {
+        return $this->updateAny($user) ||
+            ($user->groups->contains($userGroup) && $user->hasAnyPermission('usergroup:update'));
+    }
 
-    // /**
-    //  * Determine whether the user can restore the model.
-    //  */
-    // public function restore(User $user, UserGroup $userGroup): bool
-    // {
-    //     return false;
-    // }
+    public function deleteAny(User $user): bool
+    {
+        return $user->hasAnyPermission('usergroup:deleteany');
+    }
 
-    // /**
-    //  * Determine whether the user can permanently delete the model.
-    //  */
-    // public function forceDelete(User $user, UserGroup $userGroup): bool
-    // {
-    //     return false;
-    // }
+    public function restoreAny(User $user): bool
+    {
+        return $user->hasAnyPermission('usergroup:restoreany');
+    }
 }

@@ -3,63 +3,31 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\UserAccessRestriction;
 
 class UserAccessRestrictionPolicy
 {
-    // /**
-    //  * Determine whether the user can view any models.
-    //  */
-    // public function viewAny(User $user): bool
-    // {
-    //     return false;
-    // }
+    public function viewAny(User $user): bool
+    {
+        return $user->hasPermissionTo('useraccessrestriction:viewany');
+    }
 
-    // /**
-    //  * Determine whether the user can view the model.
-    //  */
-    // public function view(User $user, UserAccessRestriction $userAccessRestriction): bool
-    // {
-    //     return false;
-    // }
+    public function create(User $user): bool
+    {
+        return $user->hasPermissionTo('useraccessrestriction:create');
+    }
 
-    // /**
-    //  * Determine whether the user can create models.
-    //  */
-    // public function create(User $user): bool
-    // {
-    //     return false;
-    // }
+    public function updateAny(User $user): bool
+    {
+        return $user->hasPermissionTo('useraccessrestriction:updateany');
+    }
 
-    // /**
-    //  * Determine whether the user can update the model.
-    //  */
-    // public function update(User $user, UserAccessRestriction $userAccessRestriction): bool
-    // {
-    //     return false;
-    // }
+    public function deleteAny(User $user): bool
+    {
+        return $user->hasPermissionTo('useraccessrestriction:deleteany');
+    }
 
-    // /**
-    //  * Determine whether the user can delete the model.
-    //  */
-    // public function delete(User $user, UserAccessRestriction $userAccessRestriction): bool
-    // {
-    //     return false;
-    // }
-
-    // /**
-    //  * Determine whether the user can restore the model.
-    //  */
-    // public function restore(User $user, UserAccessRestriction $userAccessRestriction): bool
-    // {
-    //     return false;
-    // }
-
-    // /**
-    //  * Determine whether the user can permanently delete the model.
-    //  */
-    // public function forceDelete(User $user, UserAccessRestriction $userAccessRestriction): bool
-    // {
-    //     return false;
-    // }
+    public function restoreAny(User $user): bool
+    {
+        return $user->hasPermissionTo('useraccessrestriction:restoreany');
+    }
 }

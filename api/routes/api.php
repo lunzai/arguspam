@@ -8,7 +8,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrgController;
 use App\Http\Controllers\OrgUserController;
 use App\Http\Controllers\OrgUserGroupController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RequestController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SessionAuditController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\UserController;
@@ -40,11 +42,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResources([
         'assets' => AssetController::class,
-        'organizations' => OrgController::class,
+        'orgs' => OrgController::class,
         'requests' => RequestController::class,
         'sessions' => SessionController::class,
         'users' => UserController::class,
         'user-groups' => UserGroupController::class,
+        'roles' => RoleController::class,
+        'permissions' => PermissionController::class,
     ]);
 
     // Audits

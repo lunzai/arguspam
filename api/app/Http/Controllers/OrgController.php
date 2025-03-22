@@ -37,21 +37,24 @@ class OrgController extends Controller
         $org = Org::query();
         $this->applyIncludes($org, request());
 
+        info('OrgController@show', [
+            'id' => $id,
+            'org' => $org->findOrFail($id),
+        ]);
+
         return new OrgResource($org->findOrFail($id));
     }
 
-    public function update(UpdateOrgRequest $request, string $id): OrgResource
+    public function update(UpdateOrgRequest $request, Org $org): OrgResource
     {
-        $org = Org::findOrFail($id);
         $validated = $request->validated();
         $org->update($validated);
 
         return new OrgResource($org);
     }
 
-    public function destroy(string $id): Response
+    public function destroy(Org $org): Response
     {
-        $org = Org::findOrFail($id);
         $org->deleted_by = Auth::id();
         $org->save();
         $org->delete();

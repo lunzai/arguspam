@@ -7,59 +7,34 @@ use App\Models\User;
 
 class OrgPolicy
 {
-    // /**
-    //  * Determine whether the user can view any models.
-    //  */
-    // public function viewAny(User $user): bool
-    // {
-    //     return false;
-    // }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Org $org): bool
+    public function viewAny(User $user): bool
     {
-        return $user->inOrg($org);
+        return $user->hasAnyPermission('org:viewany');
     }
 
-    // /**
-    //  * Determine whether the user can create models.
-    //  */
-    // public function create(User $user): bool
-    // {
-    //     return false;
-    // }
+    public function view(User $user, Org $org): bool
+    {
+        return $this->viewAny($user) ||
+            ($user->inOrg($org) && $user->hasAnyPermission('org:view'));
+    }
 
-    // /**
-    //  * Determine whether the user can update the model.
-    //  */
-    // public function update(User $user, Org $org): bool
-    // {
-    //     return false;
-    // }
+    public function create(User $user): bool
+    {
+        return $user->hasAnyPermission('org:create');
+    }
 
-    // /**
-    //  * Determine whether the user can delete the model.
-    //  */
-    // public function delete(User $user, Org $org): bool
-    // {
-    //     return false;
-    // }
+    public function updateAny(User $user): bool
+    {
+        return $user->hasAnyPermission('org:updateany');
+    }
 
-    // /**
-    //  * Determine whether the user can restore the model.
-    //  */
-    // public function restore(User $user, Org $org): bool
-    // {
-    //     return false;
-    // }
+    public function deleteAny(User $user): bool
+    {
+        return $user->hasAnyPermission('org:deleteany');
+    }
 
-    // /**
-    //  * Determine whether the user can permanently delete the model.
-    //  */
-    // public function forceDelete(User $user, Org $org): bool
-    // {
-    //     return false;
-    // }
+    public function restoreAny(User $user): bool
+    {
+        return $user->hasAnyPermission('org:restoreany');
+    }
 }

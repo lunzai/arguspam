@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Enums\Status;
-use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 
@@ -30,7 +29,6 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'status' => Status::ACTIVE->value,
-            'role' => UserRole::USER->value,
             // 'remember_token' => Str::random(10),
         ];
     }

@@ -3,10 +3,10 @@
 namespace Database\Seeders;
 
 use App\Enums\AssetAccessRole;
-use App\Enums\UserRole;
 use App\Models\Asset;
 use App\Models\AssetAccount;
 use App\Models\Org;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\UserGroup;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -24,16 +24,24 @@ class DatabaseSeeder extends Seeder
 
     private const ASSET_COUNT = 10;
 
+    private const PERMISSION_COUNT = 10;
+
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
+        $this->call(PermissionSeeder::class);
+        $defaultAdminRole = Role::where('name', config('pam.rbac.default_admin_role'))
+            ->first();
+        $defaultUserRole = Role::where('name', config('pam.rbac.default_user_role'))
+            ->first();
         User::factory(2)
             ->sequence(
-                ['name' => 'Admin', 'email' => 'admin@admin.com', 'role' => UserRole::ADMIN],
-                ['name' => 'Hean Luen', 'email' => 'heanluen@gmail.com', 'role' => UserRole::ADMIN],
+                ['name' => 'Admin', 'email' => 'admin@admin.com'],
+                ['name' => 'Hean Luen', 'email' => 'heanluen@gmail.com'],
             )
+            ->hasAttached($defaultAdminRole)
             ->create();
 
         $orgs = Org::factory(self::ORG_COUNT)
@@ -45,6 +53,7 @@ class DatabaseSeeder extends Seeder
                     $orgs->random(1),
                     ['joined_at' => now()->subDays(rand(0, 3))]
                 )
+                ->hasAttached($defaultUserRole)
                 ->create();
         }
 
@@ -71,12 +80,25 @@ class DatabaseSeeder extends Seeder
             $assetOrgUsers = $asset->org->users->shuffle();
             $requesterCount = rand(1, $assetOrgUsers->count());
 
+            // TODO: Fix this
             $asset->users()->attach([
                 ...$assetOrgUsers->take($requesterCount)
-                    ->mapWithKeys(fn ($user) => [$user->id => ['role' => AssetAccessRole::REQUESTER->value]])
+                    ->map(fn ($user) => [
+                        'asset_id' => $asset->id,
+                        'user_id' => $user->id,
+                        'created_by' => 1,
+                        'updated_by' => 1,
+                        'role' => AssetAccessRole::REQUESTER->value,
+                    ])
                     ->all(),
                 ...$assetOrgUsers->skip($requesterCount)
-                    ->mapWithKeys(fn ($user) => [$user->id => ['role' => AssetAccessRole::APPROVER->value]])
+                    ->map(fn ($user) => [
+                        'asset_id' => $asset->id,
+                        'user_id' => $user->id,
+                        'created_by' => 1,
+                        'updated_by' => 1,
+                        'role' => AssetAccessRole::APPROVER->value,
+                    ])
                     ->all(),
             ]);
             $assets[] = $asset;

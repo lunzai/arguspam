@@ -12,7 +12,7 @@ class SessionAuditPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAuditor();
+        return $user->hasAnyPermission('sessionaudit:viewany');
     }
 
     /**
@@ -20,46 +20,10 @@ class SessionAuditPolicy
      */
     public function view(User $user, SessionAudit $sessionAudit): bool
     {
-        return $user->isAuditor() || $user->canApprove($sessionAudit->session->asset);
+        return $this->viewAny($user) ||
+            (
+                $user->canAccessAsset($user, $sessionAudit->session->asset) &&
+                $user->hasAnyPermission('sessionaudit:view')
+            );
     }
-
-    // /**
-    //  * Determine whether the user can create models.
-    //  */
-    // public function create(User $user): bool
-    // {
-    //     return false;
-    // }
-
-    // /**
-    //  * Determine whether the user can update the model.
-    //  */
-    // public function update(User $user, SessionAudit $sessionAudit): bool
-    // {
-    //     return false;
-    // }
-
-    // /**
-    //  * Determine whether the user can delete the model.
-    //  */
-    // public function delete(User $user, SessionAudit $sessionAudit): bool
-    // {
-    //     return false;
-    // }
-
-    // /**
-    //  * Determine whether the user can restore the model.
-    //  */
-    // public function restore(User $user, SessionAudit $sessionAudit): bool
-    // {
-    //     return false;
-    // }
-
-    // /**
-    //  * Determine whether the user can permanently delete the model.
-    //  */
-    // public function forceDelete(User $user, SessionAudit $sessionAudit): bool
-    // {
-    //     return false;
-    // }
 }

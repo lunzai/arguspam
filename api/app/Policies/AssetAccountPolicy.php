@@ -7,59 +7,34 @@ use App\Models\User;
 
 class AssetAccountPolicy
 {
-    // /**
-    //  * Determine whether the user can view any models.
-    //  */
-    // public function viewAny(User $user): bool
-    // {
-    //     return false;
-    // }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, AssetAccount $assetAccount): bool
+    public function viewAny(User $user): bool
     {
-        return $user->canApprove($assetAccount->asset) || $user->canApprove($assetAccount->user);
+        return $user->hasAnyPermission('assetaccount:viewany');
     }
 
-    // /**
-    //  * Determine whether the user can create models.
-    //  */
-    // public function create(User $user): bool
-    // {
-    //     return false;
-    // }
+    public function view(User $user, AssetAccount $assetAccount): bool
+    {
+        return $this->viewAny($user) ||
+            ($user->canAccessAsset($user, $assetAccount->asset) && $user->hasAnyPermission('assetaccount:view'));
+    }
 
-    // /**
-    //  * Determine whether the user can update the model.
-    //  */
-    // public function update(User $user, AssetAccount $assetAccount): bool
-    // {
-    //     return false;
-    // }
+    public function create(User $user): bool
+    {
+        return $user->hasAnyPermission('assetaccount:create');
+    }
 
-    // /**
-    //  * Determine whether the user can delete the model.
-    //  */
-    // public function delete(User $user, AssetAccount $assetAccount): bool
-    // {
-    //     return false;
-    // }
+    public function updateAny(User $user): bool
+    {
+        return $user->hasAnyPermission('assetaccount:updateany');
+    }
 
-    // /**
-    //  * Determine whether the user can restore the model.
-    //  */
-    // public function restore(User $user, AssetAccount $assetAccount): bool
-    // {
-    //     return false;
-    // }
+    public function deleteAny(User $user): bool
+    {
+        return $user->hasAnyPermission('assetaccount:deleteany');
+    }
 
-    // /**
-    //  * Determine whether the user can permanently delete the model.
-    //  */
-    // public function forceDelete(User $user, AssetAccount $assetAccount): bool
-    // {
-    //     return false;
-    // }
+    public function restoreAny(User $user): bool
+    {
+        return $user->hasAnyPermission('assetaccount:restoreany');
+    }
 }

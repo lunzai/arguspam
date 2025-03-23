@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\ForceJsonResponse;
+use App\Http\Middleware\WantsJson;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,18 +13,15 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        // TODO: Remove this middleware
-        // $middleware->group('api', [
-        //     ForceJsonResponse::class,
-        // ]);
+        $middleware->api(prepend: [
+            WantsJson::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        // TODO: Remove this exception handler
-        // $exceptions->shouldRenderJsonWhen(function (Throwable $e, Request $request) {
-        //     if ($request->is('api/*')) {
-        //         return true;
-        //     }
-
-        //     return $request->expectsJson();
-        // });
+        $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {
+            if ($request->is('api/*')) {
+                return true;
+            }
+            return $request->expectsJson();
+        });
     })->create();

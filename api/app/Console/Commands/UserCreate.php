@@ -2,15 +2,14 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\Status;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Role;
-use App\Enums\Status;
 
-use function Laravel\Prompts\info;
 use function Laravel\Prompts\form;
-use function Laravel\Prompts\table;
+use function Laravel\Prompts\info;
 
 class UserCreate extends Command
 {
@@ -62,10 +61,10 @@ class UserCreate extends Command
                 validate: ['roles' => 'required|array'],
                 scroll: 10,
             )
-            ->confirm("Are you sure you want to create user?")
+            ->confirm('Are you sure you want to create user?')
             ->submit();
 
-        $user = new User();
+        $user = new User;
         $user->name = $response['name'];
         $user->email = $response['email'];
         $user->status = Status::ACTIVE;

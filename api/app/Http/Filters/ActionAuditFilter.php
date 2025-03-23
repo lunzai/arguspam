@@ -7,13 +7,18 @@ use Illuminate\Database\Eloquent\Builder;
 class ActionAuditFilter extends QueryFilter
 {
     protected array $sortable = [
-        'orgId',
-        'userId',
-        'actionType',
-        'entityType',
-        'entityId',
-        'ipAddress',
-        'createdAt' => 'created_at',
+        'org_id',
+        'user_id',
+        'action_type',
+        'entity_type',
+        'entity_id',
+        'description',
+        'previous_state',
+        'new_state',
+        'ip_address',
+        'user_agent',
+        'additional_info',
+        'created_at',
     ];
 
     public function orgId(string $value): Builder

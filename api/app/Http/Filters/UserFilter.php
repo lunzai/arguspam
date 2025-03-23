@@ -7,13 +7,12 @@ use Illuminate\Database\Eloquent\Builder;
 class UserFilter extends QueryFilter
 {
     protected array $sortable = [
-        'orgId',
         'name',
         'email',
         'status',
-        'createdAt' => 'created_at',
-        'updatedAt' => 'updated_at',
-        'lastLoginAt' => 'last_login_at',
+        'last_login_at',
+        'created_at',
+        'updated_at',
     ];
 
     public function orgId(string $value): Builder

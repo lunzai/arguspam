@@ -7,12 +7,12 @@ use Illuminate\Database\Eloquent\Builder;
 class UserGroupFilter extends QueryFilter
 {
     protected array $sortable = [
-        'orgId',
+        'org_id',
         'name',
         'description',
         'status',
-        'createdAt' => 'created_at',
-        'updatedAt' => 'updated_at',
+        'created_at',
+        'updated_at',
     ];
 
     public function orgId(string $value): Builder

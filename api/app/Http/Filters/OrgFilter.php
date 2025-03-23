@@ -10,8 +10,8 @@ class OrgFilter extends QueryFilter
         'name',
         'description',
         'status',
-        'createdAt' => 'created_at',
-        'updatedAt' => 'updated_at',
+        'created_at',
+        'updated_at',
     ];
 
     public function name(string $value): Builder

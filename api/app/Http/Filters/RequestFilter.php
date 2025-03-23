@@ -7,21 +7,25 @@ use Illuminate\Database\Eloquent\Builder;
 class RequestFilter extends QueryFilter
 {
     protected array $sortable = [
-        'orgId',
-        'assetId',
-        'assetAccountId',
-        'requesterId',
-        'startDatetime' => 'start_datetime',
-        'endDatetime' => 'end_datetime',
+        'org_id',
+        'asset_id',
+        'asset_account_id',
+        'requester_id',
+        'start_datetime',
+        'end_datetime',
         'duration',
+        'reason',
+        'intended_query',
         'scope',
-        'isAccessSensitiveData' => 'is_access_sensitive_data',
-        'approverRiskRating' => 'approver_risk_rating',
+        'is_access_sensitive_data',
+        'sensitive_data_note',
+        'approver_note',
+        'approver_risk_rating',
         'status',
-        'approvedAt' => 'approved_at',
-        'rejectedAt' => 'rejected_at',
-        'createdAt' => 'created_at',
-        'updatedAt' => 'updated_at',
+        'approved_at',
+        'rejected_at',
+        'created_at',
+        'updated_at',
     ];
 
     public function orgId(string $value): Builder

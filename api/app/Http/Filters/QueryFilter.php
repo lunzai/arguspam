@@ -25,18 +25,17 @@ abstract class QueryFilter
                 $this->$key($value);
             }
         }
-
         return $this->builder;
     }
 
     public function filter(array $arr): Builder
     {
         foreach ($arr as $key => $value) {
-            if (method_exists($this, $key)) {
-                $this->$key($value);
+            $method = Str::camel($key);
+            if (method_exists($this, $method)) {
+                $this->$method($value);
             }
         }
-
         return $this->builder;
     }
 
@@ -46,14 +45,12 @@ abstract class QueryFilter
         foreach ($arr as $sort) {
             $isDesc = str_starts_with($sort, '-');
             $field = $isDesc ? substr($sort, 1) : $sort;
-            if (!in_array($field, $this->sortable) || array_key_exists($field, $this->sortable)) {
+            if (!in_array($field, $this->sortable)) {
                 continue;
             }
-            $column = $this->sortable[$field] ?? $field;
-            $this->builder->orderBy($column, $isDesc ? 'desc' : 'asc');
+            $this->builder->orderBy($field, $isDesc ? 'desc' : 'asc');
             // TODO: Sort by relation
         }
-
         return $this->builder;
     }
 
@@ -66,7 +63,6 @@ abstract class QueryFilter
                 $this->builder->with($relation);
             }
         }
-
         return $this->builder;
     }
 
@@ -84,7 +80,6 @@ abstract class QueryFilter
         if ($value[0] === '-') {
             return $this->builder->where($field, '<=', substr($value, 1));
         }
-
         return $this->builder->where($field, '>=', $value);
     }
 
@@ -99,7 +94,6 @@ abstract class QueryFilter
         if (count($arr) === 1) {
             return $this->builder->where($field, $arr[0]);
         }
-
         return $this->builder->whereIn($field, $arr);
     }
 

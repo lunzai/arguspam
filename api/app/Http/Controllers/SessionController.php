@@ -9,15 +9,15 @@ use App\Models\Session;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Filters\SessionFilter;
 
 class SessionController extends Controller
 {
     use IncludeRelationships;
 
-    public function index(): SessionCollection
+    public function index(SessionFilter $filter): SessionCollection
     {
-        $session = Session::query();
-        // $this->applyExpands($session);
+        $session = Session::filter($filter);
 
         return new SessionCollection(
             $session->paginate(config('pam.pagination.per_page'))
@@ -32,19 +32,16 @@ class SessionController extends Controller
         return new SessionResource($session->findOrFail($id));
     }
 
-    public function update(UpdateSessionRequest $request, string $id): SessionResource
+    public function update(UpdateSessionRequest $request, Session $session): SessionResource
     {
-        $session = Session::findOrFail($id);
         $validated = $request->validated();
-        $validated['updated_by'] = Auth::id();
         $session->update($validated);
 
         return new SessionResource($session);
     }
 
-    public function destroy(string $id): Response
+    public function destroy(Session $session): Response
     {
-        $session = Session::findOrFail($id);
         $session->deleted_by = Auth::id();
         $session->save();
         $session->delete();

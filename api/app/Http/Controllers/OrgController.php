@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\OrgFilter;
 use App\Http\Requests\Org\StoreOrgRequest;
 use App\Http\Requests\Org\UpdateOrgRequest;
 use App\Http\Resources\Org\OrgCollection;
@@ -15,12 +16,12 @@ class OrgController extends Controller
 {
     use IncludeRelationships;
 
-    public function index(): OrgCollection
+    public function index(OrgFilter $filter): OrgCollection
     {
-        $org = Org::query();
+        $org = Org::filter($filter);
 
         return new OrgCollection(
-            Org::paginate(config('pam.pagination.per_page'))
+            $org->paginate(config('pam.pagination.per_page'))
         );
     }
 
@@ -36,11 +37,6 @@ class OrgController extends Controller
     {
         $org = Org::query();
         $this->applyIncludes($org, request());
-
-        info('OrgController@show', [
-            'id' => $id,
-            'org' => $org->findOrFail($id),
-        ]);
 
         return new OrgResource($org->findOrFail($id));
     }

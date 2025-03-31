@@ -2,24 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\User\UserCollection;
 use App\Models\Org;
-use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Models\User;
 
-// TODO: REWRITE
 class OrgUserController extends Controller
 {
-    use IncludeRelationships;
-
-    public function index(Org $org): UserCollection
-    {
-        $users = $org->users()->paginate(config('pam.pagination.per_page'));
-
-        return new UserCollection($users);
-    }
-
     public function store(Request $request, Org $org): Response
     {
         $validated = $request->validate([
@@ -32,9 +21,9 @@ class OrgUserController extends Controller
         return response()->noContent(Response::HTTP_CREATED);
     }
 
-    public function destroy(Org $org, string $userId): Response
+    public function destroy(Org $org, User $user): Response
     {
-        $org->users()->detach($userId);
+        $org->users()->detach($user);
 
         return response()->noContent();
     }

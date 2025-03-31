@@ -3,23 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AssetAccount\StoreAssetAccountRequest;
-use App\Http\Resources\AssetAccount\AssetAccountCollection;
 use App\Models\Asset;
-use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 
-// TODO: REWRITE
 class AssetAccountController extends Controller
 {
-    use IncludeRelationships;
-
-    public function index(Asset $asset): AssetAccountCollection
-    {
-        $accounts = $asset->accounts()->paginate(config('pam.pagination.per_page'));
-
-        return new AssetAccountCollection($accounts);
-    }
-
     public function store(StoreAssetAccountRequest $request, Asset $asset): Response
     {
         $validated = $request->validated();

@@ -14,18 +14,17 @@ class SessionAuditController extends Controller
     public function index(): SessionAuditCollection
     {
         $sessionAudit = SessionAudit::query();
-        // $this->applyExpands($sessionAudit);
 
         return new SessionAuditCollection(
             $sessionAudit->paginate(config('pam.pagination.per_page'))
         );
     }
 
-    public function show(string $id): SessionAuditResource
+    public function show(SessionAudit $sessionAudit): SessionAuditResource
     {
         $sessionAudit = SessionAudit::query();
         $this->applyIncludes($sessionAudit, request());
 
-        return new SessionAuditResource($sessionAudit->findOrFail($id));
+        return new SessionAuditResource($sessionAudit);
     }
 }

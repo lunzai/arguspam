@@ -41,18 +41,16 @@ class UserGroupController extends Controller
         return new UserGroupResource($userGroup->findOrFail($id));
     }
 
-    public function update(UpdateUserGroupRequest $request, string $id): UserGroupResource
+    public function update(UpdateUserGroupRequest $request, UserGroup $userGroup): UserGroupResource
     {
-        $userGroup = UserGroup::findOrFail($id);
         $validated = $request->validated();
         $userGroup->update($validated);
 
         return new UserGroupResource($userGroup);
     }
 
-    public function destroy(string $id): Response
+    public function destroy(UserGroup $userGroup): Response
     {
-        $userGroup = UserGroup::findOrFail($id);
         $userGroup->deleted_by = Auth::id();
         $userGroup->save();
         $userGroup->delete();

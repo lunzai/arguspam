@@ -17,8 +17,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserGroupUserController;
 use Illuminate\Support\Facades\Route;
-
-// use App\Http\Middleware\EnsureOrganizationIdIsValid;
+use App\Http\Controllers\UserRoleController;
+use App\Http\Controllers\RolePermissionController;
 
 Route::get('/', function () {
     return response()->json(['message' => 'Hello World']);
@@ -30,12 +30,12 @@ Route::prefix('auth')->group(function () {
         ->middleware('auth:sanctum');
 });
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('orgs.users', OrgUserController::class)
-        ->only(['index']);
-    Route::apiResource('user-groups.users', UserGroupUserController::class)
-        ->only(['index']);
-});
+// Route::middleware('auth:sanctum')->group(function () {
+//     Route::apiResource('orgs.users', OrgUserController::class)
+//         ->only(['index']);
+//     Route::apiResource('user-groups.users', UserGroupUserController::class)
+//         ->only(['index']);
+// });
 
 // Route::middleware(['auth:sanctum', EnsureOrganizationIdIsValid::class])->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
@@ -59,6 +59,12 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['index', 'show']);
 
     // Relationals
+    Route::apiResource('users.roles', UserRoleController::class)
+        ->only(['store', 'destroy']);
+
+    Route::apiResource('roles.permissions', RolePermissionController::class)
+        ->only(['store', 'destroy']);
+
     Route::apiResource('user-groups.users', UserGroupUserController::class)
         ->only(['store', 'destroy']);
 
@@ -66,15 +72,23 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['store', 'destroy']);
 
     Route::apiResource('orgs.user-groups', OrgUserGroupController::class)
-        ->only(['index', 'store', 'destroy']);
+        ->only(['store', 'destroy']);
 
-    Route::apiResource('assets.accounts', AssetAccountController::class)
-        ->only(['index', 'store', 'destroy']);
+    Route::post('assets/{asset}/accounts', [AssetAccountController::class, 'store'])
+        ->name('assets.accounts.store');
 
-    Route::apiResource('assets.access-grants', AssetAccessGrantController::class)
-        ->only(['index', 'store', 'destroy']);
+    Route::delete('assets/{asset}/accounts/{account}', [AssetAccountController::class, 'destroy'])
+        ->name('assets.accounts.destroy');
 
-    // Relational with update
-    Route::apiResource('assets.access-grants', AssetAccessGrantController::class)
-        ->only(['index', 'store', 'update', 'destroy']);
+    Route::get('assets/{asset}/grants', [AssetAccessGrantController::class, 'index'])
+        ->name('assets.access-grants.index');
+
+    Route::get('assets/{asset}/grants/{asset_access_grant}', [AssetAccessGrantController::class, 'show'])
+        ->name('assets.access-grants.show');
+
+    Route::post('assets/{asset}/grants', [AssetAccessGrantController::class, 'store'])
+        ->name('assets.access-grants.store');
+
+    Route::delete('assets/{asset}/grants/{asset_access_grant}', [AssetAccessGrantController::class, 'destroy'])
+        ->name('assets.access-grants.destroy');
 });

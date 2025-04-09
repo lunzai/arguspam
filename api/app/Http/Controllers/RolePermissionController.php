@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\Role;
-use App\Models\Permission;
 
 class RolePermissionController extends Controller
 {

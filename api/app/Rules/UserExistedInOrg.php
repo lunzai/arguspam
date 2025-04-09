@@ -2,11 +2,11 @@
 
 namespace App\Rules;
 
+use App\Enums\CacheKey;
+use App\Models\Org;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
-use App\Models\Org;
 use Illuminate\Support\Facades\Cache;
-use App\Enums\CacheKey;
 
 class UserExistedInOrg implements ValidationRule
 {

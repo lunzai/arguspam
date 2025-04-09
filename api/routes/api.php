@@ -11,14 +11,16 @@ use App\Http\Controllers\OrgUserGroupController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\SessionAuditController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\SettingController;
+use App\Http\Controllers\SettingGroupController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserGroupUserController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserRoleController;
-use App\Http\Controllers\RolePermissionController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return response()->json(['message' => 'Hello World']);
@@ -50,6 +52,14 @@ Route::middleware('auth:sanctum')->group(function () {
         'roles' => RoleController::class,
         'permissions' => PermissionController::class,
     ]);
+
+    // SettingController routes
+    Route::get('/settings', [SettingController::class, 'index']);
+    Route::put('/settings', [SettingController::class, 'update']);
+
+    // SettingGroupController routes
+    Route::get('/settings/groups', [SettingGroupController::class, 'index']);
+    Route::get('/settings/groups/{group}', [SettingGroupController::class, 'show']);
 
     // Audits
     Route::apiResource('audits', AuditController::class)

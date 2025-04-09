@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\UserGroup;
+use App\Rules\UserExistedInOrg;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Rules\UserExistedInOrg;
-use App\Models\User;
 
 class UserGroupUserController extends Controller
 {

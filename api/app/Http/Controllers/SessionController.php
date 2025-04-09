@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\SessionFilter;
 use App\Http\Requests\Session\UpdateSessionRequest;
 use App\Http\Resources\Session\SessionCollection;
 use App\Http\Resources\Session\SessionResource;
@@ -9,7 +10,6 @@ use App\Models\Session;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Filters\SessionFilter;
 
 class SessionController extends Controller
 {

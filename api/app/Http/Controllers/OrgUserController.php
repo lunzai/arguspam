@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Org;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Models\User;
 
 class OrgUserController extends Controller
 {

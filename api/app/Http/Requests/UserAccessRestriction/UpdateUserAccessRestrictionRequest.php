@@ -28,6 +28,12 @@ class UpdateUserAccessRestrictionRequest extends FormRequest
             'user_id' => ['sometimes', 'exists:App\Models\User,id'],
             'type' => ['sometimes', new Enum(RestrictionType::class)],
             'value' => ['sometimes', 'array'],
+            // 'value' => ['sometimes', 'array', function ($attribute, $value, $fail) {
+            //         if ($this->type === RestrictionType::IP && !filter_var($value, FILTER_VALIDATE_IP)) {
+            //             $fail('Invalid IP address format');
+            //         }
+            //     }
+            // ],
             'status' => ['sometimes', new Enum(Status::class)],
         ];
     }

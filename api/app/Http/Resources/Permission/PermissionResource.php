@@ -2,10 +2,11 @@
 
 namespace App\Http\Resources\Permission;
 
+use App\Http\Resources\Resource;
+use App\Http\Resources\Role\RoleResource;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 
-class PermissionResource extends JsonResource
+class PermissionResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -14,6 +15,21 @@ class PermissionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'attributes' => [
+                'id' => $this->id,
+                'name' => $this->name,
+                'description' => $this->description,
+                'created_at' => $this->created_at,
+                'updated_at' => $this->updated_at,
+            ],
+            $this->mergeWhen($this->hasRelation(), [
+                'relationships' => [
+                    'roles' => RoleResource::collection(
+                        $this->whenLoaded('roles')
+                    ),
+                ],
+            ]),
+        ];
     }
 }

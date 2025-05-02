@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources\Permission;
 
+use App\Http\Resources\Collection;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class PermissionCollection extends ResourceCollection
+class PermissionCollection extends Collection
 {
     /**
      * Transform the resource collection into an array.

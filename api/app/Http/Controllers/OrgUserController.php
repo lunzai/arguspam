@@ -18,13 +18,13 @@ class OrgUserController extends Controller
 
         $org->users()->attach($validated['user_ids']);
 
-        return response()->noContent(Response::HTTP_CREATED);
+        return $this->created();
     }
 
     public function destroy(Org $org, User $user): Response
     {
         $org->users()->detach($user);
 
-        return response()->noContent();
+        return $this->noContent();
     }
 }

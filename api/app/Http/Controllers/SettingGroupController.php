@@ -22,7 +22,7 @@ class SettingGroupController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index() : SettingGroupCollection
     {
         $groups = $this->settings->groups();
 
@@ -48,7 +48,7 @@ class SettingGroupController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(string $group)
+    public function show(string $group) : SettingCollection
     {
         // Check if group exists
         if (!in_array($group, $this->settings->groups())) {

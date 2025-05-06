@@ -67,7 +67,6 @@ class SettingController extends Controller
         } else {
             $statusCode = 200;
         }
-
-        return response()->json($response, $statusCode);
+        return $this->success($response, $statusCode);
     }
 }

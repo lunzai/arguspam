@@ -55,6 +55,6 @@ class UserController extends Controller
         $user->save();
         $user->delete();
 
-        return response()->noContent();
+        return $this->noContent();
     }
 }

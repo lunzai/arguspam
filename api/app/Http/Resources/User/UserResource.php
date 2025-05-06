@@ -4,6 +4,7 @@ namespace App\Http\Resources\User;
 
 use App\Http\Resources\AssetAccessGrant\AssetAccessGrantResource;
 use App\Http\Resources\Org\OrgResource;
+use App\Http\Resources\Role\RoleResource;
 use App\Http\Resources\Request\RequestResource;
 use App\Http\Resources\Resource;
 use App\Http\Resources\Session\SessionResource;
@@ -60,6 +61,9 @@ class UserResource extends Resource
                     ),
                     'accessRestrictions' => UserAccessRestrictionResource::collection(
                         $this->whenLoaded('accessRestrictions')
+                    ),
+                    'roles' => RoleResource::collection(
+                        $this->whenLoaded('roles')
                     ),
                 ],
             ]),

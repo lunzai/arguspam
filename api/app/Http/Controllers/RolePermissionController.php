@@ -16,15 +16,15 @@ class RolePermissionController extends Controller
             'permission_ids.*' => ['required', 'exists:permissions,id'],
         ]);
 
-        $role->permissions()->attach($validated['permission_ids']);
+        $role->permissions()->syncWithoutDetaching($validated['permission_ids']);
 
-        return response()->noContent(Response::HTTP_CREATED);
+        return $this->created();
     }
 
     public function destroy(Role $role, Permission $permission): Response
     {
         $role->permissions()->detach($permission);
 
-        return response()->noContent(Response::HTTP_NO_CONTENT);
+        return $this->noContent();
     }
 }

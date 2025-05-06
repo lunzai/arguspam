@@ -16,6 +16,7 @@ class Role extends Model
     ];
 
     protected $casts = [
+        'is_default' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -23,6 +24,7 @@ class Role extends Model
     public static $attributeLabels = [
         'name' => 'Name',
         'description' => 'Description',
+        'is_default' => 'Is Default',
     ];
 
     public static $includable = [

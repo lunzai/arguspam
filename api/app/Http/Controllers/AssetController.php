@@ -57,6 +57,6 @@ class AssetController extends Controller
         $asset->save();
         $asset->delete();
 
-        return response()->noContent();
+        return $this->noContent();
     }
 }

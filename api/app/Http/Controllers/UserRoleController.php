@@ -16,15 +16,15 @@ class UserRoleController extends Controller
             'role_ids.*' => ['required', 'exists:roles,id'],
         ]);
 
-        $user->roles()->attach($validated['role_ids']);
+        $user->roles()->syncWithoutDetaching($validated['role_ids']);
 
-        return response()->noContent(Response::HTTP_CREATED);
+        return $this->created();
     }
 
     public function destroy(User $user, Role $role): Response
     {
         $user->roles()->detach($role);
 
-        return response()->noContent(Response::HTTP_NO_CONTENT);
+        return $this->noContent();
     }
 }

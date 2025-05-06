@@ -29,7 +29,7 @@ class AssetAccessGrantController extends Controller
 
         $asset->accessGrants()->create($validated);
 
-        return response()->noContent(Response::HTTP_CREATED);
+        return $this->created();
     }
 
     public function update(Request $request, Asset $asset, string $grantId): Response
@@ -40,13 +40,13 @@ class AssetAccessGrantController extends Controller
 
         $asset->accessGrants()->findOrFail($grantId)->update($validated);
 
-        return response()->noContent();
+        return $this->noContent();
     }
 
     public function destroy(Asset $asset, string $grantId): Response
     {
         $asset->accessGrants()->findOrFail($grantId)->delete();
 
-        return response()->noContent();
+        return $this->noContent();
     }
 }

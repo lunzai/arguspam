@@ -14,13 +14,13 @@ class AssetAccountController extends Controller
 
         $asset->accounts()->attach($validated['account_ids']);
 
-        return response()->noContent(Response::HTTP_CREATED);
+        return $this->created();
     }
 
     public function destroy(Asset $asset, string $accountId): Response
     {
         $asset->accounts()->detach($accountId);
 
-        return response()->noContent();
+        return $this->noContent();
     }
 }

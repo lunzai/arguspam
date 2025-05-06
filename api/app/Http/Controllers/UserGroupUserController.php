@@ -22,13 +22,13 @@ class UserGroupUserController extends Controller
 
         $userGroup->users()->attach($validated['user_ids']);
 
-        return response()->noContent(Response::HTTP_CREATED);
+        return $this->created();
     }
 
     public function destroy(UserGroup $userGroup, User $user): Response
     {
         $userGroup->users()->detach($user);
 
-        return response()->noContent(Response::HTTP_NO_CONTENT);
+        return $this->noContent();
     }
 }

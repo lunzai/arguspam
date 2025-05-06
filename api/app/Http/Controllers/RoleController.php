@@ -8,10 +8,15 @@ use App\Models\Role;
 use App\Http\Resources\Role\RoleCollection;
 use App\Http\Resources\Role\RoleResource;
 use App\Http\Filters\RoleFilter;
+use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Validation\ValidationException;
 
 class RoleController extends Controller
 {
+    use IncludeRelationships;
+
     /**
      * Display a listing of the resource.
      */
@@ -38,12 +43,12 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Role $role) : RoleResource
+    public function show(string $id) : RoleResource
     {
         $role = Role::query();
         $this->applyIncludes($role, request());
 
-        return new RoleResource($role->findOrFail($role->id));
+        return new RoleResource($role->findOrFail($id));
     }
 
     /**
@@ -51,6 +56,9 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role) : RoleResource
     {
+        if ($role->is_default) {
+            $this->unprocessableEntity('Cannot update default role.');
+        }
         $validated = $request->validated();
         $role->update($validated);
         return new RoleResource($role);
@@ -61,10 +69,13 @@ class RoleController extends Controller
      */
     public function destroy(Role $role) : Response
     {
+        if ($role->is_default) {
+            $this->unprocessableEntity('Cannot delete default role.');
+        }
         if ($role->users()->exists()) {
-            return $this->error('Cannot delete role with assigned users.', 422); // 422 Unprocessable Entity
+            $this->unprocessableEntity('Cannot delete role with assigned users.');
         }
         $role->delete();
-        return response()->noContent();
+        return $this->noContent();
     }
 }

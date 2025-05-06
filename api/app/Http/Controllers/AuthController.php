@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function login(LoginRequest $request): JsonResponse
+    public function login(LoginRequest $request) : JsonResponse
     {
         $request->validated();
         $attempt = Auth::attemptWhen(
@@ -31,7 +31,7 @@ class AuthController extends Controller
         )->plainTextToken;
         UserLoggedIn::dispatch($user);
 
-        return $this->success(['token' => $token], 'Login successful');
+        return $this->success(['token' => $token]);
     }
 
     public function logout(Request $request): JsonResponse
@@ -39,6 +39,6 @@ class AuthController extends Controller
         $user = $request->user();
         $request->user()->currentAccessToken()->delete();
 
-        return $this->ok('Logged out successfully');
+        return $this->ok();
     }
 }

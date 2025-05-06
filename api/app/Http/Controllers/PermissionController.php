@@ -9,6 +9,7 @@ use App\Http\Resources\Permission\PermissionCollection;
 use App\Http\Resources\Permission\PermissionResource;
 use App\Models\Permission;
 use App\Traits\IncludeRelationships;
+use Illuminate\Http\Response;
 
 class PermissionController extends Controller
 {
@@ -65,13 +66,9 @@ class PermissionController extends Controller
     public function destroy(Permission $permission)
     {
         if ($permission->roles()->exists()) {
-            return response()->json([
-                'message' => 'Cannot delete permission with assigned roles.'
-            ], 422); // 422 Unprocessable Entity
+            return $this->unprocessableEntity('Cannot delete permission with assigned roles.');
         }
-
         $permission->delete();
-
-        return response()->noContent();
+        return $this->noContent();
     }
 }

@@ -55,6 +55,6 @@ class OrgController extends Controller
         $org->save();
         $org->delete();
 
-        return response()->noContent();
+        return $this->noContent();
     }
 }

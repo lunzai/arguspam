@@ -55,6 +55,6 @@ class UserGroupController extends Controller
         $userGroup->save();
         $userGroup->delete();
 
-        return response()->noContent();
+        return $this->noContent();
     }
 }

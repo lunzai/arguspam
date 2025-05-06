@@ -60,6 +60,6 @@ class RequestController extends Controller
         $request->save();
         $request->delete();
 
-        return response()->noContent();
+        return $this->noContent();
     }
 }

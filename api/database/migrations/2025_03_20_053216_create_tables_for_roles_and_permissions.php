@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('description')->nullable()->default(null);
+            $table->boolean('is_default')->default(false);
             $table->timestamps();
             $table->index('name');
         });
@@ -58,14 +59,19 @@ return new class extends Migration
 
         // TODO: move to seeder
         // create default admin role
-        Role::create([
+        $adminRole = new Role([
             'name' => config('pam.rbac.default_admin_role'),
             'description' => 'Default admin role',
         ]);
-        Role::create([
+        $adminRole->is_default = true;
+        $adminRole->save();
+
+        $userRole = new Role([
             'name' => config('pam.rbac.default_user_role'),
             'description' => 'Default user role',
         ]);
+        $userRole->is_default = true;
+        $userRole->save();
     }
 
     /**
@@ -73,9 +79,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
-        Schema::dropIfExists('permissions');
-        Schema::dropIfExists('permission_role');
         Schema::dropIfExists('role_user');
+        Schema::dropIfExists('permission_role');
+        Schema::dropIfExists('permissions');
+        Schema::dropIfExists('roles');
     }
 };

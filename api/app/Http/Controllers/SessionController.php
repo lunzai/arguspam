@@ -46,6 +46,6 @@ class SessionController extends Controller
         $session->save();
         $session->delete();
 
-        return response()->noContent();
+        return $this->noContent();
     }
 }

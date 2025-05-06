@@ -29,13 +29,13 @@ class OrgUserGroupController extends Controller
 
         $org->userGroups()->attach($validated['user_group_ids']);
 
-        return response()->noContent(Response::HTTP_CREATED);
+        return $this->created();
     }
 
     public function destroy(Org $org, string $userGroupId): Response
     {
         $org->userGroups()->detach($userGroupId);
 
-        return response()->noContent();
+        return $this->noContent();
     }
 }

@@ -9,7 +9,6 @@ use App\Http\Resources\Permission\PermissionCollection;
 use App\Http\Resources\Permission\PermissionResource;
 use App\Models\Permission;
 use App\Traits\IncludeRelationships;
-use Illuminate\Http\Response;
 
 class PermissionController extends Controller
 {

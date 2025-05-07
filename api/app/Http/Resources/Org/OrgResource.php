@@ -4,6 +4,7 @@ namespace App\Http\Resources\Org;
 
 use App\Http\Resources\Resource;
 use App\Http\Resources\User\UserResource;
+use App\Http\Resources\UserGroup\UserGroupResource;
 use Illuminate\Http\Request;
 
 class OrgResource extends Resource
@@ -26,6 +27,12 @@ class OrgResource extends Resource
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
+                    'users' => UserResource::collection(
+                        $this->whenLoaded('users')
+                    ),
+                    'userGroups' => UserGroupResource::collection(
+                        $this->whenLoaded('userGroups')
+                    ),
                     'createdBy' => UserResource::collection(
                         $this->whenLoaded('createdBy')
                     ),

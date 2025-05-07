@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Models\UserGroup;
 use App\Rules\UserExistedInOrg;
 use App\Traits\IncludeRelationships;
@@ -16,18 +15,23 @@ class UserGroupUserController extends Controller
     public function store(Request $request, UserGroup $userGroup): Response
     {
         $validated = $request->validate([
-            'user_ids' => ['required', 'array'],
+            'user_ids' => ['required', 'array', 'min:1'],
             'user_ids.*' => ['required', new UserExistedInOrg($userGroup->org_id)],
         ]);
 
-        $userGroup->users()->attach($validated['user_ids']);
+        $userGroup->users()->syncWithoutDetaching($validated['user_ids']);
 
         return $this->created();
     }
 
-    public function destroy(UserGroup $userGroup, User $user): Response
+    public function destroy(UserGroup $userGroup, Request $request): Response
     {
-        $userGroup->users()->detach($user);
+        $validated = $request->validate([
+            'user_ids' => ['required', 'array', 'min:1'],
+            'user_ids.*' => ['integer', 'exists:users,id'],
+        ]);
+
+        $userGroup->users()->detach($validated['user_ids']);
 
         return $this->noContent();
     }

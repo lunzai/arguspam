@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\RoleFilter;
 use App\Http\Requests\Role\StoreRoleRequest;
 use App\Http\Requests\Role\UpdateRoleRequest;
-use App\Models\Role;
 use App\Http\Resources\Role\RoleCollection;
 use App\Http\Resources\Role\RoleResource;
-use App\Http\Filters\RoleFilter;
+use App\Models\Role;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Validation\ValidationException;
 
 class RoleController extends Controller
 {
@@ -43,7 +41,7 @@ class RoleController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id) : RoleResource
+    public function show(string $id): RoleResource
     {
         $role = Role::query();
         $this->applyIncludes($role, request());
@@ -54,7 +52,7 @@ class RoleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRoleRequest $request, Role $role) : RoleResource
+    public function update(UpdateRoleRequest $request, Role $role): RoleResource
     {
         if ($role->is_default) {
             $this->unprocessableEntity('Cannot update default role.');
@@ -67,7 +65,7 @@ class RoleController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Role $role) : Response
+    public function destroy(Role $role): Response
     {
         if ($role->is_default) {
             $this->unprocessableEntity('Cannot delete default role.');

@@ -7,7 +7,7 @@ use App\Http\Controllers\AuditController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrgController;
 use App\Http\Controllers\OrgUserController;
-use App\Http\Controllers\OrgUserGroupController;
+// use App\Http\Controllers\OrgUserGroupController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RoleController;
@@ -70,19 +70,29 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Relationals
     Route::apiResource('users.roles', UserRoleController::class)
-        ->only(['store', 'destroy']);
+        ->only(['store']);
+    Route::delete('users/{user}/roles', [UserRoleController::class, 'destroy'])
+        ->name('users.roles.destroy');
 
     Route::apiResource('roles.permissions', RolePermissionController::class)
-        ->only(['store', 'destroy']);
+        ->only(['store']);
+    Route::delete('roles/{role}/permissions', [RolePermissionController::class, 'destroy'])
+        ->name('roles.permissions.destroy');
 
     Route::apiResource('user-groups.users', UserGroupUserController::class)
-        ->only(['store', 'destroy']);
+        ->only(['store']);
+    Route::delete('user-groups/{user_group}/users', [UserGroupUserController::class, 'destroy'])
+        ->name('user-groups.users.destroy');
 
     Route::apiResource('orgs.users', OrgUserController::class)
-        ->only(['store', 'destroy']);
+        ->only(['store']);
+    Route::delete('orgs/{org}/users', [OrgUserController::class, 'destroy'])
+        ->name('orgs.users.destroy');
 
-    Route::apiResource('orgs.user-groups', OrgUserGroupController::class)
-        ->only(['store', 'destroy']);
+    // Route::apiResource('orgs.user-groups', OrgUserGroupController::class)
+    //     ->only(['store']);
+    // Route::delete('orgs/{org}/user-groups', [OrgUserGroupController::class, 'destroy'])
+    //     ->name('orgs.user-groups.destroy');
 
     Route::post('assets/{asset}/accounts', [AssetAccountController::class, 'store'])
         ->name('assets.accounts.store');
@@ -101,4 +111,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::delete('assets/{asset}/grants/{asset_access_grant}', [AssetAccessGrantController::class, 'destroy'])
         ->name('assets.access-grants.destroy');
+
 });

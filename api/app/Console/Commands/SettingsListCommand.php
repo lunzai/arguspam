@@ -4,9 +4,6 @@ namespace App\Console\Commands;
 
 use App\Facades\Settings;
 use Illuminate\Console\Command;
-use Laravel\Prompts\text;
-use Laravel\Prompts\select;
-use Laravel\Prompts\confirm;
 
 use function Laravel\Prompts\info;
 use function Laravel\Prompts\table;
@@ -35,7 +32,7 @@ class SettingsListCommand extends Command
             foreach ($settings as $key => $value) {
                 $rows[] = [
                     $key,
-                    $this->formatValue($value)
+                    $this->formatValue($value),
                 ];
             }
             table(['Key', 'Slug', 'Value'], $rows);
@@ -59,7 +56,6 @@ class SettingsListCommand extends Command
             $this->table(['Key', 'Value'], $rows);
             $this->newLine();
         }
-
 
     }
 

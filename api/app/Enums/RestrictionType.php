@@ -4,7 +4,8 @@ namespace App\Enums;
 
 enum RestrictionType: string
 {
-    case IP = 'ip';
+    case IP_ADDRESS = 'ip_address';
+    case TIME_WINDOW = 'time_window';
     case LOCATION = 'location';
-    case TIME = 'time';
+    case DEVICE = 'device';
 }

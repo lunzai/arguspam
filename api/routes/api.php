@@ -16,6 +16,7 @@ use App\Http\Controllers\SessionAuditController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SettingGroupController;
+use App\Http\Controllers\UserAccessRestrictionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserGroupUserController;
@@ -73,6 +74,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['store']);
     Route::delete('users/{user}/roles', [UserRoleController::class, 'destroy'])
         ->name('users.roles.destroy');
+    Route::apiResource('users.user-access-restrictions', UserAccessRestrictionController::class);
+    // ->except(['store']);
 
     Route::apiResource('roles.permissions', RolePermissionController::class)
         ->only(['store']);

@@ -314,8 +314,6 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrained()
                 ->cascadeOnDelete();
-            // $table->foreignId('user_group_id')
-            //     ->delete('cascade');
             $table->enum('type', array_column(RestrictionType::cases(), 'value'));
             $table->json('value');
             $table->enum('status', array_column(Status::cases(), 'value'))

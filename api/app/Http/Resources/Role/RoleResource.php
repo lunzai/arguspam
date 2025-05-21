@@ -3,9 +3,9 @@
 namespace App\Http\Resources\Role;
 
 use App\Http\Resources\Permission\PermissionResource;
+use App\Http\Resources\Resource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
-use App\Http\Resources\Resource;
 
 class RoleResource extends Resource
 {
@@ -17,7 +17,7 @@ class RoleResource extends Resource
     public function toArray(Request $request): array
     {
         return [
-            'attributes' => [   
+            'attributes' => [
                 'id' => $this->id,
                 'name' => $this->name,
                 'description' => $this->description,

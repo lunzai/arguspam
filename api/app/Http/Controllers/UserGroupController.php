@@ -12,6 +12,7 @@ use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
+# TODO: refactor like UserAccessRestrictionController
 class UserGroupController extends Controller
 {
     use IncludeRelationships;

@@ -1,5 +1,7 @@
 <script lang="ts">
-    // Permissions list page
 </script>
 
-<h1>Permissions</h1> 
+<div class="py-4">
+    <h1 class="text-xl font-medium pb-4">Permissions</h1>
+    <p>qweqwe</p>
+</div>

@@ -3,28 +3,29 @@
 		LayoutDashboardIcon, ServerIcon, SquareTerminalIcon,
 		Building2, Users, Settings2Icon
     } from '@lucide/svelte';
+    import { avatarService } from '$lib/services/avatar.service';
 
 	// This is sample data.
 	const data = {
 		user: {
 			name: "HL LEONG",
 			email: "heanluen@surfin.sg",
-			avatar: "https://api.dicebear.com/9.x/pixel-art-neutral/svg?seed=Hean%20Luen",
+			avatar: avatarService.avatar("heanluen@surfin.sg"),
 		},
 		orgs: [
 			{
 				name: "Acme Inc",
-				logo: 'https://ui-avatars.com/api/?size=128&name=Acme Inc',
+				logo: avatarService.initial("Acme Inc"),
 				plan: "Enterprise",
 			},
 			{
 				name: "Acme Corp.",
-				logo: 'https://ui-avatars.com/api/?size=128&name=Acme Corp.',
+				logo: avatarService.initial("Acme Corp."),
 				plan: "Startup",
 			},
 			{
 				name: "Evil Corp.",
-				logo: 'https://ui-avatars.com/api/?size=128&name=Evil Corp.',
+				logo: avatarService.initial("Evil Corp."),
 				plan: "Free",
 			},
 		],

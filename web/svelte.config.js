@@ -10,7 +10,7 @@ const config = {
 			$lib: 'src/lib',
 			$routes: 'src/routes',
 			$types: 'src/types',
-			$ui: 'src/lib/components/ui'
+			$ui: 'src/lib/components/ui',
 		}
 	}
 };

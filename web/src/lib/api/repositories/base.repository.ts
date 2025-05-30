@@ -31,6 +31,19 @@ export abstract class BaseRepository<T, CreateDTO = Partial<T>, UpdateDTO = Part
 
     // Custom query method
     protected async query<R>(path: string, config?: any): Promise<ApiResponse<R>> {
-        return apiClient.get<ApiResponse<R>>(`${this.endpoint}/${path}`, config);
+        const { method = 'GET', data, ...restConfig } = config || {};
+        const url = `${this.endpoint}/${path}`;
+
+        switch (method.toUpperCase()) {
+            case 'POST':
+                return apiClient.post<ApiResponse<R>>(url, data, restConfig);
+            case 'PUT':
+                return apiClient.put<ApiResponse<R>>(url, data, restConfig);
+            case 'DELETE':
+                return apiClient.delete<ApiResponse<R>>(url, restConfig);
+            case 'GET':
+            default:
+                return apiClient.get<ApiResponse<R>>(url, { ...restConfig, params: data });
+        }
     }
 } 

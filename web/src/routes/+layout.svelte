@@ -1,8 +1,11 @@
 <script lang="ts">
 	import '../app.css';
 	import { page } from '$app/stores';
+	import { Toaster } from "$ui/sonner";
 	let { children } = $props();
 </script>
+
+<Toaster richColors position="top-center" />
 
 {#if $page.data.isAuthenticated}
 	<div class="flex h-screen bg-background">

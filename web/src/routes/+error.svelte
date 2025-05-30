@@ -1,7 +1,8 @@
 <script lang="ts">
-	import { page, navigate } from '$app/state';
+	import { page } from '$app/state';
+	import { goto } from '$app/navigation';
     function goBack() {
-        navigate(-1);
+        goto(-1);
     }
 </script>
 <div class="h-svh w-full">

@@ -1,41 +1,89 @@
-import { apiClient } from '../client';
-import type { LoginRequest, LoginResponse, ApiResponse } from '../types';
+import { BaseService } from './base.service';
+import { AuthRepository } from '../repositories/auth.repository';
+import { AuthValidator } from '../validation/auth.validator';
+import type { LoginRequestDTO, LoginResponseDTO } from '../dtos/auth.dto';
+import type { ValidationResult } from '../validation/types';
 
-export class AuthService {
-    private static instance: AuthService;
-    private readonly baseUrl = '/auth';
+export class AuthService extends BaseService<LoginResponseDTO> {
+    private readonly TOKEN_KEY = 'auth_token';
+    protected repository: AuthRepository;
+    private validator: AuthValidator;
 
-    private constructor() {}
+    constructor() {
+        super();
+        this.repository = new AuthRepository();
+        this.validator = new AuthValidator();
+    }
 
-    public static getInstance(): AuthService {
-        if (!AuthService.instance) {
-            AuthService.instance = new AuthService();
+    // Validate login request
+    public validateLogin(data: LoginRequestDTO): ValidationResult {
+        return this.validator.validateLogin(data);
+    }
+
+    // Login user
+    public async login(data: LoginRequestDTO): Promise<LoginResponseDTO> {
+        // Validate login data
+        const validation = this.validateLogin(data);
+        if (!validation.isValid) {
+            throw new Error('Invalid login data');
         }
-        return AuthService.instance;
-    }
 
-    public async login(credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> {
-        const response = await apiClient.post<ApiResponse<LoginResponse>>(
-            `${this.baseUrl}/login`,
-            credentials
-        );
-        
-        if (response.data?.token) {
-            localStorage.setItem('auth_token', response.data.token);
+        try {
+            const response = await this.repository.login(data);
+            this.setToken(response.data.token);
+            return response.data;
+        } catch (error) {
+            // Remove token if login fails
+            this.removeToken();
+            throw error;
         }
-        
-        return response;
     }
 
-    public async logout(): Promise<ApiResponse> {
-        const response = await apiClient.post<ApiResponse>(`${this.baseUrl}/logout`);
-        localStorage.removeItem('auth_token');
-        return response;
+    // Logout user
+    public async logout(): Promise<void> {
+        try {
+            await this.repository.logout();
+        } finally {
+            // Always remove token on logout attempt
+            this.removeToken();
+        }
     }
 
+    // Get current user
+    public async getCurrentUser() {
+        try {
+            const response = await this.repository.getCurrentUser();
+            return response.data;
+        } catch (error) {
+            // Remove token if getting current user fails
+            this.removeToken();
+            throw error;
+        }
+    }
+
+    // Check if user is authenticated
     public isAuthenticated(): boolean {
-        return !!localStorage.getItem('auth_token');
+        return !!this.getToken();
     }
-}
 
-export const authService = AuthService.getInstance(); 
+    // Get auth token
+    public getToken(): string | null {
+        return localStorage.getItem(this.TOKEN_KEY);
+    }
+
+    // Set auth token
+    protected setToken(token: string): void {
+        localStorage.setItem(this.TOKEN_KEY, token);
+    }
+
+    // Remove auth token
+    protected removeToken(): void {
+        localStorage.removeItem(this.TOKEN_KEY);
+    }
+
+    // Get auth header
+    public getAuthHeader(): Record<string, string> {
+        const token = this.getToken();
+        return token ? { Authorization: `Bearer ${token}` } : {};
+    }
+} 

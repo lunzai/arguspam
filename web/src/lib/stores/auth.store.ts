@@ -1,60 +1,60 @@
 import { writable, derived } from 'svelte/store';
 import { AuthService } from '$lib/api/services/auth.service';
+import { UserService } from '$lib/api/services/user.service';
 import type { User } from '$lib/api/types';
 import { browser } from '$app/environment';
 
 const authService = new AuthService();
+const userService = new UserService();
 
-// Create a writable store for the user
+// Create stores for user data and loading state
 const user = writable<User | null>(null);
+const isLoading = writable<boolean>(true);
 
-// Create a derived store for authentication status
+// Create derived stores
 export const isAuthenticated = derived(user, ($user) => $user !== null);
+export const authLoading = derived(isLoading, ($isLoading) => $isLoading);
 
 // Initialize the store
 async function initialize() {
-    if (!browser) return;
+    if (!browser) {
+        isLoading.set(false);
+        return;
+    }
     
     try {
-        const currentUser = await authService.getCurrentUser();
+        const currentUser = await userService.getCurrentUser();
         user.set(currentUser);
-    } catch (error) {
+    } catch (error: any) {
         console.error('Failed to initialize auth store:', error);
         user.set(null);
-    }
-}
-
-// Login function
-async function login(email: string, password: string) {
-    try {
-        const response = await authService.login({ email, password });
-        // Ensure the user object has all required fields
-        const userData: User = {
-            id: response.user.id,
-            name: response.user.name,
-            email: response.user.email,
-            created_at: new Date().toISOString(), // These should come from the API
-            updated_at: new Date().toISOString(), // These should come from the API
-        };
-        user.set(userData);
-        return response;
-    } catch (error) {
-        user.set(null);
-        throw error;
+    } finally {
+        isLoading.set(false);
     }
 }
 
 // Logout function
 async function logout() {
     try {
+        // Call API to logout (invalidate token on server)
         await authService.logout();
-        user.set(null);
     } catch (error) {
-        console.error('Logout error:', error);
-        // Still clear the user state even if the API call fails
-        user.set(null);
-        throw error;
+        console.error('API logout error:', error);
+        // Continue with client-side cleanup even if API call fails
     }
+    
+    // Clear client-side state
+    user.set(null);
+    
+    // Redirect to logout endpoint which will clear cookies
+    if (browser) {
+        window.location.href = '/auth/logout';
+    }
+}
+
+// Function to set user data (for use after successful login)
+function setUser(userData: User) {
+    user.set(userData);
 }
 
 // Initialize the store only in browser environment
@@ -64,7 +64,8 @@ if (browser) {
 
 export const auth = {
     subscribe: user.subscribe,
-    login,
     logout,
+    setUser,
     isAuthenticated,
+    authLoading,
 }; 

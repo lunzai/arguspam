@@ -41,6 +41,13 @@ class UserController extends Controller
         return new UserResource($user->findOrFail($id));
     }
 
+    public function me(): UserResource
+    {
+        $user = Auth::user();
+
+        return new UserResource($user);
+    }
+
     public function update(UpdateUserRequest $request, User $user): UserResource
     {
         $validated = $request->validated();

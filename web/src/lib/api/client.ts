@@ -1,30 +1,57 @@
 import axios from 'axios';
 import type { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import { browser } from '$app/environment';
 
 class ApiClient {
     private client: AxiosInstance;
 
-    constructor() {
+    constructor(private isServerSide: boolean = false) {
         this.client = axios.create({
-            baseURL: import.meta.env.VITE_API_URL,
+            baseURL: this.isServerSide ? process.env.VITE_API_URL : import.meta.env.VITE_API_URL,
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
             },
         });
 
-        this.setupInterceptors();
+        if (!this.isServerSide) {
+            this.setupClientInterceptors();
+        }
     }
 
-    private setupInterceptors() {
-        // Request interceptor
-        this.client.interceptors.request.use(
-            (config) => {
-                const token = localStorage.getItem('auth_token');
-                if (token) {
-                    config.headers.Authorization = `Bearer ${token}`;
+    private async getAuthToken(): Promise<string | null> {
+        if (!browser || this.isServerSide) return null;
+        
+        try {
+            const response = await fetch('/api/auth/token', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
                 }
-                return config;
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                return data.token;
+            }
+            
+            return null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    private setupClientInterceptors() {
+        // Request interceptor for client-side only
+        this.client.interceptors.request.use(
+            async (axiosConfig) => {
+                if (browser) {
+                    const token = await this.getAuthToken();
+                    if (token) {
+                        axiosConfig.headers.Authorization = `Bearer ${token}`;
+                    }
+                }
+                return axiosConfig;
             },
             (error) => {
                 return Promise.reject(error);
@@ -35,14 +62,15 @@ class ApiClient {
         this.client.interceptors.response.use(
             (response) => response,
             async (error) => {
-                if (error.response?.status === 401) {
-                    // Handle token expiration
-                    localStorage.removeItem('auth_token');
-                    window.location.href = '/login';
-                }
+                // Let the components handle the error responses
                 return Promise.reject(error);
             }
         );
+    }
+
+    // Set authorization header for server-side requests
+    public setAuthHeader(token: string) {
+        this.client.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     }
 
     public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
@@ -66,4 +94,14 @@ class ApiClient {
     }
 }
 
-export const apiClient = new ApiClient(); 
+// Client-side API client
+export const apiClient = new ApiClient();
+
+// Factory function for server-side API client
+export const createServerApiClient = (authToken?: string) => {
+    const client = new ApiClient(true);
+    if (authToken) {
+        client.setAuthHeader(authToken);
+    }
+    return client;
+}; 

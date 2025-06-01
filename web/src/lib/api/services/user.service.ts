@@ -41,7 +41,11 @@ export class UserService extends BaseService<User> {
     async getCurrentUser(): Promise<User> {
         try {
             const response = await this.repository.getCurrentUser();
-            return this.transformResponse(response);
+            
+            // Extract user data from attributes (Laravel Resource format)
+            const responseData = response.data as any;
+            const userData = responseData.attributes as User;
+            return userData;
         } catch (error) {
             return this.handleError(error);
         }

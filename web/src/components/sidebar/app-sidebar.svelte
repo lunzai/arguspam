@@ -7,11 +7,6 @@
 
 	// This is sample data.
 	const data = {
-		user: {
-			name: "HL LEONG",
-			email: "heanluen@surfin.sg",
-			avatar: avatarService.avatar("heanluen@surfin.sg"),
-		},
 		orgs: [
 			{
 				name: "Acme Inc",
@@ -141,7 +136,7 @@
 		<NavMain items={data.navMain} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<NavUser user={data.user} />
+		<NavUser />
 	</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>

@@ -3,6 +3,23 @@
 	import * as Breadcrumb from "$ui/breadcrumb/index.js";
 	import { Separator } from "$ui/separator/index.js";
 	import * as Sidebar from "$ui/sidebar/index.js";
+	import { auth } from "$lib/stores/auth.store";
+	import { onMount } from "svelte";
+	import type { User } from "$lib/api/types";
+
+	interface LayoutData {
+		user?: User;
+		isAuthenticated?: boolean;
+	}
+
+	let { data, children }: { data: LayoutData; children: any } = $props();
+
+	// Set user data from server into auth store
+	onMount(() => {
+		if (data.user && data.isAuthenticated) {
+			auth.setUser(data.user);
+		}
+	});
 </script>
 
 <Sidebar.Provider>
@@ -30,14 +47,7 @@
 			</div>
 		</header>
 		<div class="flex flex-1 flex-col p-4">
-			<slot />
-			<!-- <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-				<div class="bg-muted/50 aspect-video rounded-xl"></div>
-				<div class="bg-muted/50 aspect-video rounded-xl"></div>
-				<div class="bg-muted/50 aspect-video rounded-xl"></div>
-			</div> -->
-			<!-- <div class="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min"></div> -->
+			{@render children()}
 		</div>
-		
 	</Sidebar.Inset>
 </Sidebar.Provider>

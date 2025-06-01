@@ -1,3 +1,5 @@
+import type { User } from '../types';
+
 export interface LoginRequestDTO {
     email: string;
     password: string;
@@ -5,11 +7,7 @@ export interface LoginRequestDTO {
 
 export interface LoginResponseDTO {
     token: string;
-    user: {
-        id: number;
-        name: string;
-        email: string;
-    };
+    user: User;
 }
 
 export interface RegisterRequestDTO {

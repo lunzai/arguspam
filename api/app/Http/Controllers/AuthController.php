@@ -12,6 +12,13 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    public function me(Request $request): JsonResponse
+    {
+        return $this->success([
+            'user' => $request->user()
+        ]);
+    }
+
     public function login(LoginRequest $request): JsonResponse
     {
         $request->validated();
@@ -32,7 +39,10 @@ class AuthController extends Controller
         )->plainTextToken;
         UserLoggedIn::dispatch($user);
 
-        return $this->success(['token' => $token]);
+        return $this->success([
+            'token' => $token,
+            'user' => $user
+        ]);
     }
 
     public function logout(Request $request): Response

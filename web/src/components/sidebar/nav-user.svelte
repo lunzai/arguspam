@@ -1,10 +1,10 @@
 <script lang="ts">
-	import * as Avatar from "$ui/avatar";
-	import * as DropdownMenu from "$ui/dropdown-menu";
-	import * as Sidebar from "$ui/sidebar";
-	import { useSidebar } from "$ui/sidebar";
-	
-    import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from '@lucide/svelte';
+	import * as Avatar from '$ui/avatar';
+	import * as DropdownMenu from '$ui/dropdown-menu';
+	import * as Sidebar from '$ui/sidebar';
+	import { useSidebar } from '$ui/sidebar';
+
+	import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from '@lucide/svelte';
 
 	let { user }: { user: { name: string; email: string; avatar: string } } = $props();
 	const sidebar = useSidebar();
@@ -34,7 +34,7 @@
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
 				class="w-(--bits-dropdown-menu-anchor-width) min-w-56 rounded-lg"
-				side={sidebar.isMobile ? "bottom" : "right"}
+				side={sidebar.isMobile ? 'bottom' : 'right'}
 				align="end"
 				sideOffset={4}
 			>
@@ -52,9 +52,11 @@
 				</DropdownMenu.Label>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Group>
-					<DropdownMenu.Item onSelect={() => {
-						window.location.href = "/account";
-					}}>
+					<DropdownMenu.Item
+						onSelect={() => {
+							window.location.href = '/account';
+						}}
+					>
 						<BadgeCheck />
 						Account
 					</DropdownMenu.Item>
@@ -68,9 +70,11 @@
 					</DropdownMenu.Item> -->
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item onSelect={() => {
-					window.location.href = "/logout";
-				}}>
+				<DropdownMenu.Item
+					onSelect={() => {
+						window.location.href = '/logout';
+					}}
+				>
 					<LogOut />
 					Log out
 				</DropdownMenu.Item>

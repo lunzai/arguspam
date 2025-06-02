@@ -5,7 +5,6 @@ import { defineConfig, loadEnv } from 'vite';
 
 export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), '');
-	const apiUrl = env.VITE_API_URL;
 
 	return {
 		plugins: [tailwindcss(), sveltekit()],
@@ -18,15 +17,6 @@ export default defineConfig(({ mode }) => {
 				host: 'localhost',
 				port: Number(env.VITE_PORT) || 5173,
 				clientPort: Number(env.VITE_PORT) || 5173
-			},
-			cors: true,
-			proxy: {
-				'/api': {
-					target: apiUrl,
-					changeOrigin: true,
-					secure: mode === 'production',
-					ws: true
-				}
 			}
 		},
 		test: {

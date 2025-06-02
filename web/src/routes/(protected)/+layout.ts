@@ -1,15 +1,14 @@
-import { redirect } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
+import { authStore } from '$lib/stores/auth.js';
 
-export const load = (async ({ url }) => {
-    // TODO: Add proper auth check
-    // const isAuthenticated = true; // Replace with actual auth check
+export const load = (async ({ data }) => {
+	// Initialize auth store with server-provided user data
+	if (data.user) {
+		authStore.setUser(data.user);
+	}
 
-    // if (!isAuthenticated) {
-    //     throw redirect(302, '/auth/login');
-    // }
-
-    // return {
-    //     url: url.pathname
-    // };
-}) satisfies LayoutLoad; 
+	return {
+		user: data.user,
+		url: data.url
+	};
+}) satisfies LayoutLoad;

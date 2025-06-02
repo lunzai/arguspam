@@ -1,18 +1,20 @@
 <script lang="ts">
-	import * as DropdownMenu from "$ui/dropdown-menu/index.js";
-	import * as Sidebar from "$ui/sidebar/index.js";
-	import * as Avatar from "$ui/avatar/index.js";
-	import { useSidebar } from "$ui/sidebar/index.js";
+	import * as DropdownMenu from '$ui/dropdown-menu/index.js';
+	import * as Sidebar from '$ui/sidebar/index.js';
+	import * as Avatar from '$ui/avatar/index.js';
+	import { useSidebar } from '$ui/sidebar/index.js';
 	import { ChevronsUpDown, Plus } from '@lucide/svelte';
 
 	// This should be `Component` after @lucide/svelte updates types
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	let { orgs }: { 
-		orgs: { 
-			name: string; 
-			logo: string; 
-			plan: string 
-		}[] 
+	let {
+		orgs
+	}: {
+		orgs: {
+			name: string;
+			logo: string;
+			plan: string;
+		}[];
 	} = $props();
 	const sidebar = useSidebar();
 
@@ -50,7 +52,7 @@
 			<DropdownMenu.Content
 				class="w-(--bits-dropdown-menu-anchor-width) min-w-56 rounded-lg"
 				align="start"
-				side={sidebar.isMobile ? "bottom" : "right"}
+				side={sidebar.isMobile ? 'bottom' : 'right'}
 				sideOffset={4}
 			>
 				<DropdownMenu.Label class="text-muted-foreground text-xs">Organizations</DropdownMenu.Label>
@@ -69,9 +71,7 @@
 				{/each}
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item class="gap-2 p-2">
-					<div
-						class="flex size-6 items-center justify-center rounded-md border bg-transparent"
-					>
+					<div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
 						<Plus class="size-4" />
 					</div>
 					<div class="text-muted-foreground font-medium">Add Organization</div>

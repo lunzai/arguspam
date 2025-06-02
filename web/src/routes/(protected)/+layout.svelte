@@ -1,17 +1,17 @@
 <script lang="ts">
-	import AppSidebar from "$components/sidebar/app-sidebar.svelte";
-	import * as Breadcrumb from "$ui/breadcrumb/index.js";
-	import { Separator } from "$ui/separator/index.js";
-	import * as Sidebar from "$ui/sidebar/index.js";
+	import AppSidebar from '$components/sidebar/app-sidebar.svelte';
+	import * as Breadcrumb from '$ui/breadcrumb/index.js';
+	import { Separator } from '$ui/separator/index.js';
+	import * as Sidebar from '$ui/sidebar/index.js';
 </script>
 
 <Sidebar.Provider>
 	<AppSidebar />
 	<Sidebar.Inset>
 		<header
-			class="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 
-			flex h-16 shrink-0 items-center gap-2 transition-[width,height] 
-			ease-linear border-b border-gray-200"
+			class="flex
+			h-16 shrink-0 items-center gap-2 border-b border-gray-200
+			transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12"
 		>
 			<div class="flex items-center gap-2 px-4">
 				<Sidebar.Trigger class="-ml-1" />
@@ -38,6 +38,5 @@
 			</div> -->
 			<!-- <div class="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min"></div> -->
 		</div>
-		
 	</Sidebar.Inset>
 </Sidebar.Provider>

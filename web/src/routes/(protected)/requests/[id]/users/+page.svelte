@@ -1,5 +1,5 @@
 <script lang="ts">
-    // User group users page
+	// User group users page
 </script>
 
-<h1>Group Users</h1> 
+<h1>Group Users</h1>

@@ -3,7 +3,6 @@
 	import * as Breadcrumb from "$ui/breadcrumb/index.js";
 	import { Separator } from "$ui/separator/index.js";
 	import * as Sidebar from "$ui/sidebar/index.js";
-	import { auth } from "$lib/stores/auth.store";
 	import { onMount } from "svelte";
 	import type { User } from "$lib/api/types";
 
@@ -14,12 +13,6 @@
 
 	let { data, children }: { data: LayoutData; children: any } = $props();
 
-	// Set user data from server into auth store
-	onMount(() => {
-		if (data.user && data.isAuthenticated) {
-			auth.setUser(data.user);
-		}
-	});
 </script>
 
 <Sidebar.Provider>

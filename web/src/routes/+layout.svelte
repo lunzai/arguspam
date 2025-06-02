@@ -1,5 +1,4 @@
 <script lang="ts">
-	import '../app.css';
 	import { page } from '$app/stores';
 	import { Toaster } from "$ui/sonner";
 	import LogoutButton from '$components/auth/logout-button.svelte';

@@ -24,22 +24,7 @@
 </script>
 
 <div class={cn("flex flex-col gap-6", className)} bind:this={ref} {...restProps}>
-	<form 
-		method="POST" 
-		action="?/login"
-		use:enhance={() => {
-			isLoading = true;
-			return async ({ result, update }) => {
-				isLoading = false;
-				if (result.type === 'failure') {
-					if (result.data?.error) {
-						toast.error(result.data.error);
-					}
-				}
-				await update();
-			};
-		}}
-	>
+	<form>
 		<div class="flex flex-col gap-6">
 			<div class="flex flex-col items-center gap-2">
 				<div class="flex size-24 items-center justify-center rounded-md">

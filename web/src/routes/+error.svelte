@@ -2,13 +2,13 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
     function goBack() {
-        goto(-1);
+        history.back();
     }
 </script>
 <div class="h-svh w-full">
     <div class="m-auto flex h-full w-full flex-col items-center justify-center gap-2">
         <h1 class="text-[length:7rem] leading-tight font-bold">{page.status}</h1>
-        <span class="font-medium">{page.error.message}</span>
+        <span class="font-medium">{page.error?.message || 'An error occurred'}</span>
         {#if page.status === 403}
         <p class="text-muted-foreground text-center">
             You don't have necessary permission to view this resource.

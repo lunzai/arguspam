@@ -4,7 +4,6 @@
 	import { Input } from "$ui/input/index.js";
 	import { Button } from "$ui/button/index.js";
 	import { cn, type WithElementRef } from "$lib/utils.js";
-	import { auth } from "$lib/stores/auth.store";
 	import { goto } from "$app/navigation";
 	import { toast } from "svelte-sonner";
 
@@ -20,18 +19,6 @@
 
 	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
-		isLoading = true;
-		await new Promise((resolve) => setTimeout(resolve, 500));
-		try {
-			await auth.login(email, password);
-			toast.success('Login successful');
-			goto('/dashboard');
-		} catch (error) {
-			toast.error('Invalid email or password');
-			console.error('Login error:', error);
-		} finally {
-			isLoading = false;
-		}
 	}
 </script>
 

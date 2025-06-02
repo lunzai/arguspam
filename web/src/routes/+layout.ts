@@ -1,25 +1,31 @@
 import { redirect } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
+import { auth } from '$lib/stores/auth';
 
-export const load = (async ({ url }) => {
-    // TODO: Add proper auth check
-    // const isAuthenticated = true; // Replace with actual auth check
+export const load: LayoutLoad = async ({ data, url }) => {
+    const { isAuthenticated, user, isPublicPath } = data;
 
-    // const publicPaths = ['/auth/login', '/auth/signup', '/auth/forgot-password'];
-    // const isPublicPath = publicPaths.includes(url.pathname);
+    // Initialize auth store on client side
+    if (typeof window !== 'undefined') {
+        auth.init();
+        if (user) {
+            auth.setUser(user);
+        }
+    }
 
-    // // If not authenticated and trying to access protected route
-    // if (!isAuthenticated && !isPublicPath) {
-    //     throw redirect(302, '/auth/login');
-    // }
+    // If not authenticated and trying to access protected route
+    if (!isAuthenticated && !isPublicPath) {
+        redirect(302, '/auth/login');
+    }
 
-    // // If authenticated and trying to access public route
-    // if (isAuthenticated && isPublicPath) {
-    //     throw redirect(302, '/dashboard');
-    // }
+    // If authenticated and trying to access auth pages, redirect to home
+    if (isAuthenticated && url.pathname.startsWith('/auth/login')) {
+        redirect(302, '/');
+    }
 
-    // return {
-    //     url: url.pathname,
-    //     isAuthenticated
-    // };
-}) satisfies LayoutLoad; 
+    return {
+        isAuthenticated,
+        user,
+        url: url.pathname
+    };
+}; 

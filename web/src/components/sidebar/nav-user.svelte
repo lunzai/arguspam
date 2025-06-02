@@ -23,16 +23,6 @@
 		avatar: avatarService.avatar("guest@example.com"),
 	});
 
-	async function handleLogout() {
-		try {
-			await auth.logout();
-			toast.success('Successfully logged out');
-			goto('/auth/login');
-		} catch (error) {
-			console.error('Logout error:', error);
-			toast.error('Error during logout');
-		}
-	}
 </script>
 
 {#if $authLoading}

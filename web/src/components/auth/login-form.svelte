@@ -24,30 +24,22 @@
 </script>
 
 <div class={cn("flex flex-col gap-6", className)} bind:this={ref} {...restProps}>
-	<form method="POST" action="?/login" use:enhance={() => {
-		isLoading = true;
-		
-		return async ({ result, update }: { result: any; update: any }) => {
-			if (result.type === 'success') {
-				toast.success('Login successful');
-			} else if (result.type === 'failure') {
-				if (result.data?.error) {
-					toast.error(result.data.error);
-				} else if (result.data?.errors) {
-					// Handle validation errors
-					const firstError = Object.values(result.data.errors)[0];
-					if (firstError && Array.isArray(firstError)) {
-						toast.error(firstError[0]);
+	<form 
+		method="POST" 
+		action="?/login"
+		use:enhance={() => {
+			isLoading = true;
+			return async ({ result, update }) => {
+				isLoading = false;
+				if (result.type === 'failure') {
+					if (result.data?.error) {
+						toast.error(result.data.error);
 					}
 				}
-			} else if (result.type === 'redirect') {
-				toast.success('Login successful');
-			}
-			
-			isLoading = false;
-			await update();
-		};
-	}}>
+				await update();
+			};
+		}}
+	>
 		<div class="flex flex-col gap-6">
 			<div class="flex flex-col items-center gap-2">
 				<div class="flex size-24 items-center justify-center rounded-md">
@@ -65,7 +57,7 @@
 						type="email"
 						placeholder="me@example.com"
 						required
-						value={form?.email || 'heanluen@gmail.com'}
+						value={form?.email || ''}
 						disabled={isLoading}
 						class={form?.errors?.email ? "border-destructive" : ""}
 					/>
@@ -81,7 +73,7 @@
 						type="password"
 						placeholder="********"
 						required
-						value="password"
+						value=""
 						disabled={isLoading}
 						class={form?.errors?.password ? "border-destructive" : ""}
 					/>

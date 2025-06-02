@@ -1,104 +1,84 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
-import config from '$lib/config';
-import { AuthRepository } from '$lib/api/repositories/auth.repository';
+import axios from 'axios';
+import { AUTH_TOKEN_EXPIRY, ALLOWED_HOSTS, AUTH_COOKIE_SAME_SITE } from '$env/static/private';
 
-export const load: PageServerLoad = async ({ cookies, url }) => {
-    // If already authenticated, redirect to dashboard
-    const authToken = cookies.get(config.auth.tokenKey);
-    if (authToken) {
-        // Validate token with backend
-        try {
-            const response = await fetch(`${process.env.VITE_API_URL}/users/me`, {
-                headers: {
-                    'Authorization': `Bearer ${authToken}`,
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-            
-            if (response.ok) {
-                // User is authenticated, redirect to dashboard or return URL
-                const redirectTo = url.searchParams.get('redirectTo') || '/dashboard';
-                throw redirect(302, redirectTo);
-            }
-        } catch (error) {
-            // Token is invalid, clear it
-            cookies.delete(config.auth.tokenKey, { path: '/' });
-        }
-    }
-    
-    return {
-        redirectTo: url.searchParams.get('redirectTo')
-    };
+// Environment configuration - should match server API
+const API_URL = 'https://api.argus.pam'; // TODO: Add API_URL to private env
+const AUTH_TOKEN_KEY = 'auth_token'; // TODO: Add AUTH_TOKEN_KEY to private env
+
+export const load: PageServerLoad = async ({ cookies }) => {
+	// If user is already logged in, redirect to protected area
+	const token = cookies.get(AUTH_TOKEN_KEY);
+	if (token) {
+		// Optionally verify token is still valid here
+		redirect(302, '/dashboard');
+	}
+	
+	return {};
 };
 
 export const actions: Actions = {
-    login: async ({ request, cookies, url }) => {
-        const formData = await request.formData();
-        const email = formData.get('email')?.toString();
-        const password = formData.get('password')?.toString();
-        
-        if (!email || !password) {
-            return fail(400, {
-                error: 'Email and password are required',
-                email
-            });
-        }
-        
-        try {
-            // Use AuthRepository for login
-            const response = await AuthRepository.serverLogin({ email, password });
-            
-            // Set HTTP-only cookie with the token
-            cookies.set(config.auth.tokenKey, response.data.token, {
-                path: config.auth.cookieOptions.path,
-                maxAge: config.auth.tokenExpiry,
-                httpOnly: true,
-                secure: config.auth.cookieOptions.secure,
-                sameSite: config.auth.cookieOptions.sameSite
-            });
-            
-            // Redirect to dashboard or return URL
-            const redirectTo = url.searchParams.get('redirectTo') || '/dashboard';
-            throw redirect(302, redirectTo);
-            
-        } catch (error: any) {
-            // If it's a redirect, let it through
-            if (error.status === 302) {
-                throw error;
-            }
-            
-            console.error('Login error:', error);
-            
-            // Handle different types of errors
-            if (error.response) {
-                if (error.response.status === 422) {
-                    // Validation errors
-                    return fail(422, {
-                        errors: error.response.data.errors,
-                        email
-                    });
-                } else if (error.response.status === 401) {
-                    // Authentication error
-                    return fail(401, {
-                        error: 'Invalid email or password',
-                        email
-                    });
-                } else {
-                    // Other API errors
-                    return fail(error.response.status, {
-                        error: 'An error occurred. Please try again.',
-                        email
-                    });
-                }
-            }
-            
-            // Network or other errors
-            return fail(500, {
-                error: 'An error occurred. Please try again.',
-                email
-            });
-        }
-    }
+	login: async ({ request, cookies }) => {
+		const data = await request.formData();
+		const email = data.get('email')?.toString();
+		const password = data.get('password')?.toString();
+
+		try {
+			const response = await axios.post(`${API_URL}/auth/login`, {
+				email,
+				password
+			});
+
+			const { token, user } = response.data.data;
+
+			// Set the token in an HTTP-only cookie for security
+			cookies.set(AUTH_TOKEN_KEY, token, {
+				path: '/',
+				httpOnly: true,
+				secure: !ALLOWED_HOSTS.includes('127.0.0.1'),
+				sameSite: AUTH_COOKIE_SAME_SITE as 'strict' | 'lax' | 'none',
+				maxAge: parseInt(AUTH_TOKEN_EXPIRY)
+			});
+
+			// Set user data in a readable cookie (include all user fields)
+			cookies.set('user_data', JSON.stringify({
+				id: user.id,
+				name: user.name,
+				email: user.email,
+				email_verified_at: user.email_verified_at,
+				two_factor_enabled: user.two_factor_enabled,
+				two_factor_confirmed_at: user.two_factor_confirmed_at,
+				status: user.status
+			}), {
+				path: '/',
+				httpOnly: false, // Allow client-side access
+				secure: !ALLOWED_HOSTS.includes('127.0.0.1'),
+				sameSite: AUTH_COOKIE_SAME_SITE as 'strict' | 'lax' | 'none',
+				maxAge: parseInt(AUTH_TOKEN_EXPIRY)
+			});
+
+			redirect(302, '/dashboard');
+		} catch (error: any) {
+			if (error.response?.status === 422) {
+				// Validation errors
+				return fail(422, {
+					email,
+					errors: error.response.data.errors
+				});
+			} else if (error.response?.status === 401) {
+				// Invalid credentials
+				return fail(401, {
+					email,
+					error: 'Invalid email or password'
+				});
+			} else {
+				// Network or other errors
+				return fail(500, {
+					email,
+					error: 'An error occurred. Please try again.'
+				});
+			}
+		}
+	}
 }; 

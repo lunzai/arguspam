@@ -32,9 +32,9 @@
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 					>
 						<div
-							class="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
+							class="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
 						>
-							<Avatar.Root class="size-4 rounded-lg">
+							<Avatar.Root class="size-8 rounded-lg">
 								<Avatar.Image src={activeOrg.logo} alt={activeOrg.name} />
 								<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
 							</Avatar.Root>

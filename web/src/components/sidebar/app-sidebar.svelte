@@ -7,29 +7,29 @@
 		Users,
 		Settings2Icon
 	} from '@lucide/svelte';
-	import { avatarService } from '$lib/client/services/avatar.js';
+	import { generateAvatar, generateInitials } from '$lib/services/client/avatar.js';
 
 	// This is sample data.
 	const data = {
 		user: {
 			name: 'HL LEONG',
 			email: 'heanluen@surfin.sg',
-			avatar: avatarService.avatar('heanluen@surfin.sg')
+			avatar: generateAvatar('heanluen@surfin.sg')
 		},
 		orgs: [
 			{
 				name: 'Acme Inc',
-				logo: avatarService.initial('Acme Inc'),
+				logo: generateInitials('Acme Inc'),
 				plan: 'Enterprise'
 			},
 			{
 				name: 'Acme Corp.',
-				logo: avatarService.initial('Acme Corp.'),
+				logo: generateInitials('Acme Corp.'),
 				plan: 'Startup'
 			},
 			{
 				name: 'Evil Corp.',
-				logo: avatarService.initial('Evil Corp.'),
+				logo: generateInitials('Evil Corp.'),
 				plan: 'Free'
 			}
 		],
@@ -124,10 +124,10 @@
 </script>
 
 <script lang="ts">
+	import * as Sidebar from '$ui/sidebar/index.js';
 	import NavMain from './nav-main.svelte';
 	import NavUser from './nav-user.svelte';
 	import OrgSwitcher from './org-switcher.svelte';
-	import * as Sidebar from '$ui/sidebar/index.js';
 	import type { ComponentProps } from 'svelte';
 
 	let {

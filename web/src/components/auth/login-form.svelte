@@ -3,12 +3,12 @@
 	import { Label } from '$ui/label/index.js';
 	import { Input } from '$ui/input/index.js';
 	import { Button } from '$ui/button/index.js';
-	import { cn, type WithElementRef } from '$lib/utils.js';
+	import { cn, type WithElementRef } from '$lib/utils';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
-	import { authService } from '$lib/client/services/auth.js';
-	import { authStore } from '$lib/client/stores/auth.js';
-	import type { ApiError } from '$lib/shared/types/error.js';
+	import { authService } from '$lib/services/client/auth.js';
+	import { authStore } from '$lib/stores/auth.js';
+	import type { ApiError } from '$lib/types/error.js';
 
 	let {
 		ref = $bindable(null),
@@ -34,7 +34,7 @@
 			const result = await authService.login({ email, password });
 
 			// Update auth store with user data
-			authStore.setUser(result.user);
+			authStore.setUser(result.data.user);
 
 			toast.success('Successfully logged in!');
 

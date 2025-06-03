@@ -1,27 +1,23 @@
-import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
+import { redirect } from '@sveltejs/kit';
 import { getAuthToken } from '$lib/server/helpers/cookie.js';
-import { authService } from '$lib/server/services/auth.js';
-import type { User } from '$lib/shared/types/user.js';
+import { authService } from '$lib/services/server/auth.js';
+import type { User } from '$lib/types/user.js';
 
-export const load = (async ({ cookies, url }) => {
+export const load: LayoutServerLoad = async ({ cookies }) => {
 	const token = getAuthToken(cookies);
-
+	
 	if (!token) {
-		throw redirect(302, '/auth/login');
+		throw redirect(302, '/login');
 	}
 
 	try {
-		// Verify token and get user data from Laravel API
-		const data = await authService.me(token);
+		const user: User = await authService.me(token);
 		return {
-			user: data.user,
-			url: url.pathname
+			user
 		};
 	} catch (error) {
-		// Token is invalid or expired, clear cookie and redirect
-		const { clearAuthCookie } = await import('$lib/server/helpers/cookie.js');
-		clearAuthCookie(cookies);
-		throw redirect(302, '/auth/login');
+		// If token is invalid, redirect to login
+		throw redirect(302, '/login');
 	}
-}) satisfies LayoutServerLoad;
+};

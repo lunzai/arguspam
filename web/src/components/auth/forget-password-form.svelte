@@ -3,7 +3,7 @@
 	import { Label } from '$ui/label/index.js';
 	import { Input } from '$ui/input/index.js';
 	import { Button } from '$ui/button/index.js';
-	import { cn, type WithElementRef } from '$lib/utils.js';
+	import { cn, type WithElementRef } from '$lib/utils';
 
 	let {
 		ref = $bindable(null),

@@ -1,4 +1,4 @@
-import type { WithElementRef } from '$lib/utils.js';
+import type { WithElementRef } from '$lib/utils';
 import type { EmblaCarouselSvelteType } from 'embla-carousel-svelte';
 import type emblaCarouselSvelte from 'embla-carousel-svelte';
 import { getContext, hasContext, setContext } from 'svelte';

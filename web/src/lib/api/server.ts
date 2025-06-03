@@ -1,15 +1,15 @@
-import type { ApiError } from '$lib/shared/types/error.js';
-import { API_URL } from '$env/static/private';
-import axios, { type AxiosError } from 'axios';
+import { PUBLIC_API_URL } from '$env/static/public';
+import axios from 'axios';
 import https from 'https';
 import { dev } from '$app/environment';
+import { handleApiError } from './shared.js';
 
 export class ApiClient {
 	private baseUrl: string;
 	private axiosInstance;
 
 	constructor(baseUrl?: string) {
-		this.baseUrl = baseUrl || API_URL;
+		this.baseUrl = baseUrl || PUBLIC_API_URL;
 		
 		// Create axios instance with SSL handling
 		this.axiosInstance = axios.create({
@@ -64,33 +64,7 @@ export class ApiClient {
 			return response.data;
 		} catch (error) {
 			console.log('Error:', error);
-			
-			if (axios.isAxiosError(error)) {
-				const axiosError = error as AxiosError;
-				
-				if (axiosError.response) {
-					// Server responded with error status
-					const errorData = axiosError.response.data as any;
-					const apiError: ApiError = {
-						message: errorData?.message || 'An error occurred',
-						status: axiosError.response.status,
-						errors: errorData?.errors || {}
-					};
-					throw apiError;
-				} else if (axiosError.request) {
-					// Network error
-					throw {
-						message: 'Network error. Please check your connection.',
-						status: 0
-					} as ApiError;
-				}
-			}
-			
-			// Unknown error
-			throw {
-				message: 'An unexpected error occurred',
-				status: 0
-			} as ApiError;
+			handleApiError(error);
 		}
 	}
 
@@ -131,4 +105,4 @@ export class ApiClient {
 }
 
 // Default API client instance
-export const apiClient = new ApiClient();
+export const apiClient = new ApiClient(); 

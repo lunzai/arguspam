@@ -4,12 +4,6 @@ import { getAuthToken } from '$lib/server/helpers/cookie.js';
 import { authService } from '$lib/server/services/auth.js';
 import type { User } from '$lib/shared/types/user.js';
 
-interface MeResponse {
-	data: {
-		user: User;
-	};
-}
-
 export const load = (async ({ cookies, url }) => {
 	const token = getAuthToken(cookies);
 
@@ -19,10 +13,9 @@ export const load = (async ({ cookies, url }) => {
 
 	try {
 		// Verify token and get user data from Laravel API
-		const user = await authService.me(token);
-
+		const data = await authService.me(token);
 		return {
-			user: user,
+			user: data.user,
 			url: url.pathname
 		};
 	} catch (error) {

@@ -12,3 +12,17 @@ export interface User {
 	updated_by: number | null;
 	updated_at: string;
 }
+
+// User service related interfaces moved from client/services/users.ts
+export interface CreateUserRequest {
+	name: string;
+	email: string;
+	password: string;
+	password_confirmation: string;
+}
+
+export interface UpdateUserRequest {
+	name?: string;
+	email?: string;
+	status?: string;
+} 

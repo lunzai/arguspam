@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { apiClient } from '$lib/server/api.js';
-import { getAuthToken } from '$lib/server/cookies.js';
-import type { ApiError } from '$lib/types/auth.js';
+import { authService } from '$lib/server/services/auth.js';
+import { getAuthToken } from '$lib/server/helpers/cookie.js';
+import type { ApiError } from '$lib/shared/types/error.js';
 
 export const GET: RequestHandler = async ({ cookies }) => {
 	try {
@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ cookies }) => {
 			return json({ message: 'Not authenticated' }, { status: 401 });
 		}
 
-		const user = await apiClient.me(token);
+		const user = await authService.me(token);
 
 		return json({ user });
 	} catch (error) {

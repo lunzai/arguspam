@@ -1,5 +1,5 @@
 import type { LayoutLoad } from './$types';
-import { authStore } from '$lib/stores/auth.js';
+import { authStore } from '$lib/client/stores/auth.js';
 
 export const load = (async ({ data }) => {
 	// Initialize auth store with server-provided user data

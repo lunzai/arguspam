@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { apiClient } from '$lib/server/api.js';
-import { getAuthToken, clearAuthCookie } from '$lib/server/cookies.js';
-import type { ApiError } from '$lib/types/auth.js';
+import { authService } from '$lib/server/services/auth.js';
+import { getAuthToken, clearAuthCookie } from '$lib/server/helpers/cookie.js';
+import type { ApiError } from '$lib/shared/types/error.js';
 
 export const POST: RequestHandler = async ({ cookies }) => {
 	try {
@@ -13,7 +13,7 @@ export const POST: RequestHandler = async ({ cookies }) => {
 		}
 
 		// Call Laravel logout endpoint
-		await apiClient.logout(token);
+		await authService.logout(token);
 
 		// Clear the auth cookie
 		clearAuthCookie(cookies);

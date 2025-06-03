@@ -7,7 +7,7 @@
 		Users,
 		Settings2Icon
 	} from '@lucide/svelte';
-	import { avatarService } from '$lib/services/avatar.service';
+	import { avatarService } from '$lib/client/services/avatar.serviceservice';
 
 	// This is sample data.
 	const data = {

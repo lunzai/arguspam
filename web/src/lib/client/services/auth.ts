@@ -1,4 +1,6 @@
-import type { User, LoginRequest, ApiError } from '$lib/types/auth.js';
+import type { LoginRequest } from '$lib/shared/types/auth.js';
+import type { User } from '$lib/shared/types/user.js';
+import type { ApiError } from '$lib/shared/types/error.js';
 
 export class AuthService {
 	/**

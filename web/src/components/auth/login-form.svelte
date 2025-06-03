@@ -6,9 +6,9 @@
 	import { cn, type WithElementRef } from '$lib/utils.js';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
-	import { authService } from '$lib/services/auth.js';
-	import { authStore } from '$lib/stores/auth.js';
-	import type { ApiError } from '$lib/types/auth.js';
+	import { authService } from '$lib/client/services/auth.js';
+	import { authStore } from '$lib/client/stores/auth.js';
+	import type { ApiError } from '$lib/shared/types/error.js';
 
 	let {
 		ref = $bindable(null),
@@ -17,7 +17,7 @@
 	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
 
 	let isLoading = $state(false);
-	let email = $state('qwe@qwe.com');
+	let email = $state('heanluen@gmail.com');
 	let password = $state('qweqwe');
 	let errors = $state<Record<string, string[]>>({});
 

@@ -1,8 +1,8 @@
 import { redirect } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
-import { getAuthToken } from '$lib/server/cookies.js';
-import { apiClient } from '$lib/server/api.js';
-import type { User } from '$lib/types/auth.js';
+import { getAuthToken } from '$lib/server/helpers/cookie.js';
+import { authService } from '$lib/server/services/auth.js';
+import type { User } from '$lib/shared/types/user.js';
 
 interface MeResponse {
 	data: {
@@ -19,15 +19,15 @@ export const load = (async ({ cookies, url }) => {
 
 	try {
 		// Verify token and get user data from Laravel API
-		const response = (await apiClient.me(token)) as MeResponse;
+		const user = await authService.me(token);
 
 		return {
-			user: response.data.user,
+			user: user,
 			url: url.pathname
 		};
 	} catch (error) {
 		// Token is invalid or expired, clear cookie and redirect
-		const { clearAuthCookie } = await import('$lib/server/cookies.js');
+		const { clearAuthCookie } = await import('$lib/server/helpers/cookie.js');
 		clearAuthCookie(cookies);
 		throw redirect(302, '/auth/login');
 	}

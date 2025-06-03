@@ -1,8 +1,9 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { apiClient } from '$lib/server/api.js';
-import { setAuthCookie } from '$lib/server/cookies.js';
-import type { LoginResponse, ApiError } from '$lib/types/auth.js';
+import { authService } from '$lib/server/services/auth.js';
+import { setAuthCookie } from '$lib/server/helpers/cookie.js';
+import type { LoginResponse } from '$lib/shared/types/auth.js';
+import type { ApiError } from '$lib/shared/types/error.js';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	try {
@@ -12,7 +13,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			return json({ message: 'Email and password are required', errors: {} }, { status: 400 });
 		}
 
-		const response = (await apiClient.login(email, password)) as LoginResponse;
+		const response = (await authService.login(email, password)) as LoginResponse;
 
 		// Set the token in an HttpOnly cookie
 		setAuthCookie(cookies, response.data.token);

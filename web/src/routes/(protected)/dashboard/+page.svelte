@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { authStore } from '$lib/stores/auth.js';
+	import { authStore } from '$lib/client/stores/auth.js';
 	import { Card, CardContent, CardHeader, CardTitle } from '$ui/card/index.js';
 	import { Badge } from '$ui/badge/index.js';
 

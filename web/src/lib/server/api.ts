@@ -1,4 +1,4 @@
-import type { ApiError } from '$lib/types/auth.js';
+import type { ApiError } from '$lib/shared/types/error.js';
 import { API_URL } from '$env/static/private';
 import axios, { type AxiosError } from 'axios';
 import https from 'https';
@@ -8,8 +8,8 @@ export class ApiClient {
 	private baseUrl: string;
 	private axiosInstance;
 
-	constructor() {
-		this.baseUrl = API_URL;
+	constructor(baseUrl?: string) {
+		this.baseUrl = baseUrl || API_URL;
 		
 		// Create axios instance with SSL handling
 		this.axiosInstance = axios.create({
@@ -23,7 +23,7 @@ export class ApiClient {
 	}
 
 	/**
-	 * Make a request to the Laravel API with proper error handling
+	 * Make a request to the API with proper error handling
 	 */
 	async request<T>(
 		endpoint: string,
@@ -95,33 +95,40 @@ export class ApiClient {
 	}
 
 	/**
-	 * Login to Laravel API
+	 * GET request helper
 	 */
-	async login(email: string, password: string) {
-		return this.request('/auth/login', {
-			method: 'POST',
-			body: { email, password }
-		});
+	async get<T>(endpoint: string, token?: string): Promise<T> {
+		return this.request<T>(endpoint, { method: 'GET', token });
 	}
 
 	/**
-	 * Get current user from Laravel API
+	 * POST request helper
 	 */
-	async me(token: string) {
-		return this.request('/auth/me', {
-			token
-		});
+	async post<T>(endpoint: string, body?: any, token?: string): Promise<T> {
+		return this.request<T>(endpoint, { method: 'POST', body, token });
 	}
 
 	/**
-	 * Logout from Laravel API
+	 * PUT request helper
 	 */
-	async logout(token: string) {
-		return this.request('/auth/logout', {
-			method: 'POST',
-			token
-		});
+	async put<T>(endpoint: string, body?: any, token?: string): Promise<T> {
+		return this.request<T>(endpoint, { method: 'PUT', body, token });
+	}
+
+	/**
+	 * DELETE request helper
+	 */
+	async delete<T>(endpoint: string, token?: string): Promise<T> {
+		return this.request<T>(endpoint, { method: 'DELETE', token });
+	}
+
+	/**
+	 * PATCH request helper
+	 */
+	async patch<T>(endpoint: string, body?: any, token?: string): Promise<T> {
+		return this.request<T>(endpoint, { method: 'PATCH', body, token });
 	}
 }
 
+// Default API client instance
 export const apiClient = new ApiClient();

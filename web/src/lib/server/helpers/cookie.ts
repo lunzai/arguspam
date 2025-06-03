@@ -2,8 +2,7 @@ import type { Cookies } from '@sveltejs/kit';
 import {
 	AUTH_TOKEN_KEY,
 	AUTH_TOKEN_EXPIRY,
-	AUTH_COOKIE_SAME_SITE,
-	ALLOWED_HOSTS
+	AUTH_COOKIE_SAME_SITE
 } from '$env/static/private';
 
 export function setAuthCookie(cookies: Cookies, token: string) {

@@ -13,8 +13,9 @@
 	let {
 		ref = $bindable(null),
 		class: className,
+		form,
 		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
+	}: WithElementRef<HTMLAttributes<HTMLDivElement> & { form?: FormData }> = $props();
 
 	let isLoading = $state(false);
 	let email = $state('heanluen@gmail.com');
@@ -63,10 +64,11 @@
 					<Label for="email">Email</Label>
 					<Input
 						id="email"
+						name="email"
 						type="email"
 						placeholder="me@example.com"
 						required
-						bind:value={email}
+						value={form?.email || ''}
 						disabled={isLoading}
 						class={errors.email ? 'border-destructive' : ''}
 					/>
@@ -82,10 +84,11 @@
 					<Label for="password">Password</Label>
 					<Input
 						id="password"
+						name="password"
 						type="password"
 						placeholder="********"
 						required
-						bind:value={password}
+						value=""
 						disabled={isLoading}
 						class={errors.password ? 'border-destructive' : ''}
 					/>

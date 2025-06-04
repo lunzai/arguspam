@@ -44,6 +44,9 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/me', [AuthController::class, 'me']);
 
+    // Current user endpoint
+    Route::get('/users/me', [UserController::class, 'me'])->name('users.me');
+
     Route::apiResources([
         'assets' => AssetController::class,
         'orgs' => OrgController::class,

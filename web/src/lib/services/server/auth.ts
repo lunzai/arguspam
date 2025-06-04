@@ -1,7 +1,7 @@
 import { serverApi } from '$lib/api/server.js';
 import type { ApiResponse } from '$lib/types/api';
 import type { LoginResponse } from '$lib/types/auth.js';
-import type { User } from '$lib/types/user.js';
+import type { User } from '$lib/types/models/user.js';
 import { PUBLIC_AUTH_LOGOUT_PATH, PUBLIC_AUTH_LOGIN_PATH } from '$env/static/public';
 
 /**

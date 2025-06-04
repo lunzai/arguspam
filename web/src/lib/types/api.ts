@@ -8,4 +8,4 @@ export interface ApiResponse<T> {
 		to: number;
 		total: number;
 	};
-} 
+}

@@ -1,5 +1,5 @@
 import type { LoginRequest } from '$lib/types/auth.js';
-import type { User } from '$lib/types/user.js';
+import type { User } from '$lib/types/models/user.js';
 import type { ApiResponse } from '$lib/types/api.js';
 import { clientApi } from '$lib/api/client.js';
 

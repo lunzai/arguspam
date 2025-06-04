@@ -1,8 +1,8 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { authService } from '$lib/services/server/auth.js';
-import { getAuthToken, clearAuthCookie } from '$lib/server/helpers/cookie.js';
-import type { ApiError } from '$lib/types/error.js';
+import { authService } from '$services/server/auth.js';
+import { getAuthToken, clearAuthCookie } from '$server/helpers/cookie.js';
+import type { ApiError } from '$types/error.js';
 
 export const POST: RequestHandler = async ({ cookies }) => {
 	try {

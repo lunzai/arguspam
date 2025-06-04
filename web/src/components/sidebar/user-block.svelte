@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Avatar from '$ui/avatar';
-	import { generateAvatar, getInitials } from '$lib/services/client/avatar.js';
+	import { generateAvatar, getInitials } from '$services/client/avatar.js';
 
 	let { 
         user

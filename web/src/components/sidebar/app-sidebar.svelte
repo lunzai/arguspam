@@ -12,11 +12,11 @@
 
 <script lang="ts">
 	import * as Sidebar from '$ui/sidebar/index.js';
-	import NavMain from './nav-main.svelte';
-	import NavUser from './nav-user.svelte';
-	import OrgSwitcher from './org-switcher.svelte';
+	import NavMain from '$components/sidebar/nav-main.svelte';
+	import NavUser from '$components/sidebar/nav-user.svelte';
+	import OrgSwitcher from '$components/sidebar/org-switcher.svelte';
 	import type { ComponentProps } from 'svelte';
-	import { authStore } from '$lib/stores/auth.js';
+	import { authStore } from '$stores/auth.js';
 
 	let {
 		ref = $bindable(null),

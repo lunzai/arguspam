@@ -6,9 +6,9 @@
 	import { cn, type WithElementRef } from '$lib/utils';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
-	import { authService } from '$lib/services/client/auth.js';
-	import { authStore } from '$lib/stores/auth.js';
-	import type { ApiError } from '$lib/types/error.js';
+	import { authService } from '$services/client/auth.js';
+	import { authStore } from '$stores/auth.js';
+	import type { ApiError } from '$types/error.js';
 
 	let {
 		ref = $bindable(null),

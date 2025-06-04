@@ -1,4 +1,4 @@
-import type { BaseModel } from './base-model.js';
+import type { BaseModel } from '$models/base-model.js';
 
 export interface User extends BaseModel {
 	name: string;

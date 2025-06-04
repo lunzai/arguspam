@@ -1,4 +1,4 @@
-import type { ApiError } from '$lib/types/error.js';
+import type { ApiError } from '$types/error.js';
 import axios, { type AxiosError } from 'axios';
 
 /**

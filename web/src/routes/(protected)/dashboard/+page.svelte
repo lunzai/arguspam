@@ -50,7 +50,12 @@
 								: 'Never'}
 						</div>
 						<div><strong>Created:</strong> {new Date(data.user.created_at).toLocaleString()}</div>
-						<div><strong>Updated:</strong> {new Date(data.user.updated_at).toLocaleString()}</div>
+						<div>
+							<strong>Updated:</strong>
+							{data.user.updated_at
+								? new Date(data.user.updated_at).toLocaleString()
+								: 'Not available'}
+						</div>
 					</div>
 				{:else}
 					<p class="text-muted-foreground">No user data available</p>

@@ -1,8 +1,8 @@
 import type { LayoutServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
-import { getAuthToken } from '$lib/server/helpers/cookie.js';
-import { authService } from '$lib/services/server/auth.js';
-import type { User } from '$lib/types/user.js';
+import { getAuthToken } from '$server/helpers/cookie.js';
+import { authService } from '$services/server/auth.js';
+import type { User } from '$models/user.js';
 import { PUBLIC_AUTH_LOGIN_PATH } from '$env/static/public';
 
 export const load: LayoutServerLoad = async ({ cookies }) => {

@@ -1,6 +1,6 @@
 import { clientApi } from '$lib/api/client.js';
-import type { User, CreateUserRequest, UpdateUserRequest } from '$lib/types/user.js';
-import type { ApiResponse } from '$lib/types/api.js';
+import type { User } from '$models/user.js';
+import type { ApiResponse } from '$types/api.js';
 
 export interface UsersResponse {
 	data: User[];
@@ -16,76 +16,77 @@ export interface UsersResponse {
  * User service for direct backend API calls
  */
 export class UserService {
+	// TODO
 	/**
 	 * Get all users with pagination
 	 */
-	async getUsers(params?: {
-		page?: number;
-		per_page?: number;
-		search?: string;
-		status?: string;
-	}): Promise<ApiResponse<User[]>> {
-		const queryParams = new URLSearchParams();
+	// async getUsers(params?: {
+	// 	page?: number;
+	// 	per_page?: number;
+	// 	search?: string;
+	// 	status?: string;
+	// }): Promise<ApiResponse<User[]>> {
+	// 	const queryParams = new URLSearchParams();
 		
-		if (params?.page) queryParams.set('page', params.page.toString());
-		if (params?.per_page) queryParams.set('per_page', params.per_page.toString());
-		if (params?.search) queryParams.set('search', params.search);
-		if (params?.status) queryParams.set('status', params.status);
+	// 	if (params?.page) queryParams.set('page', params.page.toString());
+	// 	if (params?.per_page) queryParams.set('per_page', params.per_page.toString());
+	// 	if (params?.search) queryParams.set('search', params.search);
+	// 	if (params?.status) queryParams.set('status', params.status);
 		
-		const query = queryParams.toString();
-		const endpoint = query ? `/users?${query}` : '/users';
+	// 	const query = queryParams.toString();
+	// 	const endpoint = query ? `/users?${query}` : '/users';
 		
-		return clientApi.get<ApiResponse<User[]>>(endpoint);
-	}
+	// 	return clientApi.get<ApiResponse<User[]>>(endpoint);
+	// }
 
-	/**
-	 * Get a specific user by ID
-	 */
-	async getUser(id: string): Promise<ApiResponse<User>> {
-		return clientApi.get<ApiResponse<User>>(`/users/${id}`);
-	}
+	// /**
+	//  * Get a specific user by ID
+	//  */
+	// async getUser(id: string): Promise<ApiResponse<User>> {
+	// 	return clientApi.get<ApiResponse<User>>(`/users/${id}`);
+	// }
 
-	/**
-	 * Create a new user
-	 */
-	async createUser(userData: CreateUserRequest): Promise<ApiResponse<User>> {
-		return clientApi.post<ApiResponse<User>>('/users', userData);
-	}
+	// /**
+	//  * Create a new user
+	//  */
+	// async createUser(userData: CreateUserRequest): Promise<ApiResponse<User>> {
+	// 	return clientApi.post<ApiResponse<User>>('/users', userData);
+	// }
 
-	/**
-	 * Update an existing user
-	 */
-	async updateUser(id: string, userData: UpdateUserRequest): Promise<ApiResponse<User>> {
-		return clientApi.put<ApiResponse<User>>(`/users/${id}`, userData);
-	}
+	// /**
+	//  * Update an existing user
+	//  */
+	// async updateUser(id: string, userData: UpdateUserRequest): Promise<ApiResponse<User>> {
+	// 	return clientApi.put<ApiResponse<User>>(`/users/${id}`, userData);
+	// }
 
-	/**
-	 * Delete a user
-	 */
-	async deleteUser(id: string): Promise<void> {
-		return clientApi.delete<void>(`/users/${id}`);
-	}
+	// /**
+	//  * Delete a user
+	//  */
+	// async deleteUser(id: string): Promise<void> {
+	// 	return clientApi.delete<void>(`/users/${id}`);
+	// }
 
-	/**
-	 * Get user roles
-	 */
-	async getUserRoles(id: string): Promise<ApiResponse<any[]>> {
-		return clientApi.get<ApiResponse<any[]>>(`/users/${id}/roles`);
-	}
+	// /**
+	//  * Get user roles
+	//  */
+	// async getUserRoles(id: string): Promise<ApiResponse<any[]>> {
+	// 	return clientApi.get<ApiResponse<any[]>>(`/users/${id}/roles`);
+	// }
 
-	/**
-	 * Assign roles to user
-	 */
-	async assignUserRoles(id: string, roleIds: number[]): Promise<void> {
-		return clientApi.post<void>(`/users/${id}/roles`, { role_ids: roleIds });
-	}
+	// /**
+	//  * Assign roles to user
+	//  */
+	// async assignUserRoles(id: string, roleIds: number[]): Promise<void> {
+	// 	return clientApi.post<void>(`/users/${id}/roles`, { role_ids: roleIds });
+	// }
 
-	/**
-	 * Remove roles from user
-	 */
-	async removeUserRoles(id: string, roleIds: number[]): Promise<void> {
-		return clientApi.post<void>(`/users/${id}/roles/remove`, { role_ids: roleIds });
-	}
+	// /**
+	//  * Remove roles from user
+	//  */
+	// async removeUserRoles(id: string, roleIds: number[]): Promise<void> {
+	// 	return clientApi.post<void>(`/users/${id}/roles/remove`, { role_ids: roleIds });
+	// }
 }
 
 export const userService = new UserService(); 

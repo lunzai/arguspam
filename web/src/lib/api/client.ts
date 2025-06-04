@@ -1,7 +1,7 @@
 import { PUBLIC_API_URL } from '$env/static/public';
 import { PUBLIC_API_REQUEST_TIMEOUT } from '$env/static/public';
 import axios from 'axios';
-import { handleApiError, TokenManager } from './shared.js';
+import { handleApiError, TokenManager } from '$api/shared.js';
 
 export class ClientApi {
 	private baseUrl: string;

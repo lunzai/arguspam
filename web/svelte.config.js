@@ -9,8 +9,13 @@ const config = {
 			$components: 'src/components',
 			$lib: 'src/lib',
 			$routes: 'src/routes',
-			$types: 'src/types',
-			$ui: 'src/lib/components/ui'
+			$types: 'src/lib/types',
+			$api: 'src/lib/api',
+			$services: 'src/lib/services',
+			$stores: 'src/lib/stores',
+			$server: 'src/lib/server',
+			$ui: 'src/lib/components/ui',
+			$models: 'src/lib/types/models',
 		}
 	}
 };

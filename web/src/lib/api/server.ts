@@ -3,7 +3,7 @@ import { PUBLIC_API_REQUEST_TIMEOUT } from '$env/static/public';
 import axios from 'axios';
 import https from 'https';
 import { dev } from '$app/environment';
-import { handleApiError } from './shared.js';
+import { handleApiError } from '$api/shared.js';
 
 export class ServerApi {
 	private baseUrl: string;

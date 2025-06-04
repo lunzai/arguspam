@@ -1,5 +1,5 @@
 import { PUBLIC_API_URL } from '$env/static/public';
-import { API_REQUEST_TIMEOUT } from '$env/static/private';
+import { PUBLIC_API_REQUEST_TIMEOUT } from '$env/static/public';
 import axios from 'axios';
 import https from 'https';
 import { dev } from '$app/environment';
@@ -15,7 +15,7 @@ export class ServerApi {
 		// Create axios instance with SSL handling
 		this.axiosInstance = axios.create({
 			baseURL: this.baseUrl,
-			timeout: Number(API_REQUEST_TIMEOUT),
+			timeout: Number(PUBLIC_API_REQUEST_TIMEOUT),
 			httpsAgent: new https.Agent({
 				// Only disable SSL verification in development
 				rejectUnauthorized: !dev

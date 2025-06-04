@@ -6,7 +6,6 @@ export const load: LayoutLoad = async ({ data }) => {
 	if (data.user) {
 		authStore.setUser(data.user);
 	}
-	
 	return {
 		user: data.user
 	};

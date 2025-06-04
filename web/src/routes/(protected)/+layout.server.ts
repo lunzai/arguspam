@@ -6,11 +6,9 @@ import type { User } from '$lib/types/user.js';
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
 	const token = getAuthToken(cookies);
-	
 	if (!token) {
 		throw redirect(302, '/login');
 	}
-
 	try {
 		const user: User = await authService.me(token);
 		return {

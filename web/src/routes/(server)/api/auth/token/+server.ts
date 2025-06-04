@@ -6,8 +6,12 @@ export const GET: RequestHandler = async ({ cookies }) => {
 	const token = getAuthToken(cookies);
 	
 	if (!token) {
-		return json({ token: null }, { status: 200 });
+		return json({ 
+			data: { token: null } 
+		}, { status: 200 });
 	}
 	
-	return json({ token });
+	return json({ 
+		data: { token } 
+	});
 }; 

@@ -1,5 +1,5 @@
 import { PUBLIC_API_URL } from '$env/static/public';
-import { API_REQUEST_TIMEOUT } from '$env/static/private';
+import { PUBLIC_API_REQUEST_TIMEOUT } from '$env/static/public';
 import axios from 'axios';
 import { handleApiError, TokenManager } from './shared.js';
 
@@ -15,7 +15,7 @@ export class ClientApi {
 		// Create axios instance for backend API calls
 		this.axiosInstance = axios.create({
 			baseURL: this.baseUrl,
-			timeout: Number(API_REQUEST_TIMEOUT),
+			timeout: Number(PUBLIC_API_REQUEST_TIMEOUT),
 			headers: {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json'

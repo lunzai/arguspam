@@ -14,7 +14,9 @@ export const GET: RequestHandler = async ({ cookies }) => {
 
 		const user = await authService.me(token);
 
-		return json({ user });
+		return json({ 
+			data: user 
+		});
 	} catch (error) {
 		const apiError = error as ApiError;
 		return json(

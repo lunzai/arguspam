@@ -20,3 +20,19 @@ export function generateInitials(name: string, size: number = 128): string {
 	const encodedName = encodeURIComponent(name);
 	return `${UI_AVATARS_API}/?size=${size}&name=${encodedName}`;
 } 
+
+/**
+ * Extract 2-letter initials from a string
+ * @param name - The input string to generate initials from
+ * @returns Two uppercase letters representing the initials
+ */
+export function getInitials(name: string): string {
+	const words = name.split(/\s+/).filter(word => word.length > 0);
+	if (words.length === 0) {
+		return 'NA';
+	}
+	if (words.length === 1) {
+		return words[0].substring(0, 2).toUpperCase();
+	}
+	return (words[0][0] + words[words.length - 1][0]).toUpperCase();
+}

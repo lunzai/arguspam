@@ -8,14 +8,24 @@
 		Settings2Icon
 	} from '@lucide/svelte';
 	import { generateAvatar, generateInitials } from '$lib/services/client/avatar.js';
+</script>
+
+<script lang="ts">
+	import * as Sidebar from '$ui/sidebar/index.js';
+	import NavMain from './nav-main.svelte';
+	import NavUser from './nav-user.svelte';
+	import OrgSwitcher from './org-switcher.svelte';
+	import type { ComponentProps } from 'svelte';
+	import { authStore } from '$lib/stores/auth.js';
+
+	let {
+		ref = $bindable(null),
+		collapsible = 'icon',
+		...restProps
+	}: ComponentProps<typeof Sidebar.Root> = $props();
 
 	// This is sample data.
 	const data = {
-		user: {
-			name: 'HL LEONG',
-			email: 'heanluen@surfin.sg',
-			avatar: generateAvatar('heanluen@surfin.sg')
-		},
 		orgs: [
 			{
 				name: 'Acme Inc',
@@ -123,20 +133,6 @@
 	};
 </script>
 
-<script lang="ts">
-	import * as Sidebar from '$ui/sidebar/index.js';
-	import NavMain from './nav-main.svelte';
-	import NavUser from './nav-user.svelte';
-	import OrgSwitcher from './org-switcher.svelte';
-	import type { ComponentProps } from 'svelte';
-
-	let {
-		ref = $bindable(null),
-		collapsible = 'icon',
-		...restProps
-	}: ComponentProps<typeof Sidebar.Root> = $props();
-</script>
-
 <Sidebar.Root {collapsible} {...restProps}>
 	<Sidebar.Header>
 		<OrgSwitcher orgs={data.orgs} />
@@ -145,7 +141,7 @@
 		<NavMain items={data.navMain} />
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<NavUser user={data.user} />
+		<NavUser />
 	</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>

@@ -4,10 +4,46 @@
 	import * as Sidebar from '$ui/sidebar';
 	import { useSidebar } from '$ui/sidebar';
 
-	import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from '@lucide/svelte';
+	import { BadgeCheck, ChevronsUpDown, LogOut } from '@lucide/svelte';
+	import { authService } from '$lib/services/client/auth.js';
+	import { authStore } from '$lib/stores/auth.js';
+	import { goto } from '$app/navigation';
+	import { toast } from 'svelte-sonner';
+	import UserBlock from './user-block.svelte';
 
-	let { user }: { user: { name: string; email: string; avatar: string } } = $props();
+	let user = $derived({
+		name: $authStore.user?.name || '',
+		email: $authStore.user?.email || '',
+		identifier: `${$authStore.user?.id}|${$authStore.user?.email}` || ''
+	});
+
+
 	const sidebar = useSidebar();
+	let isLoggingOut = $state(false);
+
+	async function handleLogout() {
+		if (isLoggingOut) return;
+		
+		isLoggingOut = true;
+		
+		try {
+			await authService.logout();
+			
+			// Clear auth store
+			authStore.clearUser();
+			
+			// Show success message
+			toast.success('Logged out successfully');
+			
+			// Redirect to login page
+			await goto('/auth/login');
+		} catch (error) {
+			console.error('Logout error:', error);
+			toast.error('Logout failed. Please try again.');
+		} finally {
+			isLoggingOut = false;
+		}
+	}
 </script>
 
 <Sidebar.Menu>
@@ -20,14 +56,7 @@
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
 						{...props}
 					>
-						<Avatar.Root class="size-8 rounded-lg">
-							<Avatar.Image src={user.avatar} alt={user.name} />
-							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
-						</Avatar.Root>
-						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-medium">{user.name}</span>
-							<span class="truncate text-xs">{user.email}</span>
-						</div>
+						<UserBlock {user} />
 						<ChevronsUpDown class="ml-auto size-4" />
 					</Sidebar.MenuButton>
 				{/snippet}
@@ -40,14 +69,7 @@
 			>
 				<DropdownMenu.Label class="p-0 font-normal">
 					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-						<Avatar.Root class="size-8 rounded-lg">
-							<Avatar.Image src={user.avatar} alt={user.name} />
-							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
-						</Avatar.Root>
-						<div class="grid flex-1 text-left text-sm leading-tight">
-							<span class="truncate font-medium">{user.name}</span>
-							<span class="truncate text-xs">{user.email}</span>
-						</div>
+						<UserBlock {user} />
 					</div>
 				</DropdownMenu.Label>
 				<DropdownMenu.Separator />
@@ -71,12 +93,11 @@
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item
-					onSelect={() => {
-						window.location.href = '/logout';
-					}}
+					onSelect={handleLogout}
+					disabled={isLoggingOut}
 				>
 					<LogOut />
-					Log out
+					{isLoggingOut ? 'Logging out...' : 'Log out'}
 				</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>

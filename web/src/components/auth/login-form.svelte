@@ -18,7 +18,7 @@
 
 	let isLoading = $state(false);
 	let email = $state('heanluen@gmail.com');
-	let password = $state('qweqwe');
+	let password = $state('password');
 	let errors = $state<Record<string, string[]>>({});
 
 	async function handleSubmit(event: SubmitEvent) {
@@ -32,17 +32,12 @@
 
 		try {
 			const result = await authService.login({ email, password });
-
-			// Update auth store with user data
 			authStore.setUser(result.data.user);
-
 			toast.success('Successfully logged in!');
-
-			// Redirect to dashboard
 			await goto('/dashboard');
 		} catch (error) {
+			console.log('login formcatch error', error);
 			const apiError = error as ApiError;
-
 			if (apiError.status === 422 && apiError.errors) {
 				errors = apiError.errors;
 			} else {

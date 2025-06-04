@@ -1,4 +1,5 @@
 import { serverApi } from '$lib/api/server.js';
+import type { ApiResponse } from '$lib/types/api';
 import type { LoginResponse } from '$lib/types/auth.js';
 import type { User } from '$lib/types/user.js';
 
@@ -17,7 +18,8 @@ export class AuthService {
 	 * Get current authenticated user
 	 */
 	async me(token: string): Promise<User> {
-		return serverApi.get<User>('/auth/me', token);
+		const response = await serverApi.get<ApiResponse<{ user: User }>>('/auth/me', token);
+		return response.data.user;
 	}
 
 	/**

@@ -1,6 +1,6 @@
 import type { LoginRequest } from '$lib/types/auth.js';
 import type { User } from '$lib/types/user.js';
-import type { ApiResponse } from '$lib/types/response.js';
+import type { ApiResponse } from '$lib/types/api.js';
 import { clientApi } from '$lib/api/client.js';
 
 export class AuthService {
@@ -13,13 +13,10 @@ export class AuthService {
 				'/api/auth/login', 
 				credentials
 			);
-
-			// Clear any cached token in client API after successful login
 			clientApi.clearAuthToken();
-
 			return response;
 		} catch (error) {
-			throw error; // clientApi already handles error formatting
+			throw error;
 		}
 	}
 
@@ -33,7 +30,7 @@ export class AuthService {
 			);
 			return response;
 		} catch (error) {
-			throw error; // clientApi already handles error formatting
+			throw error;
 		}
 	}
 
@@ -46,13 +43,10 @@ export class AuthService {
 				'/api/auth/logout',
 				{}
 			);
-			
-			// Clear the cached token in client API after logout
 			clientApi.clearAuthToken();
 		} catch (error) {
-			// Clear token even if logout fails
 			clientApi.clearAuthToken();
-			throw error; // clientApi already handles error formatting
+			throw error;
 		}
 	}
 }

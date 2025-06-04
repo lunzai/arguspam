@@ -1,6 +1,6 @@
 import { clientApi } from '$lib/api/client.js';
 import type { User, CreateUserRequest, UpdateUserRequest } from '$lib/types/user.js';
-import type { ApiResponse } from '$lib/types/response.js';
+import type { ApiResponse } from '$lib/types/api.js';
 
 export interface UsersResponse {
 	data: User[];

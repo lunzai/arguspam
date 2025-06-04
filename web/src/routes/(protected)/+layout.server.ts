@@ -3,11 +3,12 @@ import { redirect } from '@sveltejs/kit';
 import { getAuthToken } from '$lib/server/helpers/cookie.js';
 import { authService } from '$lib/services/server/auth.js';
 import type { User } from '$lib/types/user.js';
+import { PUBLIC_AUTH_LOGIN_PATH } from '$env/static/public';
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
 	const token = getAuthToken(cookies);
 	if (!token) {
-		throw redirect(302, '/login');
+		throw redirect(302, PUBLIC_AUTH_LOGIN_PATH);
 	}
 	try {
 		const user: User = await authService.me(token);
@@ -16,6 +17,6 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 		};
 	} catch (error) {
 		// If token is invalid, redirect to login
-		throw redirect(302, '/login');
+		throw redirect(302, PUBLIC_AUTH_LOGIN_PATH);
 	}
 };

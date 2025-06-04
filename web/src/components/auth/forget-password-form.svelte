@@ -4,7 +4,8 @@
 	import { Input } from '$ui/input/index.js';
 	import { Button } from '$ui/button/index.js';
 	import { cn, type WithElementRef } from '$lib/utils';
-
+	import { PUBLIC_AUTH_LOGIN_PATH } from '$env/static/public';
+	
 	let {
 		ref = $bindable(null),
 		class: className,
@@ -28,7 +29,7 @@
 					<Input id="email" type="email" placeholder="me@example.com" required />
 				</div>
 				<div>
-					<a href="/auth/login" class="text-muted-foreground text-sm">Back to login</a>
+					<a href={PUBLIC_AUTH_LOGIN_PATH} class="text-muted-foreground text-sm">Back to login</a>
 				</div>
 				<Button type="submit" class="w-full">Send reset link</Button>
 			</div>

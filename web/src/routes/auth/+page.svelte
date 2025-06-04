@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { PUBLIC_AUTH_LOGIN_PATH } from '$env/static/public';
 
 	onMount(() => {
-		goto('/auth/login');
+		goto(PUBLIC_AUTH_LOGIN_PATH);
 	});
 </script>
 

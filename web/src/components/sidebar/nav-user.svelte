@@ -10,6 +10,7 @@
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
 	import UserBlock from './user-block.svelte';
+	import { PUBLIC_AUTH_LOGIN_PATH } from '$env/static/public';
 
 	let user = $derived({
 		name: $authStore.user?.name || '',
@@ -36,7 +37,7 @@
 			toast.success('Logged out successfully');
 			
 			// Redirect to login page
-			await goto('/auth/login');
+			await goto(PUBLIC_AUTH_LOGIN_PATH);
 		} catch (error) {
 			console.error('Logout error:', error);
 			toast.error('Logout failed. Please try again.');

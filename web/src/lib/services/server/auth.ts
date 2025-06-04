@@ -2,6 +2,7 @@ import { serverApi } from '$lib/api/server.js';
 import type { ApiResponse } from '$lib/types/api';
 import type { LoginResponse } from '$lib/types/auth.js';
 import type { User } from '$lib/types/user.js';
+import { PUBLIC_AUTH_LOGOUT_PATH, PUBLIC_AUTH_LOGIN_PATH } from '$env/static/public';
 
 /**
  * Auth service class that handles authentication-related API calls
@@ -11,7 +12,7 @@ export class AuthService {
 	 * Login to the API
 	 */
 	async login(email: string, password: string): Promise<LoginResponse> {
-		return serverApi.post<LoginResponse>('/auth/login', { email, password });
+		return serverApi.post<LoginResponse>(PUBLIC_AUTH_LOGIN_PATH, { email, password });
 	}
 
 	/**
@@ -26,7 +27,7 @@ export class AuthService {
 	 * Logout from the API
 	 */
 	async logout(token: string): Promise<void> {
-		return serverApi.post<void>('/auth/logout', {}, token);
+		return serverApi.post<void>(PUBLIC_AUTH_LOGOUT_PATH, {}, token);
 	}
 }
 

@@ -15,6 +15,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 
 		const response = (await authService.login(email, password)) as LoginResponse;
 		// Set the token in an HttpOnly cookie
+		console.log('response', response);
 		setAuthCookie(cookies, response.data.token);
 		// Return user data without the token (flatten the structure)
 		return json({
@@ -23,7 +24,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			}
 		});
 	} catch (error) {
-		console.error('Login error:', error);
+		//console.error('Login error:', error);
 		const apiError = error as ApiError;
 		return json(
 			{

@@ -1,7 +1,7 @@
 import type { LoginRequest } from '$lib/types/auth.js';
 import type { User } from '$lib/types/user.js';
 import type { ApiResponse } from '$lib/types/response.js';
-import { clientApi, svelteKitApi } from '$lib/api/client.js';
+import { clientApi } from '$lib/api/client.js';
 
 export class AuthService {
 	/**
@@ -9,10 +9,9 @@ export class AuthService {
 	 */
 	async login(credentials: LoginRequest): Promise<ApiResponse<{ user: User }>> {
 		try {
-			const response = await svelteKitApi.post<ApiResponse<{ user: User }>>(
+			const response = await clientApi.internal().post<ApiResponse<{ user: User }>>(
 				'/api/auth/login', 
-				credentials,
-				false // Don't require auth for login
+				credentials
 			);
 
 			// Clear any cached token in client API after successful login
@@ -20,7 +19,7 @@ export class AuthService {
 
 			return response;
 		} catch (error) {
-			throw error; // svelteKitApi already handles error formatting
+			throw error; // clientApi already handles error formatting
 		}
 	}
 
@@ -29,13 +28,12 @@ export class AuthService {
 	 */
 	async me(): Promise<ApiResponse<User>> {
 		try {
-			const response = await svelteKitApi.get<ApiResponse<User>>(
-				'/api/auth/me',
-				false // Don't require auth token (handled by cookie)
+			const response = await clientApi.internal().get<ApiResponse<User>>(
+				'/api/auth/me'
 			);
 			return response;
 		} catch (error) {
-			throw error; // svelteKitApi already handles error formatting
+			throw error; // clientApi already handles error formatting
 		}
 	}
 
@@ -44,10 +42,9 @@ export class AuthService {
 	 */
 	async logout(): Promise<void> {
 		try {
-			await svelteKitApi.post<void>(
+			await clientApi.internal().post<void>(
 				'/api/auth/logout',
-				{},
-				false // Don't require auth token (handled by cookie)
+				{}
 			);
 			
 			// Clear the cached token in client API after logout
@@ -55,7 +52,7 @@ export class AuthService {
 		} catch (error) {
 			// Clear token even if logout fails
 			clientApi.clearAuthToken();
-			throw error; // svelteKitApi already handles error formatting
+			throw error; // clientApi already handles error formatting
 		}
 	}
 }

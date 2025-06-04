@@ -1,10 +1,11 @@
 import { PUBLIC_API_URL } from '$env/static/public';
+import { API_REQUEST_TIMEOUT } from '$env/static/private';
 import axios from 'axios';
 import https from 'https';
 import { dev } from '$app/environment';
 import { handleApiError } from './shared.js';
 
-export class ApiClient {
+export class ServerApi {
 	private baseUrl: string;
 	private axiosInstance;
 
@@ -14,7 +15,7 @@ export class ApiClient {
 		// Create axios instance with SSL handling
 		this.axiosInstance = axios.create({
 			baseURL: this.baseUrl,
-			timeout: 10000,
+			timeout: Number(API_REQUEST_TIMEOUT),
 			httpsAgent: new https.Agent({
 				// Only disable SSL verification in development
 				rejectUnauthorized: !dev
@@ -104,5 +105,5 @@ export class ApiClient {
 	}
 }
 
-// Default API client instance
-export const apiClient = new ApiClient(); 
+// Default server API client instance
+export const serverApi = new ServerApi(); 

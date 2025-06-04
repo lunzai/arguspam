@@ -7,13 +7,10 @@ import type { ApiError } from '$lib/types/error.js';
 export const GET: RequestHandler = async ({ cookies }) => {
 	try {
 		const token = getAuthToken(cookies);
-
 		if (!token) {
 			return json({ message: 'Not authenticated' }, { status: 401 });
 		}
-
 		const user = await authService.me(token);
-
 		return json({ 
 			data: user 
 		});

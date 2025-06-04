@@ -71,12 +71,6 @@
 							{$authState.isAuthenticated ? 'Yes' : 'No'}
 						</Badge>
 					</div>
-					<div>
-						<strong>Is Loading:</strong>
-						<Badge variant={$authState.isLoading ? 'default' : 'secondary'}>
-							{$authState.isLoading ? 'Yes' : 'No'}
-						</Badge>
-					</div>
 					<div><strong>Store User:</strong></div>
 					{#if $authState.user}
 						<div class="ml-4 grid gap-1 text-sm">
@@ -99,16 +93,16 @@
 			<CardTitle>Debug Information</CardTitle>
 		</CardHeader>
 		<CardContent>
-			<div class="space-y-4">
+			<div class="grid gap-4 md:grid-cols-2">
 				<div>
 					<h4 class="mb-2 font-medium">Server Data (JSON):</h4>
-					<pre class="bg-muted max-h-40 overflow-auto rounded-md p-4 text-sm"><code
+					<pre class="bg-muted max-h-96 min-h-96 overflow-auto rounded-md p-4 text-sm"><code
 							>{JSON.stringify(data, null, 2)}</code
 						></pre>
 				</div>
 				<div>
 					<h4 class="mb-2 font-medium">Auth Store State (JSON):</h4>
-					<pre class="bg-muted max-h-40 overflow-auto rounded-md p-4 text-sm"><code
+					<pre class="bg-muted max-h-96 min-h-96 overflow-auto rounded-md p-4 text-sm"><code
 							>{JSON.stringify($authState, null, 2)}</code
 						></pre>
 				</div>

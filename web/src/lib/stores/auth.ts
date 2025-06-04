@@ -5,7 +5,12 @@ import type { User } from '$lib/types/user.js';
 const initialState: AuthState = {
 	user: null,
 	isAuthenticated: false,
-	isLoading: false
+	isEmailVerified: false,
+	isTwoFactorEnabled: false,
+	isTwoFactorVerified: false,
+	shouldChallengeTwoFactor: false,
+	shouldSetupTwoFactor: false,
+	shouldVerifyEmail: false
 };
 
 function createAuthStore() {
@@ -18,19 +23,14 @@ function createAuthStore() {
 				...state,
 				user,
 				isAuthenticated: true,
-				isLoading: false
+				isEmailVerified: user.email_verified_at !== null,
+				isTwoFactorEnabled: user.two_factor_enabled,
+				isTwoFactorVerified: user.two_factor_confirmed_at !== null,
+				shouldChallengeTwoFactor: user.two_factor_enabled && user.two_factor_confirmed_at !== null,
+				shouldSetupTwoFactor: user.two_factor_enabled && user.two_factor_confirmed_at === null,
+				shouldVerifyEmail: user.email_verified_at === null
 			})),
-		clearUser: () =>
-			set({
-				user: null,
-				isAuthenticated: false,
-				isLoading: false
-			}),
-		setLoading: (isLoading: boolean) =>
-			update((state) => ({
-				...state,
-				isLoading
-			})),
+		clearUser: () => set(initialState),
 		reset: () => set(initialState)
 	};
 }

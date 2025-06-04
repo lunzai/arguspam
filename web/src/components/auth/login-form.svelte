@@ -28,7 +28,6 @@
 
 		isLoading = true;
 		errors = {};
-		authStore.setLoading(true);
 
 		try {
 			const result = await authService.login({ email, password });
@@ -45,7 +44,6 @@
 			}
 		} finally {
 			isLoading = false;
-			authStore.setLoading(false);
 		}
 	}
 </script>

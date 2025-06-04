@@ -3,7 +3,14 @@ import type { User } from "./user";
 export interface AuthState {
 	user: User | null;
 	isAuthenticated: boolean;
-	isLoading: boolean;
+	// Computed auth states
+	isEmailVerified: boolean;
+	isTwoFactorEnabled: boolean;
+	isTwoFactorVerified: boolean;
+	// Action states
+	shouldChallengeTwoFactor: boolean;  // User needs to enter OTP
+	shouldSetupTwoFactor: boolean;      // User needs to setup 2FA (blocks access)
+	shouldVerifyEmail: boolean;         // User should verify email (warning only)
 }
 
 export interface LoginRequest {

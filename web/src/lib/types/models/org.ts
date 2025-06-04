@@ -8,10 +8,12 @@ export interface Org extends BaseModel {
 
 export interface CreateOrgRequest {
 	name: string;
+	description?: string;
+	status: 'active' | 'inactive';
 }
 
 export interface UpdateOrgRequest {
 	name?: string;
 	description?: string;
 	status?: 'active' | 'inactive';
-} 
+}

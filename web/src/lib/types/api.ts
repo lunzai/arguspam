@@ -18,19 +18,20 @@ export interface Resource<T> {
  */
 export type Collection<T> = Resource<T>[];
 
+export interface ApiMeta {
+	current_page: number;
+	from: number;
+	last_page: number;
+	per_page: number;
+	to: number;
+	total: number;
+}
+
 /**
  * Standard API response wrapper
  */
 export interface ApiResponse<T> {
 	data: T; // Can be Resource<Model>, Collection<Model>, or raw data
-	meta?: {
-		current_page: number;
-		from: number;
-		last_page: number;
-		per_page: number;
-		to: number;
-		total: number;
-	};
 }
 
 /**
@@ -45,12 +46,5 @@ export interface ApiResourceResponse<T> {
  */
 export interface ApiCollectionResponse<T> {
 	data: Collection<T>;
-	meta?: {
-		current_page: number;
-		from: number;
-		last_page: number;
-		per_page: number;
-		to: number;
-		total: number;
-	};
+	meta?: ApiMeta;
 }

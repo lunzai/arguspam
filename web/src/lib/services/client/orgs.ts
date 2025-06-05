@@ -1,6 +1,6 @@
 import { BaseService, type BaseFilterParams, type BaseFindByIdParams } from './base.js';
 import type { Org, CreateOrgRequest, UpdateOrgRequest } from '$models/org.js';
-import type { ApiResponse } from '$types/api.js';
+import type { ApiResourceResponse, ApiCollectionResponse } from '$types/api.js';
 import { clientApi } from '$lib/api/client.js';
 
 export interface OrgFilterParams extends BaseFilterParams {
@@ -23,7 +23,7 @@ export class OrgService extends BaseService<Org, CreateOrgRequest, UpdateOrgRequ
 		super('/orgs');
 	}
 
-	async me(): Promise<ApiResponse<Org[]>> {
+	async me(): Promise<ApiResourceResponse<Org[]>> {
 		return clientApi.get(`${this.endpoint}/me`);
 	}
 
@@ -44,7 +44,7 @@ export class OrgService extends BaseService<Org, CreateOrgRequest, UpdateOrgRequ
 	 * });
 	 * ```
 	 */
-	async findAll(params: OrgFilterParams = {}): Promise<ApiResponse<Org[]>> {
+	async findAll(params: OrgFilterParams = {}): Promise<ApiCollectionResponse<Org>> {
 		return super.findAll(params);
 	}
 
@@ -58,7 +58,7 @@ export class OrgService extends BaseService<Org, CreateOrgRequest, UpdateOrgRequ
 	 * await orgService.findById('1', { include: ['users', 'userGroups'] });
 	 * ```
 	 */
-	async findById(id: string | number, params: OrgFindByIdParams = {}): Promise<ApiResponse<Org>> {
+	async findById(id: string | number, params: OrgFindByIdParams = {}): Promise<ApiResourceResponse<Org>> {
 		return super.findById(id, params);
 	}
 
@@ -74,7 +74,7 @@ export class OrgService extends BaseService<Org, CreateOrgRequest, UpdateOrgRequ
 	 * });
 	 * ```
 	 */
-	async create(data: CreateOrgRequest): Promise<ApiResponse<Org>> {
+	async create(data: CreateOrgRequest): Promise<ApiResourceResponse<Org>> {
 		return super.create(data);
 	}
 
@@ -90,7 +90,7 @@ export class OrgService extends BaseService<Org, CreateOrgRequest, UpdateOrgRequ
 	 * });
 	 * ```
 	 */
-	async update(id: string | number, data: UpdateOrgRequest): Promise<ApiResponse<Org>> {
+	async update(id: string | number, data: UpdateOrgRequest): Promise<ApiResourceResponse<Org>> {
 		return super.update(id, data);
 	}
 

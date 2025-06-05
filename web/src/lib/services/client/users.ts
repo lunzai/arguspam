@@ -1,6 +1,6 @@
 import { BaseService, type BaseFilterParams, type BaseFindByIdParams } from './base.js';
 import type { User } from '$models/user.js';
-import type { ApiResponse } from '$types/api.js';
+import type { ApiCollectionResponse, ApiResourceResponse } from '$types/api.js';
 import { clientApi } from '$lib/api/client.js';	
 import type { Org } from '$models/org.js'
 
@@ -34,7 +34,7 @@ export class UserService extends BaseService<User, CreateUserRequest, UpdateUser
 		super('/users');
 	}
 
-	async getOrgs(): Promise<ApiResponse<Org[]>> {
+	async getOrgs(): Promise<ApiCollectionResponse<Org>> {
 		return clientApi.get(`${this.endpoint}/me/orgs`);
 	}
 
@@ -63,7 +63,7 @@ export class UserService extends BaseService<User, CreateUserRequest, UpdateUser
 	 * });
 	 * ```
 	 */
-	async findAll(params: UserFilterParams = {}): Promise<ApiResponse<User[]>> {
+	async findAll(params: UserFilterParams = {}): Promise<ApiCollectionResponse<User>> {
 		return super.findAll(params);
 	}
 
@@ -77,7 +77,7 @@ export class UserService extends BaseService<User, CreateUserRequest, UpdateUser
 	 * await userService.findById('1');
 	 * ```
 	 */
-	async findById(id: string | number, params: UserFindByIdParams = {}): Promise<ApiResponse<User>> {
+	async findById(id: string | number, params: UserFindByIdParams = {}): Promise<ApiResourceResponse<User>> {
 		return super.findById(id, params);
 	}
 
@@ -93,7 +93,7 @@ export class UserService extends BaseService<User, CreateUserRequest, UpdateUser
 	 * });
 	 * ```
 	 */
-	async create(data: CreateUserRequest): Promise<ApiResponse<User>> {
+	async create(data: CreateUserRequest): Promise<ApiResourceResponse<User>> {
 		return super.create(data);
 	}
 
@@ -109,7 +109,7 @@ export class UserService extends BaseService<User, CreateUserRequest, UpdateUser
 	 * });
 	 * ```
 	 */
-	async update(id: string | number, data: UpdateUserRequest): Promise<ApiResponse<User>> {
+	async update(id: string | number, data: UpdateUserRequest): Promise<ApiResourceResponse<User>> {
 		return super.update(id, data);
 	}
 

@@ -24,12 +24,11 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 			const currentOrgId = cookies.get(CURRENT_ORG_KEY);
 			if (!currentOrgId) {
 				const orgsResponse = await userService.getOrgs(response.data.token);
-				console.log('orgsResponse', orgsResponse);
 				if (orgsResponse.data && orgsResponse.data.length > 0) {
 					// Set first org as default
-					const firstOrg = orgsResponse.data[0];
-					console.log('firstOrg', firstOrg);
+					const firstOrg = orgsResponse.data[0].attributes;
 					if (firstOrg && firstOrg.id) {
+						console.log('firstOrg.id', firstOrg.id);
 						cookies.set(CURRENT_ORG_KEY, firstOrg.id.toString(), {
 							path: '/',
 							httpOnly: true,

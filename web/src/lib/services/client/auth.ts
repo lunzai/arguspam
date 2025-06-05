@@ -1,6 +1,6 @@
 import type { LoginRequest } from '$types/auth.js';
 import type { User } from '$models/user.js';
-import type { ApiResponse } from '$types/api.js';
+import type { ApiResponse, Resource } from '$types/api.js';
 import { clientApi } from '$api/client.js';
 import { orgStore } from '$stores/org.js';
 
@@ -24,9 +24,9 @@ export class AuthService {
 	/**
 	 * Get current user via SvelteKit API route
 	 */
-	async me(): Promise<ApiResponse<User>> {
+	async me(): Promise<Resource<User>> {
 		try {
-			const response = await clientApi.internal().get<ApiResponse<User>>(
+			const response = await clientApi.internal().get<Resource<User>>(
 				'/api/auth/me'
 			);
 			return response;

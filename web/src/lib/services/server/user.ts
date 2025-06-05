@@ -1,5 +1,5 @@
 import { serverApi } from '$api/server.js';
-import type { ApiResponse } from '$types/api';
+import type { ApiCollectionResponse } from '$types/api';
 import type { Org } from '$models/org.js';
 
 /**
@@ -9,8 +9,8 @@ export class UserService {
 	/**
 	 * Get organizations for the authenticated user
 	 */
-	async getOrgs(token: string): Promise<ApiResponse<Org[]>> {
-		return serverApi.get<ApiResponse<Org[]>>('/users/me/orgs', token);
+	async getOrgs(token: string): Promise<ApiCollectionResponse<Org>> {
+		return serverApi.get<ApiCollectionResponse<Org>>('/users/me/orgs', token);
 	}
 }
 

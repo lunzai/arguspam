@@ -1,5 +1,5 @@
 import { clientApi } from '$lib/api/client.js';
-import type { ApiResponse } from '$types/api.js';
+import type { ApiCollectionResponse, ApiResourceResponse } from '$types/api.js';
 import type { BaseModel } from '$models/base-model.js';
 
 export interface BaseFilterParams {
@@ -67,33 +67,33 @@ export abstract class BaseService<
 	/**
 	 * Find all records with optional filtering, sorting, and pagination
 	 */
-	async findAll(params: BaseFilterParams = {}): Promise<ApiResponse<TModel[]>> {
+	async findAll(params: BaseFilterParams = {}): Promise<ApiCollectionResponse<TModel>> {
 		const queryString = this.buildQueryParams(params);
 		const url = queryString ? `${this.endpoint}?${queryString}` : this.endpoint;
-		return clientApi.get<ApiResponse<TModel[]>>(url);
+		return clientApi.get<ApiCollectionResponse<TModel>>(url);
 	}
 
 	/**
 	 * Find a record by ID with optional includes
 	 */
-	async findById(id: string | number, params: BaseFindByIdParams = {}): Promise<ApiResponse<TModel>> {
+	async findById(id: string | number, params: BaseFindByIdParams = {}): Promise<ApiResourceResponse<TModel>> {
 		const queryString = this.buildQueryParams(params);
 		const url = queryString ? `${this.endpoint}/${id}?${queryString}` : `${this.endpoint}/${id}`;
-		return clientApi.get<ApiResponse<TModel>>(url);
+		return clientApi.get<ApiResourceResponse<TModel>>(url);
 	}
 
 	/**
 	 * Create a new record
 	 */
-	async create(data: TCreateRequest): Promise<ApiResponse<TModel>> {
-		return clientApi.post<ApiResponse<TModel>>(this.endpoint, data);
+	async create(data: TCreateRequest): Promise<ApiResourceResponse<TModel>> {
+		return clientApi.post<ApiResourceResponse<TModel>>(this.endpoint, data);
 	}
 
 	/**
 	 * Update an existing record
 	 */
-	async update(id: string | number, data: TUpdateRequest): Promise<ApiResponse<TModel>> {
-		return clientApi.put<ApiResponse<TModel>>(`${this.endpoint}/${id}`, data);
+	async update(id: string | number, data: TUpdateRequest): Promise<ApiResourceResponse<TModel>> {
+		return clientApi.put<ApiResourceResponse<TModel>>(`${this.endpoint}/${id}`, data);
 	}
 
 	/**

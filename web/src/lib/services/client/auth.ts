@@ -2,6 +2,7 @@ import type { LoginRequest } from '$types/auth.js';
 import type { User } from '$models/user.js';
 import type { ApiResponse } from '$types/api.js';
 import { clientApi } from '$api/client.js';
+import { orgStore } from '$stores/org.js';
 
 export class AuthService {
 	/**
@@ -44,8 +45,10 @@ export class AuthService {
 				{}
 			);
 			clientApi.clearAuthToken();
+			orgStore.reset();
 		} catch (error) {
 			clientApi.clearAuthToken();
+			orgStore.reset();
 			throw error;
 		}
 	}

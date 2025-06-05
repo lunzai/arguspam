@@ -6,7 +6,11 @@ export const load: LayoutLoad = async ({ data }) => {
 	if (data.user) {
 		authStore.setUser(data.user);
 	}
+	if (data.userOrgs) {
+		
+	}
 	return {
-		user: data.user
+		user: data.user,
+		userOrgs: data.userOrgs
 	};
 };

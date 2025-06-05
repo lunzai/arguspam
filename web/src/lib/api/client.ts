@@ -2,6 +2,8 @@ import { PUBLIC_API_URL } from '$env/static/public';
 import { PUBLIC_API_REQUEST_TIMEOUT } from '$env/static/public';
 import axios from 'axios';
 import { handleApiError, TokenManager } from '$api/shared.js';
+import { orgStore } from '$stores/org.js';
+import { get } from 'svelte/store';
 
 export class ClientApi {
 	private baseUrl: string;
@@ -144,6 +146,12 @@ export class ClientApi {
 			if (token) {
 				requestHeaders['Authorization'] = `Bearer ${token}`;
 			}
+		}
+
+		// Add org context header if current org is selected
+		const currentOrgStore = get(orgStore);
+		if (currentOrgStore.currentOrgId) {
+			requestHeaders['X-Organization-ID'] = currentOrgStore.currentOrgId.toString();
 		}
 
 		try {

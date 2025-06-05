@@ -16,6 +16,14 @@ class OrgController extends Controller
 {
     use IncludeRelationships;
 
+    public function me(): OrgCollection
+    {
+        $orgs = Auth::user()
+            ->orgs()
+            ->paginate(config('pam.pagination.per_page'));
+        return new OrgCollection($orgs);
+    }
+
     public function index(OrgFilter $filter): OrgCollection
     {
         $org = Org::filter($filter);

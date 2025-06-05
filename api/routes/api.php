@@ -43,6 +43,7 @@ Route::prefix('auth')->group(function () {
 // Route::middleware(['auth:sanctum', EnsureOrganizationIdIsValid::class])->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/me', [AuthController::class, 'me']);
+    Route::get('/orgs/me', [OrgController::class, 'me']);
 
     Route::apiResources([
         'assets' => AssetController::class,

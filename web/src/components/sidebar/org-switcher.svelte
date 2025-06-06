@@ -3,28 +3,40 @@
 	import * as Sidebar from '$ui/sidebar/index.js';
 	import * as Avatar from '$ui/avatar/index.js';
 	import { useSidebar } from '$ui/sidebar/index.js';
-	import { ChevronsUpDown, Plus } from '@lucide/svelte';
+	import { ChevronsUpDown, LoaderCircle } from '@lucide/svelte';
+	import { orgStore } from '$stores/org';
+	import type { Org } from '$types/models/org';
+	import { generateInitials, getInitials } from '$services/client/avatar';
+	import { userService } from '$services/client/users';
+	import { toast } from 'svelte-sonner';
 
-	// This should be `Component` after @lucide/svelte updates types
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	let {
-		orgs
-	}: {
-		orgs: {
-			name: string;
-			logo: string;
-			plan: string;
-		}[];
-	} = $props();
+	const orgs = $derived($orgStore.orgs);
+	let currentOrgId = $orgStore.currentOrgId;
+	let activeOrg = $derived(orgStore.getCurrentOrg($orgStore));
 	const sidebar = useSidebar();
+	let isLoading = $state(false);
 
-	let activeOrg = $state(orgs[0]);
+	async function onSelectOrg(orgId: number) {
+		if (currentOrgId === orgId) return;
+		try {
+			isLoading = true;
+			await userService.switchOrg(orgId);
+			orgStore.setCurrentOrgId(orgId);
+			currentOrgId = orgId;
+		} catch (error) {
+			orgStore.setCurrentOrgId(currentOrgId);
+			console.log('unable to swtich org', error);
+			toast.error('Something went wrong. Please try again.');
+		} finally {
+			isLoading = false;
+		}
+	}
 </script>
 
 <Sidebar.Menu>
 	<Sidebar.MenuItem>
 		<DropdownMenu.Root>
-			<DropdownMenu.Trigger>
+			<DropdownMenu.Trigger disabled={isLoading}>
 				{#snippet child({ props })}
 					<Sidebar.MenuButton
 						{...props}
@@ -35,17 +47,21 @@
 							class="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
 						>
 							<Avatar.Root class="size-8 rounded-lg">
-								<Avatar.Image src={activeOrg.logo} alt={activeOrg.name} />
-								<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
+								<Avatar.Image src={generateInitials(activeOrg.name)} alt={activeOrg.name} />
+								<Avatar.Fallback class="rounded-lg">{getInitials(activeOrg.name)}</Avatar.Fallback>
 							</Avatar.Root>
 						</div>
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-medium">
-								{activeOrg.name}
+								{activeOrg.name} 
 							</span>
-							<span class="truncate text-xs">{activeOrg.plan}</span>
+							<!-- <span class="truncate text-xs">{activeOrg.plan}</span> -->
 						</div>
-						<ChevronsUpDown class="ml-auto" />
+						{#if isLoading}
+							<LoaderCircle class="animate-spin" />
+						{:else}
+							<ChevronsUpDown class="ml-auto" />
+						{/if}
 					</Sidebar.MenuButton>
 				{/snippet}
 			</DropdownMenu.Trigger>
@@ -57,25 +73,24 @@
 			>
 				<DropdownMenu.Label class="text-muted-foreground text-xs">Organizations</DropdownMenu.Label>
 				{#each orgs as org, index (org.name)}
-					<DropdownMenu.Item onSelect={() => (activeOrg = org)} class="gap-2 p-2">
+					<DropdownMenu.Item onSelect={() => onSelectOrg(org.id)} class="gap-2 p-2">
 						<div class="flex size-6 items-center justify-center rounded-md border">
 							<!-- <img src={org.logo} class="size-3.5 shrink-0" /> -->
 							<Avatar.Root class="size-6 rounded-lg">
-								<Avatar.Image src={org.logo} alt={org.name} />
-								<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
+								<Avatar.Image src={generateInitials(org.name)} alt={org.name} />
+								<Avatar.Fallback class="rounded-lg">{getInitials(org.name)}</Avatar.Fallback>
 							</Avatar.Root>
 						</div>
 						{org.name}
-						<DropdownMenu.Shortcut>⌘{index + 1}</DropdownMenu.Shortcut>
 					</DropdownMenu.Item>
 				{/each}
-				<DropdownMenu.Separator />
+				<!-- <DropdownMenu.Separator />
 				<DropdownMenu.Item class="gap-2 p-2">
 					<div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
 						<Plus class="size-4" />
 					</div>
 					<div class="text-muted-foreground font-medium">Add Organization</div>
-				</DropdownMenu.Item>
+				</DropdownMenu.Item> -->
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</Sidebar.MenuItem>

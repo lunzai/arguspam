@@ -12,11 +12,11 @@
 
 <script lang="ts">
 	import * as Sidebar from '$ui/sidebar/index.js';
-	import NavMain from './nav-main.svelte';
-	import NavUser from './nav-user.svelte';
-	import OrgSwitcher from './org-switcher.svelte';
+	import NavMain from '$components/sidebar/nav-main.svelte';
+	import NavUser from '$components/sidebar/nav-user.svelte';
+	import OrgSwitcher from '$components/sidebar/org-switcher.svelte';
 	import type { ComponentProps } from 'svelte';
-	import { authStore } from '$lib/stores/auth.js';
+	import { authStore } from '$stores/auth.js';
 
 	let {
 		ref = $bindable(null),
@@ -26,23 +26,6 @@
 
 	// This is sample data.
 	const data = {
-		orgs: [
-			{
-				name: 'Acme Inc',
-				logo: generateInitials('Acme Inc'),
-				plan: 'Enterprise'
-			},
-			{
-				name: 'Acme Corp.',
-				logo: generateInitials('Acme Corp.'),
-				plan: 'Startup'
-			},
-			{
-				name: 'Evil Corp.',
-				logo: generateInitials('Evil Corp.'),
-				plan: 'Free'
-			}
-		],
 		navMain: [
 			{
 				title: 'Dashboard',
@@ -135,7 +118,7 @@
 
 <Sidebar.Root {collapsible} {...restProps}>
 	<Sidebar.Header>
-		<OrgSwitcher orgs={data.orgs} />
+		<OrgSwitcher />
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<NavMain items={data.navMain} />

@@ -1,4 +1,4 @@
-import type { User } from '$lib/types/user.js';
+import type { User } from '$models/user.js';
 
 
 // // In your auth store - computed automatically

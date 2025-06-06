@@ -1,7 +1,9 @@
-import { PUBLIC_API_URL } from '$env/static/public';
+import { PUBLIC_API_URL, PUBLIC_ORG_ID_HEADER } from '$env/static/public';
 import { PUBLIC_API_REQUEST_TIMEOUT } from '$env/static/public';
 import axios from 'axios';
-import { handleApiError, TokenManager } from './shared.js';
+import { handleApiError, TokenManager } from '$api/shared.js';
+import { orgStore } from '$stores/org.js';
+import { get } from 'svelte/store';
 
 export class ClientApi {
 	private baseUrl: string;
@@ -20,6 +22,15 @@ export class ClientApi {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json'
 			}
+		});
+
+		// Add request interceptor to automatically include org context header
+		this.axiosInstance.interceptors.request.use((config) => {
+			const currentOrgStore = get(orgStore);
+			if (currentOrgStore.currentOrgId) {
+				config.headers[PUBLIC_ORG_ID_HEADER] = currentOrgStore.currentOrgId.toString();
+			}
+			return config;
 		});
 	}
 

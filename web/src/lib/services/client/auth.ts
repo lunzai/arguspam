@@ -1,15 +1,23 @@
-import type { LoginRequest } from '$lib/types/auth.js';
-import type { User } from '$lib/types/user.js';
-import type { ApiResponse } from '$lib/types/api.js';
-import { clientApi } from '$lib/api/client.js';
+import type { LoginRequest } from '$types/auth.js';
+import type { User } from '$models/user.js';
+import type { ApiResponse, Resource } from '$types/api.js';
+import { clientApi } from '$api/client.js';
+import { orgStore } from '$stores/org.js';
+import type { Org } from '$models/org.js';
+
+export interface LoginResponse {
+	user: User;
+	orgs: Org[];
+	currentOrgId: number | null;
+}
 
 export class AuthService {
 	/**
 	 * Login user via SvelteKit API route
 	 */
-	async login(credentials: LoginRequest): Promise<ApiResponse<{ user: User }>> {
+	async login(credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> {
 		try {
-			const response = await clientApi.internal().post<ApiResponse<{ user: User }>>(
+			const response = await clientApi.internal().post<ApiResponse<LoginResponse>>(
 				'/api/auth/login', 
 				credentials
 			);
@@ -23,9 +31,9 @@ export class AuthService {
 	/**
 	 * Get current user via SvelteKit API route
 	 */
-	async me(): Promise<ApiResponse<User>> {
+	async me(): Promise<Resource<User>> {
 		try {
-			const response = await clientApi.internal().get<ApiResponse<User>>(
+			const response = await clientApi.internal().get<Resource<User>>(
 				'/api/auth/me'
 			);
 			return response;
@@ -44,8 +52,10 @@ export class AuthService {
 				{}
 			);
 			clientApi.clearAuthToken();
+			orgStore.reset();
 		} catch (error) {
 			clientApi.clearAuthToken();
+			orgStore.reset();
 			throw error;
 		}
 	}

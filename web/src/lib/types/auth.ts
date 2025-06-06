@@ -1,4 +1,5 @@
-import type { User } from "./user";
+import type { User } from "$models/user.js";
+import type { Org } from "$models/org";
 
 export interface AuthState {
 	user: User | null;

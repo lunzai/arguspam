@@ -5,11 +5,11 @@
 	import { useSidebar } from '$ui/sidebar';
 
 	import { BadgeCheck, ChevronsUpDown, LogOut } from '@lucide/svelte';
-	import { authService } from '$lib/services/client/auth.js';
-	import { authStore } from '$lib/stores/auth.js';
+	import { authService } from '$services/client/auth.js';
+	import { authStore } from '$stores/auth.js';
 	import { goto } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
-	import UserBlock from './user-block.svelte';
+	import UserBlock from '$components/sidebar/user-block.svelte';
 	import { PUBLIC_AUTH_LOGIN_PATH } from '$env/static/public';
 
 	let user = $derived({

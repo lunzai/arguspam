@@ -109,7 +109,7 @@
 			},
 			{
 				title: 'Settings',
-				url: '/settings',
+				url: '/settings/account',
 				icon: Settings2Icon
 			}
 		]

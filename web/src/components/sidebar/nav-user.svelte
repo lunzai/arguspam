@@ -76,7 +76,7 @@
 				<DropdownMenu.Group>
 					<DropdownMenu.Item
 						onSelect={() => {
-							window.location.href = '/account';
+							window.location.href = '/settings/account';
 						}}
 					>
 						<BadgeCheck />

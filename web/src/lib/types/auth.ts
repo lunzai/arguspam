@@ -1,5 +1,5 @@
-import type { User } from "$models/user.js";
-import type { Org } from "$models/org";
+import type { User } from '$models/user.js';
+import type { Org } from '$models/org';
 
 export interface AuthState {
 	user: User | null;
@@ -9,9 +9,9 @@ export interface AuthState {
 	isTwoFactorEnabled: boolean;
 	isTwoFactorVerified: boolean;
 	// Action states
-	shouldChallengeTwoFactor: boolean;  // User needs to enter OTP
-	shouldSetupTwoFactor: boolean;      // User needs to setup 2FA (blocks access)
-	shouldVerifyEmail: boolean;         // User should verify email (warning only)
+	shouldChallengeTwoFactor: boolean; // User needs to enter OTP
+	shouldSetupTwoFactor: boolean; // User needs to setup 2FA (blocks access)
+	shouldVerifyEmail: boolean; // User should verify email (warning only)
 }
 
 export interface LoginRequest {
@@ -24,4 +24,4 @@ export interface LoginResponse {
 		token: string;
 		user: User;
 	};
-} 
+}

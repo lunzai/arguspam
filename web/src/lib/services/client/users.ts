@@ -1,8 +1,8 @@
 import { BaseService, type BaseFilterParams, type BaseFindByIdParams } from './base.js';
 import type { User } from '$models/user.js';
 import type { ApiCollectionResponse, ApiResourceResponse } from '$types/api.js';
-import { clientApi } from '$lib/api/client.js';	
-import type { Org } from '$models/org.js'
+import { clientApi } from '$lib/api/client.js';
+import type { Org } from '$models/org.js';
 
 export interface UserFilterParams extends BaseFilterParams {
 	filter?: {
@@ -52,7 +52,7 @@ export class UserService extends BaseService<User, CreateUserRequest, UpdateUser
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Find all users with filtering, sorting, and pagination
 	 * @param params - Query parameters including filters, pagination, includes, and sorting
@@ -83,7 +83,10 @@ export class UserService extends BaseService<User, CreateUserRequest, UpdateUser
 	 * await userService.findById('1');
 	 * ```
 	 */
-	async findById(id: string | number, params: UserFindByIdParams = {}): Promise<ApiResourceResponse<User>> {
+	async findById(
+		id: string | number,
+		params: UserFindByIdParams = {}
+	): Promise<ApiResourceResponse<User>> {
 		return super.findById(id, params);
 	}
 
@@ -132,4 +135,4 @@ export class UserService extends BaseService<User, CreateUserRequest, UpdateUser
 	}
 }
 
-export const userService = new UserService(); 
+export const userService = new UserService();

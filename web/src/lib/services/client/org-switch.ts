@@ -10,7 +10,7 @@ export class OrgSwitchService {
 		try {
 			// Call the API to update the server-side cookie
 			await clientApi.internal().post('/api/org/switch', { orgId });
-			
+
 			// Update the client-side store
 			orgStore.setCurrentOrgId(orgId);
 		} catch (error) {
@@ -20,4 +20,4 @@ export class OrgSwitchService {
 	}
 }
 
-export const orgSwitchService = new OrgSwitchService(); 
+export const orgSwitchService = new OrgSwitchService();

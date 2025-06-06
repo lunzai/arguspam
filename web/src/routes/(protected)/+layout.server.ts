@@ -17,8 +17,7 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 		const user: User = await authService.me(token);
 		// TODO: getOrgs API is paginated, we need to handle that
 		const userService = new UserService(token);
-		const orgs: Org[] = (await userService.getOrgs()).data
-			.map((org) => org.attributes);
+		const orgs: Org[] = (await userService.getOrgs()).data.map((org) => org.attributes);
 		if (currentOrgId && !(await userService.checkOrgAccess(currentOrgId))) {
 			currentOrgId = orgs[0].id;
 			setCurrentOrgCookie(cookies, currentOrgId);

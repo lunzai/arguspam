@@ -18,24 +18,23 @@
 		identifier: `${$authStore.user?.id}|${$authStore.user?.email}` || ''
 	});
 
-
 	const sidebar = useSidebar();
 	let isLoggingOut = $state(false);
 
 	async function handleLogout() {
 		if (isLoggingOut) return;
-		
+
 		isLoggingOut = true;
-		
+
 		try {
 			await authService.logout();
-			
+
 			// Clear auth store
 			authStore.clearUser();
-			
+
 			// Show success message
 			toast.success('Logged out successfully');
-			
+
 			// Redirect to login page
 			await goto(PUBLIC_AUTH_LOGIN_PATH);
 		} catch (error) {
@@ -93,10 +92,7 @@
 					</DropdownMenu.Item> -->
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item
-					onSelect={handleLogout}
-					disabled={isLoggingOut}
-				>
+				<DropdownMenu.Item onSelect={handleLogout} disabled={isLoggingOut}>
 					<LogOut />
 					{isLoggingOut ? 'Logging out...' : 'Log out'}
 				</DropdownMenu.Item>

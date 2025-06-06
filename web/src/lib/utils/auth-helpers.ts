@@ -1,6 +1,5 @@
 import type { User } from '$models/user.js';
 
-
 // // In your auth store - computed automatically
 // $authStore.shouldSetupTwoFactor      // BLOCKING: Must setup 2FA first
 // $authStore.shouldChallengeTwoFactor  // BLOCKING: Must enter OTP
@@ -26,16 +25,16 @@ export function getAuthActions(user: User) {
 		isEmailVerified,
 		isTwoFactorEnabled,
 		isTwoFactorVerified,
-		
+
 		// Action priorities (in order of importance)
-		shouldChallengeTwoFactor: isTwoFactorEnabled && isTwoFactorVerified,  // BLOCKING: Must enter OTP
-		shouldSetupTwoFactor: isTwoFactorEnabled && !isTwoFactorVerified,    // BLOCKING: Must setup 2FA
-		shouldVerifyEmail: !isEmailVerified,                                 // WARNING: Should verify email
-		
+		shouldChallengeTwoFactor: isTwoFactorEnabled && isTwoFactorVerified, // BLOCKING: Must enter OTP
+		shouldSetupTwoFactor: isTwoFactorEnabled && !isTwoFactorVerified, // BLOCKING: Must setup 2FA
+		shouldVerifyEmail: !isEmailVerified, // WARNING: Should verify email
+
 		// Helper for redirect logic
 		getRedirectPath: () => {
 			if (isTwoFactorEnabled && !isTwoFactorVerified) {
-				return '/auth/setup-2fa';  // BLOCKS access until 2FA setup
+				return '/auth/setup-2fa'; // BLOCKS access until 2FA setup
 			}
 			if (isTwoFactorEnabled && isTwoFactorVerified) {
 				return '/auth/verify-2fa'; // BLOCKS access until OTP entered
@@ -58,15 +57,15 @@ export function shouldBlockAccess(user: User): boolean {
  */
 export function getAuthStatusMessage(user: User): string {
 	const actions = getAuthActions(user);
-	
+
 	if (actions.shouldSetupTwoFactor) {
-		return "Please complete your two-factor authentication setup";
+		return 'Please complete your two-factor authentication setup';
 	}
 	if (actions.shouldChallengeTwoFactor) {
-		return "Please enter your two-factor authentication code";
+		return 'Please enter your two-factor authentication code';
 	}
 	if (actions.shouldVerifyEmail) {
-		return "Consider verifying your email address for better security";
+		return 'Consider verifying your email address for better security';
 	}
-	return "All security settings are configured";
-} 
+	return 'All security settings are configured';
+}

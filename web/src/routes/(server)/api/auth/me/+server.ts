@@ -11,8 +11,8 @@ export const GET: RequestHandler = async ({ cookies }) => {
 			return json({ message: 'Not authenticated' }, { status: 401 });
 		}
 		const user = await authService.me(token);
-		return json({ 
-			data: user 
+		return json({
+			data: user
 		});
 	} catch (error) {
 		const apiError = error as ApiError;

@@ -7,12 +7,12 @@ import { clientApi } from '$lib/api/client';
  * User service class that handles user-related API calls
  */
 export class UserService {
-    private readonly endpoint = '/users';
-    private readonly token: string;
+	private readonly endpoint = '/users';
+	private readonly token: string;
 
-    constructor(token: string) {
-        this.token = token;
-    }
+	constructor(token: string) {
+		this.token = token;
+	}
 
 	/**
 	 * Get organizations for the authenticated user
@@ -21,12 +21,12 @@ export class UserService {
 		return serverApi.get<ApiCollectionResponse<Org>>(`${this.endpoint}/me/orgs`, this.token);
 	}
 
-    async checkOrgAccess(orgId: number): Promise<boolean> {
-        try {
+	async checkOrgAccess(orgId: number): Promise<boolean> {
+		try {
 			await serverApi.get<boolean>(`${this.endpoint}/me/orgs/${orgId}`, this.token);
 			return true;
 		} catch (error) {
 			return false;
 		}
-    }
+	}
 }

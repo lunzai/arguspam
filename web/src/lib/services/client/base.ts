@@ -56,7 +56,7 @@ export abstract class BaseService<
 
 		// Handle filter parameters (filter[name], filter[status], etc.)
 		if (params.filter) {
-			Object.keys(params.filter).forEach(key => {
+			Object.keys(params.filter).forEach((key) => {
 				queryParams.set(`filter[${key}]`, params.filter![key]);
 			});
 		}
@@ -76,7 +76,10 @@ export abstract class BaseService<
 	/**
 	 * Find a record by ID with optional includes
 	 */
-	async findById(id: string | number, params: BaseFindByIdParams = {}): Promise<ApiResourceResponse<TModel>> {
+	async findById(
+		id: string | number,
+		params: BaseFindByIdParams = {}
+	): Promise<ApiResourceResponse<TModel>> {
 		const queryString = this.buildQueryParams(params);
 		const url = queryString ? `${this.endpoint}/${id}?${queryString}` : `${this.endpoint}/${id}`;
 		return clientApi.get<ApiResourceResponse<TModel>>(url);
@@ -102,4 +105,4 @@ export abstract class BaseService<
 	async delete(id: string | number): Promise<void> {
 		return clientApi.delete<void>(`${this.endpoint}/${id}`);
 	}
-} 
+}

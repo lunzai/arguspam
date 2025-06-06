@@ -10,7 +10,7 @@
 	// Get reactive store states
 	const authState = authStore;
 	const orgState = orgStore;
-	
+
 	// Get current org object
 	const currentOrg = $derived(orgState.getCurrentOrg($orgState));
 </script>
@@ -124,7 +124,7 @@
 					{:else}
 						<p class="text-muted-foreground ml-4">No current org selected</p>
 					{/if}
-					
+
 					<div><strong>Available Orgs ({$orgState.orgs.length}):</strong></div>
 					{#if $orgState.orgs.length > 0}
 						<div class="ml-4 grid gap-1 text-sm">
@@ -134,7 +134,10 @@
 										{org.id}
 									</Badge>
 									<span>{org.name}</span>
-									<Badge variant={org.status === 'active' ? 'default' : 'secondary'} class="text-xs">
+									<Badge
+										variant={org.status === 'active' ? 'default' : 'secondary'}
+										class="text-xs"
+									>
 										{org.status}
 									</Badge>
 								</div>

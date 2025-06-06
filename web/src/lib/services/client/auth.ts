@@ -17,10 +17,9 @@ export class AuthService {
 	 */
 	async login(credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> {
 		try {
-			const response = await clientApi.internal().post<ApiResponse<LoginResponse>>(
-				'/api/auth/login', 
-				credentials
-			);
+			const response = await clientApi
+				.internal()
+				.post<ApiResponse<LoginResponse>>('/api/auth/login', credentials);
 			clientApi.clearAuthToken();
 			return response;
 		} catch (error) {
@@ -33,9 +32,7 @@ export class AuthService {
 	 */
 	async me(): Promise<Resource<User>> {
 		try {
-			const response = await clientApi.internal().get<Resource<User>>(
-				'/api/auth/me'
-			);
+			const response = await clientApi.internal().get<Resource<User>>('/api/auth/me');
 			return response;
 		} catch (error) {
 			throw error;
@@ -47,10 +44,7 @@ export class AuthService {
 	 */
 	async logout(): Promise<void> {
 		try {
-			await clientApi.internal().post<void>(
-				'/api/auth/logout',
-				{}
-			);
+			await clientApi.internal().post<void>('/api/auth/logout', {});
 			clientApi.clearAuthToken();
 			orgStore.reset();
 		} catch (error) {
@@ -61,4 +55,4 @@ export class AuthService {
 	}
 }
 
-export const authService = new AuthService(); 
+export const authService = new AuthService();

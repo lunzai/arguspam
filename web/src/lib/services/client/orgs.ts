@@ -54,7 +54,10 @@ export class OrgService extends BaseService<Org, CreateOrgRequest, UpdateOrgRequ
 	 * await orgService.findById('1', { include: ['users', 'userGroups'] });
 	 * ```
 	 */
-	async findById(id: string | number, params: OrgFindByIdParams = {}): Promise<ApiResourceResponse<Org>> {
+	async findById(
+		id: string | number,
+		params: OrgFindByIdParams = {}
+	): Promise<ApiResourceResponse<Org>> {
 		return super.findById(id, params);
 	}
 
@@ -103,4 +106,4 @@ export class OrgService extends BaseService<Org, CreateOrgRequest, UpdateOrgRequ
 	}
 }
 
-export const orgService = new OrgService(); 
+export const orgService = new OrgService();

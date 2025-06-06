@@ -31,7 +31,7 @@ function createOrgStore() {
 				currentOrgId: orgId
 			})),
 		getCurrentOrg: (state: OrgState) => {
-			let org = state.orgs.find(org => org.id === state.currentOrgId);
+			let org = state.orgs.find((org) => org.id === state.currentOrgId);
 			if (!org) {
 				org = state.orgs[0];
 			}
@@ -41,4 +41,4 @@ function createOrgStore() {
 	};
 }
 
-export const orgStore = createOrgStore(); 
+export const orgStore = createOrgStore();

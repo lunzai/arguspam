@@ -17,7 +17,12 @@ interface CookieOptions {
 /**
  * Generic cookie setter
  */
-export function setCookie(cookies: Cookies, key: string, value: string, options: Partial<CookieOptions> = {}) {
+export function setCookie(
+	cookies: Cookies,
+	key: string,
+	value: string,
+	options: Partial<CookieOptions> = {}
+) {
 	const defaultOptions = {
 		path: '/',
 		httpOnly: true,

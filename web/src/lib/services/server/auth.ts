@@ -32,4 +32,4 @@ export class AuthService {
 }
 
 // Default auth service instance
-export const authService = new AuthService(); 
+export const authService = new AuthService();

@@ -19,7 +19,7 @@ export function generateInitials(name: string, size: number = 128): string {
 	const UI_AVATARS_API = 'https://ui-avatars.com/api';
 	const encodedName = encodeURIComponent(name);
 	return `${UI_AVATARS_API}/?size=${size}&name=${encodedName}`;
-} 
+}
 
 /**
  * Extract 2-letter initials from a string
@@ -27,7 +27,7 @@ export function generateInitials(name: string, size: number = 128): string {
  * @returns Two uppercase letters representing the initials
  */
 export function getInitials(name: string): string {
-	const words = name.split(/\s+/).filter(word => word.length > 0);
+	const words = name.split(/\s+/).filter((word) => word.length > 0);
 	if (words.length === 0) {
 		return 'NA';
 	}

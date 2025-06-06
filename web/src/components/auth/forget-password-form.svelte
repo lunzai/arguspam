@@ -5,7 +5,7 @@
 	import { Button } from '$ui/button/index.js';
 	import { cn, type WithElementRef } from '$lib/utils';
 	import { PUBLIC_AUTH_LOGIN_PATH } from '$env/static/public';
-	
+
 	let {
 		ref = $bindable(null),
 		class: className,

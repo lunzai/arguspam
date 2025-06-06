@@ -12,7 +12,7 @@ export class ServerApi {
 
 	constructor(baseUrl?: string) {
 		this.baseUrl = baseUrl || PUBLIC_API_URL;
-		
+
 		// Create axios instance with SSL handling
 		this.axiosInstance = axios.create({
 			baseURL: this.baseUrl,
@@ -83,7 +83,7 @@ export class ServerApi {
 				url: endpoint,
 				method: method.toLowerCase() as any,
 				headers: requestHeaders,
-				data: body,
+				data: body
 			});
 
 			// Handle successful responses with no content (like logout)
@@ -135,4 +135,4 @@ export class ServerApi {
 }
 
 // Default server API client instance
-export const serverApi = new ServerApi(); 
+export const serverApi = new ServerApi();

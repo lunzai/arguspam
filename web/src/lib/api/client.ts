@@ -13,14 +13,14 @@ export class ClientApi {
 
 	constructor(baseUrl?: string) {
 		this.baseUrl = baseUrl || PUBLIC_API_URL;
-		
+
 		// Create axios instance for backend API calls
 		this.axiosInstance = axios.create({
 			baseURL: this.baseUrl,
 			timeout: Number(PUBLIC_API_REQUEST_TIMEOUT),
 			headers: {
 				'Content-Type': 'application/json',
-				'Accept': 'application/json'
+				Accept: 'application/json'
 			}
 		});
 
@@ -78,9 +78,18 @@ export class ClientApi {
 		if (this.isInternalMode) {
 			// Reset internal mode after use
 			this.isInternalMode = false;
-			return this.makeInternalRequest<T>(endpoint, { method, body, requireAuth: shouldRequireAuth });
+			return this.makeInternalRequest<T>(endpoint, {
+				method,
+				body,
+				requireAuth: shouldRequireAuth
+			});
 		} else {
-			return this.makeExternalRequest<T>(endpoint, { method, body, headers, requireAuth: shouldRequireAuth });
+			return this.makeExternalRequest<T>(endpoint, {
+				method,
+				body,
+				headers,
+				requireAuth: shouldRequireAuth
+			});
 		}
 	}
 
@@ -101,7 +110,7 @@ export class ClientApi {
 
 		const requestHeaders: Record<string, string> = {
 			'Content-Type': 'application/json',
-			'Accept': 'application/json'
+			Accept: 'application/json'
 		};
 
 		// Internal routes use cookies, so typically don't need bearer tokens
@@ -117,7 +126,7 @@ export class ClientApi {
 				url: endpoint,
 				method: method.toLowerCase() as any,
 				headers: requestHeaders,
-				data: body,
+				data: body
 			});
 
 			if (response.status === 204 || !response.data) {
@@ -162,7 +171,7 @@ export class ClientApi {
 				url: endpoint,
 				method: method.toLowerCase() as any,
 				headers: requestHeaders,
-				data: body,
+				data: body
 			});
 
 			if (response.status === 204 || !response.data) {
@@ -212,4 +221,4 @@ export class ClientApi {
 }
 
 // Default client API instance
-export const clientApi = new ClientApi(); 
+export const clientApi = new ClientApi();

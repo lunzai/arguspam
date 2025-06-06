@@ -7,7 +7,7 @@ import axios, { type AxiosError } from 'axios';
 export function handleApiError(error: unknown): never {
 	if (axios.isAxiosError(error)) {
 		const axiosError = error as AxiosError;
-		
+
 		if (axiosError.response) {
 			// Server responded with error status
 			const errorData = axiosError.response.data as any;
@@ -26,7 +26,7 @@ export function handleApiError(error: unknown): never {
 			} as ApiError;
 		}
 	}
-	
+
 	// Unknown error
 	throw {
 		message: 'An unexpected error occurred',
@@ -72,18 +72,20 @@ export class TokenManager {
 		this.tokenPromise = this.fetchAndCacheToken(fetchTokenFn);
 		const token = await this.tokenPromise;
 		this.tokenPromise = null;
-		
+
 		return token;
 	}
 
-	private async fetchAndCacheToken(fetchTokenFn: () => Promise<string | null>): Promise<string | null> {
+	private async fetchAndCacheToken(
+		fetchTokenFn: () => Promise<string | null>
+	): Promise<string | null> {
 		try {
 			const token = await fetchTokenFn();
 			if (token) {
 				// Cache token with a reasonable expiration time (e.g., 1 hour from now)
 				this.tokenInfo = {
 					token,
-					expiresAt: Date.now() + (60 * 60 * 1000) // 1 hour
+					expiresAt: Date.now() + 60 * 60 * 1000 // 1 hour
 				};
 			} else {
 				this.tokenInfo = null;
@@ -103,4 +105,4 @@ export class TokenManager {
 		this.tokenInfo = null;
 		this.tokenPromise = null;
 	}
-} 
+}

@@ -34,15 +34,21 @@ export class UserService extends BaseService<User, CreateUserRequest, UpdateUser
 		super('/users');
 	}
 
+	async switchOrg(orgId: number): Promise<void> {
+		return clientApi.internal().post(`/api/org/switch`, { orgId });
+	}
+
 	async getOrgs(): Promise<ApiCollectionResponse<Org>> {
 		return clientApi.get(`${this.endpoint}/me/orgs`);
 	}
 
 	async checkOrgAccess(orgId: number): Promise<boolean> {
 		try {
+			console.log('checking org access', `${this.endpoint}/me/orgs/${orgId}`);
 			await clientApi.get(`${this.endpoint}/me/orgs/${orgId}`);
 			return true;
 		} catch (error) {
+			console.error('error checking org access', error);
 			return false;
 		}
 	}

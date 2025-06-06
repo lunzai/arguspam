@@ -23,10 +23,6 @@ export class OrgService extends BaseService<Org, CreateOrgRequest, UpdateOrgRequ
 		super('/orgs');
 	}
 
-	async me(): Promise<ApiResourceResponse<Org[]>> {
-		return clientApi.get(`${this.endpoint}/me`);
-	}
-
 	/**
 	 * Find all organizations with filtering, sorting, and pagination
 	 * @param params - Query parameters including filters, pagination, includes, and sorting

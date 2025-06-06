@@ -3,14 +3,21 @@ import type { User } from '$models/user.js';
 import type { ApiResponse, Resource } from '$types/api.js';
 import { clientApi } from '$api/client.js';
 import { orgStore } from '$stores/org.js';
+import type { Org } from '$models/org.js';
+
+export interface LoginResponse {
+	user: User;
+	orgs: Org[];
+	currentOrgId: number | null;
+}
 
 export class AuthService {
 	/**
 	 * Login user via SvelteKit API route
 	 */
-	async login(credentials: LoginRequest): Promise<ApiResponse<{ user: User }>> {
+	async login(credentials: LoginRequest): Promise<ApiResponse<LoginResponse>> {
 		try {
-			const response = await clientApi.internal().post<ApiResponse<{ user: User }>>(
+			const response = await clientApi.internal().post<ApiResponse<LoginResponse>>(
 				'/api/auth/login', 
 				credentials
 			);

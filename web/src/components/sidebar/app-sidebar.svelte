@@ -26,23 +26,6 @@
 
 	// This is sample data.
 	const data = {
-		orgs: [
-			{
-				name: 'Acme Inc',
-				logo: generateInitials('Acme Inc'),
-				plan: 'Enterprise'
-			},
-			{
-				name: 'Acme Corp.',
-				logo: generateInitials('Acme Corp.'),
-				plan: 'Startup'
-			},
-			{
-				name: 'Evil Corp.',
-				logo: generateInitials('Evil Corp.'),
-				plan: 'Free'
-			}
-		],
 		navMain: [
 			{
 				title: 'Dashboard',
@@ -135,7 +118,7 @@
 
 <Sidebar.Root {collapsible} {...restProps}>
 	<Sidebar.Header>
-		<OrgSwitcher orgs={data.orgs} />
+		<OrgSwitcher />
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<NavMain items={data.navMain} />

@@ -1,8 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { authService } from '$services/server/auth.js';
-import { getAuthToken, clearAuthCookie } from '$server/helpers/cookie.js';
-import { CURRENT_ORG_KEY } from '$env/static/private';
+import { getAuthToken, clearAuthCookie, clearCurrentOrg } from '$server/helpers/cookie.js';
 import type { ApiError } from '$types/error.js';
 
 export const POST: RequestHandler = async ({ cookies }) => {
@@ -20,7 +19,7 @@ export const POST: RequestHandler = async ({ cookies }) => {
 		clearAuthCookie(cookies);
 
 		// Clear the current org cookie
-		cookies.delete(CURRENT_ORG_KEY, { path: '/' });
+		clearCurrentOrg(cookies);
 
 		return json({ message: 'Logged out successfully' });
 	} catch (error) {
@@ -30,7 +29,7 @@ export const POST: RequestHandler = async ({ cookies }) => {
 		clearAuthCookie(cookies);
 
 		// Clear the current org cookie
-		cookies.delete(CURRENT_ORG_KEY, { path: '/' });
+		clearCurrentOrg(cookies);
 
 		return json(
 			{ message: apiError.message || 'Logout failed' },

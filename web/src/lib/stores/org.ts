@@ -30,14 +30,12 @@ function createOrgStore() {
 				...state,
 				currentOrgId: orgId
 			})),
-		setOrgData: (orgs: OrgState['orgs'], currentOrgId: number | null) =>
-			update((state) => ({
-				...state,
-				orgs,
-				currentOrgId
-			})),
 		getCurrentOrg: (state: OrgState) => {
-			return state.orgs.find(org => org.id === state.currentOrgId) || null;
+			let org = state.orgs.find(org => org.id === state.currentOrgId);
+			if (!org) {
+				org = state.orgs[0];
+			}
+			return org;
 		},
 		reset: () => set(initialState)
 	};

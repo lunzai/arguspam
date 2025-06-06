@@ -1,4 +1,4 @@
-import { PUBLIC_API_URL } from '$env/static/public';
+import { PUBLIC_API_URL, PUBLIC_ORG_ID_HEADER } from '$env/static/public';
 import { PUBLIC_API_REQUEST_TIMEOUT } from '$env/static/public';
 import axios from 'axios';
 import { handleApiError, TokenManager } from '$api/shared.js';
@@ -22,6 +22,15 @@ export class ClientApi {
 				'Content-Type': 'application/json',
 				'Accept': 'application/json'
 			}
+		});
+
+		// Add request interceptor to automatically include org context header
+		this.axiosInstance.interceptors.request.use((config) => {
+			const currentOrgStore = get(orgStore);
+			if (currentOrgStore.currentOrgId) {
+				config.headers[PUBLIC_ORG_ID_HEADER] = currentOrgStore.currentOrgId.toString();
+			}
+			return config;
 		});
 	}
 
@@ -146,12 +155,6 @@ export class ClientApi {
 			if (token) {
 				requestHeaders['Authorization'] = `Bearer ${token}`;
 			}
-		}
-
-		// Add org context header if current org is selected
-		const currentOrgStore = get(orgStore);
-		if (currentOrgStore.currentOrgId) {
-			requestHeaders['X-Organization-ID'] = currentOrgStore.currentOrgId.toString();
 		}
 
 		try {

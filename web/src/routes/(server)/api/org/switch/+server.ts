@@ -1,8 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { userService } from '$services/client/users.js';
-import { getAuthToken } from '$server/helpers/cookie.js';
-import { CURRENT_ORG_KEY } from '$env/static/private';
+import { UserService } from '$services/server/user.js';
+import { getAuthToken, setCurrentOrgCookie } from '$server/helpers/cookie.js';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	try {
@@ -26,6 +25,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		}
 
 		// Check if user has access to the org
+		const userService = new UserService(token);
 		const hasAccess = await userService.checkOrgAccess(orgId);
 		if (!hasAccess) {
 			return json(
@@ -35,13 +35,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		}
 
 		// Set the currentOrgId cookie
-		cookies.set(CURRENT_ORG_KEY, orgId.toString(), {
-			path: '/',
-			httpOnly: true,
-			secure: true,
-			sameSite: 'strict',
-			maxAge: 60 * 60 * 24 * 30 // 30 days
-		});
+		setCurrentOrgCookie(cookies, orgId);
 
 		return json({ 
 			success: true,

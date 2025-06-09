@@ -21,12 +21,13 @@ class UserResource extends Resource
      */
     public function toArray(Request $request): array
     {
+        $userCheckRoute = $request->is('users/*') || $request->is('auth/*');
         return [
             'attributes' => [
                 'id' => $this->id,
                 'name' => $this->name,
                 'email' => $this->email,
-                $this->mergeWhen($request->routeIs('users.*'), [
+                $this->mergeWhen($userCheckRoute, [
                     'email_verified_at' => $this->email_verified_at,
                     'two_factor_enabled' => $this->two_factor_enabled,
                     'two_factor_confirmed_at' => $this->two_factor_confirmed_at,

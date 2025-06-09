@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\UserLoggedIn;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -12,11 +13,9 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    public function me(Request $request): JsonResponse
+    public function me(Request $request): UserResource
     {
-        return $this->success([
-            'user' => $request->user()
-        ]);
+        return UserResource::make($request->user());
     }
 
     public function login(LoginRequest $request): JsonResponse

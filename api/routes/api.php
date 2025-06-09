@@ -6,6 +6,7 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrgController;
+use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\OrgUserController;
 use App\Http\Controllers\UserOrgController;
 use App\Http\Controllers\PermissionController;
@@ -30,6 +31,8 @@ Route::get('/', function () {
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])
+        ->middleware('auth:sanctum');
+    Route::post('/change-password', [PasswordController::class, 'change'])
         ->middleware('auth:sanctum');
 });
 

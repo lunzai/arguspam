@@ -43,6 +43,7 @@ Route::prefix('auth')->group(function () {
 // Route::middleware(['auth:sanctum', EnsureOrganizationIdIsValid::class])->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/me', [AuthController::class, 'me']);
+    Route::get('/users/me', [AuthController::class, 'me']); // Alias for /auth/me
     Route::get('/users/me/orgs', [UserOrgController::class, 'index']);
     Route::get('/users/me/orgs/{org}', [UserOrgController::class, 'show']);
     

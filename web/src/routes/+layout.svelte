@@ -1,13 +1,22 @@
 <script lang="ts">
 	import '../app.css';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { Toaster } from '$ui/sonner';
 	let { children } = $props();
+
+	console.log(page);
 </script>
 
 <Toaster richColors position="top-center" />
 
-{#if $page.data.isAuthenticated}
+<svelte:head>
+	<title>
+		ArgusPAM{page.data.title ? ` - ${page.data.title}` : ''}
+	</title>
+	<meta name="description" content="{page.data.description}" />
+</svelte:head>
+
+{#if page.data.isAuthenticated}
 	<div class="bg-background flex h-screen">
 		<!-- Admin Layout -->
 		<aside class="flex w-64 flex-col bg-white shadow-lg">

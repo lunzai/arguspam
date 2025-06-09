@@ -6,6 +6,7 @@
     import { toast } from 'svelte-sonner';
     import { userService } from '$lib/services/client/users';
     import { authStore } from '$lib/stores/auth';
+    import { Loader2 } from '@lucide/svelte';
 	
     import {
         type SuperValidated,
@@ -15,12 +16,13 @@
     import { zodClient } from 'sveltekit-superforms/adapters';
 
     let { data } = $props();
+    let isLoading = $state(false);
 
     const form = superForm(data.form, {
         validators: zodClient(userProfileSchema),
         onSubmit: async ({ formData, cancel }) => {
             cancel(); // Prevent default form submission
-            
+            isLoading = true;
             const formValues = Object.fromEntries(formData);
             
             try {
@@ -34,6 +36,8 @@
             } catch (error) {
                 console.error('Failed to update profile:', error);
                 toast.error('Failed to update profile. Please try again.');
+            } finally {
+                isLoading = false;
             }
         }
     });
@@ -47,7 +51,32 @@
         <p class="text-muted-foreground">Update your personal information.</p>
     </div>
 
-    <form method="POST" use:enhance class="space-y-4 max-w-md">
+    <form method="POST" use:enhance class="space-y-6 max-w-xl">
+        <Form.Field {form} name="name">
+            <Form.Control>
+                <Form.Label>Full Name</Form.Label>
+                <Input type="text" name="name" bind:value={$formData.name} disabled={isLoading} />
+            </Form.Control>
+            <Form.FieldErrors />
+        </Form.Field>
+        <Form.Field {form} name="email">
+            <Form.Control>
+                <Form.Label>Email</Form.Label>
+                <Input type="email" name="email" value={data.user.email} readonly disabled />
+                <Form.Description>Email address cannot be changed. Contact your administrator to update your email.</Form.Description>
+            </Form.Control>
+            <Form.FieldErrors />
+        </Form.Field>
+        <Form.Button type="submit" disabled={isLoading}>
+            {#if isLoading}
+                <Loader2 class="animate-spin" /> Updating...
+            {:else}
+                Update Profile
+            {/if}
+        </Form.Button>
+    </form>
+
+    <!-- <form method="POST" use:enhance class="space-y-4 max-w-xl">
         <div class="space-y-2">
             <label for="name" class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                 Full Name
@@ -81,8 +110,14 @@
             <p class="text-xs text-muted-foreground">
                 Email address cannot be changed. Contact your administrator to update your email.
             </p>
-        </div>
+        </div> -->
 
-        <Button type="submit" class="w-full">Update Profile</Button>
-    </form>
+        <!-- <Button type="submit" class="mt-4" disabled={isLoading}>
+            {#if isLoading}
+                <Loader2 class="animate-spin" /> Updating...
+            {:else}
+                Update Profile
+            {/if}
+        </Button> -->
+    <!-- </form> -->
 </div>

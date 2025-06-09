@@ -13,6 +13,7 @@ export const load = async ({ parent }: any) => {
 
 	return {
 		form,
-		user
+		user,
+		title: 'Account'
 	};
 }; 

@@ -4,7 +4,7 @@
 	import * as Sidebar from '$ui/sidebar';
 	import { useSidebar } from '$ui/sidebar';
 
-	import { BadgeCheck, ChevronsUpDown, LogOut } from '@lucide/svelte';
+	import { ChevronsUpDown, LogOut, IdCard } from '@lucide/svelte';
 	import { authService } from '$services/client/auth.js';
 	import { authStore } from '$stores/auth.js';
 	import { goto } from '$app/navigation';
@@ -79,7 +79,7 @@
 							goto('/settings/account');
 						}}
 					>
-						<BadgeCheck />
+						<IdCard />
 						Account
 					</DropdownMenu.Item>
 					<!-- <DropdownMenu.Item>

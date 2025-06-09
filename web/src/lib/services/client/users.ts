@@ -53,6 +53,10 @@ export class UserService extends BaseService<User, CreateUserRequest, UpdateUser
 		}
 	}
 
+	async me(): Promise<ApiResourceResponse<User>> {
+		return clientApi.get(`${this.endpoint}/me`);
+	}
+
 	/**
 	 * Find all users with filtering, sorting, and pagination
 	 * @param params - Query parameters including filters, pagination, includes, and sorting

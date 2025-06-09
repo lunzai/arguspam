@@ -1,5 +1,5 @@
 import { serverApi } from '$api/server.js';
-import type { ApiResponse } from '$types/api';
+import type { ApiResourceResponse } from '$types/api';
 import type { LoginResponse } from '$types/auth.js';
 import type { User } from '$models/user.js';
 import { PUBLIC_AUTH_LOGOUT_PATH, PUBLIC_AUTH_LOGIN_PATH } from '$env/static/public';
@@ -19,8 +19,8 @@ export class AuthService {
 	 * Get current authenticated user
 	 */
 	async me(token: string): Promise<User> {
-		const response = await serverApi.get<ApiResponse<{ user: User }>>('/auth/me', token);
-		return response.data.user;
+		const response = await serverApi.get<ApiResourceResponse<User>>('/auth/me', token);
+		return response.data.attributes;
 	}
 
 	/**

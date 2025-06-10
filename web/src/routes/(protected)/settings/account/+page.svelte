@@ -2,15 +2,12 @@
 	import { userProfileSchema } from '$lib/validations/user';
     import { Input } from '$ui/input';
     import * as Form from '$ui/form';
-    import { Button } from '$ui/button';
     import { toast } from 'svelte-sonner';
     import { userService } from '$lib/services/client/users';
     import { authStore } from '$lib/stores/auth';
     import { Loader2 } from '@lucide/svelte';
 	
     import {
-        type SuperValidated,
-        type Infer,
         superForm
     } from 'sveltekit-superforms';
     import { zodClient } from 'sveltekit-superforms/adapters';
@@ -42,7 +39,7 @@
         }
     });
 
-    const { form: formData, enhance, errors, constraints } = form;
+    const { form: formData, enhance } = form;
 </script>
 
 <div class="space-y-6">

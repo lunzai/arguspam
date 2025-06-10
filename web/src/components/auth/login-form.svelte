@@ -38,7 +38,6 @@
 			toast.success('Successfully logged in!');
 			await goto('/dashboard');
 		} catch (error) {
-			console.log('login formcatch error', error);
 			const apiError = error as ApiError;
 			if (apiError.status === 422 && apiError.errors) {
 				errors = apiError.errors;

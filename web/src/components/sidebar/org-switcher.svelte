@@ -25,7 +25,6 @@
 			currentOrgId = orgId;
 		} catch (error) {
 			orgStore.setCurrentOrgId(currentOrgId);
-			console.log('unable to swtich org', error);
 			toast.error('Something went wrong. Please try again.');
 		} finally {
 			isLoading = false;

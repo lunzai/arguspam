@@ -1,4 +1,4 @@
-import type { LoginRequest } from '$types/auth.js';
+import type { ChangePasswordRequest, LoginRequest } from '$types/auth.js';
 import type { User } from '$models/user.js';
 import type { ApiResponse, Resource } from '$types/api.js';
 import { clientApi } from '$api/client.js';
@@ -21,6 +21,19 @@ export class AuthService {
 				.internal()
 				.post<ApiResponse<LoginResponse>>('/api/auth/login', credentials);
 			clientApi.clearAuthToken();
+			return response;
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async changePassword(password: ChangePasswordRequest): Promise<ApiResponse<void>> {
+		try {
+			const response = await clientApi.post<ApiResponse<void>>('/auth/change-password', {
+				current_password: password.currentPassword,
+				new_password: password.newPassword,
+				new_password_confirmation: password.confirmNewPassword
+			});
 			return response;
 		} catch (error) {
 			throw error;

@@ -44,7 +44,6 @@ export class UserService extends BaseService<User, CreateUserRequest, UpdateUser
 
 	async checkOrgAccess(orgId: number): Promise<boolean> {
 		try {
-			console.log('checking org access', `${this.endpoint}/me/orgs/${orgId}`);
 			await clientApi.get(`${this.endpoint}/me/orgs/${orgId}`);
 			return true;
 		} catch (error) {

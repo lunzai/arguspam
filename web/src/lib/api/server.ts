@@ -93,7 +93,6 @@ export class ServerApi {
 
 			return response.data;
 		} catch (error) {
-			console.log('Error:', error);
 			handleApiError(error);
 		}
 	}

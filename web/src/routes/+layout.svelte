@@ -3,8 +3,6 @@
 	import { page } from '$app/state';
 	import { Toaster } from '$ui/sonner';
 	let { children } = $props();
-
-	console.log(page);
 </script>
 
 <Toaster richColors position="top-center" />

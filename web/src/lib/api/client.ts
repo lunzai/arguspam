@@ -39,7 +39,6 @@ export class ClientApi {
 	 */
 	private async fetchAuthToken(): Promise<string | null> {
 		const response = await axios.get('/api/auth/token');
-		console.log(response);
 		return response.data.data.token;
 	}
 

@@ -25,3 +25,9 @@ export interface LoginResponse {
 		user: User;
 	};
 }
+
+export interface ChangePasswordRequest {
+	currentPassword: string;
+	newPassword: string;
+	confirmNewPassword: string;
+}

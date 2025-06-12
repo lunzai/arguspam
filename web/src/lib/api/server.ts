@@ -1,137 +1,112 @@
 import { PUBLIC_API_URL } from '$env/static/public';
 import { PUBLIC_API_REQUEST_TIMEOUT, PUBLIC_ORG_ID_HEADER } from '$env/static/public';
-import axios from 'axios';
-import https from 'https';
 import { dev } from '$app/environment';
-import { handleApiError } from '$api/shared.js';
+import axios, { type AxiosInstance } from 'axios';
+import https from 'https';
 
 export class ServerApi {
-	private baseUrl: string;
-	private axiosInstance;
-	private currentOrgId: number | null = null;
+    private baseUrl: string;
+    private axiosInstance: AxiosInstance;
+    private currentOrgId: number | null = null;
+    private token: string | null = null;
 
-	constructor(baseUrl?: string) {
-		this.baseUrl = baseUrl || PUBLIC_API_URL;
+    constructor(token?: string | null, currentOrgId?: number | null, baseUrl?: string) {
+        this.baseUrl = baseUrl || PUBLIC_API_URL;
+        this.currentOrgId = currentOrgId || null;
+        this.token = token || null;
+        
+        // Create axios instance with SSL handling
+        this.axiosInstance = axios.create({
+            baseURL: this.baseUrl,
+            timeout: Number(PUBLIC_API_REQUEST_TIMEOUT),
+            httpsAgent: new https.Agent({
+                // Only disable SSL verification in development
+                // TODO: REMOVE THIS
+                rejectUnauthorized: !dev
+            })
+        });
+    }
 
-		// Create axios instance with SSL handling
-		this.axiosInstance = axios.create({
-			baseURL: this.baseUrl,
-			timeout: Number(PUBLIC_API_REQUEST_TIMEOUT),
-			httpsAgent: new https.Agent({
-				// Only disable SSL verification in development
-				rejectUnauthorized: !dev
-			})
-		});
+    private clone(overrides: {
+        currentOrgId?: number | null;
+        token?: string | null;
+    } = {}): ServerApi {
+        return new ServerApi(
+            overrides.token !== undefined ? overrides.token : this.token,
+            overrides.currentOrgId !== undefined ? overrides.currentOrgId : this.currentOrgId,
+            this.baseUrl
+        );
+    }
 
-		// Add request interceptor to automatically include org context header
-		this.axiosInstance.interceptors.request.use((config) => {
-			if (this.currentOrgId) {
-				config.headers[PUBLIC_ORG_ID_HEADER] = this.currentOrgId.toString();
-			}
-			return config;
-		});
-	}
+    // Builder methods
+    withToken(token: string): ServerApi {
+        return this.clone({ token });
+    }
 
-	/**
-	 * Set the current organization ID for all subsequent requests
-	 */
-	setCurrentOrgId(orgId: number | null): void {
-		this.currentOrgId = orgId;
-	}
+    withoutToken(): ServerApi {
+        return this.clone({ token: null });
+    }
 
-	/**
-	 * Get the current organization ID
-	 */
-	getCurrentOrgId(): number | null {
-		return this.currentOrgId;
-	}
+    withOrg(currentOrgId: number): ServerApi {
+        return this.clone({ currentOrgId });
+    }
 
-	/**
-	 * Make a request to the API with proper error handling
-	 */
-	async request<T>(
-		endpoint: string,
-		options: {
-			method?: string;
-			body?: any;
-			headers?: Record<string, string>;
-			token?: string;
-			orgId?: number;
-		} = {}
-	): Promise<T> {
-		const { method = 'GET', body, headers = {}, token, orgId } = options;
+    withoutOrg(): ServerApi {
+        return this.clone({ currentOrgId: null });
+    }
 
-		console.log('API URL:', `${this.baseUrl}${endpoint}`);
+    async get<T>(endpoint: string): Promise<T> {
+        return this.request<T>(endpoint, { method: 'GET' });
+    }
 
-		const requestHeaders: Record<string, string> = {
-			'Content-Type': 'application/json',
-			Accept: 'application/json',
-			...headers
-		};
+    async post<T>(endpoint: string, body?: any): Promise<T> {
+        return this.request<T>(endpoint, { method: 'POST', body });
+    }
 
-		if (token) {
-			requestHeaders['Authorization'] = `Bearer ${token}`;
-		}
+    async put<T>(endpoint: string, body?: any): Promise<T> {
+        return this.request<T>(endpoint, { method: 'PUT', body });
+    }
 
-		// Handle temporary org ID override for this request
-		if (orgId !== undefined) {
-			requestHeaders[PUBLIC_ORG_ID_HEADER] = orgId.toString();
-		}
+    async delete<T>(endpoint: string): Promise<T> {
+        return this.request<T>(endpoint, { method: 'DELETE' });
+    }
 
-		try {
-			const response = await this.axiosInstance({
-				url: endpoint,
-				method: method.toLowerCase() as any,
-				headers: requestHeaders,
-				data: body
-			});
+    async patch<T>(endpoint: string, body?: any): Promise<T> {
+        return this.request<T>(endpoint, { method: 'PATCH', body });
+    }
 
-			// Handle successful responses with no content (like logout)
-			if (response.status === 204 || !response.data) {
-				return {} as T;
-			}
+    private async request<T>(endpoint: string, options: { method: string; body?: any }): Promise<T> {
+        const { method, body } = options;
 
-			return response.data;
-		} catch (error) {
-			handleApiError(error);
-		}
-	}
+        const requestHeaders: Record<string, string> = {};
 
-	/**
-	 * GET request helper
-	 */
-	async get<T>(endpoint: string, token?: string, orgId?: number): Promise<T> {
-		return this.request<T>(endpoint, { method: 'GET', token, orgId });
-	}
+        // Add org ID header if available
+        if (this.currentOrgId) {
+            requestHeaders[PUBLIC_ORG_ID_HEADER] = this.currentOrgId.toString();
+        }
 
-	/**
-	 * POST request helper
-	 */
-	async post<T>(endpoint: string, body?: any, token?: string, orgId?: number): Promise<T> {
-		return this.request<T>(endpoint, { method: 'POST', body, token, orgId });
-	}
-
-	/**
-	 * PUT request helper
-	 */
-	async put<T>(endpoint: string, body?: any, token?: string, orgId?: number): Promise<T> {
-		return this.request<T>(endpoint, { method: 'PUT', body, token, orgId });
-	}
-
-	/**
-	 * DELETE request helper
-	 */
-	async delete<T>(endpoint: string, token?: string, orgId?: number): Promise<T> {
-		return this.request<T>(endpoint, { method: 'DELETE', token, orgId });
-	}
-
-	/**
-	 * PATCH request helper
-	 */
-	async patch<T>(endpoint: string, body?: any, token?: string, orgId?: number): Promise<T> {
-		return this.request<T>(endpoint, { method: 'PATCH', body, token, orgId });
-	}
+        // Add auth token if available
+        if (this.token) {
+            requestHeaders['Authorization'] = `Bearer ${this.token}`;
+        }
+        console.log('API', endpoint, requestHeaders);
+        try {
+            const response = await this.axiosInstance({
+                url: endpoint,
+                method: method.toLowerCase() as any,
+                headers: requestHeaders,
+                data: body
+            });
+            if (response.status === 204 || !response.data) {
+                return {} as T;
+            }
+            return response.data;
+        } catch (error) {
+            console.log('api error', error);
+            // if (error.response) {
+            //     throw new Error(error.response.data.message);
+            // }
+            throw error;
+        }
+    }
 }
-
-// Default server API client instance
-export const serverApi = new ServerApi();

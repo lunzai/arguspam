@@ -1,57 +1,110 @@
 <script lang="ts">
-	import type { HTMLAttributes } from 'svelte/elements';
-	import { Label } from '$ui/label/index.js';
-	import { Input } from '$ui/input/index.js';
-	import { Button } from '$ui/button/index.js';
-	import { cn, type WithElementRef } from '$lib/utils';
-	import { goto } from '$app/navigation';
+	// import type { HTMLAttributes } from 'svelte/elements';
+	// import { cn, type WithElementRef } from '$lib/utils';
+	// import { Label } from '$ui/label/index.js';
+	// import { Input } from '$ui/input/index.js';
+	// import { Button } from '$ui/button/index.js';
+	// import { enhance } from '$app/forms';
+	// import { goto } from '$app/navigation';
+	// import { toast } from 'svelte-sonner';
+	// // import type { ApiError } from '$types/error.js';
+	// import { orgStore } from '$stores/org';
+	import * as Form from '$ui/form';
+	import { Input } from '$ui/input';
+	import { Button } from '$ui/button';
+	import { loginSchema, type Login } from '$validations/auth';
+	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
-	import { authService } from '$services/client/auth.js';
-	import { authStore } from '$stores/auth.js';
-	import type { ApiError } from '$types/error.js';
-	import { orgStore } from '$stores/org.js';
+	import SuperDebug from 'sveltekit-superforms';
 
-	let {
-		ref = $bindable(null),
-		class: className,
-		...restProps
-	}: WithElementRef<HTMLAttributes<HTMLDivElement>> = $props();
+	let { 
+		data 
+	}: { 
+		data: { form: SuperValidated<Login> } 
+	} = $props();
 
-	let isLoading = $state(false);
-	let email = $state('heanluen@gmail.com');
-	let password = $state('password');
-	let errors = $state<Record<string, string[]>>({});
+	const form = superForm(data.form, {
+		validators: zodClient(loginSchema)
+	});
 
-	async function handleSubmit(event: SubmitEvent) {
-		event.preventDefault();
+	const { form: formData, enhance, errors, message } = form;
 
-		if (isLoading) return;
-
-		isLoading = true;
-		errors = {};
-
-		try {
-			const result = await authService.login({ email, password });
-			authStore.setUser(result.data.user);
-			orgStore.setOrgs(result.data.orgs);
-			orgStore.setCurrentOrgId(result.data.currentOrgId);
-			toast.success('Successfully logged in!');
-			await goto('/dashboard');
-		} catch (error) {
-			const apiError = error as ApiError;
-			if (apiError.status === 422 && apiError.errors) {
-				errors = apiError.errors;
-			} else {
-				toast.error(apiError.message || 'Login failed. Please try again.');
-			}
-		} finally {
-			isLoading = false;
-		}
+	if (message) {
+		toast.success(message);
 	}
+
+	// # TO REMOVE
+	if ($formData.email === '') {
+		$formData.email = 'heanluen@gmail.com';
+	}
+	if ($formData.password === '') {
+		$formData.password = 'password';
+	}
+
+	// let isLoading = $state(false);
+	// let email = $state('heanluen@gmail.com');
+	// let password = $state('password');
+	// let errors = $state<Record<string, string[]>>({});
+
+	// async function handleSubmit(event: SubmitEvent) {
+	// 	event.preventDefault();
+
+	// 	if (isLoading) return;
+
+	// 	isLoading = true;
+	// 	errors = {};
+
+	// 	try {
+	// 		const result = await authService.login({ email, password });
+	// 		authStore.setUser(result.data.user);
+	// 		orgStore.setOrgs(result.data.orgs);
+	// 		orgStore.setCurrentOrgId(result.data.currentOrgId);
+	// 		toast.success('Successfully logged in!');
+	// 		await goto('/dashboard');
+	// 	} catch (error) {
+	// 		const apiError = error as ApiError;
+	// 		if (apiError.status === 422 && apiError.errors) {
+	// 			errors = apiError.errors;
+	// 		} else {
+	// 			toast.error(apiError.message || 'Login failed. Please try again.');
+	// 		}
+	// 	} finally {
+	// 		isLoading = false;
+	// 	}
+	// }
 </script>
 
-<div class={cn('flex flex-col gap-6', className)} bind:this={ref} {...restProps}>
-	<form onsubmit={handleSubmit}>
+<div class="space-y-6">
+	<div class="flex flex-col items-center gap-6">
+		<div class="flex size-24 items-center justify-center rounded-md">
+			<img src="/logo.png" alt="ArgusPAM" />
+		</div>
+		<span class="sr-only">ArgusPAM</span>
+		<h1 class="text-xl font-bold">Welcome to ArgusPAM</h1>
+	</div>
+	<form method="POST" use:enhance class="space-y-6 max-w-xl">
+		<Form.Field {form} name="email">
+			<Form.Control>
+				<Form.Label>Email</Form.Label>
+				<Input bind:value={$formData.email} />
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+		<Form.Field {form} name="password">
+			<Form.Control>
+				<Form.Label>Password</Form.Label>
+				<Input type="password" bind:value={$formData.password} />
+			</Form.Control>
+			<Form.FieldErrors />
+		</Form.Field>
+		<Button type="submit">Login</Button>
+	</form>
+</div>
+
+<SuperDebug {form} />
+<!-- 	
+	<form method="post" use:enhance>
 		<div class="flex flex-col gap-6">
 			<div class="flex flex-col items-center gap-2">
 				<div class="flex size-24 items-center justify-center rounded-md">
@@ -65,6 +118,7 @@
 					<Label for="email">Email</Label>
 					<Input
 						id="email"
+						name="email"
 						type="email"
 						placeholder="me@example.com"
 						required
@@ -84,6 +138,7 @@
 					<Label for="password">Password</Label>
 					<Input
 						id="password"
+						name="password"
 						type="password"
 						placeholder="********"
 						required
@@ -112,5 +167,5 @@
 				</Button>
 			</div>
 		</div>
-	</form>
-</div>
+	</form> -->
+<!-- </div> -->

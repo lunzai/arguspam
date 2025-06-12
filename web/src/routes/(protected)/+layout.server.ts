@@ -1,15 +1,16 @@
 import type { LayoutServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
-import { getAuthToken, getCurrentOrg, setCurrentOrgCookie } from '$server/helpers/cookie.js';
-import { authService } from '$services/server/auth.js';
-import { UserService } from '$services/server/user.js';
+import { createCookieManager } from '$utils/cookie';
+import { authService } from '$services/auth';
+import { UserService } from '$services/user';
 import type { User } from '$models/user.js';
 import { PUBLIC_AUTH_LOGIN_PATH } from '$env/static/public';
-import type { Org } from '$lib/types/models/org';
+import type { Org } from '$models/org';
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
-	const token = getAuthToken(cookies);
-	let currentOrgId = getCurrentOrg(cookies);
+	const cookieManager = createCookieManager(cookies);
+	const token = cookieManager.getAuthToken();
+	let currentOrgId = cookieManager.getCurrentOrgId();
 	if (!token) {
 		throw redirect(302, PUBLIC_AUTH_LOGIN_PATH);
 	}
@@ -20,7 +21,7 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 		const orgs: Org[] = (await userService.getOrgs()).data.map((org) => org.attributes);
 		if (currentOrgId && !(await userService.checkOrgAccess(currentOrgId))) {
 			currentOrgId = orgs[0].id;
-			setCurrentOrgCookie(cookies, currentOrgId);
+			cookieManager.setCurrentOrgId(currentOrgId);
 		}
 		return {
 			user,

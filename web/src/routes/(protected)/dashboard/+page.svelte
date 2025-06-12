@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { authStore } from '$lib/stores/auth.js';
-	import { orgStore } from '$lib/stores/org.js';
-	import { Card, CardContent, CardHeader, CardTitle } from '$ui/card/index.js';
-	import { Badge } from '$ui/badge/index.js';
+	import { authStore } from '$stores/auth';
+	import { orgStore } from '$stores/org';
+	import { Card, CardContent, CardHeader, CardTitle } from '$ui/card';
+	import { Badge } from '$ui/badge;
 
 	let { data }: { data: PageData } = $props();
 

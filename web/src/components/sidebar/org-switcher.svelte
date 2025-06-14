@@ -9,17 +9,34 @@
 	import { generateInitials, getInitials } from '$utils/avatar';
 	import { UserService } from '$services/user';
 	import { toast } from 'svelte-sonner';
+	import { enhance } from '$app/forms';
 
 	const orgs = $derived($orgStore.orgs);
-	let currentOrgId = $orgStore.currentOrgId;
+	let currentOrgId = $derived($orgStore.currentOrgId);
 	let activeOrg = $derived(orgStore.getCurrentOrg($orgStore));
 	const sidebar = useSidebar();
 	let isLoading = $state(false);
 
 	async function onSelectOrg(orgId: number) {
 		if (currentOrgId === orgId) return;
+		isLoading = true;
 		try {
-			
+			const response = await fetch(`/api/org/switch`, {
+				method: 'POST',
+				body: JSON.stringify({ orgId })
+			});
+			if (response.ok) {
+				const org = orgs.find(o => o.attributes.id === orgId);
+				if (org) {
+					toast.success(`Switched organization to ${org.attributes.name}`);
+				}
+				orgStore.setCurrentOrgId(orgId);
+			} else {
+				const data = await response.json();
+				toast.error(data.error || 'Something went wrong');
+			}
+		} catch (error) {
+			toast.error('Something went wrong');
 		} finally {
 			isLoading = false;
 		}
@@ -48,7 +65,6 @@
 							<span class="truncate font-medium">
 								{activeOrg.attributes.name}
 							</span>
-							<!-- <span class="truncate text-xs">{activeOrg.plan}</span>-->
 						</div>
 						{#if isLoading}
 							<LoaderCircle class="animate-spin" />
@@ -68,7 +84,6 @@
 				{#each orgs as org, index (org.attributes.id)}
 					<DropdownMenu.Item onSelect={() => onSelectOrg(org.attributes.id)} class="gap-2 p-2">
 						<div class="flex size-6 items-center justify-center rounded-md border">
-							<!-- <img src={org.attributes.logo} class="size-3.5 shrink-0" />  -->
 							<Avatar.Root class="size-6 rounded-lg">
 								<Avatar.Image src={generateInitials(org.attributes.name)} alt={org.attributes.name} />
 								<Avatar.Fallback class="rounded-lg">{getInitials(org.attributes.name)}</Avatar.Fallback>
@@ -77,13 +92,6 @@
 						{org.attributes.name}
 					</DropdownMenu.Item>
 				{/each}
-				<!-- <DropdownMenu.Separator />
-				<DropdownMenu.Item class="gap-2 p-2">
-					<div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
-						<Plus class="size-4" />
-					</div>
-					<div class="text-muted-foreground font-medium">Add Organization</div>
-				</DropdownMenu.Item> -->
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</Sidebar.MenuItem>

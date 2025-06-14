@@ -1,15 +1,11 @@
 <script lang="ts">
-	import LoginForm from '$components/auth/login-form.svelte';
-	// import type { PageData } from './$types';
-
 	import * as Form from '$ui/form';
 	import { Input } from '$ui/input';
 	import { Button } from '$ui/button';
-	import { loginSchema, type Login } from '$validations/auth';
-	import { type SuperValidated, type Infer, superForm, type FormResult } from 'sveltekit-superforms';
+	import { loginSchema } from '$validations/auth';
+	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
-	import SuperDebug from 'sveltekit-superforms';
 	import { Loader2 } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
 
@@ -31,7 +27,7 @@
 		}
 	});
 
-	const { form: formData, enhance, errors, message, delayed, submitting } = form;
+	const { form: formData, enhance, delayed, submitting } = form;
 </script>
 
 <div class="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">

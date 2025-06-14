@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ request, cookies }) => {
+	default: async ({ cookies }) => {
         try {
             const token = getAuthToken(cookies) as string;
             const authService = new AuthService(token);

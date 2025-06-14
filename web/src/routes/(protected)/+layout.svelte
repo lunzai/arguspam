@@ -4,11 +4,7 @@
 	import { Separator } from '$ui/separator/index.js';
 	import * as Sidebar from '$ui/sidebar/index.js';
 	import { page } from '$app/state';
-	import type { PageProps } from './$types';
-	
-	let { children, data }: PageProps = $props();
-
-	console.log('data', data);
+	let { children } = $props();
 	
 	interface BreadcrumbItem {
 		label: string;

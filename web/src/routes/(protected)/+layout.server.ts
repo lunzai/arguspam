@@ -1,6 +1,12 @@
 import type { LayoutServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
-import { getAuthToken, getCurrentOrgId, setCurrentOrgId } from '$utils/cookie';
+import { 
+	clearAuthCookie, 
+	clearCurrentOrgId, 
+	getAuthToken, 
+	getCurrentOrgId, 
+	setCurrentOrgId 
+} from '$utils/cookie';
 import { AuthService } from '$services/auth';
 import { UserService } from '$services/user';
 import type { UserResource } from '$resources/user';
@@ -10,7 +16,8 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 	const token = getAuthToken(cookies);
 	let currentOrgId = getCurrentOrgId(cookies);
 	if (!token) {
-		console.log('No token found, redirecting to login');
+		clearAuthCookie(cookies);
+		clearCurrentOrgId(cookies);
 		throw redirect(302, PUBLIC_AUTH_LOGIN_PATH);
 	}
 	try {

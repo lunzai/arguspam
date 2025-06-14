@@ -3,7 +3,7 @@ import type { AuthState } from '$resources/auth';
 import type { User } from '$models/user';
 
 const initialState: AuthState = {
-	user: null,
+	user: {} as User,
 	isAuthenticated: false,
 	isEmailVerified: false,
 	isTwoFactorEnabled: false,

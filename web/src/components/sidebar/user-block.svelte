@@ -3,7 +3,7 @@
 	import { generateAvatar, getInitials } from '$utils/avatar';
 	import { authStore } from '$stores/auth';
 
-	const user = $authStore.user;
+	const user = $derived($authStore.user);
 	const identifier = $derived(`${user.id}|${user.email}`);
 </script>
 

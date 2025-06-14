@@ -13,14 +13,13 @@
 
 	const form = superForm(data.form, {
 		validators: zodClient(loginSchema),
-		delayMs: 50,
+		delayMs: 100,
 		resetForm: false,
 		onUpdate({ form, result }) {
 			if (result.type === 'failure') {
 				toast.error(result.data.error);
 			}
 			if (form.valid && result.type === 'success') {
-				console.log('Login successful');
 				toast.success(form.message);
 				return goto('/');
 			}

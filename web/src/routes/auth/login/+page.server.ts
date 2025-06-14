@@ -2,10 +2,9 @@ import { fail, type Actions } from '@sveltejs/kit';
 import { AuthService } from '$services/auth';
 import { UserService } from '$services/user';
 import type { PageServerLoad } from './$types';
-import { superValidate } from 'sveltekit-superforms';
+import { superValidate, message } from 'sveltekit-superforms';
 import { loginSchema } from '$validations/auth';
 import { zod } from 'sveltekit-superforms/adapters';
-import { message } from 'sveltekit-superforms';
 import { getAuthToken, setAuthToken, setCurrentOrgId } from '$utils/cookie';
 import { redirect } from '@sveltejs/kit';
 

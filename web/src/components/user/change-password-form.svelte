@@ -6,8 +6,8 @@
     import { changePasswordSchema } from '$lib/validations/user';
     import { superForm } from 'sveltekit-superforms';
     import { zodClient } from 'sveltekit-superforms/adapters';
-    import { authService } from '$lib/services/client/auth';
-    import type { ChangePasswordRequest } from '$types/auth';
+    import { AuthService } from '$services/auth';
+    import type { ChangePasswordRequest } from '$resources/auth';
 
     let { data } = $props();
     let isLoading = $state(false);

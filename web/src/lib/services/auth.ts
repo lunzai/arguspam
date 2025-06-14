@@ -1,9 +1,7 @@
 import { BaseService } from './base.js';
 import type { BaseModel } from '$models/base-model.js';
-import type { ApiCollectionResponse } from '$resources/api';
-import type { User } from '$lib/models/user.js';
 import type { LoginResponse } from '$resources/auth';
-
+import type { UserResource } from '$resources/user';
 
 export class AuthService extends BaseService<BaseModel> {
     protected readonly endpoint = '/auth';
@@ -20,7 +18,7 @@ export class AuthService extends BaseService<BaseModel> {
 		await this.api.post<void>(`${this.endpoint}/logout`);
 	}
 
-	async me(): Promise<User> {
-		return await this.api.get<User>(`${this.endpoint}/me`);
+	async me(): Promise<UserResource> {
+		return await this.api.get<UserResource>(`${this.endpoint}/me`);
 	}
 }

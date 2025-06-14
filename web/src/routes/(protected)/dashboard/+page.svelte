@@ -1,25 +1,24 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { authStore } from '$stores/auth';
-	import { orgStore } from '$stores/org';
+	// import { authStore } from '$stores/auth';
+	// import { orgStore } from '$stores/org';
 	import { Card, CardContent, CardHeader, CardTitle } from '$ui/card';
-	import { Badge } from '$ui/badge;
+	import { Badge } from '$ui/badge';
 
 	let { data }: { data: PageData } = $props();
 
-	// Get reactive store states
-	const authState = authStore;
-	const orgState = orgStore;
+	// // Get reactive store states
+	// const authState = authStore;
+	// const orgState = orgStore;
 
-	// Get current org object
-	const currentOrg = $derived(orgState.getCurrentOrg($orgState));
+	// // Get current org object
+	// const currentOrg = $derived(orgState.getCurrentOrg($orgState));
 </script>
 
 <div class="space-y-6 py-4">
 	<h1 class="text-3xl font-bold">Dashboard</h1>
 
-	<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-		<!-- Server-side User Data -->
+	<!-- <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 		<Card>
 			<CardHeader>
 				<CardTitle>Server-side User Data</CardTitle>
@@ -68,7 +67,6 @@
 			</CardContent>
 		</Card>
 
-		<!-- Client-side Auth Store -->
 		<Card>
 			<CardHeader>
 				<CardTitle>Client-side Auth Store</CardTitle>
@@ -96,7 +94,6 @@
 			</CardContent>
 		</Card>
 
-		<!-- Current Org Debug Info -->
 		<Card>
 			<CardHeader>
 				<CardTitle>Current Organization</CardTitle>
@@ -151,7 +148,6 @@
 		</Card>
 	</div>
 
-	<!-- Raw JSON Debug -->
 	<Card>
 		<CardHeader>
 			<CardTitle>Debug Information</CardTitle>
@@ -178,5 +174,5 @@
 				</div>
 			</div>
 		</CardContent>
-	</Card>
+	</Card> -->
 </div>

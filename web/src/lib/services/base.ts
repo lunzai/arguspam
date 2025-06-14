@@ -1,6 +1,6 @@
-import { ServerApi } from '$lib/api/server.js';
-import type { ApiCollectionResponse, ApiResourceResponse } from '$types/api.js';
-import type { BaseModel } from '$models/base-model.js';
+import { ServerApi } from '$lib/api/server';
+import type { ApiCollectionResponse, ApiResourceResponse } from '$resources/api';
+import type { BaseModel } from '$models/base-model';
 
 export interface BaseFilterParams {
 	page?: number;
@@ -39,7 +39,6 @@ export abstract class BaseService<
 		this.currentOrgId = currentOrgId || null;
 		this.token = token || null;
 		this.api = new ServerApi(this.token, this.currentOrgId);
-		console.log('BaseService', this.endpoint, this.token, this.currentOrgId);
 	}
 
 	/**

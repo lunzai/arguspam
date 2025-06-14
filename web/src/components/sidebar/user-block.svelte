@@ -1,20 +1,14 @@
 <script lang="ts">
 	import * as Avatar from '$ui/avatar';
-	import { generateAvatar, getInitials } from '$services/client/avatar.js';
+	import { generateAvatar, getInitials } from '$utils/avatar';
+	import { authStore } from '$stores/auth';
 
-	let {
-		user
-	}: {
-		user: {
-			name: string;
-			email: string;
-			identifier: string;
-		};
-	} = $props();
+	const user = $authStore.user;
+	const identifier = $derived(`${user.id}|${user.email}`);
 </script>
 
 <Avatar.Root class="size-8 rounded-lg">
-	<Avatar.Image src={generateAvatar(user.identifier)} alt={user.name} />
+	<Avatar.Image src={generateAvatar(identifier)} alt={user.name} />
 	<Avatar.Fallback class="rounded-lg">{getInitials(user.name)}</Avatar.Fallback>
 </Avatar.Root>
 <div class="grid flex-1 text-left text-sm leading-tight">

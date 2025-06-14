@@ -20,13 +20,13 @@
 		delayMs: 50,
 		resetForm: false,
 		onUpdate({ form, result }) {
-			console.log('onUpdate', form, result);
 			if (result.type === 'failure') {
 				toast.error(result.data.error);
 			}
 			if (form.valid && result.type === 'success') {
+				console.log('Login successful');
 				toast.success(form.message);
-				goto('/');
+				return goto('/');
 			}
 		}
 	});

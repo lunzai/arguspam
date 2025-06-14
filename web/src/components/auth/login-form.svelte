@@ -31,7 +31,7 @@
 	const { form: formData, enhance, errors, message } = form;
 
 	if (message) {
-		toast.success(message);
+		toast.success(message as string);
 	}
 
 	// # TO REMOVE
@@ -102,7 +102,6 @@
 	</form>
 </div>
 
-<SuperDebug {form} />
 <!-- 	
 	<form method="post" use:enhance>
 		<div class="flex flex-col gap-6">

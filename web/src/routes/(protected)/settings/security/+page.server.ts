@@ -2,7 +2,7 @@ import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { changePasswordSchema } from '$lib/validations/user';
-import { serverApi } from '$lib/api/server';
+import { ServerApi } from '$lib/api/server';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ parent }) => {
@@ -26,11 +26,11 @@ export const actions: Actions = {
 
 		try {
 			const token = cookies.get('auth_token'); // or however you store auth
-			await serverApi.request('/auth/change-password', {
-				method: 'POST',
-				body: form.data,
-				token
-			});
+			// await serverApi.request('/auth/change-password', {
+			// 	method: 'POST',
+			// 	body: form.data,
+			// 	token
+			// });
 
 			return { form, success: true };
 		} catch (error) {

@@ -1,30 +1,119 @@
 <script lang="ts">
-	import * as Collapsible from '$ui/collapsible/index.js';
-	import * as Sidebar from '$ui/sidebar/index.js';
-	import { ChevronRight } from '@lucide/svelte';
+	import * as Collapsible from '$ui/collapsible';
+	import * as Sidebar from '$ui/sidebar';
+	import {
+		ChevronRight,
+		LayoutDashboardIcon,
+		ServerIcon,
+		SquareTerminalIcon,
+		Building2,
+		Users,
+		Settings2Icon
+	} from '@lucide/svelte';
+	import type { Component } from 'svelte';
 
-	let {
-		items
-	}: {
-		items: {
+	const navItems = [
+		{
+			title: 'Dashboard',
+			url: '/dashboard',
+			icon: LayoutDashboardIcon,
+			isActive: true
+		},
+		{
+			title: 'Assets',
+			url: '/assets',
+			icon: ServerIcon,
+			isActive: false,
+			items: [
+				{
+					title: 'Assets',
+					url: '/assets'
+				},
+				{
+					title: 'Accounts',
+					url: '/assets'
+				},
+				{
+					title: 'Permission',
+					url: '/assets'
+				}
+			]
+		},
+		{
+			title: 'Sessions',
+			url: '#',
+			icon: SquareTerminalIcon,
+			isActive: false,
+			items: [
+				{
+					title: 'Requests',
+					url: '/requests'
+				},
+				{
+					title: 'Sessions',
+					url: '/sessions'
+				},
+				{
+					title: 'Audits',
+					url: '/session-audits'
+				}
+			]
+		},
+		{
+			title: 'Organizations',
+			url: '#',
+			icon: Building2,
+			items: [
+				{
+					title: 'Organizations',
+					url: '/organizations'
+				},
+				{
+					title: 'User Groups',
+					url: '/user-groups'
+				}
+			]
+		},
+		{
+			title: 'Users',
+			url: '#',
+			icon: Users,
+			items: [
+				{
+					title: 'Users',
+					url: '/users'
+				},
+				{
+					title: 'Roles',
+					url: '/roles'
+				},
+				{
+					title: 'Permissions',
+					url: '/permissions'
+				}
+			]
+		},
+		{
+			title: 'Settings',
+			url: '/settings/account',
+			icon: Settings2Icon
+		}
+	] as Array<{
+		title: string;
+		url: string;
+		icon: Component;
+		isActive?: boolean;
+		items: Array<{
 			title: string;
 			url: string;
-			// this should be `Component` after @lucide/svelte updates types
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			icon?: any;
-			isActive?: boolean;
-			items?: {
-				title: string;
-				url: string;
-			}[];
-		}[];
-	} = $props();
+		}>;
+	}>;
 </script>
 
 <Sidebar.Group>
 	<Sidebar.GroupLabel>Platform</Sidebar.GroupLabel>
 	<Sidebar.Menu>
-		{#each items as item (item.title)}
+		{#each navItems as item (item.title)}
 			{#if item.items}
 				<Collapsible.Root open={item.isActive} class="group/collapsible">
 					{#snippet child({ props })}

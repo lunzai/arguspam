@@ -1,35 +1,36 @@
 import type { LayoutServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
-import { createCookieManager } from '$utils/cookie';
-import { authService } from '$services/auth';
+import { getAuthToken, getCurrentOrgId, setCurrentOrgId } from '$utils/cookie';
+import { AuthService } from '$services/auth';
 import { UserService } from '$services/user';
-import type { User } from '$models/user.js';
+import type { UserResource } from '$resources/user';
 import { PUBLIC_AUTH_LOGIN_PATH } from '$env/static/public';
-import type { Org } from '$models/org';
 
 export const load: LayoutServerLoad = async ({ cookies }) => {
-	const cookieManager = createCookieManager(cookies);
-	const token = cookieManager.getAuthToken();
-	let currentOrgId = cookieManager.getCurrentOrgId();
+	const token = getAuthToken(cookies);
+	let currentOrgId = getCurrentOrgId(cookies);
 	if (!token) {
+		console.log('No token found, redirecting to login');
 		throw redirect(302, PUBLIC_AUTH_LOGIN_PATH);
 	}
 	try {
-		const user: User = await authService.me(token);
+		const authService = new AuthService(token);
+		const userResource: UserResource = await authService.me();
 		// TODO: getOrgs API is paginated, we need to handle that
 		const userService = new UserService(token);
-		const orgs: Org[] = (await userService.getOrgs()).data.map((org) => org.attributes);
-		if (currentOrgId && !(await userService.checkOrgAccess(currentOrgId))) {
-			currentOrgId = orgs[0].id;
-			cookieManager.setCurrentOrgId(currentOrgId);
+		const orgCollection = await userService.getOrgs();
+		if (!currentOrgId || !(await userService.checkOrgAccess(currentOrgId))) {
+			currentOrgId = orgCollection.data[0].attributes.id;
+			setCurrentOrgId(cookies, currentOrgId);
 		}
 		return {
-			user,
-			orgs,
+			user: userResource.data.attributes,
+			orgs: orgCollection.data,
 			currentOrgId
 		};
 	} catch (error) {
 		// If token is invalid, redirect to login
+		console.error('Error loading layout', error);
 		throw redirect(302, PUBLIC_AUTH_LOGIN_PATH);
 	}
 };

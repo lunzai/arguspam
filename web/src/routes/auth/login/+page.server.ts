@@ -5,11 +5,15 @@ import type { PageServerLoad } from './$types';
 import { superValidate } from 'sveltekit-superforms';
 import { loginSchema } from '$validations/auth';
 import { zod } from 'sveltekit-superforms/adapters';
-import type { Login } from '$validations/auth';
 import { message } from 'sveltekit-superforms';
 import { getAuthToken, setAuthToken, setCurrentOrgId } from '$utils/cookie';
+import { redirect } from '@sveltejs/kit';
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ cookies }) => {
+	const token = getAuthToken(cookies);
+	if (token) {
+		return redirect(302, '/');
+	}
 	return {
 		form: await superValidate(zod(loginSchema))
 	}

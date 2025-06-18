@@ -3,7 +3,6 @@ import { authStore } from '$stores/auth.js';
 import { orgStore } from '$lib/stores/org';
 
 export const load: LayoutLoad = async ({ data }) => {
-	// Set user data in client store when layout loads
 	if (data.user) {
 		authStore.setUser(data.user);
 	}
@@ -14,8 +13,6 @@ export const load: LayoutLoad = async ({ data }) => {
 		orgStore.setCurrentOrgId(data.currentOrgId);
 	}
 	return {
-		user: data.user,
-		orgs: data.orgs,
-		currentOrgId: data.currentOrgId
+		data
 	};
 };

@@ -1,25 +1,24 @@
 <script lang="ts">
 	import type { PageData } from './$types';
-	import { authStore } from '$lib/stores/auth.js';
-	import { orgStore } from '$lib/stores/org.js';
-	import { Card, CardContent, CardHeader, CardTitle } from '$ui/card/index.js';
-	import { Badge } from '$ui/badge/index.js';
+	// import { authStore } from '$stores/auth';
+	// import { orgStore } from '$stores/org';
+	import { Card, CardContent, CardHeader, CardTitle } from '$ui/card';
+	import { Badge } from '$ui/badge';
 
 	let { data }: { data: PageData } = $props();
 
-	// Get reactive store states
-	const authState = authStore;
-	const orgState = orgStore;
-	
-	// Get current org object
-	const currentOrg = $derived(orgState.getCurrentOrg($orgState));
+	// // Get reactive store states
+	// const authState = authStore;
+	// const orgState = orgStore;
+
+	// // Get current org object
+	// const currentOrg = $derived(orgState.getCurrentOrg($orgState));
 </script>
 
 <div class="space-y-6 py-4">
 	<h1 class="text-3xl font-bold">Dashboard</h1>
 
-	<div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-		<!-- Server-side User Data -->
+	<!-- <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
 		<Card>
 			<CardHeader>
 				<CardTitle>Server-side User Data</CardTitle>
@@ -68,7 +67,6 @@
 			</CardContent>
 		</Card>
 
-		<!-- Client-side Auth Store -->
 		<Card>
 			<CardHeader>
 				<CardTitle>Client-side Auth Store</CardTitle>
@@ -96,7 +94,6 @@
 			</CardContent>
 		</Card>
 
-		<!-- Current Org Debug Info -->
 		<Card>
 			<CardHeader>
 				<CardTitle>Current Organization</CardTitle>
@@ -124,7 +121,7 @@
 					{:else}
 						<p class="text-muted-foreground ml-4">No current org selected</p>
 					{/if}
-					
+
 					<div><strong>Available Orgs ({$orgState.orgs.length}):</strong></div>
 					{#if $orgState.orgs.length > 0}
 						<div class="ml-4 grid gap-1 text-sm">
@@ -134,7 +131,10 @@
 										{org.id}
 									</Badge>
 									<span>{org.name}</span>
-									<Badge variant={org.status === 'active' ? 'default' : 'secondary'} class="text-xs">
+									<Badge
+										variant={org.status === 'active' ? 'default' : 'secondary'}
+										class="text-xs"
+									>
 										{org.status}
 									</Badge>
 								</div>
@@ -148,7 +148,6 @@
 		</Card>
 	</div>
 
-	<!-- Raw JSON Debug -->
 	<Card>
 		<CardHeader>
 			<CardTitle>Debug Information</CardTitle>
@@ -175,5 +174,5 @@
 				</div>
 			</div>
 		</CardContent>
-	</Card>
+	</Card> -->
 </div>

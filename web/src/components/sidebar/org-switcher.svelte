@@ -1,32 +1,42 @@
 <script lang="ts">
-	import * as DropdownMenu from '$ui/dropdown-menu/index.js';
-	import * as Sidebar from '$ui/sidebar/index.js';
-	import * as Avatar from '$ui/avatar/index.js';
-	import { useSidebar } from '$ui/sidebar/index.js';
+	import * as DropdownMenu from '$ui/dropdown-menu';
+	import * as Sidebar from '$ui/sidebar';
+	import * as Avatar from '$ui/avatar';
+	import { useSidebar } from '$ui/sidebar';
 	import { ChevronsUpDown, LoaderCircle } from '@lucide/svelte';
 	import { orgStore } from '$stores/org';
-	import type { Org } from '$types/models/org';
-	import { generateInitials, getInitials } from '$services/client/avatar';
-	import { userService } from '$services/client/users';
+	import type { Org } from '$models/org';
+	import { generateInitials, getInitials } from '$utils/avatar';
+	import { UserService } from '$services/user';
 	import { toast } from 'svelte-sonner';
+	import { enhance } from '$app/forms';
 
 	const orgs = $derived($orgStore.orgs);
-	let currentOrgId = $orgStore.currentOrgId;
+	let currentOrgId = $derived($orgStore.currentOrgId);
 	let activeOrg = $derived(orgStore.getCurrentOrg($orgStore));
 	const sidebar = useSidebar();
 	let isLoading = $state(false);
 
 	async function onSelectOrg(orgId: number) {
 		if (currentOrgId === orgId) return;
+		isLoading = true;
 		try {
-			isLoading = true;
-			await userService.switchOrg(orgId);
-			orgStore.setCurrentOrgId(orgId);
-			currentOrgId = orgId;
+			const response = await fetch(`/api/org/switch`, {
+				method: 'POST',
+				body: JSON.stringify({ orgId })
+			});
+			if (response.ok) {
+				const org = orgs.find((o) => o.attributes.id === orgId);
+				if (org) {
+					toast.success(`Switched organization to ${org.attributes.name}`);
+				}
+				orgStore.setCurrentOrgId(orgId);
+			} else {
+				const data = await response.json();
+				toast.error(data.error || 'Something went wrong');
+			}
 		} catch (error) {
-			orgStore.setCurrentOrgId(currentOrgId);
-			console.log('unable to swtich org', error);
-			toast.error('Something went wrong. Please try again.');
+			toast.error('Something went wrong');
 		} finally {
 			isLoading = false;
 		}
@@ -47,15 +57,19 @@
 							class="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
 						>
 							<Avatar.Root class="size-8 rounded-lg">
-								<Avatar.Image src={generateInitials(activeOrg.name)} alt={activeOrg.name} />
-								<Avatar.Fallback class="rounded-lg">{getInitials(activeOrg.name)}</Avatar.Fallback>
+								<Avatar.Image
+									src={generateInitials(activeOrg.attributes.name)}
+									alt={activeOrg.attributes.name}
+								/>
+								<Avatar.Fallback class="rounded-lg"
+									>{getInitials(activeOrg.attributes.name)}</Avatar.Fallback
+								>
 							</Avatar.Root>
 						</div>
 						<div class="grid flex-1 text-left text-sm leading-tight">
 							<span class="truncate font-medium">
-								{activeOrg.name} 
+								{activeOrg.attributes.name}
 							</span>
-							<!-- <span class="truncate text-xs">{activeOrg.plan}</span> -->
 						</div>
 						{#if isLoading}
 							<LoaderCircle class="animate-spin" />
@@ -72,25 +86,22 @@
 				sideOffset={4}
 			>
 				<DropdownMenu.Label class="text-muted-foreground text-xs">Organizations</DropdownMenu.Label>
-				{#each orgs as org, index (org.name)}
-					<DropdownMenu.Item onSelect={() => onSelectOrg(org.id)} class="gap-2 p-2">
+				{#each orgs as org, index (org.attributes.id)}
+					<DropdownMenu.Item onSelect={() => onSelectOrg(org.attributes.id)} class="gap-2 p-2">
 						<div class="flex size-6 items-center justify-center rounded-md border">
-							<!-- <img src={org.logo} class="size-3.5 shrink-0" /> -->
 							<Avatar.Root class="size-6 rounded-lg">
-								<Avatar.Image src={generateInitials(org.name)} alt={org.name} />
-								<Avatar.Fallback class="rounded-lg">{getInitials(org.name)}</Avatar.Fallback>
+								<Avatar.Image
+									src={generateInitials(org.attributes.name)}
+									alt={org.attributes.name}
+								/>
+								<Avatar.Fallback class="rounded-lg"
+									>{getInitials(org.attributes.name)}</Avatar.Fallback
+								>
 							</Avatar.Root>
 						</div>
-						{org.name}
+						{org.attributes.name}
 					</DropdownMenu.Item>
 				{/each}
-				<!-- <DropdownMenu.Separator />
-				<DropdownMenu.Item class="gap-2 p-2">
-					<div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
-						<Plus class="size-4" />
-					</div>
-					<div class="text-muted-foreground font-medium">Add Organization</div>
-				</DropdownMenu.Item> -->
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</Sidebar.MenuItem>

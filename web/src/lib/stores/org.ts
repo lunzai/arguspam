@@ -1,12 +1,9 @@
+import type { Collection } from '$lib/resources/api';
+import type { Org } from '$models/org';
 import { writable } from 'svelte/store';
 
 export interface OrgState {
-	orgs: Array<{
-		id: number;
-		name: string;
-		description?: string;
-		status: 'active' | 'inactive';
-	}>;
+	orgs: Collection<Org>;
 	currentOrgId: number | null;
 }
 
@@ -31,7 +28,7 @@ function createOrgStore() {
 				currentOrgId: orgId
 			})),
 		getCurrentOrg: (state: OrgState) => {
-			let org = state.orgs.find(org => org.id === state.currentOrgId);
+			let org = state.orgs.find((org) => org.attributes.id === state.currentOrgId);
 			if (!org) {
 				org = state.orgs[0];
 			}
@@ -41,4 +38,4 @@ function createOrgStore() {
 	};
 }
 
-export const orgStore = createOrgStore(); 
+export const orgStore = createOrgStore();

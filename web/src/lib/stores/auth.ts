@@ -1,10 +1,9 @@
 import { writable } from 'svelte/store';
-import type { AuthState } from '$types/auth.js';
-import type { User } from '$models/user.js';
-import type { Org } from '$models/org';
+import type { AuthState } from '$resources/auth';
+import type { User } from '$models/user';
 
 const initialState: AuthState = {
-	user: null,
+	user: {} as User,
 	isAuthenticated: false,
 	isEmailVerified: false,
 	isTwoFactorEnabled: false,
@@ -36,4 +35,4 @@ function createAuthStore() {
 	};
 }
 
-export const authStore = createAuthStore(); 
+export const authStore = createAuthStore();

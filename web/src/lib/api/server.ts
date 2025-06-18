@@ -89,7 +89,7 @@ export class ServerApi {
         if (this.token) {
             requestHeaders['Authorization'] = `Bearer ${this.token}`;
         }
-        console.log('API', endpoint, requestHeaders);
+        console.log('API', endpoint);
         try {
             const response = await this.axiosInstance({
                 url: endpoint,
@@ -102,7 +102,7 @@ export class ServerApi {
             }
             return response.data;
         } catch (error) {
-            console.log('api error', error);
+            console.log('API Error', error);
             // if (error.response) {
             //     throw new Error(error.response.data.message);
             // }

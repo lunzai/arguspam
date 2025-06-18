@@ -4,7 +4,7 @@ import type { OrgCollection } from '$resources/org';
 import type { UserResource } from '$lib/resources/user.js';
 
 export class UserService extends BaseService<BaseModel> {
-    protected readonly endpoint = '/users';
+	protected readonly endpoint = '/users';
 	protected readonly meEndpoint = '/users/me';
 
 	constructor(token: string) {
@@ -24,11 +24,15 @@ export class UserService extends BaseService<BaseModel> {
 		return await this.api.get<UserResource>(`${this.meEndpoint}`);
 	}
 
-	async changePassword(currentPassword: string, newPassword: string, confirmNewPassword: string): Promise<void> {
-		return await this.api.put<void>(`${this.meEndpoint}/change-password`, { 
-			current_password: currentPassword, 
-			new_password: newPassword, 
-			new_password_confirmation: confirmNewPassword 
+	async changePassword(
+		currentPassword: string,
+		newPassword: string,
+		confirmNewPassword: string
+	): Promise<void> {
+		return await this.api.put<void>(`${this.meEndpoint}/change-password`, {
+			current_password: currentPassword,
+			new_password: newPassword,
+			new_password_confirmation: confirmNewPassword
 		});
 	}
 }

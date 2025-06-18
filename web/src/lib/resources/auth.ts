@@ -1,4 +1,4 @@
-import type { User } from "$models/user.js";
+import type { User } from '$models/user.js';
 
 export interface AuthState {
 	user: User;
@@ -14,10 +14,10 @@ export interface AuthState {
 }
 
 export interface LoginResponse {
-    data: {
-        token: string;
-        user: User;
-    }
+	data: {
+		token: string;
+		user: User;
+	};
 }
 
 // export interface RegisterResponse {

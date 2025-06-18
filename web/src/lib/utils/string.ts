@@ -9,11 +9,13 @@
  * camelToSnake('isMp3Song') // returns 'is_mp3_song'
  */
 export function camelToSnake(str: string): string {
-    return str
-        // Insert underscore before numbers
-        .replace(/([a-z])([0-9])/g, '$1_$2')
-        // Insert underscore before uppercase letters
-        .replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+	return (
+		str
+			// Insert underscore before numbers
+			.replace(/([a-z])([0-9])/g, '$1_$2')
+			// Insert underscore before uppercase letters
+			.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`)
+	);
 }
 
 /**
@@ -27,7 +29,7 @@ export function camelToSnake(str: string): string {
  * snakeToCamel('is_mp3_song') // returns 'isMp3Song'
  */
 export function snakeToCamel(str: string): string {
-    return str.toLowerCase().replace(/([-_][a-z])/g, group =>
-        group.toUpperCase().replace('-', '').replace('_', '')
-    );
-} 
+	return str
+		.toLowerCase()
+		.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));
+}

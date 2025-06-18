@@ -26,7 +26,7 @@
 				body: JSON.stringify({ orgId })
 			});
 			if (response.ok) {
-				const org = orgs.find(o => o.attributes.id === orgId);
+				const org = orgs.find((o) => o.attributes.id === orgId);
 				if (org) {
 					toast.success(`Switched organization to ${org.attributes.name}`);
 				}
@@ -57,8 +57,13 @@
 							class="text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg"
 						>
 							<Avatar.Root class="size-8 rounded-lg">
-								<Avatar.Image src={generateInitials(activeOrg.attributes.name)} alt={activeOrg.attributes.name} />
-								<Avatar.Fallback class="rounded-lg">{getInitials(activeOrg.attributes.name)}</Avatar.Fallback>
+								<Avatar.Image
+									src={generateInitials(activeOrg.attributes.name)}
+									alt={activeOrg.attributes.name}
+								/>
+								<Avatar.Fallback class="rounded-lg"
+									>{getInitials(activeOrg.attributes.name)}</Avatar.Fallback
+								>
 							</Avatar.Root>
 						</div>
 						<div class="grid flex-1 text-left text-sm leading-tight">
@@ -85,8 +90,13 @@
 					<DropdownMenu.Item onSelect={() => onSelectOrg(org.attributes.id)} class="gap-2 p-2">
 						<div class="flex size-6 items-center justify-center rounded-md border">
 							<Avatar.Root class="size-6 rounded-lg">
-								<Avatar.Image src={generateInitials(org.attributes.name)} alt={org.attributes.name} />
-								<Avatar.Fallback class="rounded-lg">{getInitials(org.attributes.name)}</Avatar.Fallback>
+								<Avatar.Image
+									src={generateInitials(org.attributes.name)}
+									alt={org.attributes.name}
+								/>
+								<Avatar.Fallback class="rounded-lg"
+									>{getInitials(org.attributes.name)}</Avatar.Fallback
+								>
 							</Avatar.Root>
 						</div>
 						{org.attributes.name}

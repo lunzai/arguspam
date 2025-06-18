@@ -4,14 +4,12 @@
 	import NavUser from '$components/sidebar/nav-user.svelte';
 	import OrgSwitcher from '$components/sidebar/org-switcher.svelte';
 	import type { ComponentProps } from 'svelte';
-	
 
 	let {
 		ref = $bindable(null),
 		collapsible = 'icon',
 		...restProps
 	}: ComponentProps<typeof Sidebar.Root> = $props();
-	
 </script>
 
 <Sidebar.Root {collapsible} {...restProps}>
@@ -19,7 +17,7 @@
 		<OrgSwitcher />
 	</Sidebar.Header>
 	<Sidebar.Content>
-		<NavMain/>
+		<NavMain />
 	</Sidebar.Content>
 	<Sidebar.Footer>
 		<NavUser />

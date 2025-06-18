@@ -11,7 +11,7 @@
 	<title>
 		ArgusPAM{page.data.title ? ` - ${page.data.title}` : ''}
 	</title>
-	<meta name="description" content="{page.data.description}" />
+	<meta name="description" content={page.data.description} />
 </svelte:head>
 
 {#if page.data.isAuthenticated}

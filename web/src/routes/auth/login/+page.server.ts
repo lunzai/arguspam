@@ -15,13 +15,13 @@ export const load: PageServerLoad = async ({ cookies }) => {
 	}
 	return {
 		form: await superValidate(zod(loginSchema))
-	}
+	};
 };
 
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
 		const form = await superValidate(request, zod(loginSchema));
-		
+
 		if (!form.valid) {
 			return fail(422, { form });
 		}

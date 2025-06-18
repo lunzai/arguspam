@@ -5,105 +5,107 @@ import axios, { type AxiosInstance } from 'axios';
 import https from 'https';
 
 export class ServerApi {
-    private baseUrl: string;
-    private axiosInstance: AxiosInstance;
-    private currentOrgId: number | null = null;
-    private token: string | null = null;
+	private baseUrl: string;
+	private axiosInstance: AxiosInstance;
+	private currentOrgId: number | null = null;
+	private token: string | null = null;
 
-    constructor(token?: string | null, currentOrgId?: number | null, baseUrl?: string) {
-        this.baseUrl = baseUrl || PUBLIC_API_URL;
-        this.currentOrgId = currentOrgId || null;
-        this.token = token || null;
-        
-        // Create axios instance with SSL handling
-        this.axiosInstance = axios.create({
-            baseURL: this.baseUrl,
-            timeout: Number(PUBLIC_API_REQUEST_TIMEOUT),
-            httpsAgent: new https.Agent({
-                // Only disable SSL verification in development
-                // TODO: REMOVE THIS
-                rejectUnauthorized: !dev
-            })
-        });
-    }
+	constructor(token?: string | null, currentOrgId?: number | null, baseUrl?: string) {
+		this.baseUrl = baseUrl || PUBLIC_API_URL;
+		this.currentOrgId = currentOrgId || null;
+		this.token = token || null;
 
-    private clone(overrides: {
-        currentOrgId?: number | null;
-        token?: string | null;
-    } = {}): ServerApi {
-        return new ServerApi(
-            overrides.token !== undefined ? overrides.token : this.token,
-            overrides.currentOrgId !== undefined ? overrides.currentOrgId : this.currentOrgId,
-            this.baseUrl
-        );
-    }
+		// Create axios instance with SSL handling
+		this.axiosInstance = axios.create({
+			baseURL: this.baseUrl,
+			timeout: Number(PUBLIC_API_REQUEST_TIMEOUT),
+			httpsAgent: new https.Agent({
+				// Only disable SSL verification in development
+				// TODO: REMOVE THIS
+				rejectUnauthorized: !dev
+			})
+		});
+	}
 
-    // Builder methods
-    withToken(token: string): ServerApi {
-        return this.clone({ token });
-    }
+	private clone(
+		overrides: {
+			currentOrgId?: number | null;
+			token?: string | null;
+		} = {}
+	): ServerApi {
+		return new ServerApi(
+			overrides.token !== undefined ? overrides.token : this.token,
+			overrides.currentOrgId !== undefined ? overrides.currentOrgId : this.currentOrgId,
+			this.baseUrl
+		);
+	}
 
-    withoutToken(): ServerApi {
-        return this.clone({ token: null });
-    }
+	// Builder methods
+	withToken(token: string): ServerApi {
+		return this.clone({ token });
+	}
 
-    withOrg(currentOrgId: number): ServerApi {
-        return this.clone({ currentOrgId });
-    }
+	withoutToken(): ServerApi {
+		return this.clone({ token: null });
+	}
 
-    withoutOrg(): ServerApi {
-        return this.clone({ currentOrgId: null });
-    }
+	withOrg(currentOrgId: number): ServerApi {
+		return this.clone({ currentOrgId });
+	}
 
-    async get<T>(endpoint: string): Promise<T> {
-        return this.request<T>(endpoint, { method: 'GET' });
-    }
+	withoutOrg(): ServerApi {
+		return this.clone({ currentOrgId: null });
+	}
 
-    async post<T>(endpoint: string, body?: any): Promise<T> {
-        return this.request<T>(endpoint, { method: 'POST', body });
-    }
+	async get<T>(endpoint: string): Promise<T> {
+		return this.request<T>(endpoint, { method: 'GET' });
+	}
 
-    async put<T>(endpoint: string, body?: any): Promise<T> {
-        return this.request<T>(endpoint, { method: 'PUT', body });
-    }
+	async post<T>(endpoint: string, body?: any): Promise<T> {
+		return this.request<T>(endpoint, { method: 'POST', body });
+	}
 
-    async delete<T>(endpoint: string): Promise<T> {
-        return this.request<T>(endpoint, { method: 'DELETE' });
-    }
+	async put<T>(endpoint: string, body?: any): Promise<T> {
+		return this.request<T>(endpoint, { method: 'PUT', body });
+	}
 
-    async patch<T>(endpoint: string, body?: any): Promise<T> {
-        return this.request<T>(endpoint, { method: 'PATCH', body });
-    }
+	async delete<T>(endpoint: string): Promise<T> {
+		return this.request<T>(endpoint, { method: 'DELETE' });
+	}
 
-    private async request<T>(endpoint: string, options: { method: string; body?: any }): Promise<T> {
-        const { method, body } = options;
+	async patch<T>(endpoint: string, body?: any): Promise<T> {
+		return this.request<T>(endpoint, { method: 'PATCH', body });
+	}
 
-        const requestHeaders: Record<string, string> = {};
+	private async request<T>(endpoint: string, options: { method: string; body?: any }): Promise<T> {
+		const { method, body } = options;
 
-        // Add org ID header if available
-        if (this.currentOrgId) {
-            requestHeaders[PUBLIC_ORG_ID_HEADER] = this.currentOrgId.toString();
-        }
+		const requestHeaders: Record<string, string> = {};
 
-        // Add auth token if available
-        if (this.token) {
-            requestHeaders['Authorization'] = `Bearer ${this.token}`;
-        }
-        console.log('API', endpoint, `orgId: ${this.currentOrgId}`);
-        try {
-            const response = await this.axiosInstance({
-                url: endpoint,
-                method: method.toLowerCase() as any,
-                headers: requestHeaders,
-                data: body
-            });
-            if (response.status === 204 || !response.data) {
-                return {} as T;
-            }
-            return response.data;
-        } catch (error) {
-            console.log('API Error', error);
-            throw error;
-        }
-    }
+		// Add org ID header if available
+		if (this.currentOrgId) {
+			requestHeaders[PUBLIC_ORG_ID_HEADER] = this.currentOrgId.toString();
+		}
+
+		// Add auth token if available
+		if (this.token) {
+			requestHeaders['Authorization'] = `Bearer ${this.token}`;
+		}
+		console.log('API', endpoint, `orgId: ${this.currentOrgId}`);
+		try {
+			const response = await this.axiosInstance({
+				url: endpoint,
+				method: method.toLowerCase() as any,
+				headers: requestHeaders,
+				data: body
+			});
+			if (response.status === 204 || !response.data) {
+				return {} as T;
+			}
+			return response.data;
+		} catch (error) {
+			console.log('API Error', error);
+			throw error;
+		}
+	}
 }

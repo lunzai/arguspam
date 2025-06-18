@@ -8,7 +8,7 @@ import {
 
 class CookieManager {
 	private cookies: Cookies;
-	
+
 	// Fixed options for security and simplicity
 	private readonly options = {
 		path: '/',

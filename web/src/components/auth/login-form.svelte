@@ -7,10 +7,10 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 
-	let { 
-		data 
-	}: { 
-		data: { form: SuperValidated<Login> } 
+	let {
+		data
+	}: {
+		data: { form: SuperValidated<Login> };
 	} = $props();
 
 	const form = superForm(data.form, {
@@ -38,7 +38,7 @@
 		<span class="sr-only">ArgusPAM</span>
 		<h1 class="text-xl font-bold">Welcome to ArgusPAM</h1>
 	</div>
-	<form method="POST" use:enhance class="space-y-6 max-w-xl">
+	<form method="POST" use:enhance class="max-w-xl space-y-6">
 		<Form.Field {form} name="email">
 			<Form.Control>
 				<Form.Label>Email</Form.Label>

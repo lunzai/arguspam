@@ -5,7 +5,7 @@
 	import * as Sidebar from '$ui/sidebar/index.js';
 	import { page } from '$app/state';
 	let { children } = $props();
-	
+
 	interface BreadcrumbItem {
 		label: string;
 		href?: string;
@@ -14,36 +14,39 @@
 
 	// Route to label mapping for better breadcrumb names
 	const ROUTE_LABELS: Record<string, string> = {
-		'dashboard': 'Dashboard',
-		'users': 'Users',
-		'roles': 'Roles',
-		'permissions': 'Permissions',
-		'organizations': 'Organizations',
-		'orgs': 'Organizations',
-		'sessions': 'Sessions',
-		'audits': 'Audits',
-		'requests': 'Requests',
-		'assets': 'Assets',
-		'settings': 'Settings',
-		'profile': 'Profile',
-		'account': 'Account',
+		dashboard: 'Dashboard',
+		users: 'Users',
+		roles: 'Roles',
+		permissions: 'Permissions',
+		organizations: 'Organizations',
+		orgs: 'Organizations',
+		sessions: 'Sessions',
+		audits: 'Audits',
+		requests: 'Requests',
+		assets: 'Assets',
+		settings: 'Settings',
+		profile: 'Profile',
+		account: 'Account',
 		'user-groups': 'User Groups',
 		'session-audits': 'Session Audits',
 		'user-access-restrictions': 'Access Restrictions',
-		'grants': 'Grants',
-		'accounts': 'Accounts'
+		grants: 'Grants',
+		accounts: 'Accounts'
 	};
 
 	function getSegmentLabel(segment: string): string {
-		return ROUTE_LABELS[segment] || segment
-			.split('-')
-			.map(word => word.charAt(0).toUpperCase() + word.slice(1))
-			.join(' ');
+		return (
+			ROUTE_LABELS[segment] ||
+			segment
+				.split('-')
+				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+				.join(' ')
+		);
 	}
 
 	function generateBreadcrumbs(currentPage: typeof page): BreadcrumbItem[] {
 		const { route, params } = currentPage;
-		
+
 		// Handle root/dashboard
 		if (route.id === '/(protected)' || route.id === '/(protected)/dashboard') {
 			return [
@@ -53,24 +56,21 @@
 		}
 
 		// Parse route segments (remove route groups like (protected))
-		const segments = route.id?.split('/').filter(segment => 
-			segment && !segment.startsWith('(')
-		) || [];
+		const segments =
+			route.id?.split('/').filter((segment) => segment && !segment.startsWith('(')) || [];
 
-		const breadcrumbs: BreadcrumbItem[] = [
-			{ label: 'Home', href: '/' }
-		];
+		const breadcrumbs: BreadcrumbItem[] = [{ label: 'Home', href: '/' }];
 
 		let currentPath = '';
-		
+
 		segments.forEach((segment, index) => {
 			const isLast = index === segments.length - 1;
-			
+
 			// Handle dynamic segments like [id]
 			if (segment.startsWith('[') && segment.endsWith(']')) {
 				const paramName = segment.slice(1, -1);
 				const paramValue = params[paramName];
-				
+
 				if (paramValue) {
 					currentPath += `/${paramValue}`;
 					const previousSegment = segments[index - 1];

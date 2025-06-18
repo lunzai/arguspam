@@ -21,7 +21,7 @@ const config = {
 			$utils: 'src/lib/utils',
 			$requests: 'src/lib/requests',
 			$resources: 'src/lib/resources',
-			$validations: 'src/lib/validations',
+			$validations: 'src/lib/validations'
 		}
 	}
 };

@@ -6,7 +6,6 @@
 	import { ChevronsUpDown, LogOut, IdCard } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
 	import UserBlock from '$components/sidebar/user-block.svelte';
-	
 
 	const sidebar = useSidebar();
 </script>

@@ -13,15 +13,15 @@ export const load: PageServerLoad = async ({ cookies }) => {
 
 export const actions: Actions = {
 	default: async ({ cookies }) => {
-        try {
-            const token = getAuthToken(cookies) as string;
-            const authService = new AuthService(token);
-            await authService.logout();
-            clearAuthCookie(cookies);
-            clearCurrentOrgId(cookies);
-            return redirect(302, '/auth/login');
-        } catch (error) {
-            return fail(401, { error: 'Logout failed' });
-        }
+		try {
+			const token = getAuthToken(cookies) as string;
+			const authService = new AuthService(token);
+			await authService.logout();
+			clearAuthCookie(cookies);
+			clearCurrentOrgId(cookies);
+			return redirect(302, '/auth/login');
+		} catch (error) {
+			return fail(401, { error: 'Logout failed' });
+		}
 	}
 };

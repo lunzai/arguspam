@@ -7,7 +7,7 @@ import { fail, type Actions } from '@sveltejs/kit';
 import { UserService } from '$services/user';
 
 export const load = async ({ parent, cookies }: any) => {
-    if (!getAuthToken(cookies)) {
+	if (!getAuthToken(cookies)) {
 		return redirect(302, '/');
 	}
 	// const { user } = await parent();
@@ -18,29 +18,29 @@ export const load = async ({ parent, cookies }: any) => {
 		// user,
 		title: 'Settings - Forget Password'
 	};
-}; 
+};
 
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
-        const form = await superValidate(request, zod(changePasswordSchema));
-        if (!form.valid) {
+		const form = await superValidate(request, zod(changePasswordSchema));
+		if (!form.valid) {
 			return fail(422, { form });
 		}
-        try {
-            const userService = new UserService(getAuthToken(cookies) as string);
-            await userService.changePassword(
-                form.data.currentPassword, 
-                form.data.newPassword, 
-                form.data.confirmNewPassword
-            );
-            return {
-                success: true,
-                message: 'Password updated successfully',
-                form: form,
-                // user: userResponse.data.attributes
-            }
-        } catch (error) {
-            return fail(400, { form, error: 'Failed to change password' });
-        }
+		try {
+			const userService = new UserService(getAuthToken(cookies) as string);
+			await userService.changePassword(
+				form.data.currentPassword,
+				form.data.newPassword,
+				form.data.confirmNewPassword
+			);
+			return {
+				success: true,
+				message: 'Password updated successfully',
+				form: form
+				// user: userResponse.data.attributes
+			};
+		} catch (error) {
+			return fail(400, { form, error: 'Failed to change password' });
+		}
 	}
 };

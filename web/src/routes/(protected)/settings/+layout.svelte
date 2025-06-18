@@ -11,7 +11,7 @@
 		{
 			title: 'Security',
 			href: '/settings/security'
-		},
+		}
 		// {
 		// 	title: 'Preferences',
 		// 	href: '/settings/preferences'
@@ -21,7 +21,9 @@
 
 <h1 class="text-2xl font-medium">Settings</h1>
 <Separator class="my-4" />
-<div class="flex flex-col space-y-8  lg:max-w-5xl xl:max-w-7xl lg:flex-row lg:space-x-12 lg:space-y-0">
+<div
+	class="flex flex-col space-y-8 lg:max-w-5xl lg:flex-row lg:space-y-0 lg:space-x-12 xl:max-w-7xl"
+>
 	<aside class="w-48">
 		<SidebarNav items={sidebarNavItems} />
 	</aside>

@@ -1,11 +1,11 @@
 import type { LayoutServerLoad } from './$types';
 import { redirect } from '@sveltejs/kit';
-import { 
-	clearAuthCookie, 
-	clearCurrentOrgId, 
-	getAuthToken, 
-	getCurrentOrgId, 
-	setCurrentOrgId 
+import {
+	clearAuthCookie,
+	clearCurrentOrgId,
+	getAuthToken,
+	getCurrentOrgId,
+	setCurrentOrgId
 } from '$utils/cookie';
 import { AuthService } from '$services/auth';
 import { UserService } from '$services/user';

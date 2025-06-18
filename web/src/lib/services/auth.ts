@@ -4,7 +4,7 @@ import type { LoginResponse } from '$resources/auth';
 import type { UserResource } from '$resources/user';
 
 export class AuthService extends BaseService<BaseModel> {
-    protected readonly endpoint = '/auth';
+	protected readonly endpoint = '/auth';
 
 	constructor(token: string) {
 		super('/auth', token);

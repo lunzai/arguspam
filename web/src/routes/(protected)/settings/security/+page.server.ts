@@ -28,28 +28,28 @@ export const actions: Actions = {
 		if (!changePasswordForm.valid) {
 			return fail(422, { changePasswordForm });
 		}
-        try {
-            const userService = new UserService(getAuthToken(cookies) as string);
-            await userService.changePassword(
-                changePasswordForm.data.currentPassword, 
-                changePasswordForm.data.newPassword, 
-                changePasswordForm.data.confirmNewPassword
-            );
-            return {
-                success: true,
-                message: 'Password updated successfully',
-                changePasswordForm: changePasswordForm,
-                // user: userResponse.data.attributes
-            }
-        } catch (error: any) {
+		try {
+			const userService = new UserService(getAuthToken(cookies) as string);
+			await userService.changePassword(
+				changePasswordForm.data.currentPassword,
+				changePasswordForm.data.newPassword,
+				changePasswordForm.data.confirmNewPassword
+			);
+			return {
+				success: true,
+				message: 'Password updated successfully',
+				changePasswordForm: changePasswordForm
+				// user: userResponse.data.attributes
+			};
+		} catch (error: any) {
 			if (error.response?.status === 422) {
-                const data : ApiValidationErrorResponse = error.response.data;
+				const data: ApiValidationErrorResponse = error.response.data;
 				for (const [key, value] of Object.entries(data.errors)) {
 					setError(changePasswordForm, snakeToCamel(key) as any, value[0]);
 				}
-                return fail(400, { changePasswordForm });
-            }
-            return fail(400, { changePasswordForm, error: 'Failed to change password' });
-        }
+				return fail(400, { changePasswordForm });
+			}
+			return fail(400, { changePasswordForm, error: 'Failed to change password' });
+		}
 	}
-}; 
+};

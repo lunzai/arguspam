@@ -1,4 +1,4 @@
-import { superValidate, message } from 'sveltekit-superforms';
+import { superValidate, setError } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { userProfileSchema } from '$validations/user';
 import { getAuthToken } from '$utils/cookie';
@@ -7,6 +7,8 @@ import { fail, type Actions } from '@sveltejs/kit';
 import { UserService } from '$services/user';
 import { authStore } from '$stores/auth';
 import type { User } from '$models/user';
+import type { ApiValidationErrorResponse } from '$resources/api';
+import { snakeToCamel } from '$utils/string';
 
 export const load = async ({ parent, cookies }: any) => {
     if (!getAuthToken(cookies)) {
@@ -41,7 +43,14 @@ export const actions: Actions = {
                 form: form,
                 user: userResponse.data.attributes
             }
-        } catch (error) {
+        } catch (error: any) {
+            if (error.response?.status === 422) {
+                const data : ApiValidationErrorResponse = error.response.data;
+				for (const [key, value] of Object.entries(data.errors)) {
+					setError(form, snakeToCamel(key) as any, value[0]);
+				}
+                return fail(400, { form });
+            }
             return fail(400, { form, error: 'Failed to update profile' });
         }
 	}

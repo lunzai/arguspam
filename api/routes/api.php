@@ -32,8 +32,6 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
     Route::post('/logout', [AuthController::class, 'logout'])
         ->middleware('auth:sanctum');
-    Route::post('/change-password', [PasswordController::class, 'change'])
-        ->middleware('auth:sanctum');
 });
 
 // Route::middleware('auth:sanctum')->group(function () {
@@ -49,6 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/me', [AuthController::class, 'me']); // Alias for /auth/me
     Route::get('/users/me/orgs', [UserOrgController::class, 'index']);
     Route::get('/users/me/orgs/{org}', [UserOrgController::class, 'show']);
+    Route::put('/users/me/change-password', [PasswordController::class, 'update']);
     
     Route::apiResources([
         'assets' => AssetController::class,

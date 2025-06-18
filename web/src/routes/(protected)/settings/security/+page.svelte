@@ -10,7 +10,7 @@
         <p class="text-muted-foreground">Change your password.</p>
     </div>
 
-    <ChangePasswordForm {data} />
+    <ChangePasswordForm data={data.changePasswordForm} />
 
     <div class="mt-12">
         <h1 class="text-2xl font-medium">Two-Factor Authentication</h1>

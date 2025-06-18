@@ -6,21 +6,20 @@
     import { authStore } from '$lib/stores/auth';
     import { Loader2 } from '@lucide/svelte';
     import type { User } from '$models/user';
-	
-    import {
-        superForm
-    } from 'sveltekit-superforms';
+	import { superForm } from 'sveltekit-superforms';
     import { zodClient } from 'sveltekit-superforms/adapters';
 
     let { data } = $props();
-    let isLoading = $state(false);
 
     const form = superForm(data.form, {
         validators: zodClient(userProfileSchema),
         delayMs: 100,
 		resetForm: false,
         onUpdate({ form, result }) {
-            if (form.valid && result.type === 'success') {
+            if (!form.valid) {
+                return;
+            }
+            if (result.type === 'success') {
                 authStore.setUser(result.data.user as User);
                 toast.success(result.data.message);
             } else if (result.type === 'failure') {

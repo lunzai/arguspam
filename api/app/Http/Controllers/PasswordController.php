@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 class PasswordController extends Controller
 {
-    public function change(ChangePasswordRequest $request): Response | JsonResponse
+    public function update(ChangePasswordRequest $request): Response | JsonResponse
     {
         $validated = $request->validated();
         

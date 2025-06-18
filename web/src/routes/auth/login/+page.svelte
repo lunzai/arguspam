@@ -16,12 +16,14 @@
 		delayMs: 100,
 		resetForm: false,
 		onUpdate({ form, result }) {
-			if (result.type === 'failure') {
-				toast.error(result.data.error);
+			if (!form.valid) {
+				return;
 			}
-			if (form.valid && result.type === 'success') {
+			if (result.type === 'success') {
 				toast.success(form.message);
 				return goto('/');
+			} else if (result.type === 'failure') {
+				toast.error(result.data.error);
 			}
 		}
 	});

@@ -48,3 +48,8 @@ export interface ApiCollectionResponse<T> {
 	data: Collection<T>;
 	meta?: ApiMeta;
 }
+
+export interface ApiValidationErrorResponse {
+	message: string;
+	errors: Record<string, string[]>;
+}

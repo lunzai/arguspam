@@ -1,5 +1,5 @@
 <script lang="ts">
-	// Session audit details page
 </script>
 
-<h1>Session Audit Details</h1>
+<h1 class="pb-4 text-2xl font-medium">Organizations</h1>
+<p>View Page</p>

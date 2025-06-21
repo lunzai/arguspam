@@ -1,11 +1,10 @@
 import { BaseService } from './base.js';
-import type { BaseModel } from '$models/base-model';
-import type { OrgCollection } from '$resources/org';
+import type { Org } from '$models/org';
 
-export class OrgService extends BaseService<BaseModel> {
+export class OrgService extends BaseService<Org> {
 	protected readonly endpoint = '/orgs';
 
-	constructor(token: string) {
-		super('/orgs', token);
+	constructor(token: string, orgId?: number) {
+		super('/orgs', token, orgId);
 	}
 }

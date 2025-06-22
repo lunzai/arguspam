@@ -1,0 +1,259 @@
+<script lang="ts" generics="T extends BaseModel">
+
+    import type {
+        DataTableProps,
+        DataTableState,
+        DataTableConfig,
+        PaginationConfig,
+        FilterConfig,
+        SortDirection,
+        ApiResponse,
+        ApiRequestParams
+    } from './types';
+    import DataTableBody from './components/body.svelte';
+    import DataTableHeader from './components/header.svelte';
+    import DataTablePagination from './components/pagination.svelte';
+    import DataTableFilter from './components/filter.svelte';
+    import DataTableLoading from './components/loading.svelte';
+    import DataTableEmpty from './components/empty.svelte';
+    import type { BaseModel } from '$models/base-model';
+    import { onMount } from 'svelte';
+    import * as Table from '$ui/table';
+    import ResultSummary from './components/result-summary.svelte';
+
+    interface Props<T extends BaseModel> extends DataTableProps<T> {
+		class?: string;
+	}
+
+    let {
+		config,
+		initialData = [],
+        initialInclude = [],
+		initialPagination = { 
+            currentPage: 1, 
+            from: 0, 
+            to: 0, 
+            perPage: 20, 
+            lastPage: 0, 
+            total: 0
+        },
+		initialFilters = {},
+		initialSort = { column: null, direction: null },
+		onDataChange,
+		onPaginationChange,
+		onFilterChange,
+		onSortChange,
+		onRowSelect,
+		class: className = ''
+    }: Props<T> = $props();
+
+    let state: DataTableState<T> = $state({
+        data: initialData,
+        include: initialInclude,
+        pagination: { ...initialPagination } as PaginationConfig,
+        filters: { ...initialFilters },
+        sort: { ...initialSort },
+        loading: false,
+        selectedRows: new Set(),
+    });
+
+    const visibleColumns = $derived(config.columns.filter((col) => col.visible !== false));
+    const siblingCount = $derived(config.paginationSiblingCount?.desktop || 5);
+    const mobileSiblingCount = $derived(config.paginationSiblingCount?.mobile || 2);
+    const hasData = $derived(state.data.length > 0);
+    const isLoading = $derived(state.loading || config.loading);
+
+    async function fetchData(params: ApiRequestParams): Promise<ApiResponse<T>> {
+        const url = new URL(config.apiEndpoint, window.location.origin);
+        // Add pagination params
+        url.searchParams.set('page', params.page.toString());
+        // Add sorting params
+        if (params.sort?.column && params.sort?.direction) {
+            url.searchParams.set(
+                'sort', 
+                `${params.sort.direction == 'desc' ? '-':''}${params.sort.column}`
+            );
+        }
+        // Add include params
+        if (params.include) {
+            url.searchParams.set(
+                'include', 
+                Array.isArray(params.include) ? params.include.join(',') : params.include
+            );
+        }
+        // Add filters params
+        if (params.filters) {
+            Object.entries(params.filters).forEach(([key, filter]) => {
+                url.searchParams.set(
+                    `filter[${key}]`, 
+                    Array.isArray(filter.value) ? filter.value.join(',') : filter.value
+                );
+            });
+        }        
+        try {
+            const response = await fetch(url.toString());
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const result: ApiResponse<T> = await response.json();
+			return result;
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            throw error;
+        }
+    }
+
+    // Load data function
+	async function loadData() {
+		state.loading = true;
+
+		try {
+			const params: ApiRequestParams = {
+				page: state.pagination.currentPage,
+				// perPage: state.pagination.perPage,
+				include: Array.isArray(state.include) ? state.include : [state.include],
+				sort: state.sort.column ? state.sort : undefined,
+				filters: Object.keys(state.filters).length > 0 ? state.filters : undefined
+			};
+
+			const response = await fetchData(params);
+
+            state.data = response.data.map((item) => item.attributes);
+            state.pagination = {
+                currentPage: response.meta.current_page,
+                from: response.meta.from,
+                to: response.meta.to,
+                perPage: response.meta.per_page,
+                lastPage: response.meta.last_page,
+                total: response.meta.total
+            };
+            onDataChange?.(state.data);
+            onPaginationChange?.(state.pagination);
+
+		} catch (error) {
+			console.error('Failed to load data:', error);
+			// Keep existing data on error
+		} finally {
+			state.loading = false;
+		}
+	}
+
+	// Event handlers
+	function handleSort(column: string) {
+		const columnDef = config.columns.find((col) => col.key === column);
+		if (!columnDef?.sortable) {
+            return;
+        }        
+		let newDirection: SortDirection = 'asc';
+		if (state.sort.column === column) {
+			if (state.sort.direction === 'asc') {
+				newDirection = 'desc';
+			} else if (state.sort.direction === 'desc') {
+				newDirection = null;
+			}
+		}
+		state.sort = {
+			column: newDirection ? column : null,
+			direction: newDirection
+		};
+		onSortChange?.(state.sort);
+		loadData();
+	}
+
+	function handleFilter(filters: FilterConfig) {
+		state.filters = filters;
+		state.pagination.currentPage = 1; // Reset to first page
+		onFilterChange?.(filters);
+		loadData();
+	}
+
+	function handlePaginationChange(pagination: PaginationConfig) {
+		state.pagination = pagination;
+		onPaginationChange?.(pagination);
+		loadData();
+	}
+
+	function handleRowSelect(rowId: string | number, selected: boolean) {
+		if (selected) {
+			state.selectedRows.add(rowId);
+		} else {
+			state.selectedRows.delete(rowId);
+		}
+		onRowSelect?.(new Set(state.selectedRows));
+	}
+
+	function handleSelectAll(selected: boolean) {
+		if (selected) {
+			state.selectedRows = new Set(state.data.map((row, index) => row.id || index));
+		} else {
+			state.selectedRows.clear();
+		}
+		onRowSelect?.(new Set(state.selectedRows));
+	}
+
+	// Initialize data on mount
+	onMount(() => {
+		if (initialData.length === 0) {
+			loadData();
+		}
+	});
+
+	// Watch for config changes
+	onMount(() => {
+		if (config.apiEndpoint && initialData.length === 0) {
+			loadData();
+		}
+	});
+</script>
+
+<div class="w-full space-y-5 {className}">
+    <!-- <div class="relative"> -->
+        {#if isLoading}
+            <DataTableLoading />
+        {/if}
+
+        {#if hasData || state.pagination.total > 0}
+            <ResultSummary pagination={state.pagination} />
+        {/if}
+
+        <Table.Root>
+            <Table.Header>
+                <DataTableHeader
+					columns={visibleColumns}
+					sort={state.sort}
+					selectable={config.selectable}
+					allSelected={state.selectedRows.size === state.data.length && state.data.length > 0}
+					onSort={handleSort}
+					onSelectAll={handleSelectAll}
+					className={config.headerClassName}
+					headerCellClassName={config.headerCellClassName}
+				/>
+            </Table.Header>
+            <Table.Body>
+                {#if hasData}
+                    <DataTableBody
+                        data={state.data}
+                        columns={visibleColumns}
+                        selectable={config.selectable}
+                        selectedRows={state.selectedRows}
+                        onRowSelect={handleRowSelect}
+                        className={config.bodyClassName}
+                        rowClassName={config.rowClassName}
+                        cellClassName={config.cellClassName}
+                    />
+                {:else}
+                    <DataTableEmpty message={config.emptyMessage || 'No data available'} />
+                {/if}
+            </Table.Body>
+        </Table.Root>
+
+        {#if hasData || state.pagination.total > 0}
+            <DataTablePagination
+                pagination={state.pagination}
+                {siblingCount}
+                {mobileSiblingCount}
+                onChange={handlePaginationChange}
+            />
+        {/if}
+    <!-- </div> -->
+</div>

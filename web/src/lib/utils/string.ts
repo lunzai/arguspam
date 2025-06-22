@@ -33,3 +33,15 @@ export function snakeToCamel(str: string): string {
 		.toLowerCase()
 		.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));
 }
+
+/**
+ * Interpolate a string with parameters
+ * @param template - The template string to interpolate
+ * @param params - The parameters to interpolate
+ * @returns The interpolated string
+ * @example
+ * interpolate('Showing {from} to {to} of {total} results', { from: 1, to: 10, total: 100 }) // returns 'Showing 1 to 10 of 100 results'
+ */
+export function interpolate(template: string, params: Record<string, any>): string {
+    return template.replace(/{(\w+)}/g, (_, key) => params[key]?.toString() ?? `{${key}}`);
+}

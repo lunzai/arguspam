@@ -1,15 +1,15 @@
-import { redirect } from "@sveltejs/kit";
-import type { PageServerLoad } from "./$types";
+import { redirect } from '@sveltejs/kit';
+import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params }) => {
-  const { id } = params;
+	const { id } = params;
 
-  if (!id) {
-    redirect(302, "/organizations");
-  }
+	if (!id) {
+		redirect(302, '/organizations');
+	}
 
-  return {
-    id,
-    title: `Organizations - Edit #${id}`,
-  };
+	return {
+		id,
+		title: `Organizations - Edit #${id}`
+	};
 };

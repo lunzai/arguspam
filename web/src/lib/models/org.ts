@@ -9,7 +9,6 @@ export interface Org extends BaseModel {
 	updated_at: string;
 }
 
-
 // export interface CreateOrgRequest {
 // 	name: string;
 // 	description?: string;

@@ -8,7 +8,8 @@
 		SquareTerminalIcon,
 		Building2,
 		Users,
-		Settings2Icon
+		Settings2Icon,
+		TableIcon
 	} from '@lucide/svelte';
 	import type { Component } from 'svelte';
 
@@ -164,5 +165,21 @@
 				</Sidebar.MenuItem>
 			{/if}
 		{/each}
+	</Sidebar.Menu>
+</Sidebar.Group>
+
+<Sidebar.Group>
+	<Sidebar.GroupLabel>Development</Sidebar.GroupLabel>
+	<Sidebar.Menu>
+		<Sidebar.MenuItem>
+			<Sidebar.MenuButton tooltipContent="DataTable Demo">
+				{#snippet child({ props })}
+					<a href="/data-table-demo" {...props}>
+						<TableIcon />
+						<span>DataTable Demo</span>
+					</a>
+				{/snippet}
+			</Sidebar.MenuButton>
+		</Sidebar.MenuItem>
 	</Sidebar.Menu>
 </Sidebar.Group>

@@ -5,7 +5,6 @@
 	let { data } = $props();
 	const { orgCollection } = data;
 	const orgs = orgCollection?.data.map((org) => org.attributes) ?? [];
-	console.log('orgs', orgs);
 </script>
 
 <h1 class="pb-4 text-2xl font-medium">Organizations</h1>

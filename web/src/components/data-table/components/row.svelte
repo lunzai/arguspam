@@ -42,7 +42,12 @@
 	{#each columns as column}
 		<DataTableCell className={cellClassName} align={column.align}>
 			{#if column.renderer}
-				{@html column.renderer(row[column.key], row, index)}
+				{@const renderedContent = column.renderer(row[column.key], row, index)}
+				{#if typeof renderedContent === 'string'}
+					{@html renderedContent}
+				{:else}
+					{renderedContent}
+				{/if}
 			{:else if column.type === 'badge'}
 				<CellBadge values={column.componentProps?.(row[column.key], row, index)?.values || []} />
 			{:else if column.type === 'icon'}

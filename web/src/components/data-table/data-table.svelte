@@ -20,6 +20,7 @@
     import { onMount } from 'svelte';
     import * as Table from '$ui/table';
     import ResultSummary from './components/result-summary.svelte';
+    import { replaceState } from '$app/navigation';
 
     interface Props<T extends BaseModel> extends DataTableProps<T> {
 		class?: string;
@@ -96,6 +97,10 @@
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const result: ApiResponse<T> = await response.json();
+            replaceState(window.location.pathname + '?' + url.searchParams.toString(), {
+                data: result.data,
+                pagination: result.meta,
+            } as any);
 			return result;
         } catch (error) {
             console.error('Error fetching data:', error);

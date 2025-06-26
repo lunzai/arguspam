@@ -1,20 +1,13 @@
 import type { PageServerLoad } from './$types';
 import { OrgService } from '$services/org';
-import { getAuthToken, getCurrentOrgId } from '$utils/cookie';
 
-export const load: PageServerLoad = async ({ parent, cookies }) => {
-	const token = getAuthToken(cookies);
-	const orgId = getCurrentOrgId(cookies);
+export const load: PageServerLoad = async ({ locals }) => {
+	const { authToken, currentOrgId } = locals;
 
-	if (!token || !orgId) {
-		console.log('No token or orgId found');
-		// redirect(302, '/login');
-	}
 	try {
-		const orgService = new OrgService(token as string, Number(orgId));
+		const orgService = new OrgService(authToken as string, currentOrgId);
 		const orgCollection = await orgService.findAll();
 		return {
-			// user
 			orgCollection,
 			title: 'Organizations'
 		};

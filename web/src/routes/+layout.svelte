@@ -14,11 +14,15 @@
 	<meta name="description" content={page.data.description} />
 </svelte:head>
 
-{#if page.data.isAuthenticated}
+<div class="bg-background min-h-screen">
+	{@render children()}
+</div>
+
+<!-- {#if page.data.isAuthenticated}
 	<div class="bg-background flex h-screen">
-		<!-- Admin Layout -->
+		<!-- Admin Layout --
 		<aside class="flex w-64 flex-col bg-white shadow-lg">
-			<!-- Navigation content -->
+			<!-- Navigation content --
 		</aside>
 		<main class="flex-1 overflow-y-auto">
 			{@render children()}
@@ -26,7 +30,7 @@
 	</div>
 {:else}
 	<div class="bg-background min-h-screen">
-		<!-- Guest Layout -->
+		<!-- Guest Layout --
 		{@render children()}
 	</div>
-{/if}
+{/if} -->

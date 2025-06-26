@@ -21,7 +21,7 @@ class UserResource extends Resource
      */
     public function toArray(Request $request): array
     {
-        $userCheckRoute = $request->is('users/*') || $request->is('auth/*');
+        $userCheckRoute = $request->is('users') || $request->is('users/*') || $request->is('auth/*');
         return [
             'attributes' => [
                 'id' => $this->id,

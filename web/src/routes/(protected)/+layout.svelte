@@ -126,7 +126,7 @@
 				</Breadcrumb.Root>
 			</div>
 		</header>
-		<div class="flex flex-1 flex-col p-4">
+		<div class="flex flex-1 flex-col gap-4 p-4">
 			{@render children()}
 			<!-- <div class="grid auto-rows-min gap-4 md:grid-cols-3">
 				<div class="bg-muted/50 aspect-video rounded-xl"></div>

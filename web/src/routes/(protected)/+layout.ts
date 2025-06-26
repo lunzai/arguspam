@@ -6,12 +6,13 @@ export const load: LayoutLoad = async ({ data }) => {
 	if (data.user) {
 		authStore.setUser(data.user);
 	}
-	if (data.orgs) {
-		orgStore.setOrgs(data.orgs);
+	if (data.userOrgs) {
+		orgStore.setOrgs(data.userOrgs);
 	}
 	if (data.currentOrgId) {
 		orgStore.setCurrentOrgId(data.currentOrgId);
 	}
+	delete data.authToken;
 	return {
 		data
 	};

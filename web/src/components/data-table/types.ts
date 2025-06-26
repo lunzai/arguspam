@@ -7,6 +7,11 @@ export interface ColumnDefinition<T = any> {
 	sortable?: boolean;
 	filterable?: boolean;
 	visible?: boolean;
+	type?: 'badge' | 'icon' | 'text' | 'boolean';
+	booleanTrue?: string;
+	booleanFalse?: string;
+	emptyText?: string;
+	componentProps?: (value: any, row: T, index: number) => Record<string, any>;
 	renderer?: (value: any, row: T, index: number) => string | HTMLElement | null;
 	headerRenderer?: (column: ColumnDefinition<T>) => string | HTMLElement | null;
 	align?: 'left' | 'center' | 'right';
@@ -116,4 +121,10 @@ export type Collection<T> = Resource<T>[];
 export interface Resource<T> {
 	attributes: T;
 	relationships?: Record<string, Resource<any>[]>;
+}
+
+export interface CellBadge {
+	value: string;
+	variant: 'default' | 'secondary' | 'destructive' | 'outline';
+	className?: string;
 }

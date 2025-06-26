@@ -206,7 +206,7 @@
 	});
 </script>
 
-<div class="w-full space-y-5 {className}">
+<div class="w-full space-y-5 min-w-0 {className}">
     <!-- <div class="relative"> -->
         {#if isLoading}
             <DataTableLoading />
@@ -216,36 +216,38 @@
             <ResultSummary pagination={state.pagination} />
         {/if}
 
-        <Table.Root>
-            <Table.Header>
-                <DataTableHeader
-					columns={visibleColumns}
-					sort={state.sort}
-					selectable={config.selectable}
-					allSelected={state.selectedRows.size === state.data.length && state.data.length > 0}
-					onSort={handleSort}
-					onSelectAll={handleSelectAll}
-					className={config.headerClassName}
-					headerCellClassName={config.headerCellClassName}
-				/>
-            </Table.Header>
-            <Table.Body>
-                {#if hasData}
-                    <DataTableBody
-                        data={state.data}
+        <div class="rounded-sm border">
+            <Table.Root>
+                <Table.Header>
+                    <DataTableHeader
                         columns={visibleColumns}
+                        sort={state.sort}
                         selectable={config.selectable}
-                        selectedRows={state.selectedRows}
-                        onRowSelect={handleRowSelect}
-                        className={config.bodyClassName}
-                        rowClassName={config.rowClassName}
-                        cellClassName={config.cellClassName}
+                        allSelected={state.selectedRows.size === state.data.length && state.data.length > 0}
+                        onSort={handleSort}
+                        onSelectAll={handleSelectAll}
+                        className={config.headerClassName}
+                        headerCellClassName={config.headerCellClassName}
                     />
-                {:else}
-                    <DataTableEmpty message={config.emptyMessage || 'No data available'} />
-                {/if}
-            </Table.Body>
-        </Table.Root>
+                </Table.Header>
+                <Table.Body>
+                    {#if hasData}
+                        <DataTableBody
+                            data={state.data}
+                            columns={visibleColumns}
+                            selectable={config.selectable}
+                            selectedRows={state.selectedRows}
+                            onRowSelect={handleRowSelect}
+                            className={config.bodyClassName}
+                            rowClassName={config.rowClassName}
+                            cellClassName={config.cellClassName}
+                        />
+                    {:else}
+                        <DataTableEmpty message={config.emptyMessage || 'No data available'} />
+                    {/if}
+                </Table.Body>
+            </Table.Root>
+        </div>
 
         {#if hasData || state.pagination.total > 0}
             <DataTablePagination

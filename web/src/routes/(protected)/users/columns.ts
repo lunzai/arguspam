@@ -1,6 +1,11 @@
 import type { ColumnDefinition } from '$components/data-table/types';
 import type { User } from '$models/user';
 import { shortDate, shortDateTime } from '$lib/utils/date';
+import { MailCheck, MailWarning } from '@lucide/svelte';
+
+const MailCheckIcon = () => {
+    return <MailCheck />;
+}
 
 export const columns: ColumnDefinition<User>[] = [
 	{
@@ -20,10 +25,13 @@ export const columns: ColumnDefinition<User>[] = [
 		title: 'Email',
 		sortable: true,
 		filterable: true,
+		renderer: (value: string, row: User) => {
+            return `${value}` + ;
+        }
 	},
     {
 		key: 'email_verified_at',
-		title: 'Email Verified At',
+		title: 'Email Verification',
 		sortable: true,
 		filterable: true,
         renderer: (value: string) => {

@@ -2,6 +2,7 @@
 	import { TableRow } from '$ui/table';
 	import type { ColumnDefinition } from '../types';
 	import DataTableCell from './cell.svelte';
+	import CellBadge from './cell-badge.svelte';
 
 	interface Props {
 		row: any;
@@ -42,6 +43,14 @@
 		<DataTableCell className={cellClassName} align={column.align}>
 			{#if column.renderer}
 				{@html column.renderer(row[column.key], row, index)}
+			{:else if column.type === 'badge'}
+				<CellBadge {...column.componentProps?.(row[column.key], row, index)} />
+			{:else if column.type === 'icon'}
+				Icon
+			{:else if column.type === 'text'}
+				{row[column.key] || column.emptyText || ''}
+			{:else if column.type === 'boolean'}
+				{row[column.key] ? column.booleanTrue || 'Yes' : column.booleanFalse || 'No'}
 			{:else}
 				{row[column.key] || ''}
 			{/if}

@@ -75,7 +75,7 @@
             );
         }
         // Add include params
-        if (params.include) {
+        if (params.include && params.include.length > 0) {
             url.searchParams.set(
                 'include', 
                 Array.isArray(params.include) ? params.include.join(',') : params.include
@@ -106,7 +106,6 @@
     // Load data function
 	async function loadData() {
 		state.loading = true;
-
 		try {
 			const params: ApiRequestParams = {
 				page: state.pagination.currentPage,
@@ -115,9 +114,7 @@
 				sort: state.sort.column ? state.sort : undefined,
 				filters: Object.keys(state.filters).length > 0 ? state.filters : undefined
 			};
-
 			const response = await fetchData(params);
-
             state.data = response.data.map((item) => item.attributes);
             state.pagination = {
                 currentPage: response.meta.current_page,
@@ -174,21 +171,23 @@
 	}
 
 	function handleRowSelect(rowId: string | number, selected: boolean) {
+		const newSelectedRows = new Set(state.selectedRows);
 		if (selected) {
-			state.selectedRows.add(rowId);
+			newSelectedRows.add(rowId);
 		} else {
-			state.selectedRows.delete(rowId);
+			newSelectedRows.delete(rowId);
 		}
-		onRowSelect?.(new Set(state.selectedRows));
+		state.selectedRows = newSelectedRows;
+		onRowSelect?.(newSelectedRows);
 	}
 
 	function handleSelectAll(selected: boolean) {
 		if (selected) {
 			state.selectedRows = new Set(state.data.map((row, index) => row.id || index));
 		} else {
-			state.selectedRows.clear();
+			state.selectedRows = new Set();
 		}
-		onRowSelect?.(new Set(state.selectedRows));
+		onRowSelect?.(state.selectedRows);
 	}
 
 	// Initialize data on mount
@@ -207,13 +206,13 @@
 </script>
 
 <div class="w-full space-y-5 min-w-0 {className}">
-    <!-- <div class="relative"> -->
+    {#if hasData || state.pagination.total > 0}
+        <ResultSummary pagination={state.pagination} />
+    {/if}
+
+    <div class="relative">
         {#if isLoading}
             <DataTableLoading />
-        {/if}
-
-        {#if hasData || state.pagination.total > 0}
-            <ResultSummary pagination={state.pagination} />
         {/if}
 
         <div class="rounded-sm border">
@@ -248,14 +247,14 @@
                 </Table.Body>
             </Table.Root>
         </div>
+    </div>
 
-        {#if hasData || state.pagination.total > 0}
-            <DataTablePagination
-                pagination={state.pagination}
-                {siblingCount}
-                {mobileSiblingCount}
-                onChange={handlePaginationChange}
-            />
-        {/if}
-    <!-- </div> -->
+    {#if hasData || state.pagination.total > 0}
+        <DataTablePagination
+            pagination={state.pagination}
+            {siblingCount}
+            {mobileSiblingCount}
+            onChange={handlePaginationChange}
+        />
+    {/if}
 </div>

@@ -8,11 +8,7 @@
 		FilterConfig, 
 		SortConfig 
 	} from '$components/data-table/types';
-	import { Button } from '$ui/button';
-	import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '$ui/card';
-	import { Separator } from '$ui/separator';
 	import { onMount } from 'svelte';
-	// import { columns as columnDefinitions } from './columns';
     import type { ApiMeta } from '$resources/api';
 	import { shortDateTime } from '$lib/utils/date';
 	import type { ColumnDefinition } from '$components/data-table/types';
@@ -22,13 +18,11 @@
     let users = $derived(data.usersCollection.data.map((user) => user.attributes));
     let usersMeta = $derived(data.usersCollection.meta as ApiMeta);
 	
-
 	export const columns: ColumnDefinition<User>[] = [
 		{
 			key: 'id',
 			title: 'ID',
 			sortable: true,
-			align: 'left'
 		},
 		{
 			key: 'name',
@@ -46,15 +40,6 @@
 				return `<div class="flex items-center gap-2">${value}` + (!row.email_verified_at ? mailWarningIcon : '') + '</div>';
 			}
 		},
-		// {
-		// 	key: 'email_verified_at',
-		// 	title: 'Email Verification',
-		// 	sortable: true,
-		// 	filterable: true,
-		// 	renderer: (value: string) => {
-		// 		return value ? 'Yes' : 'No';
-		// 	}
-		// },
 		{
 			key: 'two_factor_enabled',
 			title: '2FA',
@@ -133,11 +118,11 @@
 	const config: DataTableConfig<User> = {
 		model: {} as User,
 		columns: columns,
-		apiEndpoint: '/api/users', // This would be your actual API endpoint
+		apiEndpoint: '/api/search/users', // This would be your actual API endpoint
 		paginationSiblingCount: { desktop: 3, mobile: 1 },
 		sortable: true,
 		filterable: true,
-		selectable: true,
+		selectable: false,
 		loading: false,
 		emptyMessage: 'No users found',
 		className: 'border rounded-lg',

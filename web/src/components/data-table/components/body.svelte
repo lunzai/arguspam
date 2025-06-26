@@ -23,16 +23,22 @@
 		rowClassName = '',
 		cellClassName = ''
 	}: Props = $props();
+
+	// Create a reactive function to check if a row is selected
+	function isRowSelected(rowId: string | number) {
+		return selectedRows.has(rowId);
+	}
 </script>
 
 {#each data as row, index}
+	{@const rowId = row.id || index}
 	<DataTableRow
 		{row}
 		{columns}
 		{index}
 		{selectable}
-		selected={selectedRows.has(row.id || index)}
-		onSelect={(selected) => onRowSelect(row.id || index, selected)}
+		selected={isRowSelected(rowId)}
+		onSelect={(selected) => onRowSelect(rowId, selected)}
 		className={rowClassName}
 		{cellClassName}
 	/>

@@ -44,7 +44,7 @@
 			{#if column.renderer}
 				{@html column.renderer(row[column.key], row, index)}
 			{:else if column.type === 'badge'}
-				<CellBadge {...column.componentProps?.(row[column.key], row, index)} />
+				<CellBadge values={column.componentProps?.(row[column.key], row, index)?.values || []} />
 			{:else if column.type === 'icon'}
 				Icon
 			{:else if column.type === 'text'}

@@ -6,12 +6,13 @@ import { UserService } from '$services/user';
 import type { UserResource } from '$resources/user';
 
 export const handle: Handle = async ({ event, resolve }) => {
-    if (event.route.id?.startsWith('/(protected)')) {
-        const authToken = getAuthToken(event.cookies);
-        let currentOrgId = getCurrentOrgId(event.cookies);
-        event.locals.authToken = authToken;
-        event.locals.currentOrgId = currentOrgId || undefined;
+    
+    const authToken = getAuthToken(event.cookies);
+    let currentOrgId = getCurrentOrgId(event.cookies);
+    event.locals.authToken = authToken;
+    event.locals.currentOrgId = currentOrgId || undefined;
 
+    if (event.route.id?.startsWith('/(protected)') || event.route.id?.startsWith('/(server)/api')) {    
         if (!authToken) {
             return redirect(302, PUBLIC_AUTH_LOGIN_PATH);
         }

@@ -5,10 +5,10 @@ export const load: PageServerLoad = async ({ locals }) => {
     const { authToken } = locals;
 
     const userService = new UserService(authToken as string);
-    const usersCollection = await userService.findAll();
+    // const usersCollection = await userService.findAll();
 
     return {
-        usersCollection,
+        // usersCollection,
         title: 'Users'
     };
 };

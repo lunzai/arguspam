@@ -1,4 +1,3 @@
-
 <script lang="ts">
 	import { DataTable } from '$components/data-table/index';
 	import type { User } from '$models/user';
@@ -13,10 +12,12 @@
 	import { shortDateTime } from '$lib/utils/date';
 	import type { ColumnDefinition } from '$components/data-table/types';
 	import type { CellBadge } from '$components/data-table/types';
+	import { page } from '$app/state';
 
     let { data } = $props();
-    let users = $derived(data.usersCollection.data.map((user) => user.attributes));
-    let usersMeta = $derived(data.usersCollection.meta as ApiMeta);
+    // let users = $derived(data.usersCollection.data.map((user) => user.attributes));
+    // let usersMeta = $derived(data.usersCollection.meta as ApiMeta);
+	let initialSearchParams = page.url.searchParams;
 	
 	export const columns: ColumnDefinition<User>[] = [
 		{
@@ -172,6 +173,16 @@
 		(window as any).editUser = editUser;
 		(window as any).deleteUser = deleteUser;
 	});
+
+	// initialData={users}
+    // initialPagination={{
+    //     currentPage: usersMeta.current_page,
+    //     from: usersMeta.from,
+    //     to: usersMeta.to,
+    //     perPage: usersMeta.per_page,
+    //     lastPage: usersMeta.last_page,
+    //     total: usersMeta.total
+    // }}
 </script>
 
 <h1 class="text-2xl font-medium">Users</h1>
@@ -180,15 +191,7 @@
 <DataTable
     model={{} as User}
     config={config}
-    initialData={users}
-    initialPagination={{
-        currentPage: usersMeta.current_page,
-        from: usersMeta.from,
-        to: usersMeta.to,
-        perPage: usersMeta.per_page,
-        lastPage: usersMeta.last_page,
-        total: usersMeta.total
-    }}
+    {initialSearchParams}
     onDataChange={handleDataChange}
     onPaginationChange={handlePaginationChange}
     onFilterChange={handleFilterChange}

@@ -6,6 +6,7 @@
         DataTableConfig,
         PaginationConfig,
         FilterConfig,
+        SortConfig,
         SortDirection,
         ApiResponse,
         ApiRequestParams
@@ -38,8 +39,7 @@
             lastPage: 0, 
             total: 0
         },
-		initialFilters = {},
-		initialSort = { column: null, direction: null },
+        initialSearchParams = new URLSearchParams(),
 		onDataChange,
 		onPaginationChange,
 		onFilterChange,
@@ -47,6 +47,34 @@
 		onRowSelect,
 		class: className = ''
     }: Props<T> = $props();
+
+    // Derive initial filters and sort from search params (one-time computation)
+    const initialFilters: FilterConfig = (() => {
+        const filters: FilterConfig = {};
+        for (const [key, value] of initialSearchParams.entries()) {
+            if (key.startsWith('filter[') && key.endsWith(']')) {
+                const filterKey = key.slice(7, -1); // Remove 'filter[' and ']'
+                filters[filterKey] = {
+                    value: value,
+                    operator: 'contains'
+                };
+            }
+        }
+        return filters;
+    })();
+
+    const initialSort: SortConfig = (() => {
+        const sortParam = initialSearchParams.get('sort');
+        if (!sortParam) return { column: null, direction: null };
+        
+        const direction = sortParam.startsWith('-') ? 'desc' : 'asc';
+        const column = sortParam.startsWith('-') ? sortParam.slice(1) : sortParam;
+        return { column, direction };
+    })();
+
+    if (initialSearchParams.get('page')) {
+        initialPagination.currentPage = Number(initialSearchParams.get('page'));
+    }
 
     let state: DataTableState<T> = $state({
         data: initialData,
@@ -57,12 +85,13 @@
         loading: false,
         selectedRows: new Set(),
     });
-
+    
+    let isMounted = false;
     const visibleColumns = $derived(config.columns.filter((col) => col.visible !== false));
     const siblingCount = $derived(config.paginationSiblingCount?.desktop || 5);
     const mobileSiblingCount = $derived(config.paginationSiblingCount?.mobile || 2);
     const hasData = $derived(state.data.length > 0);
-    const isLoading = $derived(state.loading || config.loading);
+    const isLoading = $derived(state.loading || config.loading || !isMounted);
 
     async function fetchData(params: ApiRequestParams): Promise<ApiResponse<T>> {
         const url = new URL(config.apiEndpoint, window.location.origin);
@@ -200,6 +229,7 @@
 		if (initialData.length === 0) {
 			loadData();
 		}
+        isMounted = true;
 	});
 
 	// Watch for config changes
@@ -247,7 +277,9 @@
                             cellClassName={config.cellClassName}
                         />
                     {:else}
-                        <DataTableEmpty message={config.emptyMessage || 'No data available'} />
+                        {#if !isLoading}
+                            <DataTableEmpty message={config.emptyMessage || 'No data available'} />
+                        {/if}
                     {/if}
                 </Table.Body>
             </Table.Root>

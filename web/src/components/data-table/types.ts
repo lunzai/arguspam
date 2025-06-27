@@ -7,7 +7,7 @@ export interface ColumnDefinition<T = any> {
 	sortable?: boolean;
 	filterable?: boolean;
 	visible?: boolean;
-	type?: 'badge' | 'icon' | 'text' | 'boolean';
+	type?: 'badge' | 'icon' | 'text' | 'boolean' | 'actions';
 	booleanTrue?: string;
 	booleanFalse?: string;
 	emptyText?: string;

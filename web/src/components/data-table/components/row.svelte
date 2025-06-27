@@ -3,6 +3,7 @@
 	import type { ColumnDefinition } from '../types';
 	import DataTableCell from './cell.svelte';
 	import CellBadge from './cell-badge.svelte';
+	import CellAction from './cell-action.svelte';
 
 	interface Props {
 		row: any;
@@ -49,13 +50,15 @@
 					{renderedContent}
 				{/if}
 			{:else if column.type === 'badge'}
-				<CellBadge values={column.componentProps?.(row[column.key], row, index)?.values || []} />
+				<CellBadge {...(column.componentProps?.(row[column.key], row, index) || {})} />
 			{:else if column.type === 'icon'}
 				Icon
 			{:else if column.type === 'text'}
 				{row[column.key] || column.emptyText || ''}
 			{:else if column.type === 'boolean'}
 				{row[column.key] ? column.booleanTrue || 'Yes' : column.booleanFalse || 'No'}
+			{:else if column.type === 'actions'}
+				<CellAction {...(column.componentProps?.(row[column.key], row, index) || {})} />
 			{:else}
 				{row[column.key] || ''}
 			{/if}

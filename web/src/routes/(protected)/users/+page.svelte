@@ -13,6 +13,7 @@
 	import type { ColumnDefinition } from '$components/data-table/types';
 	import type { CellBadge } from '$components/data-table/types';
 	import { page } from '$app/state';
+	import { Pencil, NotebookText } from '@lucide/svelte';
 
     let { data } = $props();
     // let users = $derived(data.usersCollection.data.map((user) => user.attributes));
@@ -113,6 +114,33 @@
 				return value ? shortDateTime(value) : '';
 			}
 		},
+		{
+			key: 'actions',
+			title: 'Actions',
+			type: 'actions',
+			sortable: false,
+			componentProps: (value: string, row: User) => {
+				return {
+					actions: [
+						{
+							label: 'View',
+							icon: NotebookText,
+							href: `/users/${row.id}`,
+							variant: 'link',
+							class: 'hover:text-blue-500',
+						},
+						{
+							label: 'Edit',
+							icon: Pencil,
+							href: `/users/${row.id}/edit`,
+							variant: 'link',
+							class: 'hover:text-blue-500',
+						},
+					]
+				}
+
+			}
+		}
 	];
 
 	// Data table configuration

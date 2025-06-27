@@ -22,6 +22,7 @@
     import * as Table from '$ui/table';
     import ResultSummary from './components/result-summary.svelte';
     import { replaceState } from '$app/navigation';
+    import { Skeleton } from '$ui/skeleton';
 
     interface Props<T extends BaseModel> extends DataTableProps<T> {
 		class?: string;
@@ -126,10 +127,7 @@
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const result: ApiResponse<T> = await response.json();
-            replaceState(window.location.pathname + '?' + url.searchParams.toString(), {
-                data: result.data,
-                pagination: result.meta,
-            } as any);
+            replaceState(window.location.pathname + '?' + url.searchParams.toString(), {});
 			return result;
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -241,6 +239,9 @@
 </script>
 
 <div class="w-full space-y-5 min-w-0 {className}">
+    {#if isLoading}
+        <Skeleton class="h-4 w-52" />
+    {/if}
     {#if hasData || state.pagination.total > 0}
         <ResultSummary pagination={state.pagination} />
     {/if}

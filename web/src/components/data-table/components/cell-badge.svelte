@@ -8,6 +8,7 @@
         className?: string;
     }
     let { values = [], className = '' }: Props = $props();
+    console.log('values', values);
 </script>
 
 {#if values.length > 0}

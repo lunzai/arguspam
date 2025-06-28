@@ -7,11 +7,11 @@ export interface ActionAudit extends BaseModel {
 	action_type: string;
 	entity_type: string;
 	entity_id: number;
-    description: string;
-    previous_state: string;
-    new_state: string;
+	description: string;
+	previous_state: string;
+	new_state: string;
 	ip_address: string;
 	user_agent: string;
-    additional_data: string;
+	additional_data: string;
 	created_at: string;
 }

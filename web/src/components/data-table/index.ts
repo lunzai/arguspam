@@ -10,35 +10,34 @@ import DataTableEmpty from './components/empty.svelte';
 import DataTableLoading from './components/loading.svelte';
 
 export type {
-    ColumnDefinition,
-    SortDirection,
-    FilterConfig,
-    PaginationConfig,
-    DataTableConfig,
-    DataTableState,
-    DataTableProps
+	ColumnDefinition,
+	SortDirection,
+	FilterConfig,
+	PaginationConfig,
+	DataTableConfig,
+	DataTableState,
+	DataTableProps
 } from './types';
 
-export { 
-    DataTable, 
-    DataTableHeader, 
-    DataTableBody, 
-    DataTableRow, 
-    DataTableCell, 
-    DataTableHeaderCell, 
-    DataTablePagination, 
-    DataTableFilter, 
-    DataTableEmpty, 
-    DataTableLoading,
-
-    DataTable as Root,
-    DataTableHeader as Header,
-    DataTableBody as Body,
-    DataTableRow as Row,
-    DataTableCell as Cell,
-    DataTableHeaderCell as HeaderCell,
-    DataTablePagination as Pagination,
-    DataTableFilter as Filter,
-    DataTableEmpty as Empty,
-    DataTableLoading as Loading
+export {
+	DataTable,
+	DataTableHeader,
+	DataTableBody,
+	DataTableRow,
+	DataTableCell,
+	DataTableHeaderCell,
+	DataTablePagination,
+	DataTableFilter,
+	DataTableEmpty,
+	DataTableLoading,
+	DataTable as Root,
+	DataTableHeader as Header,
+	DataTableBody as Body,
+	DataTableRow as Row,
+	DataTableCell as Cell,
+	DataTableHeaderCell as HeaderCell,
+	DataTablePagination as Pagination,
+	DataTableFilter as Filter,
+	DataTableEmpty as Empty,
+	DataTableLoading as Loading
 };

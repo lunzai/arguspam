@@ -23,6 +23,6 @@ export interface Request extends BaseModel {
 	approved_at: string;
 	rejected_by: number;
 	rejected_at: string;
-    created_at: string;
+	created_at: string;
 	updated_at: string;
 }

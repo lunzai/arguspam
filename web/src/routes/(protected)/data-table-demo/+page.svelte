@@ -1,13 +1,12 @@
-
 <script lang="ts">
 	import { DataTable } from '$components/data-table/index';
 	import type { User } from '$models/user';
-	import type { 
-		DataTableConfig, 
-		ColumnDefinition, 
-		PaginationConfig, 
-		FilterConfig, 
-		SortConfig 
+	import type {
+		DataTableConfig,
+		ColumnDefinition,
+		PaginationConfig,
+		FilterConfig,
+		SortConfig
 	} from '$components/data-table/types';
 	import { Badge } from '$ui/badge';
 	import { Button } from '$ui/button';
@@ -108,7 +107,7 @@
 			key: 'email',
 			title: 'Email',
 			sortable: true,
-			filterable: true,
+			filterable: true
 		},
 		{
 			key: 'status',
@@ -247,7 +246,7 @@
 	<title>Data Table Demo</title>
 </svelte:head>
 
-<div class="container mx-auto p-6 space-y-6">
+<div class="container mx-auto space-y-6 p-6">
 	<Card>
 		<CardHeader>
 			<CardTitle>Data Table Component Demo</CardTitle>
@@ -260,21 +259,19 @@
 				<div class="flex items-center justify-between">
 					<div>
 						<h3 class="text-lg font-semibold">Users Table</h3>
-						<p class="text-sm text-muted-foreground">
+						<p class="text-muted-foreground text-sm">
 							Features: Sorting, Filtering, Pagination, Row Selection, Custom Renderers
 						</p>
 					</div>
-					<Button variant="outline" size="sm">
-						Add New User
-					</Button>
+					<Button variant="outline" size="sm">Add New User</Button>
 				</div>
-				
+
 				<Separator />
-				
+
 				<!-- Data Table Component -->
 				<DataTable
 					model={{} as User}
-					config={config}
+					{config}
 					initialData={mockUsers}
 					initialPagination={{
 						currentPage: 1,
@@ -300,10 +297,10 @@
 			<CardTitle>Component Features</CardTitle>
 		</CardHeader>
 		<CardContent>
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+			<div class="grid grid-cols-1 gap-4 md:grid-cols-2">
 				<div class="space-y-2">
 					<h4 class="font-semibold">Core Features</h4>
-					<ul class="text-sm space-y-1 text-muted-foreground">
+					<ul class="text-muted-foreground space-y-1 text-sm">
 						<li>• Server-side pagination</li>
 						<li>• Column sorting (asc/desc)</li>
 						<li>• Row selection (single/multiple)</li>
@@ -313,7 +310,7 @@
 				</div>
 				<div class="space-y-2">
 					<h4 class="font-semibold">Customization</h4>
-					<ul class="text-sm space-y-1 text-muted-foreground">
+					<ul class="text-muted-foreground space-y-1 text-sm">
 						<li>• Custom CSS classes</li>
 						<li>• Column alignment</li>
 						<li>• Column visibility</li>
@@ -331,7 +328,8 @@
 			<CardTitle>Usage Example</CardTitle>
 		</CardHeader>
 		<CardContent>
-			<pre class="bg-muted p-4 rounded-lg text-sm overflow-x-auto"><code>{`// Column definition example
+			<pre class="bg-muted overflow-x-auto rounded-lg p-4 text-sm"><code
+					>{`// Column definition example
 const columns: ColumnDefinition<User>[] = [
   {
     key: 'name',
@@ -358,7 +356,8 @@ const config: DataTableConfig<User> = {
   config={config}
   onDataChange={handleDataChange}
   onSortChange={handleSortChange}
-/>`}</code></pre>
+/>`}</code
+				></pre>
 		</CardContent>
 	</Card>
 </div>

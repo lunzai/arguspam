@@ -16,11 +16,11 @@
 		filter: FilterConfig;
 	}>();
 
-	const filterableColumns = $derived(columns.filter(col => col.filterable));
+	const filterableColumns = $derived(columns.filter((col) => col.filterable));
 
 	function handleFilterChange(columnKey: string, value: string) {
 		const newFilters = { ...filters };
-		
+
 		if (value.trim()) {
 			newFilters[columnKey] = {
 				value: value.trim(),
@@ -29,7 +29,7 @@
 		} else {
 			delete newFilters[columnKey];
 		}
-		
+
 		dispatch('filter', newFilters);
 	}
 
@@ -39,9 +39,9 @@
 </script>
 
 {#if filterableColumns.length > 0}
-	<div class="flex flex-wrap gap-4 items-end p-4 border-b {className}">
+	<div class="flex flex-wrap items-end gap-4 border-b p-4 {className}">
 		{#each filterableColumns as column}
-			<div class="flex flex-col gap-2 min-w-[200px]">
+			<div class="flex min-w-[200px] flex-col gap-2">
 				<label for={`filter-${column.key}`} class="text-sm font-medium">
 					{column.title}
 				</label>
@@ -54,10 +54,10 @@
 				/>
 			</div>
 		{/each}
-		
-		<Button 
-			variant="outline" 
-			size="sm" 
+
+		<Button
+			variant="outline"
+			size="sm"
 			on:click={clearFilters}
 			disabled={Object.keys(filters).length === 0}
 		>

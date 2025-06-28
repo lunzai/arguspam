@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { DataTable } from '$components/data-table/index';
 	import type { User } from '$models/user';
-	import type { 
-		DataTableConfig, 
-		PaginationConfig, 
-		FilterConfig, 
-		SortConfig 
+	import type {
+		DataTableConfig,
+		PaginationConfig,
+		FilterConfig,
+		SortConfig
 	} from '$components/data-table/types';
 	import { onMount } from 'svelte';
 	import { shortDateTime } from '$lib/utils/date';
@@ -14,20 +14,20 @@
 	import { page } from '$app/state';
 	import { Pencil, NotebookText } from '@lucide/svelte';
 
-    let { data } = $props();
+	let { data } = $props();
 	let initialSearchParams = page.url.searchParams;
-	
+
 	export const columns: ColumnDefinition<User>[] = [
 		{
 			key: 'id',
 			title: 'ID',
-			sortable: true,
+			sortable: true
 		},
 		{
 			key: 'name',
 			title: 'Name',
 			sortable: true,
-			filterable: true,
+			filterable: true
 		},
 		{
 			key: 'email',
@@ -35,8 +35,13 @@
 			sortable: true,
 			filterable: true,
 			renderer: (value: string, row: User) => {
-				const mailWarningIcon = '<svg class="text-red-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-warning-icon lucide-mail-warning"><path d="M22 10.5V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h12.5"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M20 14v4"/><path d="M20 22v.01"/></svg>';
-				return `<div class="flex items-center gap-2">${value}` + (!row.email_verified_at ? mailWarningIcon : '') + '</div>';
+				const mailWarningIcon =
+					'<svg class="text-red-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-warning-icon lucide-mail-warning"><path d="M22 10.5V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h12.5"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M20 14v4"/><path d="M20 22v.01"/></svg>';
+				return (
+					`<div class="flex items-center gap-2">${value}` +
+					(!row.email_verified_at ? mailWarningIcon : '') +
+					'</div>'
+				);
 			}
 		},
 		{
@@ -49,19 +54,19 @@
 				let values: CellBadge[] = [];
 				if (row.two_factor_enabled) {
 					values.push({
-						value:'Enabled',
-						variant: 'outline',
+						value: 'Enabled',
+						variant: 'outline'
 					});
 					values.push({
 						value: row.two_factor_confirmed_at ? 'Enrolled' : 'Not Enrolled',
-						variant: row.two_factor_confirmed_at ? 'outline' : 'destructive',
+						variant: row.two_factor_confirmed_at ? 'outline' : 'destructive'
 					});
 				} else {
 					values.push({
 						value: 'Not Enabled',
-						variant: 'secondary',
+						variant: 'secondary'
 					});
-				}				
+				}
 				return { values };
 			}
 		},
@@ -85,8 +90,8 @@
 				let values: CellBadge[] = [
 					{
 						value: value === 'active' ? 'Active' : 'Inactive',
-						variant: value === 'active' ? 'default' : 'secondary',
-					},
+						variant: value === 'active' ? 'default' : 'secondary'
+					}
 				];
 				return { values };
 			}
@@ -124,18 +129,17 @@
 							icon: NotebookText,
 							href: `/users/${row.id}`,
 							variant: 'link',
-							class: 'hover:text-blue-500',
+							class: 'hover:text-blue-500'
 						},
 						{
 							label: 'Edit',
 							icon: Pencil,
 							href: `/users/${row.id}/edit`,
 							variant: 'link',
-							class: 'hover:text-blue-500',
-						},
+							class: 'hover:text-blue-500'
+						}
 					]
-				}
-
+				};
 			}
 		}
 	];
@@ -201,15 +205,15 @@
 </script>
 
 <h1 class="text-2xl font-medium">Users</h1>
-            
+
 <!-- Data Table Component -->
 <DataTable
-    model={{} as User}
-    config={config}
-    {initialSearchParams}
-    onDataChange={handleDataChange}
-    onPaginationChange={handlePaginationChange}
-    onFilterChange={handleFilterChange}
-    onSortChange={handleSortChange}
-    onRowSelect={handleRowSelect}
+	model={{} as User}
+	{config}
+	{initialSearchParams}
+	onDataChange={handleDataChange}
+	onPaginationChange={handlePaginationChange}
+	onFilterChange={handleFilterChange}
+	onSortChange={handleSortChange}
+	onRowSelect={handleRowSelect}
 />

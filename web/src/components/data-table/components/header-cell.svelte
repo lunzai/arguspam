@@ -10,14 +10,14 @@
 		children: () => any;
 	}
 
-	let { 
-        align = 'left', 
-        width, 
-        sortable = false, 
-        onclick, 
-        className = '', 
-        children 
-    }: Props = $props();
+	let {
+		align = 'left',
+		width,
+		sortable = false,
+		onclick,
+		className = '',
+		children
+	}: Props = $props();
 
 	const alignmentClasses = $derived({
 		left: 'text-left',

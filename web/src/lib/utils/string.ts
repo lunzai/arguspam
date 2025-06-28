@@ -43,5 +43,5 @@ export function snakeToCamel(str: string): string {
  * interpolate('Showing {from} to {to} of {total} results', { from: 1, to: 10, total: 100 }) // returns 'Showing 1 to 10 of 100 results'
  */
 export function interpolate(template: string, params: Record<string, any>): string {
-    return template.replace(/{(\w+)}/g, (_, key) => params[key]?.toString() ?? `{${key}}`);
+	return template.replace(/{(\w+)}/g, (_, key) => params[key]?.toString() ?? `{${key}}`);
 }

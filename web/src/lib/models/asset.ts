@@ -6,9 +6,9 @@ export interface Asset extends BaseModel {
 	name: string;
 	description: string;
 	status: 'active' | 'inactive';
-    host: string;
-    port: number;
-    dbms: string;
-    created_at: string;
+	host: string;
+	port: number;
+	dbms: string;
+	created_at: string;
 	updated_at: string;
 }

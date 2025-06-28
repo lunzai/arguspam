@@ -99,7 +99,7 @@
 
 <Sidebar.Provider>
 	<AppSidebar />
-	<Sidebar.Inset class="overflow-hidden min-w-0">
+	<Sidebar.Inset class="min-w-0 overflow-hidden">
 		<header class="flex h-16 shrink-0 items-center gap-2 border-b px-4">
 			<Sidebar.Trigger class="-ml-1" />
 			<Separator orientation="vertical" class="mr-2 h-4" />
@@ -120,7 +120,7 @@
 				</Breadcrumb.List>
 			</Breadcrumb.Root>
 		</header>
-		<div class="flex flex-1 flex-col gap-4 p-4 overflow-hidden min-w-0">
+		<div class="flex min-w-0 flex-1 flex-col gap-4 overflow-hidden p-4">
 			{@render children()}
 			<!-- <div class="grid auto-rows-min gap-4 md:grid-cols-3">
 				<div class="bg-muted/50 aspect-video rounded-xl"></div>

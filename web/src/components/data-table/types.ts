@@ -51,10 +51,10 @@ export interface DataTableConfig<T = any> {
 	apiEndpoint: string;
 	// pageSize?: number;
 	// pageSizeOptions?: number[];
-	paginationSiblingCount?: { 
-        desktop?: number; 
-        mobile?: number 
-    };
+	paginationSiblingCount?: {
+		desktop?: number;
+		mobile?: number;
+	};
 	sortable?: boolean;
 	filterable?: boolean;
 	selectable?: boolean;
@@ -79,7 +79,7 @@ export interface DataTableState<T = any> {
 }
 
 export interface DataTableProps<T = any> {
-    model: T;
+	model: T;
 	config: DataTableConfig<T>;
 	initialInclude?: string[];
 	initialData?: any[];

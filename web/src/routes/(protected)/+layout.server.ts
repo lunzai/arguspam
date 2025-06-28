@@ -14,9 +14,8 @@ import type { LayoutServerLoad } from './$types';
 
 export const load: LayoutServerLoad = async ({ cookies, locals }) => {
 	return {
-		...locals,
+		...locals
 	};
-
 
 	// const token = getAuthToken(cookies);
 	// let currentOrgId = getCurrentOrgId(cookies);

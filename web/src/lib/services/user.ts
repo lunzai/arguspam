@@ -7,8 +7,8 @@ export class UserService extends BaseService<BaseModel> {
 	protected readonly endpoint = '/users';
 	protected readonly meEndpoint = '/users/me';
 
-	constructor(token: string) {
-		super('/users', token);
+	constructor(token: string, orgId?: number) {
+		super('/users', token, orgId);
 	}
 
 	async getOrgs(): Promise<OrgCollection> {

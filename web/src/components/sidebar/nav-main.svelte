@@ -31,13 +31,9 @@
 					url: '/assets'
 				},
 				{
-					title: 'Accounts',
+					title: 'Accounts X',
 					url: '/assets'
 				},
-				{
-					title: 'Permission',
-					url: '/assets'
-				}
 			]
 		},
 		{
@@ -55,7 +51,7 @@
 					url: '/sessions'
 				},
 				{
-					title: 'Audits',
+					title: 'Audits X',
 					url: '/session-audits'
 				}
 			]
@@ -165,21 +161,5 @@
 				</Sidebar.MenuItem>
 			{/if}
 		{/each}
-	</Sidebar.Menu>
-</Sidebar.Group>
-
-<Sidebar.Group>
-	<Sidebar.GroupLabel>Development</Sidebar.GroupLabel>
-	<Sidebar.Menu>
-		<Sidebar.MenuItem>
-			<Sidebar.MenuButton tooltipContent="DataTable Demo">
-				{#snippet child({ props })}
-					<a href="/data-table-demo" {...props}>
-						<TableIcon />
-						<span>DataTable Demo</span>
-					</a>
-				{/snippet}
-			</Sidebar.MenuButton>
-		</Sidebar.MenuItem>
 	</Sidebar.Menu>
 </Sidebar.Group>

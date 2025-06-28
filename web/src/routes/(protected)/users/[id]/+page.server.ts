@@ -1,4 +1,3 @@
-import { redirect } from '@sveltejs/kit';
 import { UserService } from '$services/user';
 import type { UserResource } from '$lib/resources/user';
 

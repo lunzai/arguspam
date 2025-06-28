@@ -1,6 +1,4 @@
 <script lang="ts">
-	import type { UserResource } from '$lib/resources/user.js';
-	import type { User } from '$models/user';
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
 	import { Pencil, Trash2, MailCheck, ShieldOff, ShieldCheck, ShieldAlert } from '@lucide/svelte';
@@ -9,24 +7,18 @@
 	import { relativeDateTime } from '$utils/date';
 	import { StatusBadge, RedBadge, GreenBadge, YellowBadge } from '$components/badge';
 	import type { ResourceItem } from '$resources/api';
-	import type { Org } from '$models/org';
 	import { Badge } from '$ui/badge';
-	import type { UserGroup } from '$models/user-group';
-	import type { Role } from '$models/role';
+	import type { AssetResource } from '$lib/resources/asset';
+	import type { Asset } from '$models/asset';
 
 	let { data } = $props();
-	const modelResource = $derived(data.user as UserResource);
-	const model = $derived(modelResource.data.attributes as User);
-	const orgs = $derived(modelResource.data.relationships?.orgs as ResourceItem<Org>[]);
-	const userGroups = $derived(
-		modelResource.data.relationships?.userGroups as ResourceItem<UserGroup>[]
-	);
-	const roles = $derived(modelResource.data.relationships?.roles as ResourceItem<Role>[]);
-	const modelName = 'users';
-	const modelTitle = 'User';
+	const modelResource = $derived(data.model as AssetResource);
+	const model = $derived(modelResource.data.attributes as Asset);
+	const modelName = 'assets';
+	const modelTitle = 'Asset';
 </script>
 
-<h1 class="text-2xl font-medium">{modelTitle} - #{model.id} - {model.name}</h1>
+<h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.name}</h1>
 <Card.Root class="gap-3 rounded-lg py-3 shadow-none">
 	<Card.Header class="flex items-center justify-between px-3">
 		<Card.Title class="text-lg">{modelTitle} Details</Card.Title>
@@ -60,12 +52,12 @@
 				<DL.Label>Name</DL.Label>
 				<DL.Content>{model.name}</DL.Content>
 			</DL.Row>
-			<DL.Row>
+			<!-- <DL.Row>
 				<DL.Label>Email</DL.Label>
 				<DL.Content>
 					<div class="flex items-center gap-2">
-						{model.email}
-						{#if model.email_verified_at}
+						{user.email}
+						{#if user.email_verified_at}
 							<GreenBadge>
 								<MailCheck class="h-4 w-4" />
 								Verified
@@ -78,8 +70,8 @@
 				<DL.Label>2FA</DL.Label>
 				<DL.Content>
 					<div class="flex items-center gap-2">
-						{#if model.two_factor_enabled}
-							{#if model.two_factor_confirmed_at}
+						{#if user.two_factor_enabled}
+							{#if user.two_factor_confirmed_at}
 								<GreenBadge class="text-sm">
 									<ShieldCheck class="h-4 w-4" />
 									Enrolled
@@ -138,15 +130,15 @@
 			<DL.Row>
 				<DL.Label>Status</DL.Label>
 				<DL.Content>
-					<StatusBadge status={model.status} class="text-sm" />
+					<StatusBadge status={user.status} class="text-sm" />
 				</DL.Content>
 			</DL.Row>
 			<DL.Row>
 				<DL.Label>Last Login</DL.Label>
 				<DL.Content>
-					{relativeDateTime(model.last_login_at)}
+					{relativeDateTime(user.last_login_at)}
 				</DL.Content>
-			</DL.Row>
+			</DL.Row> -->
 			<DL.Row>
 				<DL.Label>Created At</DL.Label>
 				<DL.Content>

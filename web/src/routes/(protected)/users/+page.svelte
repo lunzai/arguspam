@@ -7,15 +7,14 @@
 		FilterConfig,
 		SortConfig
 	} from '$components/data-table/types';
-	import { onMount } from 'svelte';
 	import { shortDateTime } from '$lib/utils/date';
 	import type { ColumnDefinition } from '$components/data-table/types';
 	import type { CellBadge } from '$components/data-table/types';
 	import { page } from '$app/state';
 	import { Pencil, NotebookText } from '@lucide/svelte';
 
-	let { data } = $props();
 	let initialSearchParams = page.url.searchParams;
+	const modelName = 'users';
 
 	export const columns: ColumnDefinition<User>[] = [
 		{
@@ -127,14 +126,14 @@
 						{
 							label: 'View',
 							icon: NotebookText,
-							href: `/users/${row.id}`,
+							href: `/${modelName}/${row.id}`,
 							variant: 'link',
 							class: 'hover:text-blue-500'
 						},
 						{
 							label: 'Edit',
 							icon: Pencil,
-							href: `/users/${row.id}/edit`,
+							href: `/${modelName}/${row.id}/edit`,
 							variant: 'link',
 							class: 'hover:text-blue-500'
 						}
@@ -148,13 +147,13 @@
 	const config: DataTableConfig<User> = {
 		model: {} as User,
 		columns: columns,
-		apiEndpoint: '/api/search/users', // This would be your actual API endpoint
+		apiEndpoint: `/api/search/${modelName}`,
 		paginationSiblingCount: { desktop: 3, mobile: 1 },
 		sortable: true,
 		filterable: true,
 		selectable: false,
 		loading: false,
-		emptyMessage: 'No users found',
+		emptyMessage: `No ${modelName} found`,
 		className: 'border rounded-lg',
 		headerClassName: 'bg-muted/50',
 		bodyClassName: 'divide-y',
@@ -183,28 +182,9 @@
 	function handleRowSelect(selectedRows: Set<string | number>) {
 		console.log('Selected rows:', selectedRows);
 	}
-
-	// Mock API functions for testing
-	function editUser(id: number) {
-		console.log('Edit user:', id);
-		alert(`Edit user with ID: ${id}`);
-	}
-
-	function deleteUser(id: number) {
-		console.log('Delete user:', id);
-		if (confirm(`Are you sure you want to delete user with ID: ${id}?`)) {
-			alert(`User ${id} deleted!`);
-		}
-	}
-
-	// Make functions globally available for the renderer
-	onMount(() => {
-		(window as any).editUser = editUser;
-		(window as any).deleteUser = deleteUser;
-	});
 </script>
 
-<h1 class="text-2xl font-medium">Users</h1>
+<h1 class="text-2xl font-medium capitalize">{modelName}</h1>
 
 <!-- Data Table Component -->
 <DataTable

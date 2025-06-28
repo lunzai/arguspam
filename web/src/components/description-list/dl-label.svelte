@@ -12,7 +12,7 @@
 
 <dt 
     data-slot="dl-label" 
-    class={cn("text-sm font-medium text-gray-900", className)} 
+    class={cn("text-sm font-medium sm:col-span- text-gray-900", className)} 
     {...restProps}
 >
     {@render children?.()}

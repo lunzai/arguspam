@@ -11,11 +11,15 @@
 	import type { ResourceItem } from '$resources/api';
 	import type { Org } from '$models/org';
 	import { Badge } from '$ui/badge';
+	import type { UserGroup } from '$models/user-group';
+	import type { Role } from '$models/role';
 
     let { data } = $props();
     const userResource = $derived(data.user as UserResource);
 	const user = $derived(userResource.data.attributes as User);
 	const orgs = $derived(userResource.data.relationships?.orgs as ResourceItem<Org>[]);
+	const userGroups = $derived(userResource.data.relationships?.userGroups as ResourceItem<UserGroup>[]);
+	const roles = $derived(userResource.data.relationships?.roles as ResourceItem<Role>[]);
 </script>
 
 <h1 class="text-2xl font-medium">User - #{user.id} - {user.name}</h1>
@@ -89,10 +93,34 @@
 			<DL.Row>
 				<DL.Label>Organizations</DL.Label>
 				<DL.Content>
-					<div class="flex flex-wrap gap-2">
+					<div class="flex flex-wrap gap-1">
 						{#each orgs as org}
 							<Badge variant="outline" class="text-sm">
 								{org.attributes.name}
+							</Badge>
+						{/each}
+					</div>
+				</DL.Content>
+			</DL.Row>
+			<DL.Row>
+				<DL.Label>User Groups</DL.Label>
+				<DL.Content>
+					<div class="flex flex-wrap gap-1">
+						{#each userGroups as userGroup}
+							<Badge variant="outline" class="text-sm">
+								{userGroup.attributes.name}
+							</Badge>
+						{/each}
+					</div>
+				</DL.Content>
+			</DL.Row>
+			<DL.Row>
+				<DL.Label>Roles</DL.Label>
+				<DL.Content>
+					<div class="flex flex-wrap gap-1">
+						{#each roles as role}
+							<Badge variant="outline" class="text-sm">
+								{role.attributes.name}
 							</Badge>
 						{/each}
 					</div>

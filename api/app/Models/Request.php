@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Enums\RequestScope;
 use App\Enums\RiskRating;
-use App\Enums\Status;
+use App\Enums\RequestStatus;
 use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -49,7 +49,7 @@ class Request extends Model
         'deleted_at' => 'datetime',
         'approved_at' => 'datetime',
         'rejected_at' => 'datetime',
-        'status' => Status::class,
+        'status' => RequestStatus::class,
         'approver_risk_rating' => RiskRating::class,
         'ai_risk_rating' => RiskRating::class,
         'scope' => RequestScope::class,

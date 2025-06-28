@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\Status;
+use App\Enums\SessionStatus;
 use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -54,7 +54,7 @@ class Session extends Model
         'checkin_at' => 'datetime',
         'terminated_at' => 'datetime',
         'ended_at' => 'datetime',
-        'status' => Status::class,
+        'status' => SessionStatus::class,
     ];
 
     public static $attributeLabels = [

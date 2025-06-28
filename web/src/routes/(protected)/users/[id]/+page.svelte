@@ -6,13 +6,16 @@
 	import { Pencil, Trash2, MailCheck, ShieldOff, ShieldCheck, ShieldAlert } from '@lucide/svelte';
 	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
-	import { shortDateTime, relativeDateTime } from '$utils/date';
+	import { relativeDateTime } from '$utils/date';
 	import { StatusBadge, RedBadge, GreenBadge, YellowBadge } from '$components/badge';
+	import type { ResourceItem } from '$resources/api';
+	import type { Org } from '$models/org';
+	import { Badge } from '$ui/badge';
 
     let { data } = $props();
-    const userResource = data.user as UserResource;
-	const user = userResource.data.attributes as User;
-	console.log(user);
+    const userResource = $derived(data.user as UserResource);
+	const user = $derived(userResource.data.attributes as User);
+	const orgs = $derived(userResource.data.relationships?.orgs as ResourceItem<Org>[]);
 </script>
 
 <h1 class="text-2xl font-medium">User - #{user.id} - {user.name}</h1>
@@ -64,18 +67,18 @@
 					<div class="flex items-center gap-2">
 						{#if user.two_factor_enabled}
 							{#if user.two_factor_confirmed_at}
-								<GreenBadge>
+								<GreenBadge class="text-sm">
 									<ShieldCheck class="w-4 h-4" />
 									Enrolled
 								</GreenBadge>
 							{:else}
-								<YellowBadge>
+								<YellowBadge class="text-sm">
 									<ShieldAlert class="w-4 h-4" />
 									Pending Enrollment
 								</YellowBadge>
 							{/if}
 						{:else}
-							<RedBadge>
+							<RedBadge class="text-sm">
 								<ShieldOff class="w-4 h-4" />
 								Not Enabled
 							</RedBadge>
@@ -84,9 +87,21 @@
 				</DL.Content>
 			</DL.Row>
 			<DL.Row>
+				<DL.Label>Organizations</DL.Label>
+				<DL.Content>
+					<div class="flex flex-wrap gap-2">
+						{#each orgs as org}
+							<Badge variant="outline" class="text-sm">
+								{org.attributes.name}
+							</Badge>
+						{/each}
+					</div>
+				</DL.Content>
+			</DL.Row>
+			<DL.Row>
 				<DL.Label>Status</DL.Label>
 				<DL.Content>
-					<StatusBadge status={user.status} />
+					<StatusBadge status={user.status} class="text-sm" />
 				</DL.Content>
 			</DL.Row>
 			<DL.Row>

@@ -11,7 +11,7 @@
 
 <dd 
     data-slot="dl-content" 
-    class={cn("text-sm text-gray-700 sm:col-span-2 sm:mt-0", className)} 
+    class={cn("text-sm text-gray-700 sm:col-span-2 lg:col-span-3 xl:col-span-4 sm:mt-0", className)} 
     {...restProps}
 >
     {@render children?.()}

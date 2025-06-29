@@ -28,6 +28,12 @@ abstract class QueryFilter
         return $this->builder;
     }
 
+    public function count(string $value): Builder
+    {
+        $value = explode(',', $value);
+        return $this->builder->withCount($value);
+    }
+
     public function filter(array $arr): Builder
     {
         foreach ($arr as $key => $value) {

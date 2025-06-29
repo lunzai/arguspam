@@ -14,9 +14,9 @@
 {#if values.length > 0}
 	<div class={cn('flex flex-wrap gap-1', className)}>
 		{#each values as cellBadge}
-			<Badge variant={cellBadge.variant} class={cn('badge', cellBadge.className)}
-				>{cellBadge.value}</Badge
-			>
+			<Badge variant={cellBadge.variant} class={cn('badge', cellBadge.className)}>
+				{cellBadge.value}
+			</Badge>
 		{/each}
 	</div>
 {/if}

@@ -24,6 +24,7 @@ class UserGroupResource extends Resource
                 'name' => $this->name,
                 'description' => $this->description,
                 'status' => $this->status,
+                'users_count' => $this->whenCounted('users'),
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,
             ],

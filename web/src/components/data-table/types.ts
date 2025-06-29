@@ -7,7 +7,7 @@ export interface ColumnDefinition<T = any> {
 	sortable?: boolean;
 	filterable?: boolean;
 	visible?: boolean;
-	type?: 'badge' | 'icon' | 'text' | 'boolean' | 'actions';
+	type?: 'badge' | 'icon' | 'text' | 'boolean' | 'actions' | 'hover-card';
 	booleanTrue?: string;
 	booleanFalse?: string;
 	emptyText?: string;
@@ -74,6 +74,7 @@ export interface DataTableState<T = any> {
 	pagination: PaginationConfig;
 	filters: FilterConfig;
 	sort: SortConfig;
+	count: string[];
 	loading: boolean;
 	selectedRows: Set<string | number>;
 }
@@ -98,6 +99,7 @@ export interface ApiRequestParams {
 	sort?: SortConfig;
 	filters?: FilterConfig;
 	include?: string[];
+	count?: string[];
 }
 
 // Same as ApiCollectionResponse in api.ts

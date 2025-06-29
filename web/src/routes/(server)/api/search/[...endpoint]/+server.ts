@@ -12,7 +12,8 @@ export const GET: RequestHandler = async ({ params, request, url, locals }) => {
 		page: Number(url.searchParams.get('page')) || 1,
 		include: url.searchParams.get('include')?.split(',') || [],
 		sort: url.searchParams.get('sort')?.split(',') || [],
-		filter: url.searchParams.get('filter')?.split(',') || []
+		filter: url.searchParams.get('filter')?.split(',') || [],
+		count: url.searchParams.get('count')?.split(',') || []
 	});
 	return json(response);
 };

@@ -10,7 +10,7 @@ return [
     |
     */
     'org' => [
-        'request_header' => 'X-Organization-ID',
+        'request_header' => 'x-organization-id',
         'request_attribute' => 'current_org_id',
     ],
 

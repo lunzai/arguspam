@@ -26,10 +26,10 @@ class ChangePasswordRequest extends FormRequest
                 'string',
                 'confirmed',
                 Password::min(8),
-                    // ->letters()
-                    // ->mixedCase()
-                    // ->numbers()
-                    // ->symbols(),
+                // ->letters()
+                // ->mixedCase()
+                // ->numbers()
+                // ->symbols(),
                 'different:current_password',
             ],
         ];
@@ -45,4 +45,4 @@ class ChangePasswordRequest extends FormRequest
             'new_password.different' => 'New password must be different from current password.',
         ];
     }
-} 
+}

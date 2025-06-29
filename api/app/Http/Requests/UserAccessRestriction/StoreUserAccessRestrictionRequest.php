@@ -40,7 +40,7 @@ class StoreUserAccessRestrictionRequest extends FormRequest
                 }
             }
         }
-        
+
         return $rules;
     }
 

@@ -5,9 +5,9 @@ namespace App\Models;
 use App\Enums\AssetAccessRole;
 use App\Enums\Dbms;
 use App\Enums\Status;
+use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -15,9 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Asset extends Model
 {
     /** @use HasFactory<\Database\Factories\AssetFactory> */
-    use HasBlamable, HasFactory;
-
-    use SoftDeletes;
+    use BelongsToOrganization, HasBlamable, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'org_id',
@@ -62,11 +60,6 @@ class Asset extends Model
         'createdBy',
         'updatedBy',
     ];
-
-    public function org(): BelongsTo
-    {
-        return $this->belongsTo(Org::class);
-    }
 
     public function accounts(): HasMany
     {

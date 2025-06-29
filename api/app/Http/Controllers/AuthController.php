@@ -40,7 +40,7 @@ class AuthController extends Controller
 
         return $this->success([
             'token' => $token,
-            'user' => $user
+            'user' => $user,
         ]);
     }
 

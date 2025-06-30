@@ -33,7 +33,7 @@
 				{
 					title: 'Accounts X',
 					url: '/assets'
-				},
+				}
 			]
 		},
 		{

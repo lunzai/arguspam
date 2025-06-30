@@ -7,4 +7,4 @@ export class PermissionService extends BaseService<Permission> {
 	constructor(token: string, orgId?: number) {
 		super('/permissions', token, orgId);
 	}
-} 
+}

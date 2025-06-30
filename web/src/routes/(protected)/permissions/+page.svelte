@@ -163,23 +163,23 @@
 
 	// Event handlers
 	function handleDataChange(data: Permission[]) {
-		console.log('Data changed:', data);
+		// console.log('Data changed:', data);
 	}
 
 	function handlePaginationChange(pagination: PaginationConfig) {
-		console.log('Pagination changed:', pagination);
+		// console.log('Pagination changed:', pagination);
 	}
 
 	function handleFilterChange(filters: FilterConfig) {
-		console.log('Filters changed:', filters);
+		// console.log('Filters changed:', filters);
 	}
 
 	function handleSortChange(sort: SortConfig) {
-		console.log('Sort changed:', sort);
+		// console.log('Sort changed:', sort);
 	}
 
 	function handleRowSelect(selectedRows: Set<string | number>) {
-		console.log('Selected rows:', selectedRows);
+		// console.log('Selected rows:', selectedRows);
 	}
 </script>
 

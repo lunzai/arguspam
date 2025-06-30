@@ -59,7 +59,7 @@ export abstract class BaseService<
 				queryParams.set(`filter[${key}]`, params.filter![key]);
 			});
 		}
-		if (params.count) {
+		if (params.count && params.count.length > 0) {
 			queryParams.set('count', params.count.join(','));
 		}
 		return queryParams.toString();

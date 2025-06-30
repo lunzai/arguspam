@@ -131,8 +131,6 @@
 		if (params.count && params.count.length > 0) {
 			url.searchParams.set('count', params.count.join(','));
 		}
-		console.log('fetchdata:params', params);
-		console.log('fetchdata:url', url.toString());
 		try {
 			const response = await fetch(url.toString());
 			if (!response.ok) {
@@ -142,7 +140,6 @@
 			replaceState(window.location.pathname + '?' + url.searchParams.toString(), {});
 			return result;
 		} catch (error) {
-			console.error('Error fetching data:', error);
 			throw error;
 		}
 	}
@@ -172,7 +169,6 @@
 			onDataChange?.(state.data);
 			onPaginationChange?.(state.pagination);
 		} catch (error) {
-			console.error('Failed to load data:', error);
 			// Keep existing data on error
 		} finally {
 			state.loading = false;

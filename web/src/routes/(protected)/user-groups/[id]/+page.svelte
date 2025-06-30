@@ -10,7 +10,7 @@
 	import type { UserGroupResource } from '$lib/resources/user-group';
 	import type { UserGroup } from '$models/user-group';
 	import type { User } from '$models/user';
-	import type { ColumnDef } from "@tanstack/table-core";
+	import type { ColumnDef } from '@tanstack/table-core';
 	import { SimpleDataTable } from '$components/data-table';
 	import { renderSnippet } from '$lib/components/ui/data-table';
 	import * as AlertDialog from '$ui/alert-dialog';
@@ -29,7 +29,6 @@
 	let addUserDialogIsOpen = $state(false);
 
 	function onConfirmDelete(modelId: number, RelatedId: number) {
-		console.log('delete', modelId, RelatedId);
 		deleteDialogIsOpen = false;
 		resetDeleteDialogIds();
 	}
@@ -42,31 +41,21 @@
 	const usersColumns: ColumnDef<User>[] = [
 		{
 			accessorKey: 'id',
-			header: 'ID',
+			header: 'ID'
 		},
 		{
 			accessorKey: 'name',
-			header: 'Name',
+			header: 'Name'
 		},
 		{
 			accessorKey: 'email',
-			header: 'Email',
+			header: 'Email'
 		},
-		// {
-		// 	id: 'actions',
-		// 	cell: ({ row }) => {
-		// 		return renderComponent(SimpleDataTableDeleteAction, {
-		// 			onConfirm: (setOpen) => {
-		// 				console.log('delete', model.id, row.original.id);
-		// 				setOpen(false);
-		// 			}
-		// 		});
-		// 	},
-		// }
 		{
-			id: "actions",
-			cell: ({ row }) => renderSnippet(DataTableActions, { modelId : model.id, RelatedId : row.original.id }),
-		},
+			id: 'actions',
+			cell: ({ row }) =>
+				renderSnippet(DataTableActions, { modelId: model.id, RelatedId: row.original.id })
+		}
 	];
 </script>
 
@@ -141,7 +130,7 @@
 					variant="outline"
 					size="sm"
 					class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-					onclick={() => addUserDialogIsOpen = true}
+					onclick={() => (addUserDialogIsOpen = true)}
 				>
 					<UserPlus class="h-4 w-4" />
 					Add User
@@ -150,44 +139,44 @@
 		</Card.Header>
 		<Separator />
 		<Card.Content class="gap-3 px-3">
-			<SimpleDataTable data={users.map(user => user.attributes)} columns={usersColumns} />
+			<SimpleDataTable data={users.map((user) => user.attributes)} columns={usersColumns} />
 		</Card.Content>
 	</Card.Root>
 {/if}
 
-{#snippet DataTableActions({ modelId, RelatedId }: { modelId: number, RelatedId: number })}
-	<div class="flex  justify-end">
-		<Button 
-			variant="outline" 
-			class='text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500'
+{#snippet DataTableActions({ modelId, RelatedId }: { modelId: number; RelatedId: number })}
+	<div class="flex justify-end">
+		<Button
+			variant="outline"
+			class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
 			onclick={() => {
 				deleteDialogModelId = modelId;
 				deleteDialogRelatedId = RelatedId;
 				deleteDialogIsOpen = true;
 			}}
 		>
-			<Trash2 class='h-4 w-4' />
+			<Trash2 class="h-4 w-4" />
 		</Button>
 	</div>
 {/snippet}
 
-
-<AlertDialog.Root bind:open={deleteDialogIsOpen} onOpenChange={(isOpen) => {
-	if (!isOpen) {
-		resetDeleteDialogIds();
-	}
-}}>
+<AlertDialog.Root
+	bind:open={deleteDialogIsOpen}
+	onOpenChange={(isOpen) => {
+		if (!isOpen) {
+			resetDeleteDialogIds();
+		}
+	}}
+>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
-			<AlertDialog.Title>
-				Are you sure?
-			</AlertDialog.Title>
+			<AlertDialog.Title>Are you sure?</AlertDialog.Title>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<AlertDialog.Cancel>
-				Cancel
-			</AlertDialog.Cancel>
-			<AlertDialog.Action onclick={() => onConfirmDelete(deleteDialogModelId, deleteDialogRelatedId)}>
+			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+			<AlertDialog.Action
+				onclick={() => onConfirmDelete(deleteDialogModelId, deleteDialogRelatedId)}
+			>
 				Delete
 			</AlertDialog.Action>
 		</AlertDialog.Footer>
@@ -198,16 +187,14 @@
 	<Dialog.Content class="sm:max-w-xl">
 		<Dialog.Header>
 			<Dialog.Title>Add User</Dialog.Title>
-			<Dialog.Description>
-				Search users by name or email.
-			</Dialog.Description>
+			<Dialog.Description>Search users by name or email.</Dialog.Description>
 		</Dialog.Header>
 		<div class="grid gap-4 py-4">
 			<Input id="name" value="Pedro Duarte" class="col-span-3" />
 		</div>
 		<Dialog.Footer>
-			<Button variant="outline" onclick={() => addUserDialogIsOpen = false}>Cancel</Button>
-			<Button variant="outline" onclick={() => addUserDialogIsOpen = false}>Add</Button>
+			<Button variant="outline" onclick={() => (addUserDialogIsOpen = false)}>Cancel</Button>
+			<Button variant="outline" onclick={() => (addUserDialogIsOpen = false)}>Add</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>

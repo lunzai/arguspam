@@ -21,7 +21,7 @@ abstract class QueryFilter
     {
         $this->builder = $builder;
         foreach ($this->request->all() as $key => $value) {
-            if (method_exists($this, $key)) {
+            if (method_exists($this, $key) && $value !== null) {
                 $this->$key($value);
             }
         }

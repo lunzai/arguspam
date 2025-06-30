@@ -7,4 +7,4 @@ export class AssetAccessGrantService extends BaseService<AssetAccessGrant> {
 	constructor(token: string, orgId?: number) {
 		super('/asset-access-grants', token, orgId);
 	}
-} 
+}

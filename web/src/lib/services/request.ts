@@ -7,4 +7,4 @@ export class RequestService extends BaseService<Request> {
 	constructor(token: string, orgId?: number) {
 		super('/requests', token, orgId);
 	}
-} 
+}

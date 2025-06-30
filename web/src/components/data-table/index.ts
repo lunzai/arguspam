@@ -32,7 +32,6 @@ export {
 	DataTableEmpty,
 	DataTableLoading,
 	SimpleDataTable,
-	
 	DataTable as Root,
 	DataTableHeader as Header,
 	DataTableBody as Body,

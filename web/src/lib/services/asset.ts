@@ -7,4 +7,4 @@ export class AssetService extends BaseService<Asset> {
 	constructor(token: string, orgId?: number) {
 		super('/assets', token, orgId);
 	}
-} 
+}

@@ -9,8 +9,6 @@ import DataTableFilter from './components/filter.svelte';
 import DataTableEmpty from './components/empty.svelte';
 import DataTableLoading from './components/loading.svelte';
 import SimpleDataTable from './simple-data-table.svelte';
-// import SimpleDataTableActions from './components/simple-data-table-actions.svelte';
-import SimpleDataTableDeleteAction from './components/simple-data-table-delete-action.svelte';
 
 export type {
 	ColumnDefinition,
@@ -34,8 +32,6 @@ export {
 	DataTableEmpty,
 	DataTableLoading,
 	SimpleDataTable,
-	// SimpleDataTableActions,
-	SimpleDataTableDeleteAction,
 	
 	DataTable as Root,
 	DataTableHeader as Header,

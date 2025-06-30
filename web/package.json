@@ -66,6 +66,7 @@
 		"zod": "^3.25.56"
 	},
 	"dependencies": {
+		"@tanstack/match-sorter-utils": "^8.19.4",
 		"axios": "^1.9.0",
 		"date-fns": "^4.1.0"
 	}

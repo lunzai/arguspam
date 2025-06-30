@@ -5,11 +5,9 @@
 	import { useSidebar } from '$ui/sidebar';
 	import { ChevronsUpDown, LoaderCircle } from '@lucide/svelte';
 	import { orgStore } from '$stores/org';
-	import type { Org } from '$models/org';
 	import { generateInitials, getInitials } from '$utils/avatar';
-	import { UserService } from '$services/user';
 	import { toast } from 'svelte-sonner';
-	import { enhance } from '$app/forms';
+	import { goto } from '$app/navigation';
 
 	const orgs = $derived($orgStore.orgs);
 	let currentOrgId = $derived($orgStore.currentOrgId);
@@ -31,6 +29,7 @@
 					toast.success(`Switched organization to ${org.attributes.name}`);
 				}
 				orgStore.setCurrentOrgId(orgId);
+				goto('/');
 			} else {
 				const data = await response.json();
 				toast.error(data.error || 'Something went wrong');

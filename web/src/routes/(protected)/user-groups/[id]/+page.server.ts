@@ -6,7 +6,7 @@ export const load = async ({ params, locals }) => {
 	const { authToken, currentOrgId } = locals;
 	const modelService = new UserGroupService(authToken as string, currentOrgId);
 	const model = (await modelService.findById(id, {
-		//include: ['account', 'accessGrants']
+		include: ['users']
 	})) as UserGroupResource;
 	return {
 		model,

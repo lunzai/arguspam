@@ -5,6 +5,7 @@ use App\Http\Controllers\AssetAccountController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrgController;
 use App\Http\Controllers\OrgUserController;
 use App\Http\Controllers\PasswordController;
@@ -63,6 +64,8 @@ Route::middleware('auth:sanctum')->group(function () {
             ->name('assets.access-grants.store');
         Route::delete('assets/{asset}/grants/{asset_access_grant}', [AssetAccessGrantController::class, 'destroy'])
             ->name('assets.access-grants.destroy');
+        Route::get('dashboard', [DashboardController::class, 'index'])
+            ->name('dashboard.index');
     });
 
     Route::apiResources([

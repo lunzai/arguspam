@@ -11,6 +11,7 @@
 	import type { ColumnDefinition } from '$components/data-table/types';
 	import { page } from '$app/state';
 	import { Pencil, NotebookText } from '@lucide/svelte';
+	import type { CellBadge } from '$components/data-table/types';
 
 	let initialSearchParams = page.url.searchParams;
 	const modelName = 'roles';
@@ -25,75 +26,31 @@
 			key: 'name',
 			title: 'Name',
 			sortable: true,
-			filterable: true
+			filterable: true,
+			type: 'hover-card',
+			componentProps: (value: string, row: Role) => {
+				return {
+					triggerLabel: value,
+					hoverContent: row.description
+				};
+			}
 		},
-		// {
-		// 	key: 'email',
-		// 	title: 'Email',
-		// 	sortable: true,
-		// 	filterable: true,
-		// 	renderer: (value: string, row: Role) => {
-		// 		const mailWarningIcon =
-		// 			'<svg class="text-red-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-warning-icon lucide-mail-warning"><path d="M22 10.5V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h12.5"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M20 14v4"/><path d="M20 22v.01"/></svg>';
-		// 		return (
-		// 			`<div class="flex items-center gap-2">${value}` +
-		// 			(!row.email_verified_at ? mailWarningIcon : '') +
-		// 			'</div>'
-		// 		);
-		// 	}
-		// },
-		// {
-		// 	key: 'two_factor_enabled',
-		// 	title: '2FA',
-		// 	sortable: true,
-		// 	filterable: true,
-		// 	type: 'badge',
-		// 	componentProps: (value: string, row: Role) => {
-		// 		let values: CellBadge[] = [];
-		// 		if (row.two_factor_enabled) {
-		// 			values.push({
-		// 				value: 'Enabled',
-		// 				variant: 'outline'
-		// 			});
-		// 			values.push({
-		// 				value: row.two_factor_confirmed_at ? 'Enrolled' : 'Not Enrolled',
-		// 				variant: row.two_factor_confirmed_at ? 'outline' : 'destructive'
-		// 			});
-		// 		} else {
-		// 			values.push({
-		// 				value: 'Not Enabled',
-		// 				variant: 'secondary'
-		// 			});
-		// 		}
-		// 		return { values };
-		// 	}
-		// },
-		// {
-		// 	key: 'last_login_at',
-		// 	title: 'Last Login At',
-		// 	sortable: true,
-		// 	filterable: true,
-		// 	visible: true,
-		// 	renderer: (value: string) => {
-		// 		return value ? shortDateTime(value) : '-';
-		// 	}
-		// },
-		// {
-		// 	key: 'status',
-		// 	title: 'Status',
-		// 	sortable: true,
-		// 	filterable: true,
-		// 	type: 'badge',
-		// 	componentProps: (value: string, row: Role) => {
-		// 		let values: CellBadge[] = [
-		// 			{
-		// 				value: value === 'active' ? 'Active' : 'Inactive',
-		// 				variant: value === 'active' ? 'default' : 'secondary'
-		// 			}
-		// 		];
-		// 		return { values };
-		// 	}
-		// },
+		{
+			key: 'is_default',
+			title: 'Default Role',
+			sortable: true,
+			filterable: true,
+			type: 'badge',
+			componentProps: (value: string, row: Role) => {
+				let values: CellBadge[] = [
+					{
+						value: value ? 'Yes' : 'No',
+						variant: value ? 'default' : 'secondary'
+					}
+				];
+				return { values };
+			}
+		},
 		{
 			key: 'created_at',
 			title: 'Created At',
@@ -109,7 +66,7 @@
 			title: 'Updated At',
 			sortable: true,
 			filterable: false,
-			visible: false,
+			visible: true,
 			renderer: (value: string) => {
 				return value ? shortDateTime(value) : '';
 			}

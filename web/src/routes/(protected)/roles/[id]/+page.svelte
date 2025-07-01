@@ -52,6 +52,16 @@
 				<DL.Label>Name</DL.Label>
 				<DL.Content>{model.name}</DL.Content>
 			</DL.Row>
+			<DL.Row>
+				<DL.Label>Description</DL.Label>
+				<DL.Content>{model.description || '-'}</DL.Content>
+			</DL.Row>
+			<DL.Row>
+				<DL.Label>Default Role</DL.Label>
+				<DL.Content>
+					<StatusBadge status={model.is_default ? 'Yes' : 'No'} class="text-sm" />
+				</DL.Content>
+			</DL.Row>
 			<!-- <DL.Row>
 				<DL.Label>Email</DL.Label>
 				<DL.Content>

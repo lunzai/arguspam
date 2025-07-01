@@ -34,25 +34,29 @@
 	}: Props = $props();
 </script>
 
-<HoverCard.Root {...restProps}>
-	<HoverCard.Trigger
-		class={cn(
-			'flex items-center gap-2 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black',
-			triggerClassName
-		)}
-		{...triggerProps}
-	>
-		{#if showIcon && triggerIconPosition === 'left'}
-			<Icon class={cn('h-4 w-4', triggerIconProps)} />
-		{/if}
-		<span>{triggerLabel}</span>
-		{#if showIcon && triggerIconPosition === 'right'}
-			<Icon class={cn('h-4 w-4', triggerIconProps)} />
-		{/if}
-	</HoverCard.Trigger>
-	<HoverCard.Content class={cn('w-80', hoverContentClassName)} {...hoverContentProps}>
-		<div class={cn('flex justify-between space-x-4', hoverContentWrapperClassName)}>
-			{hoverContent}
-		</div>
-	</HoverCard.Content>
-</HoverCard.Root>
+{#if hoverContent}
+	<HoverCard.Root {...restProps}>
+		<HoverCard.Trigger
+			class={cn(
+				'flex items-center gap-2 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-8 focus-visible:outline-black',
+				triggerClassName
+			)}
+			{...triggerProps}
+		>
+			{#if showIcon && triggerIconPosition === 'left'}
+				<Icon class={cn('h-4 w-4', triggerIconProps)} />
+			{/if}
+			<span>{triggerLabel}</span>
+			{#if showIcon && triggerIconPosition === 'right'}
+				<Icon class={cn('h-4 w-4', triggerIconProps)} />
+			{/if}
+		</HoverCard.Trigger>
+		<HoverCard.Content class={cn('w-80', hoverContentClassName)} {...hoverContentProps}>
+			<div class={cn('flex justify-between space-x-4', hoverContentWrapperClassName)}>
+				{hoverContent}
+			</div>
+		</HoverCard.Content>
+	</HoverCard.Root>
+{:else}
+	<span>{triggerLabel}</span>
+{/if}

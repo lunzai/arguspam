@@ -52,6 +52,28 @@
 				<DL.Label>Name</DL.Label>
 				<DL.Content>{model.name}</DL.Content>
 			</DL.Row>
+			<DL.Row>
+				<DL.Label>Description</DL.Label>
+				<DL.Content>{model.description || '-'}</DL.Content>
+			</DL.Row>
+			<DL.Row>
+				<DL.Label>DBMS</DL.Label>
+				<DL.Content>{model.dbms.toUpperCase()}</DL.Content>
+			</DL.Row>
+			<DL.Row>
+				<DL.Label>Host</DL.Label>
+				<DL.Content>{model.host}</DL.Content>
+			</DL.Row>
+			<DL.Row>
+				<DL.Label>Port</DL.Label>
+				<DL.Content>{model.port}</DL.Content>
+			</DL.Row>
+			<DL.Row>
+				<DL.Label>Status</DL.Label>
+				<DL.Content>
+					<StatusBadge status={model.status} class="text-sm" />
+				</DL.Content>
+			</DL.Row>
 			<!-- <DL.Row>
 				<DL.Label>Email</DL.Label>
 				<DL.Content>

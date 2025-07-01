@@ -7,4 +7,4 @@ export class SessionAuditService extends BaseService<SessionAudit> {
 	constructor(token: string, orgId?: number) {
 		super('/session-audits', token, orgId);
 	}
-} 
+}

@@ -7,6 +7,7 @@ export interface BaseFilterParams {
 	include?: string[];
 	sort?: string[];
 	filter?: Record<string, any>;
+	count?: string[];
 }
 
 export interface BaseFindByIdParams {
@@ -46,27 +47,21 @@ export abstract class BaseService<
 	 */
 	protected buildQueryParams(params: BaseFilterParams = {}): string {
 		const queryParams = new URLSearchParams();
-
-		// Handle pagination
 		if (params.page) queryParams.set('page', params.page.toString());
-
-		// Handle include relationships
 		if (params.include && params.include.length > 0) {
 			queryParams.set('include', params.include.join(','));
 		}
-
-		// Handle sorting
 		if (params.sort && params.sort.length > 0) {
 			queryParams.set('sort', params.sort.join(','));
 		}
-
-		// Handle filter parameters (filter[name], filter[status], etc.)
 		if (params.filter) {
 			Object.keys(params.filter).forEach((key) => {
 				queryParams.set(`filter[${key}]`, params.filter![key]);
 			});
 		}
-
+		if (params.count && params.count.length > 0) {
+			queryParams.set('count', params.count.join(','));
+		}
 		return queryParams.toString();
 	}
 

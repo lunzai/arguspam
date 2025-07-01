@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\AssetAccessRole;
 use App\Enums\Status;
+use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class UserGroup extends Model
 {
     /** @use HasFactory<\Database\Factories\UserGroupFactory> */
-    use HasBlamable, HasFactory;
+    use BelongsToOrganization, HasBlamable, HasFactory;
 
     protected $fillable = [
         'org_id',
@@ -78,10 +79,5 @@ class UserGroup extends Model
             Asset::class,
             'asset_access_grants',
         )->where('asset_access_grants.role', AssetAccessRole::APPROVER->value);
-    }
-
-    public function org(): BelongsTo
-    {
-        return $this->belongsTo(Org::class);
     }
 }

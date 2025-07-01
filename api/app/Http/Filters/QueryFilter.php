@@ -21,11 +21,17 @@ abstract class QueryFilter
     {
         $this->builder = $builder;
         foreach ($this->request->all() as $key => $value) {
-            if (method_exists($this, $key)) {
+            if (method_exists($this, $key) && $value !== null) {
                 $this->$key($value);
             }
         }
         return $this->builder;
+    }
+
+    public function count(string $value): Builder
+    {
+        $value = explode(',', $value);
+        return $this->builder->withCount($value);
     }
 
     public function filter(array $arr): Builder

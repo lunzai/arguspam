@@ -4,6 +4,7 @@
 	import DataTableCell from './cell.svelte';
 	import CellBadge from './cell-badge.svelte';
 	import CellAction from './cell-action.svelte';
+	import CellHoverCard from './cell-hover-card.svelte';
 
 	interface Props {
 		row: any;
@@ -53,6 +54,8 @@
 				<CellBadge {...column.componentProps?.(row[column.key], row, index) || {}} />
 			{:else if column.type === 'icon'}
 				Icon
+			{:else if column.type === 'hover-card'}
+				<CellHoverCard {...column.componentProps?.(row[column.key], row, index) || {}} />
 			{:else if column.type === 'text'}
 				{row[column.key] || column.emptyText || ''}
 			{:else if column.type === 'boolean'}

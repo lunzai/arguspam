@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Org;
 use App\Http\Resources\Org\OrgCollection;
+use App\Models\Org;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 
@@ -11,8 +11,6 @@ class UserOrgController extends Controller
 {
     /**
      * Return all orgs of the auth user
-     *
-     * @return OrgCollection
      */
     public function index(): OrgCollection
     {
@@ -24,9 +22,6 @@ class UserOrgController extends Controller
 
     /**
      * Check if the auth user is a member of the org
-     *
-     * @param Org $org
-     * @return Response
      */
     public function show(Org $org): Response
     {

@@ -7,4 +7,4 @@ export class UserAccessRestrictionService extends BaseService<UserAccessRestrict
 	constructor(token: string, orgId?: number) {
 		super('/user-access-restrictions', token, orgId);
 	}
-} 
+}

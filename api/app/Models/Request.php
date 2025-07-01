@@ -3,8 +3,9 @@
 namespace App\Models;
 
 use App\Enums\RequestScope;
-use App\Enums\RiskRating;
 use App\Enums\RequestStatus;
+use App\Enums\RiskRating;
+use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Request extends Model
 {
     /** @use HasFactory<\Database\Factories\RequestFactory> */
-    use HasBlamable, HasFactory;
+    use BelongsToOrganization, HasBlamable, HasFactory;
 
     protected $fillable = [
         'org_id',
@@ -90,11 +91,6 @@ class Request extends Model
         'createdBy',
         'updatedBy',
     ];
-
-    public function org(): BelongsTo
-    {
-        return $this->belongsTo(Org::class);
-    }
 
     public function asset(): BelongsTo
     {

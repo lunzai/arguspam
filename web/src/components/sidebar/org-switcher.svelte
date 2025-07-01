@@ -5,11 +5,10 @@
 	import { useSidebar } from '$ui/sidebar';
 	import { ChevronsUpDown, LoaderCircle } from '@lucide/svelte';
 	import { orgStore } from '$stores/org';
-	import type { Org } from '$models/org';
 	import { generateInitials, getInitials } from '$utils/avatar';
-	import { UserService } from '$services/user';
 	import { toast } from 'svelte-sonner';
-	import { enhance } from '$app/forms';
+	import { goto, invalidate } from '$app/navigation';
+	import { page } from '$app/state';
 
 	const orgs = $derived($orgStore.orgs);
 	let currentOrgId = $derived($orgStore.currentOrgId);
@@ -18,7 +17,9 @@
 	let isLoading = $state(false);
 
 	async function onSelectOrg(orgId: number) {
-		if (currentOrgId === orgId) return;
+		if (currentOrgId === orgId) {
+			return;
+		}
 		isLoading = true;
 		try {
 			const response = await fetch(`/api/org/switch`, {
@@ -31,6 +32,11 @@
 					toast.success(`Switched organization to ${org.attributes.name}`);
 				}
 				orgStore.setCurrentOrgId(orgId);
+				if (page.url.pathname !== '/dashboard') {
+					goto('/dashboard');
+				} else {
+					invalidate('dashboard:data');
+				}
 			} else {
 				const data = await response.json();
 				toast.error(data.error || 'Something went wrong');

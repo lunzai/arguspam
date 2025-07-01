@@ -7,4 +7,4 @@ export class UserGroupService extends BaseService<UserGroup> {
 	constructor(token: string, orgId?: number) {
 		super('/user-groups', token, orgId);
 	}
-} 
+}

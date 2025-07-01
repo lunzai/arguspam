@@ -27,7 +27,7 @@ class EnsureOrganizationIdIsValid
         // Check if user has access to this organization
         $hasAccess = $request->user()
             ->orgs()
-            ->where('id', $orgId)
+            ->where('orgs.id', $orgId)
             ->exists();
 
         if (!$hasAccess) {

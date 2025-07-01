@@ -7,4 +7,4 @@ export class RoleService extends BaseService<Role> {
 	constructor(token: string, orgId?: number) {
 		super('/roles', token, orgId);
 	}
-} 
+}

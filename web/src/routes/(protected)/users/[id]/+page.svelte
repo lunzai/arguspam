@@ -15,24 +15,26 @@
 	import type { Role } from '$models/role';
 
 	let { data } = $props();
-	const userResource = $derived(data.user as UserResource);
-	const user = $derived(userResource.data.attributes as User);
-	const orgs = $derived(userResource.data.relationships?.orgs as ResourceItem<Org>[]);
+	const modelResource = $derived(data.user as UserResource);
+	const model = $derived(modelResource.data.attributes as User);
+	const orgs = $derived(modelResource.data.relationships?.orgs as ResourceItem<Org>[]);
 	const userGroups = $derived(
-		userResource.data.relationships?.userGroups as ResourceItem<UserGroup>[]
+		modelResource.data.relationships?.userGroups as ResourceItem<UserGroup>[]
 	);
-	const roles = $derived(userResource.data.relationships?.roles as ResourceItem<Role>[]);
+	const roles = $derived(modelResource.data.relationships?.roles as ResourceItem<Role>[]);
+	const modelName = 'users';
+	const modelTitle = 'User';
 </script>
 
-<h1 class="text-2xl font-medium">User - #{user.id} - {user.name}</h1>
+<h1 class="text-2xl font-medium">{modelTitle} - #{model.id} - {model.name}</h1>
 <Card.Root class="gap-3 rounded-lg py-3 shadow-none">
 	<Card.Header class="flex items-center justify-between px-3">
-		<Card.Title class="text-lg">User Details</Card.Title>
+		<Card.Title class="text-lg">{modelTitle} Details</Card.Title>
 		<Card.Action>
 			<Button
 				variant="outline"
 				class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-				href={`/users/${user.id}/edit`}
+				href={`/${modelName}/${model.id}/edit`}
 			>
 				<Pencil class="h-4 w-4" />
 				Edit
@@ -40,7 +42,7 @@
 			<Button
 				variant="outline"
 				class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
-				href={`/users/${user.id}/delete`}
+				href={`/${modelName}/${model.id}/delete`}
 			>
 				<Trash2 class="h-4 w-4" />
 				Delete
@@ -52,18 +54,18 @@
 		<DL.Root divider={null}>
 			<DL.Row>
 				<DL.Label>ID</DL.Label>
-				<DL.Content>{user.id}</DL.Content>
+				<DL.Content>{model.id}</DL.Content>
 			</DL.Row>
 			<DL.Row>
 				<DL.Label>Name</DL.Label>
-				<DL.Content>{user.name}</DL.Content>
+				<DL.Content>{model.name}</DL.Content>
 			</DL.Row>
 			<DL.Row>
 				<DL.Label>Email</DL.Label>
 				<DL.Content>
 					<div class="flex items-center gap-2">
-						{user.email}
-						{#if user.email_verified_at}
+						{model.email}
+						{#if model.email_verified_at}
 							<GreenBadge>
 								<MailCheck class="h-4 w-4" />
 								Verified
@@ -76,8 +78,8 @@
 				<DL.Label>2FA</DL.Label>
 				<DL.Content>
 					<div class="flex items-center gap-2">
-						{#if user.two_factor_enabled}
-							{#if user.two_factor_confirmed_at}
+						{#if model.two_factor_enabled}
+							{#if model.two_factor_confirmed_at}
 								<GreenBadge class="text-sm">
 									<ShieldCheck class="h-4 w-4" />
 									Enrolled
@@ -136,25 +138,25 @@
 			<DL.Row>
 				<DL.Label>Status</DL.Label>
 				<DL.Content>
-					<StatusBadge status={user.status} class="text-sm" />
+					<StatusBadge status={model.status} class="text-sm" />
 				</DL.Content>
 			</DL.Row>
 			<DL.Row>
 				<DL.Label>Last Login</DL.Label>
 				<DL.Content>
-					{relativeDateTime(user.last_login_at)}
+					{relativeDateTime(model.last_login_at)}
 				</DL.Content>
 			</DL.Row>
 			<DL.Row>
 				<DL.Label>Created At</DL.Label>
 				<DL.Content>
-					{relativeDateTime(user.created_at)}
+					{relativeDateTime(model.created_at)}
 				</DL.Content>
 			</DL.Row>
 			<DL.Row>
 				<DL.Label>Updated At</DL.Label>
 				<DL.Content>
-					{relativeDateTime(user.updated_at)}
+					{relativeDateTime(model.updated_at)}
 				</DL.Content>
 			</DL.Row>
 		</DL.Root>

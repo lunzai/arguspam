@@ -72,6 +72,12 @@
 		return { column, direction };
 	})();
 
+	const initialCount: string[] = (() => {
+		const countParam = initialSearchParams.get('count');
+		if (!countParam) return [];
+		return countParam.split(',');
+	})();
+
 	if (initialSearchParams.get('page')) {
 		initialPagination.currentPage = Number(initialSearchParams.get('page'));
 	}
@@ -82,6 +88,7 @@
 		pagination: { ...initialPagination } as PaginationConfig,
 		filters: { ...initialFilters },
 		sort: { ...initialSort },
+		count: initialCount,
 		loading: false,
 		selectedRows: new Set()
 	});
@@ -120,6 +127,10 @@
 				);
 			});
 		}
+		// Add count params
+		if (params.count && params.count.length > 0) {
+			url.searchParams.set('count', params.count.join(','));
+		}
 		try {
 			const response = await fetch(url.toString());
 			if (!response.ok) {
@@ -129,7 +140,6 @@
 			replaceState(window.location.pathname + '?' + url.searchParams.toString(), {});
 			return result;
 		} catch (error) {
-			console.error('Error fetching data:', error);
 			throw error;
 		}
 	}
@@ -143,7 +153,8 @@
 				// perPage: state.pagination.perPage,
 				include: Array.isArray(state.include) ? state.include : [state.include],
 				sort: state.sort.column ? state.sort : undefined,
-				filters: Object.keys(state.filters).length > 0 ? state.filters : undefined
+				filters: Object.keys(state.filters).length > 0 ? state.filters : undefined,
+				count: state.count ? state.count : undefined
 			};
 			const response = await fetchData(params);
 			state.data = response.data.map((item) => item.attributes);
@@ -158,7 +169,6 @@
 			onDataChange?.(state.data);
 			onPaginationChange?.(state.pagination);
 		} catch (error) {
-			console.error('Failed to load data:', error);
 			// Keep existing data on error
 		} finally {
 			state.loading = false;
@@ -222,17 +232,10 @@
 
 	// Initialize data on mount
 	onMount(() => {
-		if (initialData.length === 0) {
-			loadData();
-		}
-		isMounted = true;
-	});
-
-	// Watch for config changes
-	onMount(() => {
 		if (config.apiEndpoint && initialData.length === 0) {
 			loadData();
 		}
+		isMounted = true;
 	});
 </script>
 

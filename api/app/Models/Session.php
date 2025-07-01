@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\SessionStatus;
+use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Session extends Model
 {
     /** @use HasFactory<\Database\Factories\SessionFactory> */
-    use HasBlamable, HasFactory;
+    use BelongsToOrganization, HasBlamable, HasFactory;
 
     protected $fillable = [
         // 'org_id',
@@ -96,14 +97,9 @@ class Session extends Model
         'updatedBy',
     ];
 
-    public function org(): BelongsTo
-    {
-        return $this->belongsTo(Org::class);
-    }
-
     public function request(): BelongsTo
     {
-        return $this->BelongsTo(Request::class);
+        return $this->belongsTo(Request::class);
     }
 
     public function asset(): HasOne

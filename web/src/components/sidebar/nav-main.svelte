@@ -9,11 +9,23 @@
 		Building2,
 		Users,
 		Settings2Icon,
-		TableIcon
+		MessageSquare,
+		MessageSquareDot,
 	} from '@lucide/svelte';
 	import type { Component } from 'svelte';
 
-	const navItems = [
+	interface NavItem {
+		title: string;
+		url: string;
+		icon: Component;
+		isActive?: boolean;
+		items: Array<{
+			title: string;
+			url: string;
+		}>;
+	}
+
+	const platformNavItems = [
 		{
 			title: 'Dashboard',
 			url: '/dashboard',
@@ -21,24 +33,10 @@
 			isActive: true
 		},
 		{
-			title: 'Assets',
-			url: '/assets',
-			icon: ServerIcon,
-			isActive: false,
-			items: [
-				{
-					title: 'Assets',
-					url: '/assets'
-				},
-				{
-					title: 'Accounts',
-					url: '/assets'
-				},
-				{
-					title: 'Permission',
-					url: '/assets'
-				}
-			]
+			title: 'Announcements',
+			url: '/announcements',
+			icon: MessageSquare,
+			isActive: true
 		},
 		{
 			title: 'Sessions',
@@ -55,8 +53,32 @@
 					url: '/sessions'
 				},
 				{
-					title: 'Audits',
+					title: 'Audits X',
 					url: '/session-audits'
+				}
+			]
+		},
+		{
+			title: 'Settings',
+			url: '/settings/account',
+			icon: Settings2Icon
+		}
+	] as NavItem[];
+
+	const adminNavItems = [
+		{
+			title: 'Assets',
+			url: '/assets',
+			icon: ServerIcon,
+			isActive: false,
+			items: [
+				{
+					title: 'Assets',
+					url: '/assets'
+				},
+				{
+					title: 'Accounts X',
+					url: '/assets'
 				}
 			]
 		},
@@ -94,27 +116,14 @@
 				}
 			]
 		},
-		{
-			title: 'Settings',
-			url: '/settings/account',
-			icon: Settings2Icon
-		}
-	] as Array<{
-		title: string;
-		url: string;
-		icon: Component;
-		isActive?: boolean;
-		items: Array<{
-			title: string;
-			url: string;
-		}>;
-	}>;
+	] as NavItem[];
 </script>
 
+{#snippet navGroup(title: string, items: NavItem[])}
 <Sidebar.Group>
-	<Sidebar.GroupLabel>Platform</Sidebar.GroupLabel>
+	<Sidebar.GroupLabel>{title}</Sidebar.GroupLabel>
 	<Sidebar.Menu>
-		{#each navItems as item (item.title)}
+		{#each items as item (item.title)}
 			{#if item.items}
 				<Collapsible.Root open={item.isActive} class="group/collapsible">
 					{#snippet child({ props })}
@@ -167,19 +176,7 @@
 		{/each}
 	</Sidebar.Menu>
 </Sidebar.Group>
+{/snippet}
 
-<Sidebar.Group>
-	<Sidebar.GroupLabel>Development</Sidebar.GroupLabel>
-	<Sidebar.Menu>
-		<Sidebar.MenuItem>
-			<Sidebar.MenuButton tooltipContent="DataTable Demo">
-				{#snippet child({ props })}
-					<a href="/data-table-demo" {...props}>
-						<TableIcon />
-						<span>DataTable Demo</span>
-					</a>
-				{/snippet}
-			</Sidebar.MenuButton>
-		</Sidebar.MenuItem>
-	</Sidebar.Menu>
-</Sidebar.Group>
+{@render navGroup('Platform', platformNavItems)}
+{@render navGroup('Administration', adminNavItems)}

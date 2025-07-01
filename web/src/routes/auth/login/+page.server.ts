@@ -37,7 +37,6 @@ export const actions: Actions = {
 			}
 			return message(form, 'Login successful');
 		} catch (error) {
-			// console.error('Error logging in', error);
 			return fail(401, { form, error: 'Invalid credentials' });
 		}
 	}

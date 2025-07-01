@@ -25,7 +25,7 @@ class UserAccessRestrictionController extends Controller
     {
         $validated = $request->validated();
         $restriction = $user->accessRestrictions()->create($validated);
-        
+
         return new UserAccessRestrictionResource($restriction);
     }
 
@@ -39,7 +39,7 @@ class UserAccessRestrictionController extends Controller
     {
         $validated = $request->validated();
         $userAccessRestriction->update($validated);
-        
+
         return new UserAccessRestrictionResource($userAccessRestriction);
     }
 

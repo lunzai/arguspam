@@ -7,4 +7,4 @@ export class SessionService extends BaseService<Session> {
 	constructor(token: string, orgId?: number) {
 		super('/sessions', token, orgId);
 	}
-} 
+}

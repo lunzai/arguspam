@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
-	import { Pencil, Trash2, UserPlus } from '@lucide/svelte';
+	import { Pencil, Trash2, UserPlus, X } from '@lucide/svelte';
 	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
@@ -15,7 +15,7 @@
 	import { renderSnippet } from '$lib/components/ui/data-table';
 	import * as AlertDialog from '$ui/alert-dialog';
 	import * as Dialog from '$ui/dialog';
-	import { Input } from '$ui/input';
+	import SearchDropdown from '$components/search-dropdown';
 
 	let { data } = $props();
 	const modelResource = $derived(data.model as UserGroupResource);
@@ -27,6 +27,9 @@
 	let deleteDialogModelId = $state(0);
 	let deleteDialogRelatedId = $state(0);
 	let addUserDialogIsOpen = $state(false);
+	let addUserDialogSelectedList = $state([]);
+
+	$inspect(addUserDialogSelectedList);
 
 	function onConfirmDelete(modelId: number, RelatedId: number) {
 		deleteDialogIsOpen = false;
@@ -36,6 +39,15 @@
 	function resetDeleteDialogIds() {
 		deleteDialogModelId = 0;
 		deleteDialogRelatedId = 0;
+	}
+
+	function handleAddUserDialogCancel() {
+		addUserDialogSelectedList = [];
+		addUserDialogIsOpen = false;
+	}
+
+	function handleAddUserDialogSubmit() {
+		addUserDialogIsOpen = false;
 	}
 
 	const usersColumns: ColumnDef<User>[] = [
@@ -56,6 +68,89 @@
 			cell: ({ row }) =>
 				renderSnippet(DataTableActions, { modelId: model.id, RelatedId: row.original.id })
 		}
+	];
+
+	let userList = [
+		{
+			id: 1,
+			label: 'HL Leong',
+			searchValue: 'HL Leong',
+		},
+		{
+			id: 2,
+			label: 'Admin',
+			searchValue: 'Admin',
+		},
+		{
+			id: 4,
+			label: 'Wee Ling',
+			searchValue: 'Wee Ling',
+		},
+		{
+			id: 8,
+			label: 'Christy',
+			searchValue: 'Christy',
+		},
+		{
+			id: 10,
+			label: 'Nasser',
+			searchValue: 'Nasser',
+		},
+		{
+			id: 11,
+			label: 'Leyu',
+			searchValue: 'Leyu',
+		},
+		{
+			id: 15,
+			label: 'Kyson',
+			searchValue: 'Kyson',
+		},
+		{
+			id: 18,
+			label: 'Velicia',
+			searchValue: 'Velicia',
+		},
+		{
+			id: 19,
+			label: 'HL Leong',
+			searchValue: 'HL Leong',
+		},
+		{
+			id: 20,
+			label: 'Admin',
+			searchValue: 'Admin',
+		},
+		{
+			id: 41,
+			label: 'Wee Ling',
+			searchValue: 'Wee Ling',
+		},
+		{
+			id: 81,
+			label: 'Christy',
+			searchValue: 'Christy',
+		},
+		{
+			id: 100,
+			label: 'Nasser',
+			searchValue: 'Nasser',
+		},
+		{
+			id: 110,
+			label: 'Leyu',
+			searchValue: 'Leyu',
+		},
+		{
+			id: 150,
+			label: 'Kyson',
+			searchValue: 'Kyson',
+		},
+		{
+			id: 180,
+			label: 'Velicia',
+			searchValue: 'Velicia',
+		},
 	];
 </script>
 
@@ -130,7 +225,7 @@
 					variant="outline"
 					size="sm"
 					class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-					onclick={() => (addUserDialogIsOpen = true)}
+					onclick={() => addUserDialogIsOpen = true}
 				>
 					<UserPlus class="h-4 w-4" />
 					Add User
@@ -184,17 +279,27 @@
 </AlertDialog.Root>
 
 <Dialog.Root bind:open={addUserDialogIsOpen}>
-	<Dialog.Content class="sm:max-w-xl">
+	<Dialog.Content 
+		class="sm:max-w-xl"
+		interactOutsideBehavior="ignore"
+		onOpenAutoFocus={(e) => e.preventDefault()}
+	>
 		<Dialog.Header>
-			<Dialog.Title>Add User</Dialog.Title>
-			<Dialog.Description>Search users by name or email.</Dialog.Description>
+            <Dialog.Title>Add User</Dialog.Title>
+            <Dialog.Description>Search users by name or email.</Dialog.Description>
 		</Dialog.Header>
-		<div class="grid gap-4 py-4">
-			<Input id="name" value="Pedro Duarte" class="col-span-3" />
-		</div>
+		<SearchDropdown 
+			initialList={userList} 
+			submitButtonLabel="Add"
+			searchPlaceholder="Search users by name or email"
+			bind:selectedList={addUserDialogSelectedList}
+		/>
 		<Dialog.Footer>
-			<Button variant="outline" onclick={() => (addUserDialogIsOpen = false)}>Cancel</Button>
-			<Button variant="outline" onclick={() => (addUserDialogIsOpen = false)}>Add</Button>
+            <Button variant="outline" onclick={handleAddUserDialogCancel}>Cancel</Button>
+			<Button variant="outline" onclick={handleAddUserDialogSubmit}>Add</Button>
 		</Dialog.Footer>
 	</Dialog.Content>
 </Dialog.Root>
+
+
+

@@ -19,10 +19,10 @@ class SettingsService
     public function get(string $key, $default = null)
     {
         return Cache::remember(
-            CacheKey::SETTING_VALUE->key($key),
+            CacheKey::SETTING_VALUE->value . ':' . $key,
             config('cache.default_ttl'),
             function () use ($key, $default) {
-                $setting = Setting::where('key_slug', $key)->first();
+                $setting = Setting::where('key', $key)->first();
                 return $setting ? $setting->typed_value : $default;
             }
         );
@@ -33,13 +33,11 @@ class SettingsService
      */
     public function has(string $key): bool
     {
-        $keySlug = $this->generateSlug($key);
-
         return Cache::remember(
-            CacheKey::SETTING_VALUE->key($keySlug),
+            CacheKey::SETTING_VALUE->value . ':' . $key,
             config('cache.default_ttl'),
-            function () use ($keySlug) {
-                return Setting::where('key_slug', $keySlug)->exists();
+            function () use ($key) {
+                return Setting::where('key', $key)->exists();
             }
         );
     }
@@ -53,10 +51,8 @@ class SettingsService
             return $this->setMany($key);
         }
 
-        $keySlug = $this->generateSlug($key);
-
-        DB::transaction(function () use ($key, $keySlug, $value) {
-            $setting = Setting::where('key_slug', $keySlug)->first();
+        DB::transaction(function () use ($key, $value) {
+            $setting = Setting::where('key', $key)->first();
 
             if ($setting) {
                 $setting->typed_value = $value;
@@ -67,7 +63,7 @@ class SettingsService
         });
 
         // Invalidate caches
-        $this->invalidateCache($keySlug);
+        $this->invalidateCache($key);
 
         return true;
     }
@@ -91,8 +87,6 @@ class SettingsService
      */
     public function create(array $data): Setting
     {
-        $keySlug = $this->generateSlug($data['key']);
-
         // Validate data type
         $dataType = $data['data_type'] ?? SettingDataType::STRING;
         if (is_string($dataType)) {
@@ -103,10 +97,9 @@ class SettingsService
             throw new \InvalidArgumentException("Invalid value for type {$dataType->value}");
         }
 
-        $setting = DB::transaction(function () use ($data, $keySlug, $dataType) {
+        $setting = DB::transaction(function () use ($data, $dataType) {
             $setting = new Setting;
             $setting->key = $data['key'];
-            $setting->key_slug = $keySlug;
             $setting->data_type = $dataType;
             $setting->typed_value = $data['value'];
             $setting->group = $data['group'] ?? null;
@@ -119,7 +112,9 @@ class SettingsService
 
         // Invalidate group and all caches
         Cache::forget(CacheKey::SETTING_ALL->value);
-        Cache::forget(CacheKey::SETTING_GROUP->key($setting->group));
+        if ($setting->group) {
+            Cache::forget(CacheKey::SETTING_GROUP->value . ':' . $setting->group);
+        }
         Cache::forget(CacheKey::SETTING_GROUP_ALL->value);
 
         return $setting;
@@ -151,7 +146,7 @@ class SettingsService
     public function group(string $group)
     {
         return Cache::remember(
-            CacheKey::SETTING_GROUP->key($group),
+            CacheKey::SETTING_GROUP->value . ':' . $group,
             config('cache.default_ttl'),
             function () use ($group) {
                 $settings = Setting::where('group', $group)->get();
@@ -177,8 +172,8 @@ class SettingsService
 
         // Invalidate caches
         Cache::forget(CacheKey::SETTING_ALL->value);
-        Cache::forget(CacheKey::SETTING_GROUP->key($oldName));
-        Cache::forget(CacheKey::SETTING_GROUP->key($newName));
+        Cache::forget(CacheKey::SETTING_GROUP->value . ':' . $oldName);
+        Cache::forget(CacheKey::SETTING_GROUP->value . ':' . $newName);
         Cache::forget(CacheKey::SETTING_GROUP_ALL->value);
 
         return true;
@@ -213,17 +208,17 @@ class SettingsService
     /**
      * Invalidate caches for a setting
      */
-    protected function invalidateCache(string $keySlug): void
+    protected function invalidateCache(string $key): void
     {
-        $setting = Setting::where('key_slug', $keySlug)->first();
+        $setting = Setting::where('key', $key)->first();
 
         if ($setting) {
-            Cache::forget(CacheKey::SETTING_KEY->key($keySlug));
-            Cache::forget(CacheKey::SETTING_VALUE->key($keySlug));
+            Cache::forget(CacheKey::SETTING_KEY->value . ':' . $key);
+            Cache::forget(CacheKey::SETTING_VALUE->value . ':' . $key);
             Cache::forget(CacheKey::SETTING_ALL->value);
 
             if ($setting->group) {
-                Cache::forget(CacheKey::SETTING_GROUP->key($setting->group));
+                Cache::forget(CacheKey::SETTING_GROUP->value . ':' . $setting->group);
             }
 
             Cache::forget(CacheKey::SETTING_GROUP_ALL->value);

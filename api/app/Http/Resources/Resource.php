@@ -13,4 +13,14 @@ class Resource extends JsonResource
 
         return count($relations) > 0;
     }
+
+    protected function selectedFields($request, $availableFields)
+    {
+        $selectedFields = $request->get('fields');
+        if (!$selectedFields) {
+            return $availableFields;
+        }
+        $requestedFields = explode(',', $selectedFields);
+        return array_intersect($availableFields, array_flip($requestedFields));
+    }
 }

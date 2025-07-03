@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
-	import { Pencil, Trash2, UserPlus, X } from '@lucide/svelte';
+	import { Loader2, Pencil, Trash2, UserPlus } from '@lucide/svelte';
 	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
@@ -15,7 +15,10 @@
 	import { renderSnippet } from '$lib/components/ui/data-table';
 	import * as AlertDialog from '$ui/alert-dialog';
 	import * as Dialog from '$ui/dialog';
-	import SearchDropdown from '$components/search-dropdown';
+	import { toast } from 'svelte-sonner';
+	import { invalidate } from '$app/navigation';
+	import SearchDropdown, { type ListItem } from '$components/search-dropdown';
+	import { enhance } from '$app/forms';
 
 	let { data } = $props();
 	const modelResource = $derived(data.model as UserGroupResource);
@@ -26,10 +29,9 @@
 	let deleteDialogIsOpen = $state(false);
 	let deleteDialogModelId = $state(0);
 	let deleteDialogRelatedId = $state(0);
-	let addUserDialogIsOpen = $state(false);
-	let addUserDialogSelectedList = $state([]);
-
-	$inspect(addUserDialogSelectedList);
+	let addUserDialogIsOpen = $state(true);
+	let addUserDialogSelectedList = $state<ListItem[]>([]);
+	let isLoading = $state(false);
 
 	function onConfirmDelete(modelId: number, RelatedId: number) {
 		deleteDialogIsOpen = false;
@@ -46,8 +48,33 @@
 		addUserDialogIsOpen = false;
 	}
 
-	function handleAddUserDialogSubmit() {
-		addUserDialogIsOpen = false;
+	async function handleAddUserDialogSubmit() {
+		try {
+			isLoading = true;
+			const formData = new FormData();
+			formData.append('userIds', addUserDialogSelectedList.map(item => item.id).join(','));
+			const response = await fetch('?/addUsers', {
+				method: 'POST',
+				body: formData
+			});
+			const result = await response.json();
+			console.log('result', result);
+			if (result.type === 'success') {
+				addUserDialogSelectedList = [];
+				toast.success('Users added successfully');
+				invalidate('user-groups:data');
+				addUserDialogIsOpen = false;
+			}
+			else {
+				toast.error('Failed to add users');
+			}
+		}
+		catch (error) {
+			toast.error('Failed to add users');
+		}
+		finally {
+			isLoading = false;
+		}
 	}
 
 	const usersColumns: ColumnDef<User>[] = [
@@ -288,18 +315,28 @@
             <Dialog.Title>Add User</Dialog.Title>
             <Dialog.Description>Search users by name or email.</Dialog.Description>
 		</Dialog.Header>
-		<SearchDropdown 
-			initialList={userList} 
-			submitButtonLabel="Add"
-			searchPlaceholder="Search users by name or email"
-			bind:selectedList={addUserDialogSelectedList}
-		/>
+		<div class="relative">
+			<SearchDropdown 
+				initialList={userList} 
+				submitButtonLabel="Add"
+				searchPlaceholder="Search users by name or email"
+				bind:selectedList={addUserDialogSelectedList}
+			/>
+		</div>
 		<Dialog.Footer>
-            <Button variant="outline" onclick={handleAddUserDialogCancel}>Cancel</Button>
-			<Button variant="outline" onclick={handleAddUserDialogSubmit}>Add</Button>
+            <Button 
+				variant="outline" 
+				onclick={handleAddUserDialogCancel}
+			>Cancel</Button>
+			<Button 
+				variant="outline" 
+				onclick={handleAddUserDialogSubmit}
+			>Add</Button>
 		</Dialog.Footer>
+		{#if isLoading}
+			<div class="absolute inset-0 bg-gray-50/50 z-10 transition-all rounded-lg flex items-center justify-center">
+				<Loader2 class="w-8 h-8 animate-spin text-gray-300" />
+			</div>
+		{/if}
 	</Dialog.Content>
 </Dialog.Root>
-
-
-

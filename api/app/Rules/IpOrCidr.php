@@ -12,6 +12,12 @@ class IpOrCidr implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        // Check for null or non-string values
+        if ($value === null || !is_string($value)) {
+            $fail('The :attribute must be a valid IP address or CIDR notation.');
+            return;
+        }
+
         // Check if it's a valid IP address
         if (filter_var($value, FILTER_VALIDATE_IP)) {
             return;

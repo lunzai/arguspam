@@ -1,15 +1,7 @@
 <script lang="ts">
     import { X } from '@lucide/svelte';
     import FuzzySearch from 'fuzzy-search';
-
-    type ListItem = {
-        id: any,
-        label?: string,
-        selectedLabel?: string,
-        renderSelected?: (row: ListItem, index: number) => string,
-        renderOption?: (row: ListItem, index: number) => string,
-        searchValue: string,
-    }
+    import type { ListItem } from './type';
 
     interface Props {
         initialList: Array<ListItem>,

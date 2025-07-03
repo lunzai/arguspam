@@ -7,4 +7,10 @@ export class UserGroupService extends BaseService<UserGroup> {
 	constructor(token: string, orgId?: number) {
 		super('/user-groups', token, orgId);
 	}
+
+	async addUsers(id: number, userIds: number[]) {
+		return await this.api.post(`${this.endpoint}/${id}/users`, {
+			user_ids: userIds
+		});
+	}
 }

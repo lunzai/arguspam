@@ -39,6 +39,7 @@
         }
     },
     "scripts": {
+        "test-coverage-html": " XDEBUG_MODE=coverage php artisan test --coverage --coverage-html=coverage-report",
         "test-coverage": "XDEBUG_MODE=coverage php artisan test --coverage",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

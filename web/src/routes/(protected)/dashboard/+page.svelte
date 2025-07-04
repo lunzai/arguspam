@@ -10,15 +10,13 @@
 <h1 class="text-2xl font-medium capitalize">Dashboard</h1>
 
 <div class="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-4">
-
 	<Card.Root class="@container/card rounded-md py-4 shadow-none">
 		<Card.Header class="px-4">
 			<Card.Description>Users</Card.Description>
-			<Card.Title class="pt-5 text-4xl font-semibold tabular-nums flex">
-				{dashboardData.user_count} 
+			<Card.Title class="flex pt-5 text-4xl font-semibold tabular-nums">
+				{dashboardData.user_count}
 			</Card.Title>
-			<Card.Action>
-			</Card.Action>
+			<Card.Action></Card.Action>
 		</Card.Header>
 	</Card.Root>
 
@@ -28,8 +26,7 @@
 			<Card.Title class="pt-5 text-4xl font-semibold tabular-nums">
 				{dashboardData.user_group_count}
 			</Card.Title>
-			<Card.Action>
-			</Card.Action>
+			<Card.Action></Card.Action>
 		</Card.Header>
 	</Card.Root>
 
@@ -39,8 +36,7 @@
 			<Card.Title class="pt-5 text-4xl font-semibold tabular-nums">
 				{dashboardData.asset_count}
 			</Card.Title>
-			<Card.Action>
-			</Card.Action>
+			<Card.Action></Card.Action>
 			<!-- <Card.Action>
 				<Badge variant="outline" class="text-sm">
 				  <TrendingDown />
@@ -59,8 +55,7 @@
 			<Card.Title class="pt-5 text-4xl font-semibold tabular-nums">
 				{dashboardData.request_count}
 			</Card.Title>
-			<Card.Action>
-			</Card.Action>
+			<Card.Action></Card.Action>
 		</Card.Header>
 	</Card.Root>
 
@@ -70,8 +65,7 @@
 			<Card.Title class="pt-5 text-4xl font-semibold tabular-nums">
 				{dashboardData.session_count}
 			</Card.Title>
-			<Card.Action>
-			</Card.Action>
+			<Card.Action></Card.Action>
 		</Card.Header>
 	</Card.Root>
 
@@ -90,8 +84,7 @@
 			<Card.Title class="pt-5 text-4xl font-semibold tabular-nums">
 				{dashboardData.scheduled_session_count}
 			</Card.Title>
-			<Card.Action>
-			</Card.Action>
+			<Card.Action></Card.Action>
 		</Card.Header>
 	</Card.Root>
 

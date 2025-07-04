@@ -15,7 +15,7 @@ class UserGroupSeeder extends Seeder
         UserGroup::factory([
             'org_id' => 1,
         ])
-        ->count(10)
-        ->create();
+            ->count(10)
+            ->create();
     }
 }

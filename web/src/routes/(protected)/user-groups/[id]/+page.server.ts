@@ -19,7 +19,7 @@ export const load = async ({ params, locals, depends }) => {
 	const model = (await userGroupService.findById(id, {
 		include: ['users']
 	})) as UserGroupResource;
-	const orgService = new OrgService(authToken as string, currentOrgId);	
+	const orgService = new OrgService(authToken as string, currentOrgId);
 	const userCollection = await orgService.getUsers(currentOrgId as number);
 	const form = await superValidate(
 		{
@@ -47,7 +47,7 @@ export const actions = {
 			return fail(422, { form });
 		}
 		const data = form.data;
-		try {			
+		try {
 			console.log('DATA', data);
 			const userGroupService = new UserGroupService(authToken as string, currentOrgId);
 			const response = await userGroupService.update(Number(id), data);
@@ -57,8 +57,7 @@ export const actions = {
 				form: form,
 				user: response.data.attributes
 			};
-		}
-		catch (error: any) {
+		} catch (error: any) {
 			if (error.response?.status === 422) {
 				setFormErrors(form, error.response.data);
 				return fail(400, { form });
@@ -72,8 +71,7 @@ export const actions = {
 			const { authToken, currentOrgId } = locals;
 			const userGroupService = new UserGroupService(authToken as string, currentOrgId);
 			await userGroupService.delete(Number(id));
-		}
-		catch (error) {
+		} catch (error) {
 			return fail(400, {
 				message: error instanceof Error ? error.message : 'Unknown error'
 			});
@@ -95,8 +93,7 @@ export const actions = {
 			const response = await userGroupService.addUsers(Number(id), userIds);
 			console.log('RESPONSE', response);
 			return;
-		}
-		catch (error) {
+		} catch (error) {
 			return fail(400, {
 				message: error instanceof Error ? error.message : 'Unknown error'
 			});
@@ -111,11 +108,10 @@ export const actions = {
 			const userGroupService = new UserGroupService(authToken as string, currentOrgId);
 			await userGroupService.deleteUser(Number(id), userIds.split(','));
 			return;
-		}
-		catch (error) {
+		} catch (error) {
 			return fail(400, {
 				message: error instanceof Error ? error.message : 'Unknown error'
 			});
 		}
-	},
+	}
 } satisfies Actions;

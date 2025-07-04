@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\user\UserCollection;
 use App\Models\Org;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Http\Resources\user\UserCollection;
 
 class OrgUserController extends Controller
 {

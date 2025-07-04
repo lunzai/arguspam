@@ -57,7 +57,8 @@ export function interpolate(template: string, params: Record<string, any>): stri
  * capitalizeWords('isMp3Song') // returns 'IsMp3Song'
  */
 export function capitalizeWords(str: string): string {
-    return str.split(' ')
-              .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-              .join(' ');
+	return str
+		.split(' ')
+		.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+		.join(' ');
 }

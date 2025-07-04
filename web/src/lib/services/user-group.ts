@@ -8,15 +8,15 @@ export class UserGroupService extends BaseService<UserGroup> {
 		super('/user-groups', token, orgId);
 	}
 
-	async addUsers(id: number, userIds: string[]|number[]) {
+	async addUsers(id: number, userIds: string[] | number[]) {
 		return await this.api.post(`${this.endpoint}/${id}/users`, {
 			user_ids: userIds
 		});
 	}
 
-	async deleteUser(id: number, userIds: string[]|number[]) {
+	async deleteUser(id: number, userIds: string[] | number[]) {
 		return await this.api.delete(`${this.endpoint}/${id}/users`, {
-			user_ids: userIds,
+			user_ids: userIds
 		});
 	}
 }

@@ -32,8 +32,14 @@ export const changePasswordSchema = z
 	});
 
 export const UserSchema = z.object({
-	name: z.string().min(2, 'Name must be at least 2 characters').max(100),
-	email: z.string().email('Please enter a valid email address').max(100),
+	name: z
+		.string()
+		.min(2, 'Name must be at least 2 characters')
+		.max(100, 'Name must be less than 100 characters'),
+	email: z
+		.string()
+		.email('Please enter a valid email address')
+		.max(100, 'Email must be less than 100 characters'),
 	status: z.enum(['active', 'inactive']).default('active')
 });
 

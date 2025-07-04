@@ -19,7 +19,7 @@ class SettingsService
     public function get(string $key, $default = null)
     {
         return Cache::remember(
-            CacheKey::SETTING_VALUE->value . ':' . $key,
+            CacheKey::SETTING_VALUE->value.':'.$key,
             config('cache.default_ttl'),
             function () use ($key, $default) {
                 $setting = Setting::where('key', $key)->first();
@@ -34,7 +34,7 @@ class SettingsService
     public function has(string $key): bool
     {
         return Cache::remember(
-            CacheKey::SETTING_VALUE->value . ':' . $key,
+            CacheKey::SETTING_VALUE->value.':'.$key,
             config('cache.default_ttl'),
             function () use ($key) {
                 return Setting::where('key', $key)->exists();
@@ -113,7 +113,7 @@ class SettingsService
         // Invalidate group and all caches
         Cache::forget(CacheKey::SETTING_ALL->value);
         if ($setting->group) {
-            Cache::forget(CacheKey::SETTING_GROUP->value . ':' . $setting->group);
+            Cache::forget(CacheKey::SETTING_GROUP->value.':'.$setting->group);
         }
         Cache::forget(CacheKey::SETTING_GROUP_ALL->value);
 
@@ -146,7 +146,7 @@ class SettingsService
     public function group(string $group)
     {
         return Cache::remember(
-            CacheKey::SETTING_GROUP->value . ':' . $group,
+            CacheKey::SETTING_GROUP->value.':'.$group,
             config('cache.default_ttl'),
             function () use ($group) {
                 $settings = Setting::where('group', $group)->get();
@@ -172,8 +172,8 @@ class SettingsService
 
         // Invalidate caches
         Cache::forget(CacheKey::SETTING_ALL->value);
-        Cache::forget(CacheKey::SETTING_GROUP->value . ':' . $oldName);
-        Cache::forget(CacheKey::SETTING_GROUP->value . ':' . $newName);
+        Cache::forget(CacheKey::SETTING_GROUP->value.':'.$oldName);
+        Cache::forget(CacheKey::SETTING_GROUP->value.':'.$newName);
         Cache::forget(CacheKey::SETTING_GROUP_ALL->value);
 
         return true;
@@ -213,12 +213,12 @@ class SettingsService
         $setting = Setting::where('key', $key)->first();
 
         if ($setting) {
-            Cache::forget(CacheKey::SETTING_KEY->value . ':' . $key);
-            Cache::forget(CacheKey::SETTING_VALUE->value . ':' . $key);
+            Cache::forget(CacheKey::SETTING_KEY->value.':'.$key);
+            Cache::forget(CacheKey::SETTING_VALUE->value.':'.$key);
             Cache::forget(CacheKey::SETTING_ALL->value);
 
             if ($setting->group) {
-                Cache::forget(CacheKey::SETTING_GROUP->value . ':' . $setting->group);
+                Cache::forget(CacheKey::SETTING_GROUP->value.':'.$setting->group);
             }
 
             Cache::forget(CacheKey::SETTING_GROUP_ALL->value);

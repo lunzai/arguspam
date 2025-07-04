@@ -13,8 +13,8 @@ class LoginRequestTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
-        $this->request = new LoginRequest();
+
+        $this->request = new LoginRequest;
     }
 
     public function test_authorize_returns_true(): void
@@ -28,7 +28,7 @@ class LoginRequestTest extends TestCase
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string', 'min:8'],
         ];
-        
+
         $this->assertEquals($expectedRules, $this->request->rules());
     }
 

@@ -93,7 +93,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('roles/{role}/permissions', [RolePermissionController::class, 'destroy'])
         ->name('roles.permissions.destroy');
     Route::apiResource('orgs.users', OrgUserController::class)
-        ->only(['store']);
+        ->only(['store', 'index']);
     Route::delete('orgs/{org}/users', [OrgUserController::class, 'destroy'])
         ->name('orgs.users.destroy');
 });

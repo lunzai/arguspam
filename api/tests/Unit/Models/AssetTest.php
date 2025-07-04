@@ -9,8 +9,6 @@ use App\Models\Asset;
 use App\Models\AssetAccessGrant;
 use App\Models\AssetAccount;
 use App\Models\Org;
-use App\Models\Request;
-use App\Models\Session;
 use App\Models\User;
 use App\Models\UserGroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -26,10 +24,10 @@ class AssetTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->org = Org::factory()->create();
         $this->asset = Asset::factory()->create([
-            'org_id' => $this->org->id
+            'org_id' => $this->org->id,
         ]);
     }
 
@@ -44,14 +42,14 @@ class AssetTest extends TestCase
             'port',
             'dbms',
         ];
-        
+
         $this->assertEquals($expectedFillable, $this->asset->getFillable());
     }
 
     public function test_asset_has_correct_casts(): void
     {
         $casts = $this->asset->getCasts();
-        
+
         $this->assertArrayHasKey('created_at', $casts);
         $this->assertArrayHasKey('updated_at', $casts);
         $this->assertArrayHasKey('deleted_at', $casts);
@@ -84,20 +82,20 @@ class AssetTest extends TestCase
     {
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();
-        
+
         $grant1 = AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_id' => $user1->id,
-            'role' => AssetAccessRole::REQUESTER
+            'role' => AssetAccessRole::REQUESTER,
         ]);
         $grant2 = AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_id' => $user2->id,
-            'role' => AssetAccessRole::APPROVER
+            'role' => AssetAccessRole::APPROVER,
         ]);
         AssetAccessGrant::factory()->create([
             'user_id' => User::factory()->create()->id,
-            'role' => AssetAccessRole::REQUESTER
+            'role' => AssetAccessRole::REQUESTER,
         ]); // Different asset
 
         $grants = $this->asset->accessGrants;
@@ -133,13 +131,13 @@ class AssetTest extends TestCase
         AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_id' => $user1->id,
-            'role' => AssetAccessRole::REQUESTER
+            'role' => AssetAccessRole::REQUESTER,
         ]);
-        
+
         AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_id' => $user2->id,
-            'role' => AssetAccessRole::APPROVER
+            'role' => AssetAccessRole::APPROVER,
         ]);
 
         $users = $this->asset->users;
@@ -160,13 +158,13 @@ class AssetTest extends TestCase
         AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_group_id' => $group1->id,
-            'role' => AssetAccessRole::REQUESTER
+            'role' => AssetAccessRole::REQUESTER,
         ]);
-        
+
         AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_group_id' => $group2->id,
-            'role' => AssetAccessRole::APPROVER
+            'role' => AssetAccessRole::APPROVER,
         ]);
 
         $groups = $this->asset->userGroups;
@@ -185,13 +183,13 @@ class AssetTest extends TestCase
         AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_group_id' => $approverGroup->id,
-            'role' => AssetAccessRole::APPROVER
+            'role' => AssetAccessRole::APPROVER,
         ]);
-        
+
         AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_group_id' => $requesterGroup->id,
-            'role' => AssetAccessRole::REQUESTER
+            'role' => AssetAccessRole::REQUESTER,
         ]);
 
         $approverGroups = $this->asset->approverUserGroups;
@@ -209,13 +207,13 @@ class AssetTest extends TestCase
         AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_group_id' => $approverGroup->id,
-            'role' => AssetAccessRole::APPROVER
+            'role' => AssetAccessRole::APPROVER,
         ]);
-        
+
         AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_group_id' => $requesterGroup->id,
-            'role' => AssetAccessRole::REQUESTER
+            'role' => AssetAccessRole::REQUESTER,
         ]);
 
         $requesterGroups = $this->asset->requesterUserGroups;
@@ -233,13 +231,13 @@ class AssetTest extends TestCase
         AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_id' => $approverUser->id,
-            'role' => AssetAccessRole::APPROVER
+            'role' => AssetAccessRole::APPROVER,
         ]);
-        
+
         AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_id' => $requesterUser->id,
-            'role' => AssetAccessRole::REQUESTER
+            'role' => AssetAccessRole::REQUESTER,
         ]);
 
         $approverUsers = $this->asset->approverUsers;
@@ -257,13 +255,13 @@ class AssetTest extends TestCase
         AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_id' => $approverUser->id,
-            'role' => AssetAccessRole::APPROVER
+            'role' => AssetAccessRole::APPROVER,
         ]);
-        
+
         AssetAccessGrant::factory()->create([
             'asset_id' => $this->asset->id,
             'user_id' => $requesterUser->id,
-            'role' => AssetAccessRole::REQUESTER
+            'role' => AssetAccessRole::REQUESTER,
         ]);
 
         $requesterUsers = $this->asset->requesterUsers;
@@ -276,9 +274,9 @@ class AssetTest extends TestCase
     public function test_asset_soft_deletes(): void
     {
         $this->assertFalse($this->asset->trashed());
-        
+
         $this->asset->delete();
-        
+
         $this->assertTrue($this->asset->fresh()->trashed());
         $this->assertNotNull($this->asset->fresh()->deleted_at);
     }
@@ -286,7 +284,7 @@ class AssetTest extends TestCase
     public function test_asset_uses_traits(): void
     {
         $traits = class_uses_recursive(Asset::class);
-        
+
         $this->assertContains('App\Traits\BelongsToOrganization', $traits);
         $this->assertContains('App\Traits\HasBlamable', $traits);
         $this->assertContains('Illuminate\Database\Eloquent\Factories\HasFactory', $traits);
@@ -304,7 +302,7 @@ class AssetTest extends TestCase
             'port' => 'Port',
             'dbms' => 'DBMS',
         ];
-        
+
         $this->assertEquals($expectedLabels, Asset::$attributeLabels);
     }
 
@@ -325,7 +323,7 @@ class AssetTest extends TestCase
             'createdBy',
             'updatedBy',
         ];
-        
+
         $this->assertEquals($expectedIncludable, Asset::$includable);
     }
 }

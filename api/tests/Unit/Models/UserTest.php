@@ -20,7 +20,7 @@ class UserTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->user = User::factory()->create();
         $this->org = Org::factory()->create();
     }
@@ -28,7 +28,7 @@ class UserTest extends TestCase
     public function test_in_org_returns_true_when_user_belongs_to_org(): void
     {
         $this->user->orgs()->attach($this->org);
-        
+
         $this->assertTrue($this->user->fresh()->inOrg($this->org));
     }
 
@@ -42,30 +42,30 @@ class UserTest extends TestCase
         $asset1 = Asset::factory()->create();
         $asset2 = Asset::factory()->create();
         $asset3 = Asset::factory()->create();
-        
+
         // Direct user access
         $asset1->accessGrants()->create([
             'user_id' => $this->user->id,
-            'role' => AssetAccessRole::REQUESTER
+            'role' => AssetAccessRole::REQUESTER,
         ]);
-        
+
         // Approver access (should not be included)
         $asset2->accessGrants()->create([
             'user_id' => $this->user->id,
-            'role' => AssetAccessRole::APPROVER
+            'role' => AssetAccessRole::APPROVER,
         ]);
-        
+
         // Group access
         $userGroup = UserGroup::factory()->create();
         $this->user->userGroups()->attach($userGroup);
-        
+
         $asset3->accessGrants()->create([
             'user_group_id' => $userGroup->id,
-            'role' => AssetAccessRole::REQUESTER
+            'role' => AssetAccessRole::REQUESTER,
         ]);
-        
+
         $requesterAssets = $this->user->fresh()->allRequesterAssets()->get();
-        
+
         $this->assertCount(2, $requesterAssets);
         $this->assertTrue($requesterAssets->contains($asset1));
         $this->assertTrue($requesterAssets->contains($asset3));
@@ -77,30 +77,30 @@ class UserTest extends TestCase
         $asset1 = Asset::factory()->create();
         $asset2 = Asset::factory()->create();
         $asset3 = Asset::factory()->create();
-        
+
         // Direct user access
         $asset1->accessGrants()->create([
             'user_id' => $this->user->id,
-            'role' => AssetAccessRole::APPROVER
+            'role' => AssetAccessRole::APPROVER,
         ]);
-        
+
         // Requester access (should not be included)
         $asset2->accessGrants()->create([
             'user_id' => $this->user->id,
-            'role' => AssetAccessRole::REQUESTER
+            'role' => AssetAccessRole::REQUESTER,
         ]);
-        
+
         // Group access
         $userGroup = UserGroup::factory()->create();
         $this->user->userGroups()->attach($userGroup);
-        
+
         $asset3->accessGrants()->create([
             'user_group_id' => $userGroup->id,
-            'role' => AssetAccessRole::APPROVER
+            'role' => AssetAccessRole::APPROVER,
         ]);
-        
+
         $approverAssets = $this->user->fresh()->allApproverAssets()->get();
-        
+
         $this->assertCount(2, $approverAssets);
         $this->assertTrue($approverAssets->contains($asset1));
         $this->assertTrue($approverAssets->contains($asset3));
@@ -113,32 +113,32 @@ class UserTest extends TestCase
         $asset2 = Asset::factory()->create();
         $asset3 = Asset::factory()->create();
         $asset4 = Asset::factory()->create();
-        
+
         // Direct user access - requester
         $asset1->accessGrants()->create([
             'user_id' => $this->user->id,
-            'role' => AssetAccessRole::REQUESTER
+            'role' => AssetAccessRole::REQUESTER,
         ]);
-        
+
         // Direct user access - approver
         $asset2->accessGrants()->create([
             'user_id' => $this->user->id,
-            'role' => AssetAccessRole::APPROVER
+            'role' => AssetAccessRole::APPROVER,
         ]);
-        
+
         // Group access
         $userGroup = UserGroup::factory()->create();
         $this->user->userGroups()->attach($userGroup);
-        
+
         $asset3->accessGrants()->create([
             'user_group_id' => $userGroup->id,
-            'role' => AssetAccessRole::REQUESTER
+            'role' => AssetAccessRole::REQUESTER,
         ]);
-        
+
         // No access to asset4
-        
+
         $allAssets = $this->user->fresh()->allAssets()->get();
-        
+
         $this->assertCount(3, $allAssets);
         $this->assertTrue($allAssets->contains($asset1));
         $this->assertTrue($allAssets->contains($asset2));
@@ -153,7 +153,7 @@ class UserTest extends TestCase
             'email',
             'status',
         ];
-        
+
         $this->assertEquals($expectedFillable, $this->user->getFillable());
     }
 
@@ -167,14 +167,14 @@ class UserTest extends TestCase
             'two_factor_secret',
             'two_factor_recovery_codes',
         ];
-        
+
         $this->assertEquals($expectedHidden, $this->user->getHidden());
     }
 
     public function test_user_has_correct_casts(): void
     {
         $casts = $this->user->getCasts();
-        
+
         $this->assertArrayHasKey('email_verified_at', $casts);
         $this->assertArrayHasKey('last_login_at', $casts);
         $this->assertArrayHasKey('two_factor_enabled', $casts);

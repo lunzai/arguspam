@@ -12,7 +12,6 @@ use App\Models\SessionAudit;
 use App\Models\User;
 use App\Models\UserGroup;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 class OrgTest extends TestCase
@@ -24,7 +23,7 @@ class OrgTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->org = Org::factory()->create();
     }
 
@@ -35,14 +34,14 @@ class OrgTest extends TestCase
             'description',
             'status',
         ];
-        
+
         $this->assertEquals($expectedFillable, $this->org->getFillable());
     }
 
     public function test_org_has_correct_casts(): void
     {
         $casts = $this->org->getCasts();
-        
+
         $this->assertArrayHasKey('status', $casts);
         $this->assertArrayHasKey('created_at', $casts);
         $this->assertArrayHasKey('updated_at', $casts);
@@ -98,7 +97,7 @@ class OrgTest extends TestCase
         $asset1 = Asset::factory()->create(['org_id' => $this->org->id]);
         $asset2 = Asset::factory()->create(['org_id' => $this->org->id]);
         $requester = User::factory()->create();
-        
+
         $request1 = Request::factory()->create([
             'org_id' => $this->org->id,
             'asset_id' => $asset1->id,
@@ -106,7 +105,7 @@ class OrgTest extends TestCase
             'start_datetime' => now(),
             'end_datetime' => now()->addHours(2),
             'duration' => 120,
-            'reason' => 'Test request'
+            'reason' => 'Test request',
         ]);
         $request2 = Request::factory()->create([
             'org_id' => $this->org->id,
@@ -115,9 +114,9 @@ class OrgTest extends TestCase
             'start_datetime' => now(),
             'end_datetime' => now()->addHours(2),
             'duration' => 120,
-            'reason' => 'Test request'
+            'reason' => 'Test request',
         ]);
-        
+
         $otherOrg = Org::factory()->create();
         $otherAsset = Asset::factory()->create(['org_id' => $otherOrg->id]);
         Request::factory()->create([
@@ -127,7 +126,7 @@ class OrgTest extends TestCase
             'start_datetime' => now(),
             'end_datetime' => now()->addHours(2),
             'duration' => 120,
-            'reason' => 'Test request'
+            'reason' => 'Test request',
         ]); // Different org
 
         $requests = $this->org->requests;
@@ -142,7 +141,7 @@ class OrgTest extends TestCase
         $asset1 = Asset::factory()->create(['org_id' => $this->org->id]);
         $asset2 = Asset::factory()->create(['org_id' => $this->org->id]);
         $requester = User::factory()->create();
-        
+
         $request1 = Request::factory()->create([
             'org_id' => $this->org->id,
             'asset_id' => $asset1->id,
@@ -150,7 +149,7 @@ class OrgTest extends TestCase
             'start_datetime' => now(),
             'end_datetime' => now()->addHours(2),
             'duration' => 120,
-            'reason' => 'Test request'
+            'reason' => 'Test request',
         ]);
         $request2 = Request::factory()->create([
             'org_id' => $this->org->id,
@@ -159,11 +158,11 @@ class OrgTest extends TestCase
             'start_datetime' => now(),
             'end_datetime' => now()->addHours(2),
             'duration' => 120,
-            'reason' => 'Test request'
+            'reason' => 'Test request',
         ]);
-        
+
         $approver = User::factory()->create();
-        
+
         $session1 = Session::factory()->create([
             'org_id' => $this->org->id,
             'request_id' => $request1->id,
@@ -172,7 +171,7 @@ class OrgTest extends TestCase
             'approver_id' => $approver->id,
             'start_datetime' => now(),
             'scheduled_end_datetime' => now()->addHours(2),
-            'requested_duration' => 120
+            'requested_duration' => 120,
         ]);
         $session2 = Session::factory()->create([
             'org_id' => $this->org->id,
@@ -182,9 +181,9 @@ class OrgTest extends TestCase
             'approver_id' => $approver->id,
             'start_datetime' => now(),
             'scheduled_end_datetime' => now()->addHours(2),
-            'requested_duration' => 120
+            'requested_duration' => 120,
         ]);
-        
+
         $otherOrg = Org::factory()->create();
         $otherAsset = Asset::factory()->create(['org_id' => $otherOrg->id]);
         $otherRequest = Request::factory()->create([
@@ -194,7 +193,7 @@ class OrgTest extends TestCase
             'start_datetime' => now(),
             'end_datetime' => now()->addHours(2),
             'duration' => 120,
-            'reason' => 'Test request'
+            'reason' => 'Test request',
         ]);
         Session::factory()->create([
             'org_id' => $otherOrg->id,
@@ -204,7 +203,7 @@ class OrgTest extends TestCase
             'approver_id' => $approver->id,
             'start_datetime' => now(),
             'scheduled_end_datetime' => now()->addHours(2),
-            'requested_duration' => 120
+            'requested_duration' => 120,
         ]); // Different org
 
         $sessions = $this->org->sessions;
@@ -219,7 +218,7 @@ class OrgTest extends TestCase
         $asset1 = Asset::factory()->create(['org_id' => $this->org->id]);
         $requester = User::factory()->create();
         $approver = User::factory()->create();
-        
+
         $request1 = Request::factory()->create([
             'org_id' => $this->org->id,
             'asset_id' => $asset1->id,
@@ -227,9 +226,9 @@ class OrgTest extends TestCase
             'start_datetime' => now(),
             'end_datetime' => now()->addHours(2),
             'duration' => 120,
-            'reason' => 'Test request for audit'
+            'reason' => 'Test request for audit',
         ]);
-        
+
         $session1 = Session::factory()->create([
             'org_id' => $this->org->id,
             'request_id' => $request1->id,
@@ -238,7 +237,7 @@ class OrgTest extends TestCase
             'approver_id' => $approver->id,
             'start_datetime' => now(),
             'scheduled_end_datetime' => now()->addHours(2),
-            'requested_duration' => 120
+            'requested_duration' => 120,
         ]);
 
         $audit1 = SessionAudit::factory()->create([
@@ -248,9 +247,9 @@ class OrgTest extends TestCase
             'asset_id' => $asset1->id,
             'user_id' => $requester->id,
             'query_text' => 'SELECT * FROM test_table',
-            'query_timestamp' => now()
+            'query_timestamp' => now(),
         ]);
-        
+
         $audit2 = SessionAudit::factory()->create([
             'org_id' => $this->org->id,
             'session_id' => $session1->id,
@@ -258,9 +257,9 @@ class OrgTest extends TestCase
             'asset_id' => $asset1->id,
             'user_id' => $requester->id,
             'query_text' => 'SELECT count(*) FROM users',
-            'query_timestamp' => now()
+            'query_timestamp' => now(),
         ]);
-        
+
         // Different org
         $otherOrg = Org::factory()->create();
         $otherAsset = Asset::factory()->create(['org_id' => $otherOrg->id]);
@@ -271,7 +270,7 @@ class OrgTest extends TestCase
             'start_datetime' => now(),
             'end_datetime' => now()->addHours(2),
             'duration' => 120,
-            'reason' => 'Other org request'
+            'reason' => 'Other org request',
         ]);
         $otherSession = Session::factory()->create([
             'org_id' => $otherOrg->id,
@@ -281,7 +280,7 @@ class OrgTest extends TestCase
             'approver_id' => $approver->id,
             'start_datetime' => now(),
             'scheduled_end_datetime' => now()->addHours(2),
-            'requested_duration' => 120
+            'requested_duration' => 120,
         ]);
         SessionAudit::factory()->create([
             'org_id' => $otherOrg->id,
@@ -290,7 +289,7 @@ class OrgTest extends TestCase
             'asset_id' => $otherAsset->id,
             'user_id' => $requester->id,
             'query_text' => 'SELECT * FROM other_table',
-            'query_timestamp' => now()
+            'query_timestamp' => now(),
         ]);
 
         $audits = $this->org->sessionAudits;
@@ -304,8 +303,8 @@ class OrgTest extends TestCase
     {
         // Create ActionAudits manually since factory has issues
         $user = User::factory()->create();
-        
-        $audit1 = new ActionAudit();
+
+        $audit1 = new ActionAudit;
         $audit1->org_id = $this->org->id;
         $audit1->user_id = $user->id;
         $audit1->action_type = \App\Enums\AuditAction::CREATE;
@@ -314,8 +313,8 @@ class OrgTest extends TestCase
         $audit1->description = 'Test audit';
         $audit1->timestamps = false;
         $audit1->save();
-        
-        $audit2 = new ActionAudit();
+
+        $audit2 = new ActionAudit;
         $audit2->org_id = $this->org->id;
         $audit2->user_id = $user->id;
         $audit2->action_type = \App\Enums\AuditAction::UPDATE;
@@ -324,9 +323,9 @@ class OrgTest extends TestCase
         $audit2->description = 'Test audit 2';
         $audit2->timestamps = false;
         $audit2->save();
-        
+
         $otherOrg = Org::factory()->create();
-        $audit3 = new ActionAudit();
+        $audit3 = new ActionAudit;
         $audit3->org_id = $otherOrg->id;
         $audit3->user_id = $user->id;
         $audit3->action_type = \App\Enums\AuditAction::DELETE;
@@ -347,9 +346,9 @@ class OrgTest extends TestCase
     public function test_org_soft_deletes(): void
     {
         $this->assertFalse($this->org->trashed());
-        
+
         $this->org->delete();
-        
+
         $this->assertTrue($this->org->fresh()->trashed());
         $this->assertNotNull($this->org->fresh()->deleted_at);
     }
@@ -357,7 +356,7 @@ class OrgTest extends TestCase
     public function test_org_uses_traits(): void
     {
         $traits = class_uses_recursive(Org::class);
-        
+
         $this->assertContains('App\Traits\HasBlamable', $traits);
         $this->assertContains('Illuminate\Database\Eloquent\Factories\HasFactory', $traits);
         $this->assertContains('Illuminate\Database\Eloquent\SoftDeletes', $traits);
@@ -370,7 +369,7 @@ class OrgTest extends TestCase
             'description' => 'Description',
             'status' => 'Status',
         ];
-        
+
         $this->assertEquals($expectedLabels, Org::$attributeLabels);
     }
 
@@ -387,7 +386,7 @@ class OrgTest extends TestCase
             'createdBy',
             'updatedBy',
         ];
-        
+
         $this->assertEquals($expectedIncludable, Org::$includable);
     }
 
@@ -410,7 +409,7 @@ class OrgTest extends TestCase
     public function test_org_status_enum_casting(): void
     {
         $org = Org::factory()->create([
-            'status' => Status::ACTIVE
+            'status' => Status::ACTIVE,
         ]);
 
         $this->assertInstanceOf(Status::class, $org->status);

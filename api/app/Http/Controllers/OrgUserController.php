@@ -5,9 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Org;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Resources\user\UserCollection;
 
 class OrgUserController extends Controller
 {
+    public function index(Org $org): UserCollection
+    {
+        $users = $org->users;
+        return new UserCollection($users);
+    }
+
     public function store(Request $request, Org $org): Response
     {
         $validated = $request->validate([

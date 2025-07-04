@@ -18,15 +18,15 @@ class AuthControllerSimpleTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
-        $this->controller = new AuthController();
+
+        $this->controller = new AuthController;
     }
 
     public function test_me_returns_current_user_resource(): void
     {
         $user = User::factory()->create();
         $request = Request::create('/api/me');
-        $request->setUserResolver(fn() => $user);
+        $request->setUserResolver(fn () => $user);
 
         $response = $this->controller->me($request);
 
@@ -49,13 +49,13 @@ class AuthControllerSimpleTest extends TestCase
     public function test_me_method_returns_user_resource(): void
     {
         $user = User::factory()->create();
-        $request = new Request();
+        $request = new Request;
         $request->setUserResolver(function () use ($user) {
             return $user;
         });
 
         $result = $this->controller->me($request);
-        
+
         $this->assertInstanceOf(UserResource::class, $result);
     }
 }

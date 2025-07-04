@@ -18,9 +18,9 @@ class SettingsServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
-        $this->settingsService = new SettingsService();
-        
+
+        $this->settingsService = new SettingsService;
+
         // Clear cache before each test
         Cache::flush();
     }
@@ -30,7 +30,7 @@ class SettingsServiceTest extends TestCase
         $setting = Setting::factory()->create([
             'key' => 'test_key',
             'value' => 'test_value',
-            'data_type' => SettingDataType::STRING
+            'data_type' => SettingDataType::STRING,
         ]);
 
         $result = $this->settingsService->get('test_key');
@@ -55,7 +55,7 @@ class SettingsServiceTest extends TestCase
     public function test_has_returns_true_when_setting_exists(): void
     {
         Setting::factory()->create([
-            'key' => 'test_key'
+            'key' => 'test_key',
         ]);
 
         $result = $this->settingsService->has('test_key');
@@ -75,7 +75,7 @@ class SettingsServiceTest extends TestCase
         $setting = Setting::factory()->create([
             'key' => 'test_key',
             'value' => 'old_value',
-            'data_type' => SettingDataType::STRING
+            'data_type' => SettingDataType::STRING,
         ]);
 
         $result = $this->settingsService->set('test_key', 'new_value');
@@ -96,17 +96,17 @@ class SettingsServiceTest extends TestCase
     {
         $setting1 = Setting::factory()->create([
             'key' => 'key1',
-            'value' => 'old_value1'
+            'value' => 'old_value1',
         ]);
-        
+
         $setting2 = Setting::factory()->create([
             'key' => 'key2',
-            'value' => 'old_value2'
+            'value' => 'old_value2',
         ]);
 
         $result = $this->settingsService->set([
             'key1' => 'new_value1',
-            'key2' => 'new_value2'
+            'key2' => 'new_value2',
         ]);
 
         $this->assertTrue($result);
@@ -122,7 +122,7 @@ class SettingsServiceTest extends TestCase
             'data_type' => SettingDataType::STRING,
             'group' => 'test_group',
             'label' => 'Test Label',
-            'description' => 'Test Description'
+            'description' => 'Test Description',
         ];
 
         $setting = $this->settingsService->create($data);
@@ -141,7 +141,7 @@ class SettingsServiceTest extends TestCase
         $data = [
             'key' => 'new_key',
             'value' => 'not_a_number',
-            'data_type' => SettingDataType::INTEGER
+            'data_type' => SettingDataType::INTEGER,
         ];
 
         $this->expectException(\InvalidArgumentException::class);
@@ -155,19 +155,19 @@ class SettingsServiceTest extends TestCase
         Setting::factory()->create([
             'key' => 'key1',
             'value' => 'value1',
-            'group' => 'group1'
+            'group' => 'group1',
         ]);
-        
+
         Setting::factory()->create([
             'key' => 'key2',
             'value' => 'value2',
-            'group' => 'group1'
+            'group' => 'group1',
         ]);
-        
+
         Setting::factory()->create([
             'key' => 'key3',
             'value' => 'value3',
-            'group' => 'group2'
+            'group' => 'group2',
         ]);
 
         $result = $this->settingsService->all();
@@ -187,13 +187,13 @@ class SettingsServiceTest extends TestCase
         Setting::factory()->create([
             'key' => 'key1',
             'value' => 'value1',
-            'group' => 'target_group'
+            'group' => 'target_group',
         ]);
-        
+
         Setting::factory()->create([
             'key' => 'key2',
             'value' => 'value2',
-            'group' => 'other_group'
+            'group' => 'other_group',
         ]);
 
         $result = $this->settingsService->group('target_group');
@@ -207,17 +207,17 @@ class SettingsServiceTest extends TestCase
     {
         $setting1 = Setting::factory()->create([
             'key' => 'key1',
-            'group' => 'old_group'
+            'group' => 'old_group',
         ]);
-        
+
         $setting2 = Setting::factory()->create([
             'key' => 'key2',
-            'group' => 'old_group'
+            'group' => 'old_group',
         ]);
-        
+
         $setting3 = Setting::factory()->create([
             'key' => 'key3',
-            'group' => 'other_group'
+            'group' => 'other_group',
         ]);
 
         $result = $this->settingsService->renameGroup('old_group', 'new_group');
@@ -247,15 +247,15 @@ class SettingsServiceTest extends TestCase
     {
         $setting = Setting::factory()->create([
             'key' => 'cached_key',
-            'value' => 'cached_value'
+            'value' => 'cached_value',
         ]);
 
         // First call should hit database
         $result1 = $this->settingsService->get('cached_key');
-        
+
         // Update the setting directly in database
         $setting->update(['value' => 'updated_value']);
-        
+
         // Second call should return cached value
         $result2 = $this->settingsService->get('cached_key');
 
@@ -267,15 +267,15 @@ class SettingsServiceTest extends TestCase
     {
         $setting = Setting::factory()->create([
             'key' => 'test_key',
-            'value' => 'old_value'
+            'value' => 'old_value',
         ]);
 
         // Get the value to cache it
         $this->settingsService->get('test_key');
-        
+
         // Update the setting
         $this->settingsService->set('test_key', 'new_value');
-        
+
         // Get the value again - should be fresh from database
         $result = $this->settingsService->get('test_key');
 

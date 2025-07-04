@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\AssetAccessRole;
+use App\Enums\Status;
 use App\Models\Asset;
 use App\Models\AssetAccount;
 use App\Models\Org;
@@ -11,7 +12,6 @@ use App\Models\User;
 use App\Models\UserGroup;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Enums\Status;
 
 class DatabaseSeeder extends Seeder
 {

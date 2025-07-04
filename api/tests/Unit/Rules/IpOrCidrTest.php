@@ -12,7 +12,7 @@ class IpOrCidrTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->rule = new IpOrCidr();
+        $this->rule = new IpOrCidr;
     }
 
     public function test_validates_valid_ipv4_addresses(): void
@@ -24,12 +24,12 @@ class IpOrCidrTest extends TestCase
             '127.0.0.1',
             '8.8.8.8',
             '255.255.255.255',
-            '0.0.0.0'
+            '0.0.0.0',
         ];
 
         foreach ($validIps as $ip) {
             $failCalled = false;
-            $fail = function() use (&$failCalled) {
+            $fail = function () use (&$failCalled) {
                 $failCalled = true;
             };
 
@@ -46,12 +46,12 @@ class IpOrCidrTest extends TestCase
             '2001:db8::1',
             'fe80::1',
             '::',
-            '2001:0db8:85a3:0000:0000:8a2e:0370:7334'
+            '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
         ];
 
         foreach ($validIps as $ip) {
             $failCalled = false;
-            $fail = function() use (&$failCalled) {
+            $fail = function () use (&$failCalled) {
                 $failCalled = true;
             };
 
@@ -70,12 +70,12 @@ class IpOrCidrTest extends TestCase
             '127.0.0.0/8',
             '192.168.1.1/32',
             '0.0.0.0/0',
-            '255.255.255.255/32'
+            '255.255.255.255/32',
         ];
 
         foreach ($validCidrs as $cidr) {
             $failCalled = false;
-            $fail = function() use (&$failCalled) {
+            $fail = function () use (&$failCalled) {
                 $failCalled = true;
             };
 
@@ -94,12 +94,12 @@ class IpOrCidrTest extends TestCase
             '192.168.1.a',
             'invalid-ip',
             '192.168.1.-1',
-            '192.168.1.999'
+            '192.168.1.999',
         ];
 
         foreach ($invalidIps as $ip) {
             $failCalled = false;
-            $fail = function() use (&$failCalled) {
+            $fail = function () use (&$failCalled) {
                 $failCalled = true;
             };
 
@@ -119,12 +119,12 @@ class IpOrCidrTest extends TestCase
             '192.168.1.0/24/extra',
             '256.256.256.256/24',
             '192.168.1.0/100',
-            '192.168.1.0/24/24'
+            '192.168.1.0/24/24',
         ];
 
         foreach ($invalidCidrs as $cidr) {
             $failCalled = false;
-            $fail = function() use (&$failCalled) {
+            $fail = function () use (&$failCalled) {
                 $failCalled = true;
             };
 
@@ -137,31 +137,31 @@ class IpOrCidrTest extends TestCase
     public function test_rejects_empty_string(): void
     {
         $failCalled = false;
-        $fail = function() use (&$failCalled) {
+        $fail = function () use (&$failCalled) {
             $failCalled = true;
         };
 
         $this->rule->validate('ip_address', '', $fail);
 
-        $this->assertTrue($failCalled, "Empty string should be invalid");
+        $this->assertTrue($failCalled, 'Empty string should be invalid');
     }
 
     public function test_rejects_null_value(): void
     {
         $failCalled = false;
-        $fail = function() use (&$failCalled) {
+        $fail = function () use (&$failCalled) {
             $failCalled = true;
         };
 
         $this->rule->validate('ip_address', null, $fail);
 
-        $this->assertTrue($failCalled, "Null value should be invalid");
+        $this->assertTrue($failCalled, 'Null value should be invalid');
     }
 
     public function test_fail_callback_receives_correct_message(): void
     {
         $failMessage = '';
-        $fail = function($message) use (&$failMessage) {
+        $fail = function ($message) use (&$failMessage) {
             $failMessage = $message;
         };
 
@@ -176,12 +176,12 @@ class IpOrCidrTest extends TestCase
             '192.168.1.0/0',  // Minimum subnet
             '192.168.1.0/32', // Maximum subnet
             '0.0.0.0/0',      // Any network
-            '255.255.255.255/32' // Single host
+            '255.255.255.255/32', // Single host
         ];
 
         foreach ($edgeCaseCidrs as $cidr) {
             $failCalled = false;
-            $fail = function() use (&$failCalled) {
+            $fail = function () use (&$failCalled) {
                 $failCalled = true;
             };
 
@@ -197,12 +197,12 @@ class IpOrCidrTest extends TestCase
             '256.256.256.256/24',
             '192.168.1.999/24',
             '192.168.1.a/24',
-            '192.168.1/24'
+            '192.168.1/24',
         ];
 
         foreach ($invalidCidrs as $cidr) {
             $failCalled = false;
-            $fail = function() use (&$failCalled) {
+            $fail = function () use (&$failCalled) {
                 $failCalled = true;
             };
 

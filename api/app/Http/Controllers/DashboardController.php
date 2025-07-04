@@ -4,14 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Enums\RequestStatus;
 use App\Enums\SessionStatus;
+use App\Enums\Status;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use App\Enums\Status;
 
 class DashboardController extends Controller
 {
-
-    public function index() : JsonResponse
+    public function index(): JsonResponse
     {
         $currentOrgId = request()->current_org_id;
         $userCount = DB::table('users')

@@ -45,3 +45,19 @@ export function snakeToCamel(str: string): string {
 export function interpolate(template: string, params: Record<string, any>): string {
 	return template.replace(/{(\w+)}/g, (_, key) => params[key]?.toString() ?? `{${key}}`);
 }
+
+/**
+ * Capitalize the first letter of each word in a string
+ * @param str - The string to capitalize
+ * @returns The capitalized string
+ * @example
+ * capitalizeWords('hello world') // returns 'Hello World'
+ * capitalizeWords('this is a long variable name') // returns 'This Is A Long Variable Name'
+ * capitalizeWords('is2faEnable') // returns 'Is2faEnable'
+ * capitalizeWords('isMp3Song') // returns 'IsMp3Song'
+ */
+export function capitalizeWords(str: string): string {
+    return str.split(' ')
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+              .join(' ');
+}

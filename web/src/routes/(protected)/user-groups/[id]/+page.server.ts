@@ -1,9 +1,15 @@
-import { fail } from '@sveltejs/kit';
+import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { UserGroupService } from '$services/user-group';
 import type { UserGroupResource } from '$resources/user-group';
-import type { UserCollection } from '$resources/user';
-import { UserService } from '$lib/services/user';
+import { OrgService } from '$services/org';
+import { UserGroupSchema } from '$validations/user-group';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import { snakeToCamel } from '$utils/string';
+import type { UserGroup } from '$models/user-group';
+import type { ApiValidationErrorResponse } from '$resources/api';
+import { setFormErrors } from '$lib/utils/form';
 
 export const load = async ({ params, locals, depends }) => {
 	depends('user-groups:data');
@@ -13,29 +19,81 @@ export const load = async ({ params, locals, depends }) => {
 	const model = (await userGroupService.findById(id, {
 		include: ['users']
 	})) as UserGroupResource;
-	const userService = new UserService(authToken as string, currentOrgId);	
-	const userCollection = await userService.findAll({
-	}) as UserCollection;
+	const orgService = new OrgService(authToken as string, currentOrgId);	
+	const userCollection = await orgService.getUsers(currentOrgId as number);
+	const form = await superValidate(
+		{
+			org_id: Number(id),
+			name: model.data.attributes.name,
+			description: model.data.attributes.description,
+			status: model.data.attributes.status
+		},
+		zod(UserGroupSchema)
+	);
 	return {
+		form,
 		model,
+		userCollection,
 		title: `User Group - #${model.data.attributes.id} - ${model.data.attributes.name}`
 	};
 };
 
 export const actions = {
+	save: async ({ request, locals, params }) => {
+		const { id } = params;
+		const { authToken, currentOrgId } = locals;
+		const form = await superValidate(request, zod(UserGroupSchema));
+		if (!form.valid) {
+			return fail(422, { form });
+		}
+		const data = form.data;
+		try {			
+			console.log('DATA', data);
+			const userGroupService = new UserGroupService(authToken as string, currentOrgId);
+			const response = await userGroupService.update(Number(id), data);
+			return {
+				success: true,
+				message: 'User group updated successfully',
+				form: form,
+				user: response.data.attributes
+			};
+		}
+		catch (error: any) {
+			if (error.response?.status === 422) {
+				setFormErrors(form, error.response.data);
+				return fail(400, { form });
+			}
+			return fail(400, { form, error: 'Failed to update user group' });
+		}
+	},
+	delete: async ({ locals, params }) => {
+		try {
+			const { id } = params;
+			const { authToken, currentOrgId } = locals;
+			const userGroupService = new UserGroupService(authToken as string, currentOrgId);
+			await userGroupService.delete(Number(id));
+		}
+		catch (error) {
+			return fail(400, {
+				message: error instanceof Error ? error.message : 'Unknown error'
+			});
+		}
+		redirect(302, '/user-groups');
+	},
 	addUsers: async ({ request, locals, params }) => {
 		try {
 			const { id } = params;
 			const { authToken, currentOrgId } = locals;
 			const data = await request.formData();
-			const userIds = data.get('userIds');
-			console.log('SUBMITTED', id, userIds, data);
-			const success = Math.random() > 0.7;
-			if (!success) {
+			const userIds = data.get('userIds')?.toString().split(',') ?? [];
+			if (userIds.length === 0) {
 				return fail(400, {
-					message: 'Unable to add users'
+					message: 'No users selected'
 				});
 			}
+			const userGroupService = new UserGroupService(authToken as string, currentOrgId);
+			const response = await userGroupService.addUsers(Number(id), userIds);
+			console.log('RESPONSE', response);
 			return;
 		}
 		catch (error) {
@@ -43,12 +101,21 @@ export const actions = {
 				message: error instanceof Error ? error.message : 'Unknown error'
 			});
 		}
-		
-		// const { userIds } = await request.json();form
-		// const modelService = new UserGroupService(authToken as string, currentOrgId);
-		// await modelService.addUsers(Number(id), userIds);
-		// return {
-		// 	success: true
-		// }
-	}
+	},
+	deleteUser: async ({ request, locals, params }) => {
+		try {
+			const { id } = params;
+			const { authToken, currentOrgId } = locals;
+			const data = await request.formData();
+			const userIds = data.get('userIds')?.toString() ?? '';
+			const userGroupService = new UserGroupService(authToken as string, currentOrgId);
+			await userGroupService.deleteUser(Number(id), userIds.split(','));
+			return;
+		}
+		catch (error) {
+			return fail(400, {
+				message: error instanceof Error ? error.message : 'Unknown error'
+			});
+		}
+	},
 } satisfies Actions;

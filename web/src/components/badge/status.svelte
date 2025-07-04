@@ -8,12 +8,12 @@
 		class?: string;
 	};
 
-	let { status, label = null, class: className, ...restProps }: Props = $props();
+	let { status = $bindable('active'), label = null, class: className, ...restProps }: Props = $props();
 
-	const badgeClass = cn({
+	let badgeClass = $derived(cn({
 		'text-green-500 bg-green-50 border-green-200': status === 'active',
 		'text-gray-500 bg-gray-50 border-gray-200': status === 'inactive'
-	});
+	}));
 </script>
 
 <Badge variant="outline" class={cn('capitalize', badgeClass, className)} {...restProps}>

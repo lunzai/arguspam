@@ -1,10 +1,10 @@
-import { superValidate, setError } from 'sveltekit-superforms';
+import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { changePasswordSchema } from '$validations/user';
 import { fail, type Actions } from '@sveltejs/kit';
 import { UserService } from '$services/user';
 import type { ApiValidationErrorResponse } from '$resources/api';
-import { snakeToCamel } from '$utils/string';
+import { setFormErrors } from '$lib/utils/form';
 
 export const load = async () => {
 	const changePasswordForm = await superValidate(zod(changePasswordSchema));
@@ -37,10 +37,7 @@ export const actions: Actions = {
 			};
 		} catch (error: any) {
 			if (error.response?.status === 422) {
-				const data: ApiValidationErrorResponse = error.response.data;
-				for (const [key, value] of Object.entries(data.errors)) {
-					setError(changePasswordForm, snakeToCamel(key) as any, value[0]);
-				}
+				setFormErrors(changePasswordForm, error.response.data);
 				return fail(400, { changePasswordForm });
 			}
 			return fail(400, { changePasswordForm, error: 'Failed to change password' });

@@ -69,8 +69,8 @@ export class ServerApi {
 		return this.request<T>(endpoint, { method: 'PUT', body });
 	}
 
-	async delete<T>(endpoint: string): Promise<T> {
-		return this.request<T>(endpoint, { method: 'DELETE' });
+	async delete<T>(endpoint: string, body?: any): Promise<T> {
+		return this.request<T>(endpoint, { method: 'DELETE', body });
 	}
 
 	async patch<T>(endpoint: string, body?: any): Promise<T> {

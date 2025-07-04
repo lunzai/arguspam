@@ -7,4 +7,8 @@ export class OrgService extends BaseService<Org> {
 	constructor(token: string, orgId?: number) {
 		super('/orgs', token, orgId);
 	}
+
+	async getUsers(orgId: number) {
+		return await this.api.get(`${this.endpoint}/${orgId}/users`);
+	}
 }

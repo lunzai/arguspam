@@ -113,10 +113,7 @@
         >
             {#each searchedList as row, index (row.id)}
                 <button 
-                    onclick={() => {
-                        console.log('searchableList', searchableList);
-                        handleSelect(row);
-                    }}
+                    onclick={() => handleSelect(row)}
                     class="p-3 text-left hover:bg-gray-50 text-xs">
                     {row.label || row.renderOption?.(row, index)}
                 </button>

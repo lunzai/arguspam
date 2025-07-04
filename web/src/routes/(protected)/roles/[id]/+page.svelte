@@ -59,7 +59,7 @@
 			<DL.Row>
 				<DL.Label>Default Role</DL.Label>
 				<DL.Content>
-					<StatusBadge status={model.is_default ? 'Yes' : 'No'} class="text-sm" />
+					<StatusBadge bind:status={model.is_default ? 'Yes' : 'No'} class="text-sm" />
 				</DL.Content>
 			</DL.Row>
 			<!-- <DL.Row>

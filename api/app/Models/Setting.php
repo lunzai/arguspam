@@ -11,6 +11,7 @@ class Setting extends Model
 
     protected $fillable = [
         'key',
+        'key_slug',
         'value',
         'group',
         'label',

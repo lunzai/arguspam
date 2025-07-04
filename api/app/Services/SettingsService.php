@@ -100,6 +100,7 @@ class SettingsService
         $setting = DB::transaction(function () use ($data, $dataType) {
             $setting = new Setting;
             $setting->key = $data['key'];
+            $setting->key_slug = $data['key_slug'] ?? str_replace(['.', ' ', '-'], '_', strtolower($data['key']));
             $setting->data_type = $dataType;
             $setting->typed_value = $data['value'];
             $setting->group = $data['group'] ?? null;

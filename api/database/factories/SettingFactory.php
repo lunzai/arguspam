@@ -20,8 +20,10 @@ class SettingFactory extends Factory
      */
     public function definition(): array
     {
+        $key = $this->faker->unique()->word();
         return [
-            'key' => $this->faker->unique()->word(),
+            'key' => $key,
+            'key_slug' => str_replace(['.', ' ', '-'], '_', strtolower($key)),
             'value' => $this->faker->word(),
             'data_type' => SettingDataType::STRING,
             'group' => $this->faker->word(),

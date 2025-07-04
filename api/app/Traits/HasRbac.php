@@ -29,7 +29,7 @@ trait HasRbac
 
     public function isAdmin(): bool
     {
-        return $this->roles->contains(config('pam.rbac.default_admin_role'));
+        return $this->roles->contains('name', config('pam.rbac.default_admin_role'));
     }
 
     public function getAllPermissions(): Collection

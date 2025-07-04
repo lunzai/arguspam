@@ -129,11 +129,29 @@ class SettingsServiceTest extends TestCase
 
         $this->assertInstanceOf(Setting::class, $setting);
         $this->assertEquals('new_key', $setting->key);
+        $this->assertEquals('new_key', $setting->key_slug); // Auto-generated from key
         $this->assertEquals('new_value', $setting->value);
         $this->assertEquals(SettingDataType::STRING, $setting->data_type);
         $this->assertEquals('test_group', $setting->group);
         $this->assertEquals('Test Label', $setting->label);
         $this->assertEquals('Test Description', $setting->description);
+    }
+
+    public function test_create_generates_key_slug_from_complex_key(): void
+    {
+        $data = [
+            'key' => 'app.debug-mode',
+            'value' => 'test_value',
+            'data_type' => SettingDataType::STRING,
+            'group' => 'test_group',
+            'label' => 'Test Label',
+            'description' => 'Test Description',
+        ];
+
+        $setting = $this->settingsService->create($data);
+
+        $this->assertEquals('app.debug-mode', $setting->key);
+        $this->assertEquals('app_debug_mode', $setting->key_slug); // Converted from dots and dashes
     }
 
     public function test_create_throws_exception_for_invalid_data_type(): void

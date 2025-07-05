@@ -30,7 +30,7 @@ class AssetPolicy
                     ->orWhereIn('user_group_id', function ($q) use ($user) {
                         // User's group grants
                         $q->select('user_group_id')
-                            ->from('user_group_user')
+                            ->from('user_user_group')
                             ->where('user_id', $user->id);
                     });
             })

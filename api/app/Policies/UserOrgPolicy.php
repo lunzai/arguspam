@@ -14,6 +14,6 @@ class UserOrgPolicy
 
     public function view(User $user, Org $org): bool
     {
-        return $user->hasAnyPermission('userorg:view', $org);
+        return $user->hasAnyPermission('userorg:view');
     }
 }

@@ -9,16 +9,16 @@ class OrgUserPolicy
 {
     public function viewAny(User $user, Org $org): bool
     {
-        return $user->hasAnyPermission('orguser:viewany', $org);
+        return $user->hasAnyPermission('orguser:viewany');
     }
 
     public function create(User $user, Org $org): bool
     {
-        return $user->hasAnyPermission('orguser:create', $org);
+        return $user->hasAnyPermission('orguser:create');
     }
 
     public function delete(User $user, Org $org): bool
     {
-        return $user->hasAnyPermission('orguser:delete', $org);
+        return $user->hasAnyPermission('orguser:delete');
     }
 }

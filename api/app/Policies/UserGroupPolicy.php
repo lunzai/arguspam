@@ -15,7 +15,7 @@ class UserGroupPolicy
     public function view(User $user, UserGroup $userGroup): bool
     {
         return $this->viewAny($user) ||
-            ($user->groups->contains($userGroup) && $user->hasAnyPermission('usergroup:view'));
+            ($user->userGroups->contains($userGroup) && $user->hasAnyPermission('usergroup:view'));
     }
 
     public function create(User $user): bool
@@ -31,7 +31,7 @@ class UserGroupPolicy
     public function update(User $user, UserGroup $userGroup): bool
     {
         return $this->updateAny($user) ||
-            ($user->groups->contains($userGroup) && $user->hasAnyPermission('usergroup:update'));
+            ($user->userGroups->contains($userGroup) && $user->hasAnyPermission('usergroup:update'));
     }
 
     public function deleteAny(User $user): bool

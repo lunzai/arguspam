@@ -8,7 +8,6 @@ use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Session extends Model
 {
@@ -103,9 +102,9 @@ class Session extends Model
         return $this->belongsTo(Request::class);
     }
 
-    public function asset(): HasOne
+    public function asset(): BelongsTo
     {
-        return $this->hasOne(Asset::class);
+        return $this->belongsTo(Asset::class);
     }
 
     public function requester(): BelongsTo

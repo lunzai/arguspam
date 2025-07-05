@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
+use App\Models\Setting;
 use App\Models\User;
-use App\Models\setting;
 
 class SettingPolicy
 {
@@ -18,7 +18,7 @@ class SettingPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, setting $setting): bool
+    public function view(User $user, Setting $setting): bool
     {
         return $user->hasAnyPermission('setting:view');
     }
@@ -34,7 +34,7 @@ class SettingPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, setting $setting): bool
+    public function update(User $user, Setting $setting): bool
     {
         return $user->hasAnyPermission('setting:update');
     }
@@ -42,7 +42,7 @@ class SettingPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, setting $setting): bool
+    public function delete(User $user, Setting $setting): bool
     {
         return $user->hasAnyPermission('setting:delete');
     }
@@ -50,7 +50,7 @@ class SettingPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, setting $setting): bool
+    public function restore(User $user, Setting $setting): bool
     {
         return $user->hasAnyPermission('setting:restore');
     }
@@ -58,7 +58,7 @@ class SettingPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, setting $setting): bool
+    public function forceDelete(User $user, Setting $setting): bool
     {
         return $user->hasAnyPermission('setting:forcedelete');
     }

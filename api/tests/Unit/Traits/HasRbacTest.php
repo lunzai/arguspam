@@ -135,13 +135,10 @@ class HasRbacTest extends TestCase
         $this->assertFalse($this->user->isAdmin());
     }
 
-    public function test_get_all_permissions_fails_due_to_trait_bug(): void
+    public function test_get_all_permissions_works_with_multiple_roles(): void
     {
-        // This test documents a bug in the HasRbac trait
-        // The whereRelation method doesn't properly handle collection of role IDs
-        // The trait should use whereIn with the role IDs instead
-        
-        $this->expectException(\Illuminate\Database\QueryException::class);
+        // This test verifies that the HasRbac trait properly handles multiple roles
+        // The trait now correctly uses whereIn with the role IDs
         
         // First attach roles to user
         $this->user->roles()->attach([$this->userRole->id, $this->adminRole->id]);
@@ -150,20 +147,27 @@ class HasRbacTest extends TestCase
         $this->userRole->permissions()->attach([$this->userViewPermission->id]);
         $this->adminRole->permissions()->attach([$this->userCreatePermission->id, $this->assetViewPermission->id]);
         
-        // This should work but fails due to SQL parameter issue
+        // This should work correctly now
         $permissions = $this->user->getAllPermissions();
+        
+        $this->assertCount(3, $permissions);
+        $this->assertTrue($permissions->contains('name', $this->userViewPermission->name));
+        $this->assertTrue($permissions->contains('name', $this->userCreatePermission->name));
+        $this->assertTrue($permissions->contains('name', $this->assetViewPermission->name));
     }
 
     public function test_get_all_permissions_returns_empty_collection_when_no_roles(): void
     {
-        // This test reveals a bug in the trait - it doesn't handle empty role collections properly
-        // The trait should check if roleIds is empty before running the query
-        $this->expectException(\Illuminate\Database\QueryException::class);
+        // This test verifies that the trait properly handles users with no roles
+        // The trait now correctly checks if roleIds is empty before running the query
         
         // Clear any cached roles first
         $this->user->clearUserRolePermissionCache();
         
         $permissions = $this->user->getAllPermissions();
+        
+        $this->assertCount(0, $permissions);
+        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Collection::class, $permissions);
     }
 
     public function test_get_all_permissions_returns_empty_collection_when_roles_have_no_permissions(): void

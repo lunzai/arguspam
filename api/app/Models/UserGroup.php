@@ -48,7 +48,7 @@ class UserGroup extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'user_user_group');
     }
 
     public function createdBy(): BelongsTo

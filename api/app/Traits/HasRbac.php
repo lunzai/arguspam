@@ -36,14 +36,19 @@ trait HasRbac
     public function getAllPermissions(): Collection
     {
         $roleIds = $this->getAllRoles()
-            ->pluck('id');
+            ->pluck('id')
+            ->toArray();
 
         return Cache::remember(
             CacheKey::USER_PERMISSIONS->key($this->id),
             config('cache.default_ttl'),
             function () use ($roleIds) {
-                return Permission::whereRelation('roles', 'roles.id', $roleIds)
-                    ->get();
+                if (empty($roleIds)) {
+                    return Permission::query()->whereRaw('1 = 0')->get();
+                }
+                return Permission::whereHas('roles', function ($query) use ($roleIds) {
+                    $query->whereIn('roles.id', $roleIds);
+                })->get();
             }
         );
     }
@@ -58,6 +63,11 @@ trait HasRbac
             ->map(fn ($name) => strtolower($name))
             ->intersect($permissions)
             ->isNotEmpty();
+    }
+
+    public function hasPermissionTo(string $permission): bool
+    {
+        return $this->hasAnyPermission($permission);
     }
 
     public function clearUserRolePermissionCache($userId = null): void
@@ -86,5 +96,15 @@ trait HasRbac
         return $user->allAssets()
             ->get()
             ->contains($asset);
+    }
+
+    public function canRequest(Asset $asset): bool
+    {
+        return $this->canRequestAsset($this, $asset);
+    }
+
+    public function canApprove(Asset $asset): bool
+    {
+        return $this->canApproveAsset($this, $asset);
     }
 }

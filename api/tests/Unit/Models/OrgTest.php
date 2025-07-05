@@ -358,6 +358,7 @@ class OrgTest extends TestCase
         $traits = class_uses_recursive(Org::class);
 
         $this->assertContains('App\Traits\HasBlamable', $traits);
+        $this->assertContains('App\Traits\HasStatus', $traits);
         $this->assertContains('Illuminate\Database\Eloquent\Factories\HasFactory', $traits);
         $this->assertContains('Illuminate\Database\Eloquent\SoftDeletes', $traits);
     }

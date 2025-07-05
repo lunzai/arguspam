@@ -17,13 +17,16 @@
         "laravel/tinker": "^2.10.1"
     },
     "require-dev": {
+        "brianium/paratest": "^7.8",
         "fakerphp/faker": "^1.23",
+        "larastan/larastan": "^3.5",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.41",
         "laravel/telescope": "^5.5",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
+        "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^11.5.3"
     },
     "autoload": {
@@ -39,8 +42,9 @@
         }
     },
     "scripts": {
-        "test-coverage-html": " XDEBUG_MODE=coverage php artisan test --coverage --coverage-html=coverage-report",
-        "test-coverage": "XDEBUG_MODE=coverage php artisan test --coverage",
+        "analyse": "phpstan analyse --memory-limit=256M",
+        "coverage": " XDEBUG_MODE=coverage php artisan test --parallel --coverage --coverage-html=coverage-report",
+        "test": "XDEBUG_MODE=coverage php artisan test --parallel --coverage",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"

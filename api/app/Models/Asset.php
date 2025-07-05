@@ -7,6 +7,7 @@ use App\Enums\Dbms;
 use App\Enums\Status;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
+use App\Traits\HasStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Asset extends Model
 {
     /** @use HasFactory<\Database\Factories\AssetFactory> */
-    use BelongsToOrganization, HasBlamable, HasFactory, SoftDeletes;
+    use BelongsToOrganization, HasBlamable, HasFactory, HasStatus, SoftDeletes;
 
     protected $fillable = [
         'org_id',

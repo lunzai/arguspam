@@ -287,6 +287,7 @@ class AssetTest extends TestCase
 
         $this->assertContains('App\Traits\BelongsToOrganization', $traits);
         $this->assertContains('App\Traits\HasBlamable', $traits);
+        $this->assertContains('App\Traits\HasStatus', $traits);
         $this->assertContains('Illuminate\Database\Eloquent\Factories\HasFactory', $traits);
         $this->assertContains('Illuminate\Database\Eloquent\SoftDeletes', $traits);
     }

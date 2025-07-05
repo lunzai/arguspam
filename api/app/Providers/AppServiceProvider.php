@@ -45,9 +45,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('userrole:create', [UserRolePolicy::class, 'create']);
         Gate::define('userrole:delete', [UserRolePolicy::class, 'delete']);
         Gate::before(function (User $user, string $ability) {
-            // if ($user->isAdmin()) {
-            //     return true;
-            // }
+            if ($user->isAdmin()) {
+                return true;
+            }
         });
     }
 }

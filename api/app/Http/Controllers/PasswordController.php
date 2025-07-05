@@ -13,6 +13,7 @@ class PasswordController extends Controller
 {
     public function update(ChangePasswordRequest $request): Response|JsonResponse
     {
+        $this->authorize('password:update');
         $validated = $request->validated();
 
         /** @var User $user */

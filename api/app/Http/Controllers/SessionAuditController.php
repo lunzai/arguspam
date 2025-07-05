@@ -13,6 +13,7 @@ class SessionAuditController extends Controller
 
     public function index(): SessionAuditCollection
     {
+        $this->authorize('viewAny', SessionAudit::class);
         $sessionAudit = SessionAudit::query();
 
         return new SessionAuditCollection(
@@ -22,8 +23,10 @@ class SessionAuditController extends Controller
 
     public function show(SessionAudit $sessionAudit): SessionAuditResource
     {
-        $sessionAudit = SessionAudit::query();
-        $this->applyIncludes($sessionAudit, request());
+        $sessionAuditQuery = SessionAudit::query();
+        $this->applyIncludes($sessionAuditQuery, request());
+        $sessionAudit = $sessionAuditQuery->findOrFail($sessionAudit->id);
+        $this->authorize('view', $sessionAudit);
 
         return new SessionAuditResource($sessionAudit);
     }

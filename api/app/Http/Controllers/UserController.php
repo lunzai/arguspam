@@ -11,7 +11,6 @@ use App\Models\User;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -19,8 +18,7 @@ class UserController extends Controller
 
     public function index(UserFilter $filter): UserCollection
     {
-        Gate::authorize('viewAny', User::class);
-
+        $this->authorize('viewAny', User::class);
         $user = User::filter($filter);
 
         return new UserCollection(
@@ -30,6 +28,7 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request): UserResource
     {
+        $this->authorize('create', User::class);
         $validated = $request->validated();
         $user = User::create($validated);
 
@@ -38,14 +37,17 @@ class UserController extends Controller
 
     public function show(string $id): UserResource
     {
-        $user = User::query();
-        $this->applyIncludes($user, request());
+        $userQuery = User::query();
+        $this->applyIncludes($userQuery, request());
+        $user = $userQuery->findOrFail($id);
+        $this->authorize('view', $user);
 
-        return new UserResource($user->findOrFail($id));
+        return new UserResource($user);
     }
 
     public function update(UpdateUserRequest $request, User $user): UserResource
     {
+        $this->authorize('update', $user);
         $validated = $request->validated();
         $user->update($validated);
 
@@ -54,6 +56,7 @@ class UserController extends Controller
 
     public function destroy(User $user): Response
     {
+        $this->authorize('delete', $user);
         $user->deleted_by = Auth::id();
         $user->save();
         $user->delete();

@@ -21,6 +21,7 @@ class RequestController extends Controller
      */
     public function index(RequestFilter $filter): RequestCollection
     {
+        $this->authorize('viewAny', RequestModel::class);
         $request = RequestModel::filter($filter);
 
         return new RequestCollection(
@@ -30,6 +31,7 @@ class RequestController extends Controller
 
     public function store(StoreRequestRequest $request): RequestResource
     {
+        $this->authorize('create', RequestModel::class);
         $validated = $request->validated();
         $request = RequestModel::create($validated);
 
@@ -38,15 +40,18 @@ class RequestController extends Controller
 
     public function show(string $id): RequestResource
     {
-        $request = RequestModel::query();
-        $this->applyIncludes($request, request());
+        $requestQuery = RequestModel::query();
+        $this->applyIncludes($requestQuery, request());
+        $request = $requestQuery->findOrFail($id);
+        $this->authorize('view', $request);
 
-        return new RequestResource($request->findOrFail($id));
+        return new RequestResource($request);
     }
 
     public function update(UpdateRequestRequest $request, string $id): RequestResource
     {
         $request = RequestModel::findOrFail($id);
+        $this->authorize('update', $request);
         $validated = $request->validated();
         $request->update($validated);
 
@@ -56,6 +61,7 @@ class RequestController extends Controller
     public function destroy(string $id): Response
     {
         $request = RequestModel::findOrFail($id);
+        $this->authorize('delete', $request);
         $request->deleted_by = Auth::id();
         $request->save();
         $request->delete();

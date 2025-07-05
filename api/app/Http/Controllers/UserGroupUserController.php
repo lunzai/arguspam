@@ -14,6 +14,7 @@ class UserGroupUserController extends Controller
 
     public function store(Request $request, UserGroup $userGroup): Response
     {
+        $this->authorize('usergroupuser:create', $userGroup);
         $validated = $request->validate([
             'user_ids' => ['required', 'array', 'min:1'],
             'user_ids.*' => ['required', new UserExistedInOrg($userGroup->org_id)],
@@ -26,6 +27,7 @@ class UserGroupUserController extends Controller
 
     public function destroy(UserGroup $userGroup, Request $request): Response
     {
+        $this->authorize('usergroupuser:delete', $userGroup);
         $validated = $request->validate([
             'user_ids' => ['required', 'array', 'min:1'],
             'user_ids.*' => ['integer', 'exists:users,id'],

@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 trait HasRbac
 {
@@ -50,7 +51,7 @@ trait HasRbac
     public function hasAnyPermission(array|string $permissions): bool
     {
         $permissions = collect(is_array($permissions) ? $permissions : [$permissions])
-            ->map(fn ($p) => strtolower($p));
+            ->map(fn ($p) => strtolower($p));        
 
         return $this->getAllPermissions()
             ->pluck('name')

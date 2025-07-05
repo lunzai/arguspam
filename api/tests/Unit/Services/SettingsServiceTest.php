@@ -299,4 +299,116 @@ class SettingsServiceTest extends TestCase
 
         $this->assertEquals('new_value', $result);
     }
+
+    public function test_create_with_string_data_type_converts_to_enum(): void
+    {
+        // This test covers line 93: $dataType = SettingDataType::from($dataType);
+        $data = [
+            'key' => 'string_type_key',
+            'value' => 'test_value',
+            'data_type' => 'string', // Pass as string instead of enum
+            'group' => 'test_group',
+            'label' => 'Test Label',
+        ];
+
+        $setting = $this->settingsService->create($data);
+
+        $this->assertInstanceOf(Setting::class, $setting);
+        $this->assertEquals('string_type_key', $setting->key);
+        $this->assertEquals('test_value', $setting->value);
+        $this->assertEquals(SettingDataType::STRING, $setting->data_type);
+    }
+
+    public function test_create_with_integer_data_type_as_string(): void
+    {
+        // This also covers line 93 with a different enum value
+        $data = [
+            'key' => 'integer_type_key',
+            'value' => 42,
+            'data_type' => 'integer', // Pass as string instead of enum
+        ];
+
+        $setting = $this->settingsService->create($data);
+
+        $this->assertEquals(SettingDataType::INTEGER, $setting->data_type);
+        $this->assertEquals(42, $setting->typed_value);
+    }
+
+    public function test_create_with_boolean_data_type_as_string(): void
+    {
+        // This also covers line 93 with another enum value
+        $data = [
+            'key' => 'boolean_type_key',
+            'value' => true,
+            'data_type' => 'boolean', // Pass as string instead of enum
+        ];
+
+        $setting = $this->settingsService->create($data);
+
+        $this->assertEquals(SettingDataType::BOOLEAN, $setting->data_type);
+        $this->assertTrue($setting->typed_value);
+    }
+
+    public function test_generate_slug_method(): void
+    {
+        // This test covers line 206: return str::slug($key);
+        // Since generateSlug is protected, we'll use reflection to test it
+        $reflection = new \ReflectionClass($this->settingsService);
+        $method = $reflection->getMethod('generateSlug');
+        $method->setAccessible(true);
+
+        // Test basic functionality to ensure the method works
+        $result = $method->invoke($this->settingsService, 'simple key');
+        $this->assertEquals('simple-key', $result);
+
+        // Test that the method returns the same as Laravel's Str::slug
+        $testInputs = [
+            'Complex Key With Spaces',
+            'key.with.dots',
+            'key_with_underscores',
+            'Key-With-Dashes',
+            'MixedCaseKey',
+        ];
+
+        foreach ($testInputs as $input) {
+            $result = $method->invoke($this->settingsService, $input);
+            $expected = \Illuminate\Support\Str::slug($input);
+            $this->assertEquals($expected, $result, "Failed for input: '$input'");
+        }
+    }
+
+    public function test_generate_slug_handles_special_characters(): void
+    {
+        // Additional test for generateSlug method with special characters
+        $reflection = new \ReflectionClass($this->settingsService);
+        $method = $reflection->getMethod('generateSlug');
+        $method->setAccessible(true);
+
+        // Test that the method returns the same as Laravel's Str::slug for special characters
+        $testInputs = [
+            'key@with#special$chars',
+            'key with multiple   spaces',
+            'key/with/slashes',
+            'key\\with\\backslashes',
+        ];
+
+        foreach ($testInputs as $input) {
+            $result = $method->invoke($this->settingsService, $input);
+            $expected = \Illuminate\Support\Str::slug($input);
+            $this->assertEquals($expected, $result, "Failed for input: '$input'");
+        }
+    }
+
+    public function test_create_with_invalid_string_data_type_throws_exception(): void
+    {
+        // Test that invalid string data types are handled properly
+        $data = [
+            'key' => 'invalid_type_key',
+            'value' => 'test_value',
+            'data_type' => 'invalid_type', // Invalid enum value
+        ];
+
+        $this->expectException(\ValueError::class);
+        $this->settingsService->create($data);
+    }
 }

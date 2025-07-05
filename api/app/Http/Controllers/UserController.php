@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -18,6 +19,8 @@ class UserController extends Controller
 
     public function index(UserFilter $filter): UserCollection
     {
+        Gate::authorize('viewAny', User::class);
+
         $user = User::filter($filter);
 
         return new UserCollection(

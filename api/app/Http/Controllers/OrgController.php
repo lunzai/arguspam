@@ -9,15 +9,20 @@ use App\Http\Resources\Org\OrgCollection;
 use App\Http\Resources\Org\OrgResource;
 use App\Models\Org;
 use App\Traits\IncludeRelationships;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class OrgController extends Controller
 {
     use IncludeRelationships;
 
-    public function index(OrgFilter $filter): OrgCollection
+    public function index(OrgFilter $filter, Request $request): OrgCollection
     {
+        Gate::authorize('viewAny', Org::class);
+        
         $org = Org::filter($filter);
 
         return new OrgCollection(

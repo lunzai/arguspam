@@ -6,13 +6,10 @@ import { OrgService } from '$services/org';
 import { UserGroupSchema } from '$validations/user-group';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { snakeToCamel } from '$utils/string';
-import type { UserGroup } from '$models/user-group';
-import type { ApiValidationErrorResponse } from '$resources/api';
 import { setFormErrors } from '$lib/utils/form';
 
 export const load = async ({ params, locals, depends }) => {
-	depends('user-groups:data');
+	depends('user-groups:view');
 	const { id } = params;
 	const { authToken, currentOrgId } = locals;
 	const userGroupService = new UserGroupService(authToken as string, currentOrgId);
@@ -48,21 +45,20 @@ export const actions = {
 		}
 		const data = form.data;
 		try {
-			console.log('DATA', data);
 			const userGroupService = new UserGroupService(authToken as string, currentOrgId);
 			const response = await userGroupService.update(Number(id), data);
 			return {
 				success: true,
-				message: 'User group updated successfully',
+				message: `User group updated successfully`,
 				form: form,
-				user: response.data.attributes
+				userGroup: response.data.attributes
 			};
 		} catch (error: any) {
 			if (error.response?.status === 422) {
 				setFormErrors(form, error.response.data);
 				return fail(400, { form });
 			}
-			return fail(400, { form, error: 'Failed to update user group' });
+			return fail(400, { form, error: `Failed to update user group` });
 		}
 	},
 	delete: async ({ locals, params }) => {

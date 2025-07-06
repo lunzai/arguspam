@@ -6,6 +6,8 @@ use App\Http\Resources\Org\OrgCollection;
 use App\Models\Org;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use App\Enums\CacheKey;
 
 class UserOrgController extends Controller
 {
@@ -15,9 +17,15 @@ class UserOrgController extends Controller
     public function index(): OrgCollection
     {
         $this->authorize('userorg:viewany');
-        $orgs = Auth::user()
-            ->orgs()
-            ->paginate(config('pam.pagination.per_page'));
+        $orgs = Cache::remember(
+            CacheKey::USER_ORG->key(Auth::user()->id),
+            config('cache.default_ttl'),
+            function () {
+                return Auth::user()
+                    ->orgs()
+                    ->get();
+            },
+        );
         return new OrgCollection($orgs);
     }
 

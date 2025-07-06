@@ -71,7 +71,7 @@
 			<DL.Row>
 				<DL.Label>Status</DL.Label>
 				<DL.Content>
-					<StatusBadge status={model.status} class="text-sm" />
+					<StatusBadge bind:status={model.status} class="text-sm" />
 				</DL.Content>
 			</DL.Row>
 			<!-- <DL.Row>

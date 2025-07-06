@@ -34,7 +34,7 @@ class AuthController extends Controller
         $token = $user->createToken(
             'auth_token',
             ['*'],
-            now()->addMinutes(60 * 24)
+            now()->addMinutes((int) config('sanctum.expiration', 1440))
         )->plainTextToken;
         UserLoggedIn::dispatch($user);
 
@@ -46,7 +46,6 @@ class AuthController extends Controller
 
     public function logout(Request $request): Response
     {
-        $user = $request->user();
         $request->user()->currentAccessToken()->delete();
 
         return $this->ok();

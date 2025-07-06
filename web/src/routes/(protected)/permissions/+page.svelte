@@ -25,13 +25,13 @@
 			key: 'name',
 			title: 'Name',
 			sortable: true,
-			filterable: true,
+			filterable: true
 		},
 		{
 			key: 'description',
 			title: 'Description',
 			sortable: true,
-			filterable: true,
+			filterable: true
 		},
 		{
 			key: 'created_at',

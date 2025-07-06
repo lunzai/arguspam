@@ -4,15 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Enums\RequestStatus;
 use App\Enums\SessionStatus;
+use App\Enums\Status;
+use App\Policies\DashboardPolicy;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use App\Enums\Status;
 
 class DashboardController extends Controller
 {
-
-    public function index() : JsonResponse
+    public function index(): JsonResponse
     {
+        $this->authorize('dashboard:viewany');
         $currentOrgId = request()->current_org_id;
         $userCount = DB::table('users')
             ->join('org_user', 'users.id', '=', 'org_user.user_id')

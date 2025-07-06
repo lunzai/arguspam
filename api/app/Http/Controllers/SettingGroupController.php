@@ -24,6 +24,7 @@ class SettingGroupController extends Controller
      */
     public function index(): SettingGroupCollection
     {
+        $this->authorize('viewAny', Setting::class);
         $groups = $this->settings->groups();
 
         // Get count of settings in each group
@@ -50,6 +51,7 @@ class SettingGroupController extends Controller
      */
     public function show(string $group): SettingCollection
     {
+        $this->authorize('view', Setting::class);
         // Check if group exists
         if (!in_array($group, $this->settings->groups())) {
             return $this->error('Group not found', 404);

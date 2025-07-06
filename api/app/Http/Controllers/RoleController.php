@@ -20,6 +20,7 @@ class RoleController extends Controller
      */
     public function index(RoleFilter $filter): RoleCollection
     {
+        $this->authorize('viewAny', Role::class);
         $roles = Role::filter($filter);
 
         return new RoleCollection(
@@ -32,6 +33,7 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request): RoleResource
     {
+        $this->authorize('create', Role::class);
         $validated = $request->validated();
         $role = Role::create($validated);
 
@@ -43,10 +45,12 @@ class RoleController extends Controller
      */
     public function show(string $id): RoleResource
     {
-        $role = Role::query();
-        $this->applyIncludes($role, request());
+        $roleQuery = Role::query();
+        $this->applyIncludes($roleQuery, request());
+        $role = $roleQuery->findOrFail($id);
+        $this->authorize('view', $role);
 
-        return new RoleResource($role->findOrFail($id));
+        return new RoleResource($role);
     }
 
     /**
@@ -54,6 +58,7 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role): RoleResource
     {
+        $this->authorize('update', $role);
         if ($role->is_default) {
             $this->unprocessableEntity('Cannot update default role.');
         }
@@ -67,6 +72,7 @@ class RoleController extends Controller
      */
     public function destroy(Role $role): Response
     {
+        $this->authorize('delete', $role);
         if ($role->is_default) {
             $this->unprocessableEntity('Cannot delete default role.');
         }

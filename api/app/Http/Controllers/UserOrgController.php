@@ -14,6 +14,7 @@ class UserOrgController extends Controller
      */
     public function index(): OrgCollection
     {
+        $this->authorize('userorg:viewany');
         $orgs = Auth::user()
             ->orgs()
             ->paginate(config('pam.pagination.per_page'));
@@ -25,6 +26,7 @@ class UserOrgController extends Controller
      */
     public function show(Org $org): Response
     {
+        $this->authorize('userorg:view', $org);
         Auth::user()
             ->orgs()
             ->findOrFail($org->id);

@@ -8,7 +8,6 @@ use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Session extends Model
 {
@@ -16,29 +15,30 @@ class Session extends Model
     use BelongsToOrganization, HasBlamable, HasFactory;
 
     protected $fillable = [
-        // 'org_id',
-        // 'request_id',
-        // 'asset_id',
-        // 'requester_id',
-        // 'start_datetime',
-        // 'end_datetime',
-        // 'scheduled_end_datetime',
-        // 'requested_duration',
-        // 'actual_duration',
-        // 'is_jit',
-        // 'account_name',
-        // 'jit_vault_path',
+        'org_id',
+        'request_id',
+        'asset_id',
+        'requester_id',
+        'approver_id',
+        'start_datetime',
+        'end_datetime',
+        'scheduled_end_datetime',
+        'requested_duration',
+        'actual_duration',
+        'is_jit',
+        'account_name',
+        'jit_vault_path',
         'session_note',
-        // 'is_expired',
-        // 'is_terminated',
-        // 'is_checkin',
-        // 'status',
-        // 'checkin_by',
-        // 'checkin_at',
-        // 'terminated_by',
-        // 'terminated_at',
-        // 'ended_at',
-        // 'ended_by',
+        'is_expired',
+        'is_terminated',
+        'is_checkin',
+        'status',
+        'checkin_by',
+        'checkin_at',
+        'terminated_by',
+        'terminated_at',
+        'ended_at',
+        'ended_by',
     ];
 
     protected $casts = [
@@ -102,9 +102,9 @@ class Session extends Model
         return $this->belongsTo(Request::class);
     }
 
-    public function asset(): HasOne
+    public function asset(): BelongsTo
     {
-        return $this->hasOne(Asset::class);
+        return $this->belongsTo(Asset::class);
     }
 
     public function requester(): BelongsTo

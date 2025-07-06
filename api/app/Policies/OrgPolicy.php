@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Org;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class OrgPolicy
 {

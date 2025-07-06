@@ -10,6 +10,7 @@ class RolePermissionController extends Controller
 {
     public function store(Request $request, Role $role): Response
     {
+        $this->authorize('rolepermission:create', $role);
         $validated = $request->validate([
             'permission_ids' => ['required', 'array', 'min:1'],
             'permission_ids.*' => ['required', 'exists:permissions,id'],
@@ -22,6 +23,7 @@ class RolePermissionController extends Controller
 
     public function destroy(Role $role, Request $request): Response
     {
+        $this->authorize('rolepermission:delete', $role);
         $validated = $request->validate([
             'permission_ids' => ['required', 'array', 'min:1'],
             'permission_ids.*' => ['integer', 'exists:permissions,id'],

@@ -12,6 +12,8 @@ class SessionAudit extends Model
     /** @use HasFactory<\Database\Factories\SessionAuditFactory> */
     use HasFactory, MassPrunable;
 
+    public $timestamps = false;
+
     // protected $fillable = [
     //     'org_id',
     //     'session_id',

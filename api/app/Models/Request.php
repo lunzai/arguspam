@@ -23,7 +23,7 @@ class Request extends Model
         'asset_account_id',
         'requester_id',
         'start_datetime',
-        // 'end_datetime',
+        'end_datetime',
         'duration',
         'reason',
         'intended_query',
@@ -35,10 +35,10 @@ class Request extends Model
         // 'ai_note',
         // 'ai_risk_rating',
         'status',
-        // 'approved_by',
-        // 'approved_at',
-        // 'rejected_by',
-        // 'rejected_at',
+        'approved_by',
+        'approved_at',
+        'rejected_by',
+        'rejected_at',
     ];
 
     protected $casts = [
@@ -104,12 +104,12 @@ class Request extends Model
 
     public function requester(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'requester_id');
     }
 
     public function approver(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'approved_by');
     }
 
     public function session(): HasOne

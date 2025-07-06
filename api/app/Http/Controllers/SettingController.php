@@ -23,6 +23,7 @@ class SettingController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('viewAny', Setting::class);
         $flat = $request->boolean('flat', false);
 
         if ($flat) {
@@ -45,6 +46,7 @@ class SettingController extends Controller
      */
     public function update(UpdateSettingsRequest $request)
     {
+        $this->authorize('update', Setting::class);
         $validated = $request->validated();
         $updated = [];
         $errors = [];

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\AssetAccessGrant\AssetAccessGrantCollection;
 use App\Models\Asset;
+use App\Models\AssetAccessGrant;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,6 +16,7 @@ class AssetAccessGrantController extends Controller
 
     public function index(Asset $asset): AssetAccessGrantCollection
     {
+        $this->authorize('viewAny', AssetAccessGrant::class);
         $grants = $asset->accessGrants()->paginate(config('pam.pagination.per_page'));
 
         return new AssetAccessGrantCollection($grants);
@@ -22,6 +24,7 @@ class AssetAccessGrantController extends Controller
 
     public function store(Request $request, Asset $asset): Response
     {
+        $this->authorize('create', AssetAccessGrant::class);
         $validated = $request->validate([
             'user_id' => ['required', 'exists:users,id'],
             'role' => ['required', 'string'], // You might want to add enum validation here
@@ -34,6 +37,7 @@ class AssetAccessGrantController extends Controller
 
     public function update(Request $request, Asset $asset, string $grantId): Response
     {
+        $this->authorize('update', AssetAccessGrant::class);
         $validated = $request->validate([
             'role' => ['required', 'string'], // You might want to add enum validation here
         ]);
@@ -45,6 +49,7 @@ class AssetAccessGrantController extends Controller
 
     public function destroy(Asset $asset, string $grantId): Response
     {
+        $this->authorize('delete', AssetAccessGrant::class);
         $asset->accessGrants()->findOrFail($grantId)->delete();
 
         return $this->noContent();

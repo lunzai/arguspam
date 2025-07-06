@@ -18,6 +18,7 @@ class AssetController extends Controller
 
     public function index(AssetFilter $filter): AssetCollection
     {
+        $this->authorize('viewAny', Asset::class);
         $asset = Asset::filter($filter);
 
         return new AssetCollection(
@@ -27,6 +28,7 @@ class AssetController extends Controller
 
     public function store(StoreAssetRequest $request): AssetResource
     {
+        $this->authorize('create', Asset::class);
         $validated = $request->validated();
         $asset = Asset::create($validated);
 
@@ -35,15 +37,18 @@ class AssetController extends Controller
 
     public function show(string $id): AssetResource
     {
-        $asset = Asset::query();
-        $this->applyIncludes($asset, request());
+        $assetQuery = Asset::query();
+        $this->applyIncludes($assetQuery, request());
+        $asset = $assetQuery->findOrFail($id);
+        $this->authorize('view', $asset);
 
-        return new AssetResource($asset->findOrFail($id));
+        return new AssetResource($asset);
     }
 
     public function update(UpdateAssetRequest $request, string $id): AssetResource
     {
         $asset = Asset::findOrFail($id);
+        $this->authorize('update', $asset);
         $validated = $request->validated();
         $asset->update($validated);
 
@@ -53,6 +58,7 @@ class AssetController extends Controller
     public function destroy(string $id): Response
     {
         $asset = Asset::findOrFail($id);
+        $this->authorize('delete', $asset);
         $asset->deleted_by = Auth::id();
         $asset->save();
         $asset->delete();

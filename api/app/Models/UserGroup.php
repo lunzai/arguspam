@@ -6,6 +6,7 @@ use App\Enums\AssetAccessRole;
 use App\Enums\Status;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
+use App\Traits\HasStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class UserGroup extends Model
 {
     /** @use HasFactory<\Database\Factories\UserGroupFactory> */
-    use BelongsToOrganization, HasBlamable, HasFactory;
+    use BelongsToOrganization, HasBlamable, HasFactory, HasStatus;
 
     protected $fillable = [
         'org_id',
@@ -47,7 +48,7 @@ class UserGroup extends Model
 
     public function users(): BelongsToMany
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'user_user_group');
     }
 
     public function createdBy(): BelongsTo

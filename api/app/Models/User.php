@@ -94,7 +94,7 @@ class User extends Authenticatable
 
     public function userGroups(): BelongsToMany
     {
-        return $this->belongsToMany(UserGroup::class);
+        return $this->belongsToMany(UserGroup::class, 'user_user_group');
     }
 
     public function assetAccessGrants(): HasMany
@@ -174,7 +174,7 @@ class User extends Authenticatable
 
     public function requests(): HasMany
     {
-        return $this->hasMany(Request::class);
+        return $this->hasMany(Request::class, 'requester_id');
     }
 
     public function sessions(): HasMany

@@ -19,6 +19,7 @@ class UserGroupController extends Controller
 
     public function index(UserGroupFilter $filter): UserGroupCollection
     {
+        $this->authorize('viewAny', UserGroup::class);
         $userGroup = UserGroup::filter($filter);
 
         return new UserGroupCollection(
@@ -28,6 +29,7 @@ class UserGroupController extends Controller
 
     public function store(StoreUserGroupRequest $request): UserGroupResource
     {
+        $this->authorize('create', UserGroup::class);
         $validated = $request->validated();
         $userGroup = UserGroup::create($validated);
 
@@ -36,14 +38,17 @@ class UserGroupController extends Controller
 
     public function show(string $id): UserGroupResource
     {
-        $userGroup = UserGroup::query();
-        $this->applyIncludes($userGroup, request());
+        $userGroupQuery = UserGroup::query();
+        $this->applyIncludes($userGroupQuery, request());
+        $userGroup = $userGroupQuery->findOrFail($id);
+        $this->authorize('view', $userGroup);
 
-        return new UserGroupResource($userGroup->findOrFail($id));
+        return new UserGroupResource($userGroup);
     }
 
     public function update(UpdateUserGroupRequest $request, UserGroup $userGroup): UserGroupResource
     {
+        $this->authorize('update', $userGroup);
         $validated = $request->validated();
         $userGroup->update($validated);
 
@@ -52,6 +57,7 @@ class UserGroupController extends Controller
 
     public function destroy(UserGroup $userGroup): Response
     {
+        $this->authorize('delete', $userGroup);
         $userGroup->deleted_by = Auth::id();
         $userGroup->save();
         $userGroup->delete();

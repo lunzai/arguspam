@@ -17,6 +17,7 @@ class SessionController extends Controller
 
     public function index(SessionFilter $filter): SessionCollection
     {
+        $this->authorize('viewAny', Session::class);
         $session = Session::filter($filter);
 
         return new SessionCollection(
@@ -26,14 +27,17 @@ class SessionController extends Controller
 
     public function show(string $id): SessionResource
     {
-        $session = Session::query();
-        $this->applyIncludes($session, request());
+        $sessionQuery = Session::query();
+        $this->applyIncludes($sessionQuery, request());
+        $session = $sessionQuery->findOrFail($id);
+        $this->authorize('view', $session);
 
-        return new SessionResource($session->findOrFail($id));
+        return new SessionResource($session);
     }
 
     public function update(UpdateSessionRequest $request, Session $session): SessionResource
     {
+        $this->authorize('update', $session);
         $validated = $request->validated();
         $session->update($validated);
 
@@ -42,6 +46,7 @@ class SessionController extends Controller
 
     public function destroy(Session $session): Response
     {
+        $this->authorize('delete', $session);
         $session->deleted_by = Auth::id();
         $session->save();
         $session->delete();

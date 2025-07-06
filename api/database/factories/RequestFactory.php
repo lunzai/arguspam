@@ -23,27 +23,22 @@ class RequestFactory extends Factory
      */
     public function definition(): array
     {
-        // $org = Org::factory();
-        // $asset = Asset::factory()
-        //     ->for($org);
-        // $startDatetime = $this->faker->dateTimeBetween('now', '+1 week');
-        // $duration = $this->faker->randomElement([30, 60, 90, 120]);
-        // $endDatetime = Carbon::parse($startDatetime)->addMinutes($duration);
-        // return [
-        //     'org_id' => $org,
-        //     'asset_id' => $asset,
-        //     'requester_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
-        //     'start_datetime' => $startDatetime,
-        //     'end_datetime' => $endDatetime,
-        //     'duration' => $duration,
-        //     'reason' => $this->faker->paragraph(),
-        //     'intended_query' => $this->faker->paragraph(),
-        //     'scope' => $this->faker->randomElement(RequestScope::cases()),
-        //     'ai_note' => $this->faker->paragraph(),
-        //     'ai_risk_rating' => $this->faker->randomElement(RiskRating::cases()),
-        //     'status' => RequestStatus::PENDING->value,
-        // ];
-        return [];
+        $startDatetime = $this->faker->dateTimeBetween('now', '+1 week');
+        $duration = $this->faker->randomElement([30, 60, 90, 120]);
+        $endDatetime = Carbon::parse($startDatetime)->addMinutes($duration);
+        
+        return [
+            'org_id' => Org::factory(),
+            'asset_id' => Asset::factory(),
+            'requester_id' => User::factory(),
+            'start_datetime' => $startDatetime,
+            'end_datetime' => $endDatetime,
+            'duration' => $duration,
+            'reason' => $this->faker->paragraph(),
+            'intended_query' => $this->faker->paragraph(),
+            'scope' => $this->faker->randomElement(RequestScope::cases()),
+            'status' => RequestStatus::PENDING,
+        ];
     }
 
     public function sensitiveData(): static

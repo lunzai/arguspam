@@ -7,15 +7,22 @@
 		FilterConfig,
 		SortConfig
 	} from '$components/data-table/types';
-	import { shortDateTime } from '$lib/utils/date';
+	import { shortDateTime } from '$utils/date';
 	import type { ColumnDefinition } from '$components/data-table/types';
 	import { page } from '$app/state';
-	import { Pencil, NotebookText } from '@lucide/svelte';
+	import { NotebookText, PlusIcon } from '@lucide/svelte';
 	import type { CellBadge } from '$components/data-table/types';
+	import { Button } from '$ui/button';
+	import FormDialog from './form-dialog.svelte';
+	import { goto } from '$app/navigation';
+
+	let { data } : { data: any } = $props();
 
 	let initialSearchParams = page.url.searchParams;
 	initialSearchParams.set('count', 'users');
 	const modelName = 'user-groups';
+
+	let addUserGroupDialogIsOpen = $state(false);
 
 	export const columns: ColumnDefinition<UserGroup>[] = [
 		{
@@ -38,7 +45,10 @@
 		},
 		{
 			key: 'users_count',
-			title: 'Users Count'
+			title: 'Users Count',
+			renderer: (value: string) => {
+				return value ? value : '0';
+			}
 		},
 		{
 			key: 'status',
@@ -90,13 +100,6 @@
 							href: `/${modelName}/${row.id}`,
 							variant: 'link',
 							class: 'hover:text-blue-500'
-						},
-						{
-							label: 'Edit',
-							icon: Pencil,
-							href: `/${modelName}/${row.id}/edit`,
-							variant: 'link',
-							class: 'hover:text-blue-500'
 						}
 					]
 				};
@@ -145,7 +148,30 @@
 	}
 </script>
 
-<h1 class="text-2xl font-medium capitalize">User Groups</h1>
+<div class="flex justify-between items-center">
+	<h1 class="text-2xl font-medium capitalize">User Groups</h1>
+	<Button 
+		variant="outline" 
+		class="gap-2 hover:border-blue-200 hover:text-blue-500 hover:bg-blue-50"
+		onclick={() => {
+			addUserGroupDialogIsOpen = true;
+		}}
+	>
+		<PlusIcon class="w-4 h-4" />
+		<span>Add User Group</span>
+	</Button>
+</div>
+
+<FormDialog
+	isOpen={addUserGroupDialogIsOpen}
+	model={data.model}
+	data={data.form}
+	onSuccess={async (data: UserGroup) => {
+		console.log('onSuccess', data);		
+		await goto(`/user-groups/${data.id}`);
+		addUserGroupDialogIsOpen = false;
+	}}
+/>
 
 <!-- Data Table Component -->
 <DataTable

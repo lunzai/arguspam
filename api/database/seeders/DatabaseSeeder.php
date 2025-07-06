@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\AssetAccessRole;
+use App\Enums\Status;
 use App\Models\Asset;
 use App\Models\AssetAccount;
 use App\Models\Org;
@@ -18,13 +19,11 @@ class DatabaseSeeder extends Seeder
 
     private const ORG_COUNT = 3;
 
-    private const USER_COUNT = 20;
+    private const USER_COUNT = 100;
 
-    private const USER_GROUP_COUNT = 5;
+    private const USER_GROUP_COUNT = 10;
 
-    private const ASSET_COUNT = 10;
-
-    private const PERMISSION_COUNT = 10;
+    private const ASSET_COUNT = 25;
 
     /**
      * Seed the application's database.
@@ -36,7 +35,8 @@ class DatabaseSeeder extends Seeder
             ->first();
         $defaultUserRole = Role::where('name', config('pam.rbac.default_user_role'))
             ->first();
-        User::factory(2)
+
+        $users = User::factory(2)
             ->sequence(
                 ['name' => 'Admin', 'email' => 'admin@admin.com'],
                 ['name' => 'Hean Luen', 'email' => 'heanluen@gmail.com'],
@@ -44,8 +44,24 @@ class DatabaseSeeder extends Seeder
             ->hasAttached($defaultAdminRole)
             ->create();
 
-        $orgs = Org::factory(self::ORG_COUNT)
+        $orgs = Org::factory()
+            ->count(self::ORG_COUNT)
+            ->sequence(
+                ['name' => 'Sayyam Investments', 'status' => Status::ACTIVE],
+                ['name' => 'Bullsmart', 'status' => Status::ACTIVE],
+                ['name' => 'SMB', 'status' => Status::ACTIVE],
+                ['name' => 'KKBH', 'status' => Status::ACTIVE],
+                ['name' => 'SMDT', 'status' => Status::ACTIVE],
+                ['name' => 'Surfin Creatives', 'status' => Status::ACTIVE],
+                ['name' => 'Surfin', 'status' => Status::ACTIVE],
+                ['name' => 'Inovest', 'status' => Status::ACTIVE],
+                ['name' => 'PinjamYuk', 'status' => Status::ACTIVE],
+            )
             ->create();
+
+        $users->each(function ($user) use ($orgs) {
+            $user->orgs()->attach($orgs, ['joined_at' => now()->subDays(rand(0, 3))]);
+        });
 
         for ($i = 0; $i < self::USER_COUNT; $i++) {
             User::factory()

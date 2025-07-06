@@ -19,6 +19,7 @@ class PermissionController extends Controller
      */
     public function index(PermissionFilter $filter): PermissionCollection
     {
+        $this->authorize('viewAny', Permission::class);
         $permissions = Permission::filter($filter);
 
         return new PermissionCollection(
@@ -31,6 +32,7 @@ class PermissionController extends Controller
      */
     public function store(StorePermissionRequest $request): PermissionResource
     {
+        $this->authorize('create', Permission::class);
         $validated = $request->validated();
         $permission = Permission::create($validated);
 
@@ -42,10 +44,12 @@ class PermissionController extends Controller
      */
     public function show(string $id): PermissionResource
     {
-        $permission = Permission::query();
-        $this->applyIncludes($permission, request());
+        $permissionQuery = Permission::query();
+        $this->applyIncludes($permissionQuery, request());
+        $permission = $permissionQuery->findOrFail($id);
+        $this->authorize('view', $permission);
 
-        return new PermissionResource($permission->findOrFail($id));
+        return new PermissionResource($permission);
     }
 
     /**
@@ -53,6 +57,7 @@ class PermissionController extends Controller
      */
     public function update(UpdatePermissionRequest $request, Permission $permission): PermissionResource
     {
+        $this->authorize('update', $permission);
         $validated = $request->validated();
         $permission->update($validated);
 
@@ -64,6 +69,7 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission)
     {
+        $this->authorize('delete', $permission);
         if ($permission->roles()->exists()) {
             return $this->unprocessableEntity('Cannot delete permission with assigned roles.');
         }

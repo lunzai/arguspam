@@ -6,7 +6,7 @@ import { UserService } from '$services/user';
 import { authStore } from '$stores/auth';
 import type { User } from '$models/user';
 import type { ApiValidationErrorResponse } from '$resources/api';
-import { snakeToCamel } from '$utils/string';
+import { setFormErrors } from '$lib/utils/form';
 
 export const load = async ({ locals }: any) => {
 	const { user } = locals;
@@ -43,10 +43,7 @@ export const actions: Actions = {
 			};
 		} catch (error: any) {
 			if (error.response?.status === 422) {
-				const data: ApiValidationErrorResponse = error.response.data;
-				for (const [key, value] of Object.entries(data.errors)) {
-					setError(form, snakeToCamel(key) as any, value[0]);
-				}
+				setFormErrors(form, error.response.data);
 				return fail(400, { form });
 			}
 			return fail(400, { form, error: 'Failed to update profile' });

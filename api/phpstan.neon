@@ -1,0 +1,20 @@
+includes:
+  - ./vendor/larastan/larastan/extension.neon
+  - ./vendor/nesbot/carbon/extension.neon
+
+parameters:
+  level: 5
+
+  paths:
+    - app
+  #  - tests
+
+  excludePaths:
+    - bootstrap/*
+    - storage/*
+    - database/*
+    - public/*
+
+  # Optional improvements
+  checkMissingVarTagTypehint: false
+  reportUnmatchedIgnoredErrors: false

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\Status;
 use App\Traits\HasBlamable;
+use App\Traits\HasStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Org extends Model
 {
     /** @use HasFactory<\Database\Factories\OrgFactory> */
-    use HasBlamable, HasFactory, SoftDeletes;
+    use HasBlamable, HasFactory, HasStatus, SoftDeletes;
 
     protected $fillable = [
         'name',

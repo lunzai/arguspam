@@ -32,7 +32,8 @@ enum SettingDataType: string
                 is_int($value) ||
                 (is_string($value) && is_numeric($value)),
             self::BOOLEAN => is_bool($value) ||
-                in_array(strtolower((string) $value), ['true', 'false', '0', '1', 0, 1]),
+                in_array($value, [0, 1], true) ||
+                (!is_array($value) && in_array(strtolower((string) $value), ['true', 'false', '0', '1'])),
             self::JSON => is_array($value) ||
                 (is_string($value) && json_decode($value) !== null && json_last_error() === JSON_ERROR_NONE),
             self::ARRAY => is_array($value) || is_string($value),

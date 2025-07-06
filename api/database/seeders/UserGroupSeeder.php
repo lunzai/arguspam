@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\UserGroup;
 use Illuminate\Database\Seeder;
 
 class UserGroupSeeder extends Seeder
@@ -11,6 +12,10 @@ class UserGroupSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        UserGroup::factory([
+            'org_id' => 1,
+        ])
+            ->count(10)
+            ->create();
     }
 }

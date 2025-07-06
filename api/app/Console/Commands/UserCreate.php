@@ -8,9 +8,6 @@ use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 
-use function Laravel\Prompts\form;
-use function Laravel\Prompts\info;
-
 class UserCreate extends Command
 {
     /**
@@ -33,49 +30,38 @@ class UserCreate extends Command
     public function handle()
     {
         $roles = Role::all();
-        $response = form()
-            ->text(
-                name: 'name',
-                label: 'Name',
-                placeholder: 'John Doe',
-                validate: ['name' => 'required|string|max:255|min:2'],
-            )
-            ->text(
-                name: 'email',
-                label: 'Email',
-                placeholder: 'john@doe.com',
-                validate: ['email' => 'required|email'],
-            )
-            ->password(
-                name: 'password',
-                label: 'Password',
-                placeholder: '********',
-                validate: ['password' => 'required|string|min:'.config('pam.password.min_length')],
-            )
-            ->multiselect(
-                name: 'roles',
-                label: 'Roles',
-                options: $roles->pluck('name', 'id')->toArray(),
-                required: true,
-                default: [config('auth.default_user_role')],
-                validate: ['roles' => 'required|array'],
-                scroll: 10,
-            )
-            ->confirm('Are you sure you want to create user?')
-            ->submit();
+        $roleOptions = $roles->pluck('name', 'id')->toArray();
+        $defaultRole = config('auth.default_user_role');
+        
+        $name = $this->ask('Name');
+        $email = $this->ask('Email');
+        $password = $this->secret('Password');
+        
+        $selectedRoles = [];
+        if (!empty($roleOptions)) {
+            $selectedRoles = $this->choice('Roles', $roleOptions, $defaultRole, null, true);
+        } else {
+            $this->warn('No roles available. User will be created without roles.');
+        }
+        
+        if (!$this->confirm('Are you sure you want to create user?')) {
+            return;
+        }
 
         $user = new User;
-        $user->name = $response['name'];
-        $user->email = $response['email'];
+        $user->name = $name;
+        $user->email = $email;
         $user->status = Status::ACTIVE;
-        $user->password = Hash::make($response['password']);
+        $user->password = $password;
         $user->save();
 
-        $userRoles = $roles->filter(fn ($role) => in_array($role->name, $response['roles']));
-        $user->roles()->attach($userRoles);
+        if (!empty($selectedRoles)) {
+            $userRoles = $roles->filter(fn ($role) => in_array($role->name, $selectedRoles));
+            $user->roles()->attach($userRoles);
+        }
 
-        info('User created successfully');
-        info('Name: '.$user->name);
-        info('Email: '.$user->email);
+        $this->info('User created successfully');
+        $this->info('Name: '.$user->name);
+        $this->info('Email: '.$user->email);
     }
 }

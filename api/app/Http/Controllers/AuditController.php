@@ -14,6 +14,7 @@ class AuditController extends Controller
 
     public function index(ActionAuditFilter $filter): ActionAuditCollection
     {
+        $this->authorize('viewAny', ActionAudit::class);
         $actionAudit = ActionAudit::filter($filter);
 
         return new ActionAuditCollection(
@@ -23,9 +24,11 @@ class AuditController extends Controller
 
     public function show(string $id): ActionAuditResource
     {
-        $actionAudit = ActionAudit::query();
-        $this->applyIncludes($actionAudit, request());
+        $actionAuditQuery = ActionAudit::query();
+        $this->applyIncludes($actionAuditQuery, request());
+        $actionAudit = $actionAuditQuery->findOrFail($id);
+        $this->authorize('view', $actionAudit);
 
-        return new ActionAuditResource($actionAudit->findOrFail($id));
+        return new ActionAuditResource($actionAudit);
     }
 }

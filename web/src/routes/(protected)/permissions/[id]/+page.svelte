@@ -56,7 +56,7 @@
 				<DL.Label>Description</DL.Label>
 				<DL.Content>{model.description || '-'}</DL.Content>
 			</DL.Row>
-			<DL.Row>
+			<!-- <DL.Row>
 				<DL.Label>Created At</DL.Label>
 				<DL.Content>
 					{relativeDateTime(model.created_at)}
@@ -67,7 +67,7 @@
 				<DL.Content>
 					{relativeDateTime(model.updated_at)}
 				</DL.Content>
-			</DL.Row>
+			</DL.Row> -->
 		</DL.Root>
 	</Card.Content>
 </Card.Root>

@@ -23,7 +23,7 @@
 	<Card.Header class="flex items-center justify-between px-3">
 		<Card.Title class="text-lg">{modelTitle} Details</Card.Title>
 		<Card.Action>
-			<Button
+			<!-- <Button
 				variant="outline"
 				class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
 				href={`/${modelName}/${model.id}/edit`}
@@ -38,7 +38,7 @@
 			>
 				<Trash2 class="h-4 w-4" />
 				Delete
-			</Button>
+			</Button> -->
 		</Card.Action>
 	</Card.Header>
 	<Separator />

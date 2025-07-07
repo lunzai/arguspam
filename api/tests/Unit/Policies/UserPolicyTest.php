@@ -21,24 +21,24 @@ class UserPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new UserPolicy();
+        $this->policy = new UserPolicy;
         $this->user = User::factory()->create();
         $this->targetUser = User::factory()->create();
     }
 
-    public function test_viewAny_returns_true_when_user_has_permission(): void
+    public function test_view_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'user:viewany');
 
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_viewAny_returns_false_when_user_lacks_permission(): void
+    public function test_view_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->viewAny($this->user));
     }
 
-    public function test_view_returns_true_when_user_has_viewAny_permission(): void
+    public function test_view_returns_true_when_user_has_view_any_permission(): void
     {
         $this->giveUserPermission($this->user, 'user:viewany');
 
@@ -57,7 +57,7 @@ class UserPolicyTest extends TestCase
         $this->assertFalse($this->policy->view($this->user, $this->user));
     }
 
-    public function test_view_returns_false_when_viewing_other_user_without_viewAny_permission(): void
+    public function test_view_returns_false_when_viewing_other_user_without_view_any_permission(): void
     {
         $this->giveUserPermission($this->user, 'user:view');
 
@@ -76,19 +76,19 @@ class UserPolicyTest extends TestCase
         $this->assertFalse($this->policy->create($this->user));
     }
 
-    public function test_updateAny_returns_true_when_user_has_permission(): void
+    public function test_update_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'user:updateany');
 
         $this->assertTrue($this->policy->updateAny($this->user));
     }
 
-    public function test_updateAny_returns_false_when_user_lacks_permission(): void
+    public function test_update_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->updateAny($this->user));
     }
 
-    public function test_update_returns_true_when_user_has_updateAny_permission(): void
+    public function test_update_returns_true_when_user_has_update_any_permission(): void
     {
         $this->giveUserPermission($this->user, 'user:updateany');
 
@@ -107,45 +107,45 @@ class UserPolicyTest extends TestCase
         $this->assertFalse($this->policy->update($this->user, $this->user));
     }
 
-    public function test_update_returns_false_when_updating_other_user_without_updateAny_permission(): void
+    public function test_update_returns_false_when_updating_other_user_without_update_any_permission(): void
     {
         $this->giveUserPermission($this->user, 'user:update');
 
         $this->assertFalse($this->policy->update($this->user, $this->targetUser));
     }
 
-    public function test_deleteAny_returns_true_when_user_has_permission_and_not_deleting_self(): void
+    public function test_delete_any_returns_true_when_user_has_permission_and_not_deleting_self(): void
     {
         $this->giveUserPermission($this->user, 'user:deleteany');
 
         $this->assertTrue($this->policy->deleteAny($this->user, $this->targetUser));
     }
 
-    public function test_deleteAny_returns_false_when_user_lacks_permission(): void
+    public function test_delete_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->deleteAny($this->user, $this->targetUser));
     }
 
-    public function test_deleteAny_returns_false_when_user_tries_to_delete_self(): void
+    public function test_delete_any_returns_false_when_user_tries_to_delete_self(): void
     {
         $this->giveUserPermission($this->user, 'user:deleteany');
 
         $this->assertFalse($this->policy->deleteAny($this->user, $this->user));
     }
 
-    public function test_deleteAny_returns_false_when_user_tries_to_delete_self_even_without_permission(): void
+    public function test_delete_any_returns_false_when_user_tries_to_delete_self_even_without_permission(): void
     {
         $this->assertFalse($this->policy->deleteAny($this->user, $this->user));
     }
 
-    public function test_restoreAny_returns_true_when_user_has_permission(): void
+    public function test_restore_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'user:restoreany');
 
         $this->assertTrue($this->policy->restoreAny($this->user));
     }
 
-    public function test_restoreAny_returns_false_when_user_lacks_permission(): void
+    public function test_restore_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->restoreAny($this->user));
     }
@@ -161,7 +161,7 @@ class UserPolicyTest extends TestCase
         $this->assertTrue($this->policy->updateAny($this->user));
         $this->assertTrue($this->policy->update($this->user, $this->targetUser));
         $this->assertTrue($this->policy->deleteAny($this->user, $this->targetUser));
-        
+
         // Still cannot delete self
         $this->assertFalse($this->policy->deleteAny($this->user, $this->user));
     }

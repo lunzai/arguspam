@@ -141,10 +141,10 @@ class SessionAuditPolicyTest extends TestCase
     //     $asset1 = Asset::factory()->create();
     //     $asset2 = Asset::factory()->create();
     //     $session1 = Session::factory()->create([
-    //         'org_id' => $this->org->id, 
-    //         'asset_id' => $asset1->id, 
-    //         'request_id' => $this->request->id, 
-    //         'requester_id' => $this->user->id, 
+    //         'org_id' => $this->org->id,
+    //         'asset_id' => $asset1->id,
+    //         'request_id' => $this->request->id,
+    //         'requester_id' => $this->user->id,
     //         'approver_id' => $this->approver->id,
     //         'start_datetime' => now(),
     //         'end_datetime' => now()->addHour(),
@@ -153,10 +153,10 @@ class SessionAuditPolicyTest extends TestCase
     //         'actual_duration' => 60,
     //     ]);
     //     $session2 = Session::factory()->create([
-    //         'org_id' => $this->org->id, 
-    //         'asset_id' => $asset2->id, 
-    //         'request_id' => $this->request->id, 
-    //         'requester_id' => $this->user->id, 
+    //         'org_id' => $this->org->id,
+    //         'asset_id' => $asset2->id,
+    //         'request_id' => $this->request->id,
+    //         'requester_id' => $this->user->id,
     //         'approver_id' => $this->approver->id,
     //         'start_datetime' => now(),
     //         'end_datetime' => now()->addHour(),
@@ -192,7 +192,7 @@ class SessionAuditPolicyTest extends TestCase
     //     $noPermissionUser = User::factory()->create();
 
     //     $this->giveUserPermission($viewAnyUser, 'sessionaudit:viewany');
-        
+
     //     $this->giveUserAssetAccess($assetViewUser, $this->asset);
     //     $this->giveUserPermission($assetViewUser, 'sessionaudit:view');
 
@@ -221,14 +221,14 @@ class SessionAuditPolicyTest extends TestCase
     //     // User with only view permission should not have viewAny access
     //     $viewOnlyUser = User::factory()->create();
     //     $this->giveUserPermission($viewOnlyUser, 'sessionaudit:view');
-        
+
     //     $this->assertFalse($this->policy->viewAny($viewOnlyUser));
     //     $this->assertFalse($this->policy->view($viewOnlyUser, $this->sessionAudit)); // No asset access
-        
+
     //     // User with only viewAny permission should have both accesses
     //     $viewAnyOnlyUser = User::factory()->create();
     //     $this->giveUserPermission($viewAnyOnlyUser, 'sessionaudit:viewany');
-        
+
     //     $this->assertTrue($this->policy->viewAny($viewAnyOnlyUser));
     //     $this->assertTrue($this->policy->view($viewAnyOnlyUser, $this->sessionAudit));
     // }
@@ -247,10 +247,10 @@ class SessionAuditPolicyTest extends TestCase
     //     // Create session audit for a different asset
     //     $otherAsset = Asset::factory()->create();
     //     $otherSession = Session::factory()->create([
-    //         'org_id' => $this->org->id, 
-    //         'asset_id' => $otherAsset->id, 
-    //         'request_id' => $this->request->id, 
-    //         'requester_id' => $this->user->id, 
+    //         'org_id' => $this->org->id,
+    //         'asset_id' => $otherAsset->id,
+    //         'request_id' => $this->request->id,
+    //         'requester_id' => $this->user->id,
     //         'approver_id' => $this->approver->id,
     //         'start_datetime' => now(),
     //         'end_datetime' => now()->addHour(),

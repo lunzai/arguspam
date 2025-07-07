@@ -11,7 +11,7 @@ class AssetAccessRoleTest extends TestCase
     {
         $cases = AssetAccessRole::cases();
         $this->assertCount(3, $cases);
-        
+
         $this->assertContains(AssetAccessRole::REQUESTER, $cases);
         $this->assertContains(AssetAccessRole::APPROVER, $cases);
         $this->assertContains(AssetAccessRole::AUDITOR, $cases);

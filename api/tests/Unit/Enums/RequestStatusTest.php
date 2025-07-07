@@ -11,7 +11,7 @@ class RequestStatusTest extends TestCase
     {
         $cases = RequestStatus::cases();
         $this->assertCount(4, $cases);
-        
+
         $this->assertContains(RequestStatus::PENDING, $cases);
         $this->assertContains(RequestStatus::APPROVED, $cases);
         $this->assertContains(RequestStatus::REJECTED, $cases);

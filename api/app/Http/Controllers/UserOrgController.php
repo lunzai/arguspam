@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CacheKey;
 use App\Http\Resources\Org\OrgCollection;
 use App\Models\Org;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use App\Enums\CacheKey;
 
 class UserOrgController extends Controller
 {

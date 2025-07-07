@@ -46,6 +46,7 @@
         "analyse": "phpstan analyse --memory-limit=256M",
         "coverage": " XDEBUG_MODE=coverage php artisan test --parallel --coverage --coverage-html=coverage-report",
         "test": "XDEBUG_MODE=coverage php artisan test --parallel --coverage",
+        "pint": "vendor/bin/pint --parallel",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"

@@ -11,7 +11,7 @@ class AuditActionTest extends TestCase
     {
         $cases = AuditAction::cases();
         $this->assertCount(15, $cases);
-        
+
         $this->assertContains(AuditAction::VIEW, $cases);
         $this->assertContains(AuditAction::CREATE, $cases);
         $this->assertContains(AuditAction::UPDATE, $cases);

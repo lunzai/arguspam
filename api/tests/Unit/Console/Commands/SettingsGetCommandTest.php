@@ -74,7 +74,7 @@ class SettingsGetCommandTest extends TestCase
     public function test_handle_with_array_value()
     {
         $arrayValue = ['key1' => 'value1', 'key2' => 'value2'];
-        
+
         Setting::factory()->create([
             'key' => 'test.array',
             'value' => json_encode($arrayValue),
@@ -98,7 +98,7 @@ class SettingsGetCommandTest extends TestCase
     public function test_handle_with_object_value()
     {
         $object = (object) ['key' => 'value'];
-        
+
         Setting::factory()->create([
             'key' => 'test.object',
             'value' => json_encode($object),

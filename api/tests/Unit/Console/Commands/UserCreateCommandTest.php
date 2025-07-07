@@ -18,15 +18,15 @@ class UserCreateCommandTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         Config::set('pam.password.min_length', 8);
         Config::set('auth.default_user_role', 1);
         Config::set('hashing.driver', 'bcrypt');
-        
+
         // Mock Hash facade to avoid HashManager configuration issues
         Hash::shouldReceive('make')
-            ->andReturnUsing(function($password) {
-                return 'hashed_' . $password;
+            ->andReturnUsing(function ($password) {
+                return 'hashed_'.$password;
             });
         Hash::shouldReceive('isHashed')
             ->andReturn(false);
@@ -67,7 +67,6 @@ class UserCreateCommandTest extends TestCase
         $userRole = Role::factory()->create(['name' => 'user_test2']);
         $auditorRole = Role::factory()->create(['name' => 'auditor_test2']);
 
-
         $this->artisan(UserCreate::class)
             ->expectsQuestion('Name', 'Jane Doe')
             ->expectsQuestion('Email', 'jane@example.com')
@@ -88,9 +87,8 @@ class UserCreateCommandTest extends TestCase
         Role::query()->delete();
         $adminRole = Role::factory()->create(['name' => 'admin_test3']);
         $userRole = Role::factory()->create(['name' => 'user_test3']);
-        
-        Config::set('auth.default_user_role', $userRole->id);
 
+        Config::set('auth.default_user_role', $userRole->id);
 
         $this->artisan(UserCreate::class)
             ->expectsQuestion('Name', 'Test User')
@@ -106,13 +104,13 @@ class UserCreateCommandTest extends TestCase
 
     public function test_command_signature()
     {
-        $command = new UserCreate();
+        $command = new UserCreate;
         $this->assertEquals('user:create', $command->getName());
     }
 
     public function test_command_description()
     {
-        $command = new UserCreate();
+        $command = new UserCreate;
         $this->assertEquals('Create a new user', $command->getDescription());
     }
 
@@ -120,7 +118,6 @@ class UserCreateCommandTest extends TestCase
     {
         Role::query()->delete();
         $role = Role::factory()->create(['name' => 'user_test4']);
-
 
         $this->artisan(UserCreate::class)
             ->expectsQuestion('Name', 'Active User')

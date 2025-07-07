@@ -26,7 +26,7 @@ class UserGroupTest extends TestCase
 
         $this->org = Org::factory()->create();
         $this->user = User::factory()->create();
-        
+
         $this->userGroup = UserGroup::factory()->create([
             'org_id' => $this->org->id,
             'name' => 'Test User Group',
@@ -270,7 +270,7 @@ class UserGroupTest extends TestCase
     {
         // Test through BelongsToOrganization trait
         $this->assertEquals($this->org->id, $this->userGroup->org_id);
-        
+
         // Test org relationship (from BelongsToOrganization trait)
         $this->assertInstanceOf(Org::class, $this->userGroup->org);
         $this->assertEquals($this->org->id, $this->userGroup->org->id);

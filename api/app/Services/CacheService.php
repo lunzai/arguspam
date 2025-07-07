@@ -30,4 +30,4 @@ class CacheService
         // Implementation for clearing all organization caches
         // This could use cache tags if your cache driver supports them
     }
-} 
+}

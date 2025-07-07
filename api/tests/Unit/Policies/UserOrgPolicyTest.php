@@ -22,19 +22,19 @@ class UserOrgPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new UserOrgPolicy();
+        $this->policy = new UserOrgPolicy;
         $this->user = User::factory()->create();
         $this->org = Org::factory()->create();
     }
 
-    public function test_viewAny_returns_true_when_user_has_permission(): void
+    public function test_view_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'userorg:viewany');
 
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_viewAny_returns_false_when_user_lacks_permission(): void
+    public function test_view_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->viewAny($this->user));
     }
@@ -61,7 +61,7 @@ class UserOrgPolicyTest extends TestCase
         $this->assertTrue($this->policy->view($this->user, $anotherOrg));
     }
 
-    public function test_user_with_viewAny_permission_can_view_specific_org(): void
+    public function test_user_with_view_any_permission_can_view_specific_org(): void
     {
         $this->giveUserPermission($this->user, 'userorg:viewany');
 
@@ -71,7 +71,7 @@ class UserOrgPolicyTest extends TestCase
         $this->assertFalse($this->policy->view($this->user, $this->org));
     }
 
-    public function test_user_with_view_permission_cannot_viewAny(): void
+    public function test_user_with_view_permission_cannot_view_any(): void
     {
         $this->giveUserPermission($this->user, 'userorg:view');
 
@@ -136,7 +136,7 @@ class UserOrgPolicyTest extends TestCase
         // It only checks if user has the 'userorg:view' permission regardless of the org
         $org1 = Org::factory()->create(['name' => 'Org 1']);
         $org2 = Org::factory()->create(['name' => 'Org 2']);
-        
+
         $this->giveUserPermission($this->user, 'userorg:view');
 
         // Should return same result for any org

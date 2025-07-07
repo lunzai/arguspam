@@ -11,7 +11,7 @@ class StatusTest extends TestCase
     {
         $cases = Status::cases();
         $this->assertCount(2, $cases);
-        
+
         $this->assertContains(Status::ACTIVE, $cases);
         $this->assertContains(Status::INACTIVE, $cases);
     }

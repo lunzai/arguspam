@@ -115,13 +115,13 @@ class SettingsGroupListCommandTest extends TestCase
 
     public function test_command_signature()
     {
-        $command = new SettingsGroupListCommand();
+        $command = new SettingsGroupListCommand;
         $this->assertEquals('settings:group:list', $command->getName());
     }
 
     public function test_command_description()
     {
-        $command = new SettingsGroupListCommand();
+        $command = new SettingsGroupListCommand;
         $this->assertEquals('List all setting groups', $command->getDescription());
     }
 

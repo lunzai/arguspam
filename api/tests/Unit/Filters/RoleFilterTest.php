@@ -31,7 +31,7 @@ class RoleFilterTest extends TestCase
     public function test_sortable_fields_are_defined(): void
     {
         $filter = $this->createFilter();
-        
+
         $reflection = new \ReflectionClass($filter);
         $property = $reflection->getProperty('sortable');
         $property->setAccessible(true);
@@ -231,7 +231,7 @@ class RoleFilterTest extends TestCase
     public function test_inheritance_from_query_filter(): void
     {
         $filter = $this->createFilter();
-        
+
         $this->assertInstanceOf(\App\Http\Filters\QueryFilter::class, $filter);
     }
 
@@ -341,12 +341,12 @@ class RoleFilterTest extends TestCase
     {
         $filter = $this->createFilter();
         $filter->apply($this->builder);
-        
+
         $result = $filter->createdAt('2023-01-01 00:00:00,2023-12-31 23:59:59');
-        
+
         $sql = $result->toSql();
         $bindings = $result->getBindings();
-        
+
         $this->assertStringContainsString('created_at', $sql);
         $this->assertStringContainsString('between', strtolower($sql));
         $this->assertContains('2023-01-01 00:00:00', $bindings);
@@ -361,7 +361,7 @@ class RoleFilterTest extends TestCase
             ->where('id', '>', 0);
 
         $this->assertInstanceOf(Builder::class, $result);
-        
+
         $sql = $result->toSql();
         $this->assertStringContainsString('id', $sql);
         $this->assertStringContainsString('>', $sql);
@@ -384,7 +384,7 @@ class RoleFilterTest extends TestCase
     public function test_description_with_long_text(): void
     {
         $longDescription = 'This is a very long description that contains many words and explains the role in great detail including all the permissions and responsibilities that come with this particular role in the system';
-        
+
         $filter = $this->createFilter();
         $filter->apply($this->builder);
         $result = $filter->description($longDescription);

@@ -26,7 +26,7 @@ class RequestFactory extends Factory
         $startDatetime = $this->faker->dateTimeBetween('now', '+1 week');
         $duration = $this->faker->randomElement([30, 60, 90, 120]);
         $endDatetime = Carbon::parse($startDatetime)->addMinutes($duration);
-        
+
         return [
             'org_id' => Org::factory(),
             'asset_id' => Asset::factory(),

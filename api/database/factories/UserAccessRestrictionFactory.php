@@ -34,19 +34,19 @@ class UserAccessRestrictionFactory extends Factory
     {
         return match ($type) {
             RestrictionType::IP_ADDRESS => [
-                'allowed_ips' => ['127.0.0.1', '192.168.1.0/24']
+                'allowed_ips' => ['127.0.0.1', '192.168.1.0/24'],
             ],
             RestrictionType::TIME_WINDOW => [
                 'days' => [1, 2, 3, 4, 5], // Monday to Friday
                 'start_time' => '09:00',
                 'end_time' => '17:00',
-                'timezone' => 'UTC'
+                'timezone' => 'UTC',
             ],
             RestrictionType::LOCATION => [
-                'allowed_countries' => ['US', 'CA']
+                'allowed_countries' => ['US', 'CA'],
             ],
             RestrictionType::DEVICE => [
-                'allowed_devices' => ['Chrome', 'Firefox']
+                'allowed_devices' => ['Chrome', 'Firefox'],
             ],
         };
     }

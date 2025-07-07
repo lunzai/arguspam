@@ -121,7 +121,7 @@ class SettingsGroupRenameCommandTest extends TestCase
 
     public function test_command_signature()
     {
-        $command = new SettingsGroupRenameCommand();
+        $command = new SettingsGroupRenameCommand;
         $this->assertStringContainsString('settings:group:rename', $command->getName());
         $this->assertTrue($command->getDefinition()->hasArgument('old'));
         $this->assertTrue($command->getDefinition()->hasArgument('new'));
@@ -129,7 +129,7 @@ class SettingsGroupRenameCommandTest extends TestCase
 
     public function test_command_description()
     {
-        $command = new SettingsGroupRenameCommand();
+        $command = new SettingsGroupRenameCommand;
         $this->assertEquals('Rename a settings group', $command->getDescription());
     }
 

@@ -17,7 +17,7 @@ class PolicyPermissionServiceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->service = new PolicyPermissionService();
+        $this->service = new PolicyPermissionService;
     }
 
     public function test_get_changes_returns_correct_structure(): void
@@ -37,7 +37,7 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         // No existing permissions - all should be added
         $changes = $this->service->getChanges();
 
@@ -53,13 +53,13 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         // Create some permissions that match policy methods
         Permission::create([
             'name' => 'org:viewany',
             'description' => 'Org: View Any',
         ]);
-        
+
         Permission::create([
             'name' => 'org:view',
             'description' => 'Org: View',
@@ -79,7 +79,7 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         // Create a permission that doesn't match any policy
         Permission::create([
             'name' => 'custom:permission',
@@ -99,7 +99,7 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         // Create a permission that doesn't match any policy
         Permission::create([
             'name' => 'custom:permission',
@@ -120,7 +120,7 @@ class PolicyPermissionServiceTest extends TestCase
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         $initialCount = Permission::count();
-        
+
         $changes = $this->service->syncPermissions();
 
         $this->assertGreaterThan($initialCount, Permission::count());
@@ -134,7 +134,7 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         // First sync
         $this->service->syncPermissions();
         $countAfterFirst = Permission::count();
@@ -153,7 +153,7 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         // Create a custom permission that doesn't match any policy
         Permission::create([
             'name' => 'custom:permission',
@@ -173,7 +173,7 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         // Create a custom permission that doesn't match any policy
         Permission::create([
             'name' => 'custom:permission',
@@ -193,10 +193,10 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         // First sync to add all permissions
         $this->service->syncPermissions();
-        
+
         // Second sync should handle empty to_add collection
         $changes = $this->service->syncPermissions();
 
@@ -211,7 +211,7 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         $changes = $this->service->syncPermissions(true);
 
         // Should handle empty to_remove collection gracefully
@@ -226,11 +226,11 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         $changes = $this->service->getChanges();
 
         $this->assertGreaterThan(0, $changes['to_add']->count());
-        
+
         foreach ($changes['to_add'] as $permission) {
             $this->assertArrayHasKey('name', $permission);
             $this->assertArrayHasKey('description', $permission);
@@ -248,11 +248,11 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         $changes = $this->service->getChanges();
 
         $this->assertGreaterThan(0, $changes['to_add']->count());
-        
+
         foreach ($changes['to_add'] as $permission) {
             $this->assertStringNotContainsString('__', $permission['name']);
         }
@@ -265,11 +265,11 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         $changes = $this->service->getChanges();
 
         $this->assertGreaterThan(0, $changes['to_add']->count());
-        
+
         // Should not include methods from parent classes or traits
         foreach ($changes['to_add'] as $permission) {
             $this->assertStringNotContainsString('trait:', $permission['name']);
@@ -284,21 +284,22 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         // Create a temporary fake policy file
         $tempFile = app_path('Policies/NonExistentTestPolicy.php');
-        
+
         try {
             // Create a file but without a matching class to trigger line 26
             File::put($tempFile, '<?php // This file exists but has no matching class');
-            
+
             // Create a service that will scan for this specific file
-            $mockService = new class extends PolicyPermissionService {
+            $mockService = new class extends PolicyPermissionService
+            {
                 protected function getPolicyPermissions(): \Illuminate\Support\Collection
                 {
                     $policyPath = app_path('Policies');
                     $policyFiles = [app_path('Policies/NonExistentTestPolicy.php')]; // Only scan our fake file
-                    
+
                     return collect($policyFiles)->flatMap(function ($file) {
                         $policyClass = 'App\\Policies\\'.basename($file, '.php');
                         $modelName = \Illuminate\Support\Str::before(class_basename($file), 'Policy');
@@ -311,12 +312,12 @@ class PolicyPermissionServiceTest extends TestCase
                     });
                 }
             };
-            
+
             $changes = $mockService->getChanges();
-            
+
             $this->assertInstanceOf(\Illuminate\Support\Collection::class, $changes['to_add']);
             $this->assertEquals(0, $changes['to_add']->count());
-            
+
         } finally {
             // Clean up
             if (File::exists($tempFile)) {
@@ -332,7 +333,7 @@ class PolicyPermissionServiceTest extends TestCase
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         // Create a policy class that extends another class to test line 44 (method declaring class check)
         $mockPolicyContent = '<?php
 namespace App\Policies;
@@ -351,34 +352,34 @@ class EdgeCaseTestPolicy extends \Exception
 }';
 
         $tempFile = app_path('Policies/EdgeCaseTestPolicy.php');
-        
+
         try {
             File::put($tempFile, $mockPolicyContent);
-            
+
             // Include the file
             include $tempFile;
-            
+
             // Test the actual service to get the real line coverage
             $reflection = new \ReflectionClass($this->service);
             $method = $reflection->getMethod('getPermissionsFromPolicy');
             $method->setAccessible(true);
-            
+
             $result = $method->invoke($this->service, 'App\Policies\EdgeCaseTestPolicy', 'EdgeCaseTest');
-            
+
             $names = $result->pluck('name');
-            
+
             // Should include own methods
             $this->assertTrue($names->contains('edgecasetest:myownmethod'));
-            
+
             // Should exclude magic methods (line 48 coverage)
             $this->assertFalse($names->contains('edgecasetest:__magicmethod'));
-            
+
             // Should exclude parent class methods (line 44 coverage)
             // Exception class has many inherited methods that should be filtered out
             $this->assertFalse($names->contains('edgecasetest:getmessage'));
             $this->assertFalse($names->contains('edgecasetest:getcode'));
             $this->assertFalse($names->contains('edgecasetest:getfile'));
-            
+
         } finally {
             // Clean up
             if (File::exists($tempFile)) {
@@ -391,26 +392,26 @@ class EdgeCaseTestPolicy extends \Exception
     {
         // This test will actually trigger line 26 by temporarily creating a policy file
         // that doesn't have a corresponding class definition
-        
+
         $tempFile = app_path('Policies/TriggerLine26Policy.php');
-        
+
         try {
             // Create a file without a valid class definition
             File::put($tempFile, '<?php
 // This file exists but contains no valid policy class
 // This should trigger the class_exists check on line 26
 ');
-            
+
             // Use reflection to call the actual service method
             $reflection = new \ReflectionClass($this->service);
             $method = $reflection->getMethod('getPolicyPermissions');
             $method->setAccessible(true);
-            
+
             // This should execute line 26: return [];
             $result = $method->invoke($this->service);
-            
+
             $this->assertInstanceOf(\Illuminate\Support\Collection::class, $result);
-            
+
         } finally {
             // Clean up
             if (File::exists($tempFile)) {
@@ -425,10 +426,10 @@ class EdgeCaseTestPolicy extends \Exception
         $reflection = new \ReflectionClass($this->service);
         $method = $reflection->getMethod('getPermissionsFromPolicy');
         $method->setAccessible(true);
-        
+
         // Pass a non-existent class name
         $result = $method->invoke($this->service, 'NonExistentClass', 'Model');
-        
+
         $this->assertInstanceOf(\Illuminate\Support\Collection::class, $result);
         $this->assertTrue($result->isEmpty());
     }
@@ -469,47 +470,47 @@ class TestPolicy extends \stdClass
 }';
 
         $tempFile = app_path('Policies/TestPolicy.php');
-        
+
         try {
             File::put($tempFile, $mockPolicyContent);
-            
+
             // Include the file so the class exists
             include $tempFile;
-            
+
             // Use reflection to test the method
             $reflection = new \ReflectionClass($this->service);
             $method = $reflection->getMethod('getPermissionsFromPolicy');
             $method->setAccessible(true);
-            
+
             $result = $method->invoke($this->service, 'App\Policies\TestPolicy', 'Test');
-            
+
             // Should only include methods with 1 or more parameters
             $this->assertGreaterThan(0, $result->count());
-            
+
             $names = $result->pluck('name');
-            
+
             // Should exclude methods with no parameters
             $this->assertFalse($names->contains('test:methodwithnoparam'));
-            
+
             // Should exclude magic methods (line 48 coverage)
             $this->assertFalse($names->contains('test:__construct'));
             $this->assertFalse($names->contains('test:__tostring'));
-            
+
             // Should include valid methods
             $this->assertTrue($names->contains('test:methodwithoneparam'));
             $this->assertTrue($names->contains('test:methodwithtwoparams'));
-            
+
             // Check that parent class methods are excluded (line 44 coverage)
             // Since TestPolicy extends stdClass, any inherited methods should be filtered out
             $allMethods = (new \ReflectionClass('App\Policies\TestPolicy'))->getMethods(\ReflectionMethod::IS_PUBLIC);
-            $parentMethods = array_filter($allMethods, function($method) {
+            $parentMethods = array_filter($allMethods, function ($method) {
                 return $method->getDeclaringClass()->getName() !== 'App\Policies\TestPolicy';
             });
-            
+
             foreach ($parentMethods as $parentMethod) {
-                $this->assertFalse($names->contains('test:' . strtolower($parentMethod->getName())));
+                $this->assertFalse($names->contains('test:'.strtolower($parentMethod->getName())));
             }
-            
+
         } finally {
             // Clean up
             if (File::exists($tempFile)) {
@@ -525,11 +526,11 @@ class TestPolicy extends \stdClass
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         $changes = $this->service->getChanges();
 
         $this->assertGreaterThan(0, $changes['to_add']->count());
-        
+
         foreach ($changes['to_add'] as $permission) {
             // Check that description is properly formatted
             $this->assertStringContainsString(': ', (string) $permission['description']);
@@ -545,13 +546,13 @@ class TestPolicy extends \stdClass
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         $this->service->syncPermissions();
-        
+
         $permissions = Permission::all();
-        
+
         $this->assertGreaterThan(0, $permissions->count());
-        
+
         foreach ($permissions as $permission) {
             $this->assertNotNull($permission->created_at);
             $this->assertNotNull($permission->updated_at);
@@ -576,7 +577,7 @@ class TestPolicy extends \stdClass
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         // Create a permission
         $permission = Permission::create([
             'name' => 'org:viewany',
@@ -597,11 +598,11 @@ class TestPolicy extends \stdClass
         Permission::truncate();
         \DB::table('permission_role')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        
+
         // Create permissions
         $permission1 = Permission::create(['name' => 'custom:permission1', 'description' => 'Custom 1']);
         $permission2 = Permission::create(['name' => 'custom:permission2', 'description' => 'Custom 2']);
-        
+
         // Sync with remove others = true
         $changes = $this->service->syncPermissions(true);
 

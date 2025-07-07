@@ -19,7 +19,7 @@ class OrgController extends Controller
 
     public function index(OrgFilter $filter, Request $request): OrgCollection
     {
-        $this->authorize('viewAny', Org::class);        
+        $this->authorize('viewAny', Org::class);
         $org = Org::filter($filter);
 
         return new OrgCollection(
@@ -38,7 +38,7 @@ class OrgController extends Controller
 
     public function show(string $id): OrgResource
     {
-        
+
         $orgQuery = Org::query();
         $this->applyIncludes($orgQuery, request());
         $org = $orgQuery->findOrFail($id);

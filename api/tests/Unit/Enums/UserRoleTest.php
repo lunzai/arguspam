@@ -11,7 +11,7 @@ class UserRoleTest extends TestCase
     {
         $cases = UserRole::cases();
         $this->assertCount(3, $cases);
-        
+
         $this->assertContains(UserRole::ADMIN, $cases);
         $this->assertContains(UserRole::USER, $cases);
         $this->assertContains(UserRole::AUDITOR, $cases);

@@ -55,7 +55,7 @@ trait HasRbac
     public function hasAnyPermission(array|string $permissions): bool
     {
         $permissions = collect(is_array($permissions) ? $permissions : [$permissions])
-            ->map(fn ($p) => strtolower($p));        
+            ->map(fn ($p) => strtolower($p));
 
         return $this->getAllPermissions()
             ->pluck('name')

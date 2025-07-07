@@ -25,7 +25,8 @@ class QueryFilterTest extends TestCase
     private function createFilter(array $params = []): QueryFilter
     {
         $request = new Request($params);
-        return new class($request) extends QueryFilter {
+        return new class($request) extends QueryFilter
+        {
             protected array $sortable = ['name', 'email', 'created_at'];
 
             public function name(string $value): Builder
@@ -66,7 +67,7 @@ class QueryFilterTest extends TestCase
         $result = $filter->apply($this->builder);
 
         $this->assertInstanceOf(Builder::class, $result);
-        
+
         $sql = $result->toSql();
         $this->assertStringContainsString('name', $sql);
         $this->assertStringContainsString('email', $sql);
@@ -82,7 +83,7 @@ class QueryFilterTest extends TestCase
         ]);
 
         $result = $filter->apply($this->builder);
-        
+
         $sql = $result->toSql();
         $this->assertStringContainsString('name', $sql);
         $this->assertStringNotContainsString('email', $sql);
@@ -97,7 +98,7 @@ class QueryFilterTest extends TestCase
         ]);
 
         $result = $filter->apply($this->builder);
-        
+
         $sql = $result->toSql();
         $this->assertStringContainsString('name', $sql);
         $this->assertStringNotContainsString('nonExistentMethod', $sql);
@@ -199,36 +200,38 @@ class QueryFilterTest extends TestCase
 
     public function test_include_single_relation(): void
     {
-        $request = new Request();
+        $request = new Request;
         // Mock the isValidRelation method to return true
-        $filter = new class($request) extends QueryFilter {
+        $filter = new class($request) extends QueryFilter
+        {
             protected function isValidRelation(string $relation): bool
             {
                 return in_array($relation, ['orgs', 'userGroups']);
             }
         };
-        
+
         $filter->apply($this->builder); // Initialize builder
         $result = $filter->include('orgs');
-        
+
         // Check that the with method was called
         $this->assertArrayHasKey('orgs', $result->getEagerLoads());
     }
 
     public function test_include_multiple_relations(): void
     {
-        $request = new Request();
-        
-        $filter = new class($request) extends QueryFilter {
+        $request = new Request;
+
+        $filter = new class($request) extends QueryFilter
+        {
             protected function isValidRelation(string $relation): bool
             {
                 return in_array($relation, ['roles', 'permissions', 'userGroups']);
             }
         };
-        
+
         $filter->apply($this->builder); // Initialize builder
         $result = $filter->include('roles,permissions,userGroups');
-        
+
         $eagerLoads = $result->getEagerLoads();
         $this->assertArrayHasKey('roles', $eagerLoads);
         $this->assertArrayHasKey('permissions', $eagerLoads);
@@ -237,18 +240,19 @@ class QueryFilterTest extends TestCase
 
     public function test_include_skips_invalid_relations(): void
     {
-        $request = new Request();
-        
-        $filter = new class($request) extends QueryFilter {
+        $request = new Request;
+
+        $filter = new class($request) extends QueryFilter
+        {
             protected function isValidRelation(string $relation): bool
             {
                 return $relation === 'orgs';
             }
         };
-        
+
         $filter->apply($this->builder); // Initialize builder
         $result = $filter->include('orgs,invalidRelation');
-        
+
         $eagerLoads = $result->getEagerLoads();
         $this->assertArrayHasKey('orgs', $eagerLoads);
         $this->assertArrayNotHasKey('invalidRelation', $eagerLoads);
@@ -258,14 +262,14 @@ class QueryFilterTest extends TestCase
     {
         $filter = $this->createFilter();
         $result = $filter->apply($this->builder);
-        
+
         // Use reflection to test protected method
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('filterTimestamp');
         $method->setAccessible(true);
-        
+
         $result = $method->invoke($filter, 'created_at', '2023-01-01,2023-12-31');
-        
+
         $sql = $result->toSql();
         $this->assertStringContainsString('between', strtolower($sql));
         $this->assertStringContainsString('created_at', $sql);
@@ -275,13 +279,13 @@ class QueryFilterTest extends TestCase
     {
         $filter = $this->createFilter();
         $result = $filter->apply($this->builder);
-        
+
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('filterTimestamp');
         $method->setAccessible(true);
-        
+
         $result = $method->invoke($filter, 'created_at', '-2023-12-31');
-        
+
         $sql = $result->toSql();
         $this->assertStringContainsString('<=', $sql);
         $this->assertStringContainsString('created_at', $sql);
@@ -291,13 +295,13 @@ class QueryFilterTest extends TestCase
     {
         $filter = $this->createFilter();
         $result = $filter->apply($this->builder);
-        
+
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('filterTimestamp');
         $method->setAccessible(true);
-        
+
         $result = $method->invoke($filter, 'created_at', '2023-01-01');
-        
+
         $sql = $result->toSql();
         $this->assertStringContainsString('>=', $sql);
         $this->assertStringContainsString('created_at', $sql);
@@ -307,13 +311,13 @@ class QueryFilterTest extends TestCase
     {
         $filter = $this->createFilter();
         $result = $filter->apply($this->builder);
-        
+
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('filterLike');
         $method->setAccessible(true);
-        
+
         $result = $method->invoke($filter, 'name', 'John');
-        
+
         $sql = $result->toSql();
         $this->assertStringContainsString('like', strtolower($sql));
         $this->assertStringContainsString('name', $sql);
@@ -323,13 +327,13 @@ class QueryFilterTest extends TestCase
     {
         $filter = $this->createFilter();
         $result = $filter->apply($this->builder);
-        
+
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('filterEqualOrIn');
         $method->setAccessible(true);
-        
+
         $result = $method->invoke($filter, 'status', 'active');
-        
+
         $sql = $result->toSql();
         $this->assertStringContainsString('status', $sql);
         $this->assertStringContainsString('=', $sql);
@@ -339,13 +343,13 @@ class QueryFilterTest extends TestCase
     {
         $filter = $this->createFilter();
         $result = $filter->apply($this->builder);
-        
+
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('filterEqualOrIn');
         $method->setAccessible(true);
-        
+
         $result = $method->invoke($filter, 'status', 'active,inactive,pending');
-        
+
         $sql = $result->toSql();
         $this->assertStringContainsString('status', $sql);
         $this->assertStringContainsString('in', strtolower($sql));
@@ -355,13 +359,13 @@ class QueryFilterTest extends TestCase
     {
         $filter = $this->createFilter();
         $result = $filter->apply($this->builder);
-        
+
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('filterEqual');
         $method->setAccessible(true);
-        
+
         $result = $method->invoke($filter, 'email', 'john@example.com');
-        
+
         $sql = $result->toSql();
         $this->assertStringContainsString('email', $sql);
         $this->assertStringContainsString('=', $sql);
@@ -371,11 +375,11 @@ class QueryFilterTest extends TestCase
     {
         $filter = $this->createFilter();
         $result = $filter->apply($this->builder);
-        
+
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('isValidRelation');
         $method->setAccessible(true);
-        
+
         // Test with a relation that exists on User model
         $result = $method->invoke($filter, 'roles');
         $this->assertTrue($result);
@@ -385,11 +389,11 @@ class QueryFilterTest extends TestCase
     {
         $filter = $this->createFilter();
         $result = $filter->apply($this->builder);
-        
+
         $reflection = new \ReflectionClass($filter);
         $method = $reflection->getMethod('isValidRelation');
         $method->setAccessible(true);
-        
+
         $result = $method->invoke($filter, 'nonExistentRelation');
         $this->assertFalse($result);
     }
@@ -415,7 +419,7 @@ class QueryFilterTest extends TestCase
     public function test_chaining_methods(): void
     {
         $filter = $this->createFilter();
-        
+
         $result = $filter->apply($this->builder);
         $result = $filter->count('orgs');
         $result = $filter->sort('name,-created_at');
@@ -480,7 +484,8 @@ class QueryFilterTest extends TestCase
         ]);
 
         // Mock isValidRelation for include test
-        $filter = new class($request) extends QueryFilter {
+        $filter = new class($request) extends QueryFilter
+        {
             protected array $sortable = ['name', 'email', 'created_at'];
 
             public function name(string $value): Builder

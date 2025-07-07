@@ -20,18 +20,18 @@ class UserAccessRestrictionPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new UserAccessRestrictionPolicy();
+        $this->policy = new UserAccessRestrictionPolicy;
         $this->user = User::factory()->create();
     }
 
-    public function test_viewAny_returns_true_when_user_has_permission(): void
+    public function test_view_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'useraccessrestriction:viewany');
 
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_viewAny_returns_false_when_user_lacks_permission(): void
+    public function test_view_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->viewAny($this->user));
     }
@@ -48,38 +48,38 @@ class UserAccessRestrictionPolicyTest extends TestCase
         $this->assertFalse($this->policy->create($this->user));
     }
 
-    public function test_updateAny_returns_true_when_user_has_permission(): void
+    public function test_update_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'useraccessrestriction:updateany');
 
         $this->assertTrue($this->policy->updateAny($this->user));
     }
 
-    public function test_updateAny_returns_false_when_user_lacks_permission(): void
+    public function test_update_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->updateAny($this->user));
     }
 
-    public function test_deleteAny_returns_true_when_user_has_permission(): void
+    public function test_delete_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'useraccessrestriction:deleteany');
 
         $this->assertTrue($this->policy->deleteAny($this->user));
     }
 
-    public function test_deleteAny_returns_false_when_user_lacks_permission(): void
+    public function test_delete_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->deleteAny($this->user));
     }
 
-    public function test_restoreAny_returns_true_when_user_has_permission(): void
+    public function test_restore_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'useraccessrestriction:restoreany');
 
         $this->assertTrue($this->policy->restoreAny($this->user));
     }
 
-    public function test_restoreAny_returns_false_when_user_lacks_permission(): void
+    public function test_restore_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->restoreAny($this->user));
     }
@@ -91,7 +91,7 @@ class UserAccessRestrictionPolicyTest extends TestCase
             'useraccessrestriction:create',
             'useraccessrestriction:updateany',
             'useraccessrestriction:deleteany',
-            'useraccessrestriction:restoreany'
+            'useraccessrestriction:restoreany',
         ];
 
         foreach ($permissions as $permission) {
@@ -128,13 +128,13 @@ class UserAccessRestrictionPolicyTest extends TestCase
         $this->giveUserPermission($updateUser, 'useraccessrestriction:updateany');
         $this->giveUserPermission($deleteUser, 'useraccessrestriction:deleteany');
         $this->giveUserPermission($restoreUser, 'useraccessrestriction:restoreany');
-        
+
         $allPermissions = [
             'useraccessrestriction:viewany',
             'useraccessrestriction:create',
             'useraccessrestriction:updateany',
             'useraccessrestriction:deleteany',
-            'useraccessrestriction:restoreany'
+            'useraccessrestriction:restoreany',
         ];
         foreach ($allPermissions as $permission) {
             $this->giveUserPermission($allPermissionsUser, $permission);
@@ -228,34 +228,34 @@ class UserAccessRestrictionPolicyTest extends TestCase
         $updateOnlyUser = User::factory()->create();
         $deleteOnlyUser = User::factory()->create();
         $restoreOnlyUser = User::factory()->create();
-        
+
         $this->giveUserPermission($createOnlyUser, 'useraccessrestriction:create');
         $this->giveUserPermission($updateOnlyUser, 'useraccessrestriction:updateany');
         $this->giveUserPermission($deleteOnlyUser, 'useraccessrestriction:deleteany');
         $this->giveUserPermission($restoreOnlyUser, 'useraccessrestriction:restoreany');
-        
+
         // Create-only user
         $this->assertTrue($this->policy->create($createOnlyUser));
         $this->assertFalse($this->policy->viewAny($createOnlyUser));
         $this->assertFalse($this->policy->updateAny($createOnlyUser));
         $this->assertFalse($this->policy->deleteAny($createOnlyUser));
         $this->assertFalse($this->policy->restoreAny($createOnlyUser));
-        
-        // Update-only user  
+
+        // Update-only user
         $this->assertFalse($this->policy->create($updateOnlyUser));
         $this->assertFalse($this->policy->viewAny($updateOnlyUser));
         $this->assertTrue($this->policy->updateAny($updateOnlyUser));
         $this->assertFalse($this->policy->deleteAny($updateOnlyUser));
         $this->assertFalse($this->policy->restoreAny($updateOnlyUser));
 
-        // Delete-only user  
+        // Delete-only user
         $this->assertFalse($this->policy->create($deleteOnlyUser));
         $this->assertFalse($this->policy->viewAny($deleteOnlyUser));
         $this->assertFalse($this->policy->updateAny($deleteOnlyUser));
         $this->assertTrue($this->policy->deleteAny($deleteOnlyUser));
         $this->assertFalse($this->policy->restoreAny($deleteOnlyUser));
 
-        // Restore-only user  
+        // Restore-only user
         $this->assertFalse($this->policy->create($restoreOnlyUser));
         $this->assertFalse($this->policy->viewAny($restoreOnlyUser));
         $this->assertFalse($this->policy->updateAny($restoreOnlyUser));
@@ -273,13 +273,13 @@ class UserAccessRestrictionPolicyTest extends TestCase
             'useraccessrestriction:restore',
             'useraccessrestrictions:viewany',
             'user:accessrestriction:viewany',
-            'access:restriction:viewany'
+            'access:restriction:viewany',
         ];
 
         foreach ($variations as $variation) {
             $testUser = User::factory()->create();
             $this->giveUserPermission($testUser, $variation);
-            
+
             $this->assertFalse($this->policy->viewAny($testUser), "Permission '{$variation}' should not grant viewAny access");
             $this->assertFalse($this->policy->create($testUser), "Permission '{$variation}' should not grant create access");
             $this->assertFalse($this->policy->updateAny($testUser), "Permission '{$variation}' should not grant updateAny access");
@@ -293,7 +293,7 @@ class UserAccessRestrictionPolicyTest extends TestCase
         $role1 = Role::factory()->create();
         $role2 = Role::factory()->create();
         $role3 = Role::factory()->create();
-        
+
         $permission1 = Permission::firstOrCreate(
             ['name' => 'useraccessrestriction:viewany'],
             ['description' => 'View Any User Access Restriction']
@@ -310,7 +310,7 @@ class UserAccessRestrictionPolicyTest extends TestCase
         $role1->permissions()->attach($permission1);
         $role2->permissions()->attach($permission2);
         $role3->permissions()->attach($permission3);
-        
+
         $this->user->roles()->attach([$role1->id, $role2->id, $role3->id]);
         $this->user->clearUserRolePermissionCache();
 

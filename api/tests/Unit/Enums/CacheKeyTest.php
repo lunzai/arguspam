@@ -11,7 +11,7 @@ class CacheKeyTest extends TestCase
     {
         $cases = CacheKey::cases();
         $this->assertCount(8, $cases);
-        
+
         $this->assertContains(CacheKey::USER_PERMISSIONS, $cases);
         $this->assertContains(CacheKey::USER_ROLES, $cases);
         $this->assertContains(CacheKey::ORG_USERS, $cases);

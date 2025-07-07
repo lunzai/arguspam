@@ -9,8 +9,6 @@ use App\Models\Asset;
 use App\Models\AssetAccount;
 use App\Models\Org;
 use App\Models\Request;
-use App\Models\Session;
-use App\Models\SessionAudit;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;

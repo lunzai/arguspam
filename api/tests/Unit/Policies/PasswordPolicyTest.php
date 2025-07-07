@@ -20,7 +20,7 @@ class PasswordPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new PasswordPolicy();
+        $this->policy = new PasswordPolicy;
         $this->user = User::factory()->create();
     }
 
@@ -80,7 +80,7 @@ class PasswordPolicyTest extends TestCase
     {
         $role1 = Role::factory()->create();
         $role2 = Role::factory()->create();
-        
+
         $permission1 = Permission::firstOrCreate(
             ['name' => 'password:update'],
             ['description' => 'Update Password']
@@ -92,7 +92,7 @@ class PasswordPolicyTest extends TestCase
 
         $role1->permissions()->attach($permission1);
         $role2->permissions()->attach($permission2);
-        
+
         $this->user->roles()->attach([$role1->id, $role2->id]);
         $this->user->clearUserRolePermissionCache();
 
@@ -105,9 +105,9 @@ class PasswordPolicyTest extends TestCase
         $userWithOtherPerms = User::factory()->create();
         $this->giveUserPermission($userWithOtherPerms, 'user:view');
         $this->giveUserPermission($userWithOtherPerms, 'asset:view');
-        
+
         $this->assertFalse($this->policy->update($userWithOtherPerms));
-        
+
         // Different user with password permission should have access
         $userWithPassword = User::factory()->create();
         $this->giveUserPermission($userWithPassword, 'password:update');
@@ -119,7 +119,7 @@ class PasswordPolicyTest extends TestCase
         $this->giveUserPermission($this->user, 'password:update');
 
         $this->assertTrue($this->policy->update($this->user));
-        
+
         // User should not have any other permissions
         $this->assertFalse($this->user->hasAnyPermission('user:view'));
         $this->assertFalse($this->user->hasAnyPermission('asset:view'));
@@ -136,13 +136,13 @@ class PasswordPolicyTest extends TestCase
             'password:create',
             'password:delete',
             'passwords:update',
-            'user:password:update'
+            'user:password:update',
         ];
 
         foreach ($variations as $variation) {
             $testUser = User::factory()->create();
             $this->giveUserPermission($testUser, $variation);
-            
+
             $this->assertFalse($this->policy->update($testUser), "Permission '{$variation}' should not grant update access");
         }
     }
@@ -156,7 +156,7 @@ class PasswordPolicyTest extends TestCase
 
         // Should still return true for update
         $this->assertTrue($this->policy->update($this->user));
-        
+
         // Verify user has multiple permissions
         $this->assertTrue($this->user->hasAnyPermission('password:view'));
         $this->assertTrue($this->user->hasAnyPermission('password:create'));

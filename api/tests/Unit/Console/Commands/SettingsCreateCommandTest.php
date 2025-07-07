@@ -362,7 +362,7 @@ class SettingsCreateCommandTest extends TestCase
 
     public function test_command_signature()
     {
-        $command = new SettingsCreateCommand();
+        $command = new SettingsCreateCommand;
         $this->assertStringContainsString('settings:create', $command->getName());
         $this->assertTrue($command->getDefinition()->hasOption('type'));
         $this->assertTrue($command->getDefinition()->hasOption('group'));
@@ -372,7 +372,7 @@ class SettingsCreateCommandTest extends TestCase
 
     public function test_command_description()
     {
-        $command = new SettingsCreateCommand();
+        $command = new SettingsCreateCommand;
         $this->assertEquals('Create a new setting', $command->getDescription());
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\CacheKey;
 use App\Services\PolicyPermissionService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 
 class PolicyPermission extends Command
 {
@@ -42,6 +44,7 @@ class PolicyPermission extends Command
 
         $this->service->syncPermissions($removeOthers);
         $this->info('Permissions synced successfully!');
+        Cache::forget(CacheKey::PERMISSIONS->value);
         return self::SUCCESS;
     }
 

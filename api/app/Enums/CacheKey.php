@@ -9,6 +9,12 @@ enum CacheKey: string
     case USER_ROLES = 'user:role';
     case USER_PERMISSIONS = 'user:permission';
 
+    // ROLE
+    case ROLE_PERMISSIONS = 'role:permission';
+
+    // PERMISSION
+    case PERMISSIONS = 'permissions';
+
     // DASHBOARD
     case ORG_USERS_COUNT = 'org:user:count';
     case ORG_USER_GROUPS_COUNT = 'org:user_group:count';

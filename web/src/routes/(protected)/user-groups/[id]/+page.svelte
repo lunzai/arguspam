@@ -7,7 +7,7 @@
 	import { relativeDateTime } from '$utils/date';
 	import { StatusBadge } from '$components/badge';
 	import type { ResourceItem } from '$resources/api';
-	import type { UserGroupResource } from '$lib/resources/user-group';
+	import type { UserGroupResource } from '$resources/user-group';
 	import type { UserGroup } from '$models/user-group';
 	import type { User } from '$models/user';
 	import type { ColumnDef } from '@tanstack/table-core';
@@ -20,14 +20,6 @@
 	import SearchDropdown, { type ListItem } from '$components/search-dropdown';
 	import type { UserCollection } from '$resources/user';
 	import { enhance } from '$app/forms';
-	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { UserGroupSchema } from '$validations/user-group';
-	import { Input } from '$ui/input';
-	import * as Select from '$ui/select';
-	import { Textarea } from '$ui/textarea';
-	import * as Form from '$ui/form';
-	import { capitalizeWords } from '$utils/string';
 	import FormDialog from '../form-dialog.svelte';
 
 	let { data } = $props();
@@ -47,34 +39,6 @@
 	let deleteUserGroupDialogIsOpen = $state(false);
 	let deleteUserGroupDialogIsLoading = $state(false);
 	let editUserGroupDialogIsOpen = $state(false);
-
-	const editUserGroupForm = superForm(data.form, {
-		validators: zodClient(UserGroupSchema),
-		delayMs: 100,
-		onUpdate({ form, result }) {
-			if (!form.valid) {
-				return;
-			}
-			if (result.type === 'success') {
-				toast.success(result.data.message);
-				invalidate('user-groups:view');
-				editUserGroupDialogIsOpen = false;
-			} else if (result.type === 'failure') {
-				toast.error(result.data.error);
-			}
-		}
-	});
-
-	const { 
-		form: editUserGroupFormData, 
-		enhance: editUserGroupDialogEnhance, 
-		submitting: editUserGroupDialogSubmitting, 
-		delayed: editUserGroupDialogDelayed 
-	} = editUserGroupForm;
-
-	function handleEditUserGroupDialogCancel() {
-		editUserGroupDialogIsOpen = false;
-	}
 
 	function resetDeleteDialogIds() {
 		deleteUserDialogRelatedId = 0;
@@ -244,8 +208,8 @@
 	isOpen={editUserGroupDialogIsOpen}
 	{model}
 	data={data.form}
-	onSuccess={() => {
-		invalidate('user-groups:view');
+	onSuccess={async () => {
+		await invalidate('user-groups:view');
 		editUserGroupDialogIsOpen = false;
 	}}
 />
@@ -396,7 +360,6 @@
 						}
 					}}
 				>
-					<input type="hidden" name="userIds" value={deleteUserDialogRelatedId} />
 					<AlertDialog.Cancel disabled={deleteUserDialogIsLoading} type="reset">Cancel</AlertDialog.Cancel>
 					<AlertDialog.Action disabled={deleteUserDialogIsLoading} type="submit">
 						Delete

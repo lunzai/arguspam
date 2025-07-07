@@ -58,6 +58,9 @@ class UserGroupController extends Controller
     public function destroy(UserGroup $userGroup): Response
     {
         $this->authorize('delete', $userGroup);
+        if ($userGroup->users()->exists()) {
+            return $this->error('User group is not empty', 400);
+        }
         $userGroup->deleted_by = Auth::id();
         $userGroup->save();
         $userGroup->delete();

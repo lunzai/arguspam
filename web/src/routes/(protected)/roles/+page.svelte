@@ -10,11 +10,16 @@
 	import { shortDateTime } from '$lib/utils/date';
 	import type { ColumnDefinition } from '$components/data-table/types';
 	import { page } from '$app/state';
-	import { Pencil, NotebookText } from '@lucide/svelte';
+	import { NotebookText, PlusIcon, Trash2 } from '@lucide/svelte';
 	import type { CellBadge } from '$components/data-table/types';
+	import { Button } from '$ui/button';
+	import FormDialog from './form-dialog.svelte';
+	import { goto } from '$app/navigation';
 
+	let { data } : { data: any } = $props();
 	let initialSearchParams = page.url.searchParams;
 	const modelName = 'roles';
+	let addRoleDialogIsOpen = $state(false);
 
 	export const columns: ColumnDefinition<Role>[] = [
 		{
@@ -86,13 +91,6 @@
 							variant: 'link',
 							class: 'hover:text-blue-500'
 						},
-						{
-							label: 'Edit',
-							icon: Pencil,
-							href: `/${modelName}/${row.id}/edit`,
-							variant: 'link',
-							class: 'hover:text-blue-500'
-						}
 					]
 				};
 			}
@@ -140,7 +138,30 @@
 	}
 </script>
 
-<h1 class="text-2xl font-medium capitalize">{modelName}</h1>
+<div class="flex justify-between items-center">
+	<h1 class="text-2xl font-medium capitalize">{modelName}</h1>
+	<Button 
+		variant="outline" 
+		class="gap-2 hover:border-blue-200 hover:text-blue-500 hover:bg-blue-50"
+		onclick={() => {
+			addRoleDialogIsOpen = true;
+		}}
+	>
+		<PlusIcon class="w-4 h-4" />
+		<span>Add Role</span>
+	</Button>
+</div>
+
+<FormDialog
+	isOpen={addRoleDialogIsOpen}
+	model={data.model}
+	data={data.form}
+	onSuccess={async (data: Role) => {
+		console.log('onSuccess', data);		
+		await goto(`/roles/${data.id}`);
+		addRoleDialogIsOpen = false;
+	}}
+/>
 
 <!-- Data Table Component -->
 <DataTable

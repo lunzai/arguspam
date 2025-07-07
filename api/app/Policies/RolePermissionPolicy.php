@@ -7,13 +7,18 @@ use App\Models\User;
 
 class RolePermissionPolicy
 {
-    public function create(User $user, Role $role): bool
+    public function index(User $user, Role $role): bool
     {
-        return $user->hasAnyPermission('rolepermission:create');
+        return $user->hasAnyPermission('rolepermission:index');
     }
 
-    public function delete(User $user, Role $role): bool
+    public function update(User $user, Role $role): bool
     {
-        return $user->hasAnyPermission('rolepermission:delete');
+        return $user->hasAnyPermission('rolepermission:update');
     }
+
+    // public function delete(User $user, Role $role): bool
+    // {
+    //     return $user->hasAnyPermission('rolepermission:delete');
+    // }
 }

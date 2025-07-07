@@ -11,7 +11,7 @@ class SessionStatusTest extends TestCase
     {
         $cases = SessionStatus::cases();
         $this->assertCount(5, $cases);
-        
+
         $this->assertContains(SessionStatus::SCHEDULED, $cases);
         $this->assertContains(SessionStatus::ACTIVE, $cases);
         $this->assertContains(SessionStatus::EXPIRED, $cases);

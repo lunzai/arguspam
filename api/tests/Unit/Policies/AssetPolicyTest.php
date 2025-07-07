@@ -27,14 +27,14 @@ class AssetPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new AssetPolicy();
+        $this->policy = new AssetPolicy;
         $this->user = User::factory()->create();
         $this->requesterUser = User::factory()->create();
         $this->approverUser = User::factory()->create();
         $this->groupMember = User::factory()->create();
         $this->asset = Asset::factory()->create();
         $this->userGroup = UserGroup::factory()->create();
-        
+
         // Add groupMember to the userGroup
         $this->groupMember->userGroups()->attach($this->userGroup);
     }
@@ -169,7 +169,7 @@ class AssetPolicyTest extends TestCase
         $this->assertFalse($this->policy->view($this->user, $this->asset));
     }
 
-    public function test_hasAccessGrant_works_with_multiple_user_groups(): void
+    public function test_has_access_grant_works_with_multiple_user_groups(): void
     {
         // Create another user group
         $anotherUserGroup = UserGroup::factory()->create();
@@ -228,7 +228,7 @@ class AssetPolicyTest extends TestCase
     public function test_access_grant_for_different_asset_does_not_work(): void
     {
         $anotherAsset = Asset::factory()->create();
-        
+
         AssetAccessGrant::factory()->create([
             'user_id' => $this->requesterUser->id,
             'asset_id' => $anotherAsset->id,

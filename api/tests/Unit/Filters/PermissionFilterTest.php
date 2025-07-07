@@ -31,7 +31,7 @@ class PermissionFilterTest extends TestCase
     public function test_sortable_fields_are_defined(): void
     {
         $filter = $this->createFilter();
-        
+
         $reflection = new \ReflectionClass($filter);
         $property = $reflection->getProperty('sortable');
         $property->setAccessible(true);
@@ -245,7 +245,7 @@ class PermissionFilterTest extends TestCase
     public function test_inheritance_from_query_filter(): void
     {
         $filter = $this->createFilter();
-        
+
         $this->assertInstanceOf(\App\Http\Filters\QueryFilter::class, $filter);
     }
 
@@ -354,12 +354,12 @@ class PermissionFilterTest extends TestCase
     {
         $filter = $this->createFilter();
         $filter->apply($this->builder);
-        
+
         $result = $filter->createdAt('2023-01-01 00:00:00,2023-12-31 23:59:59');
-        
+
         $sql = $result->toSql();
         $bindings = $result->getBindings();
-        
+
         $this->assertStringContainsString('created_at', $sql);
         $this->assertStringContainsString('between', strtolower($sql));
         $this->assertContains('2023-01-01 00:00:00', $bindings);
@@ -374,7 +374,7 @@ class PermissionFilterTest extends TestCase
             ->where('id', '>', 0);
 
         $this->assertInstanceOf(Builder::class, $result);
-        
+
         $sql = $result->toSql();
         $this->assertStringContainsString('id', $sql);
         $this->assertStringContainsString('>', $sql);
@@ -482,7 +482,7 @@ class PermissionFilterTest extends TestCase
     public function test_description_with_long_text(): void
     {
         $longDescription = 'This permission allows users to create new user accounts in the system with all necessary validations and security checks including email verification and password requirements';
-        
+
         $filter = $this->createFilter();
         $filter->apply($this->builder);
         $result = $filter->description($longDescription);
@@ -502,7 +502,7 @@ class PermissionFilterTest extends TestCase
 
         // Test filtering by different resource types
         $resources = ['user', 'asset', 'session', 'org', 'role', 'permission'];
-        
+
         foreach ($resources as $resource) {
             $result = $filter->name($resource);
             $bindings = $result->getBindings();
@@ -517,7 +517,7 @@ class PermissionFilterTest extends TestCase
 
         // Test filtering by different actions
         $actions = ['create', 'view', 'update', 'delete', 'manage', 'assign'];
-        
+
         foreach ($actions as $action) {
             $result = $filter->name($action);
             $bindings = $result->getBindings();

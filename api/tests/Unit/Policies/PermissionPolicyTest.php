@@ -20,18 +20,18 @@ class PermissionPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new PermissionPolicy();
+        $this->policy = new PermissionPolicy;
         $this->user = User::factory()->create();
     }
 
-    public function test_viewAny_returns_true_when_user_has_permission(): void
+    public function test_view_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'permission:viewany');
 
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_viewAny_returns_false_when_user_lacks_permission(): void
+    public function test_view_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->viewAny($this->user));
     }
@@ -48,38 +48,38 @@ class PermissionPolicyTest extends TestCase
         $this->assertFalse($this->policy->create($this->user));
     }
 
-    public function test_updateAny_returns_true_when_user_has_permission(): void
+    public function test_update_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'permission:updateany');
 
         $this->assertTrue($this->policy->updateAny($this->user));
     }
 
-    public function test_updateAny_returns_false_when_user_lacks_permission(): void
+    public function test_update_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->updateAny($this->user));
     }
 
-    public function test_deleteAny_returns_true_when_user_has_permission(): void
+    public function test_delete_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'permission:deleteany');
 
         $this->assertTrue($this->policy->deleteAny($this->user));
     }
 
-    public function test_deleteAny_returns_false_when_user_lacks_permission(): void
+    public function test_delete_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->deleteAny($this->user));
     }
 
-    public function test_restoreAny_returns_true_when_user_has_permission(): void
+    public function test_restore_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'permission:restoreany');
 
         $this->assertTrue($this->policy->restoreAny($this->user));
     }
 
-    public function test_restoreAny_returns_false_when_user_lacks_permission(): void
+    public function test_restore_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->restoreAny($this->user));
     }

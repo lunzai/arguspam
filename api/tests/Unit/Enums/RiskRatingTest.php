@@ -11,7 +11,7 @@ class RiskRatingTest extends TestCase
     {
         $cases = RiskRating::cases();
         $this->assertCount(4, $cases);
-        
+
         $this->assertContains(RiskRating::LOW, $cases);
         $this->assertContains(RiskRating::MEDIUM, $cases);
         $this->assertContains(RiskRating::HIGH, $cases);

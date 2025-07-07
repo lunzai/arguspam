@@ -3,8 +3,8 @@
 namespace Tests\Unit\Traits;
 
 use App\Traits\ApiResponses;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Tests\TestCase;
 
 class ApiResponsesTest extends TestCase
@@ -14,13 +14,13 @@ class ApiResponsesTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->controller = new TestApiResponsesController();
+        $this->controller = new TestApiResponsesController;
     }
 
     public function test_ok_returns_no_content_response_with_200_status(): void
     {
         $response = $this->controller->ok();
-        
+
         $this->assertInstanceOf(\Illuminate\Http\Response::class, $response);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
         $this->assertEmpty($response->getContent());
@@ -29,7 +29,7 @@ class ApiResponsesTest extends TestCase
     public function test_created_returns_no_content_response_with_201_status(): void
     {
         $response = $this->controller->created();
-        
+
         $this->assertInstanceOf(\Illuminate\Http\Response::class, $response);
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
         $this->assertEmpty($response->getContent());
@@ -38,7 +38,7 @@ class ApiResponsesTest extends TestCase
     public function test_accepted_returns_no_content_response_with_202_status(): void
     {
         $response = $this->controller->accepted();
-        
+
         $this->assertInstanceOf(\Illuminate\Http\Response::class, $response);
         $this->assertEquals(Response::HTTP_ACCEPTED, $response->getStatusCode());
         $this->assertEmpty($response->getContent());
@@ -47,7 +47,7 @@ class ApiResponsesTest extends TestCase
     public function test_no_content_returns_no_content_response_with_204_status(): void
     {
         $response = $this->controller->noContent();
-        
+
         $this->assertInstanceOf(\Illuminate\Http\Response::class, $response);
         $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
         $this->assertEmpty($response->getContent());
@@ -57,7 +57,7 @@ class ApiResponsesTest extends TestCase
     {
         $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
         $this->expectExceptionMessage('Validation failed');
-        
+
         $this->controller->unprocessableEntity('Validation failed');
     }
 
@@ -65,7 +65,7 @@ class ApiResponsesTest extends TestCase
     {
         $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
         $this->expectExceptionMessage('Not authenticated');
-        
+
         $this->controller->unauthorized('Not authenticated');
     }
 
@@ -73,7 +73,7 @@ class ApiResponsesTest extends TestCase
     {
         $this->expectException(\Symfony\Component\HttpKernel\Exception\HttpException::class);
         $this->expectExceptionMessage('Access denied');
-        
+
         $this->controller->forbidden('Access denied');
     }
 
@@ -81,10 +81,10 @@ class ApiResponsesTest extends TestCase
     {
         $data = ['id' => 1, 'name' => 'Test'];
         $response = $this->controller->success($data);
-        
+
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        
+
         $responseData = $response->getData(true);
         $this->assertArrayHasKey('data', $responseData);
         $this->assertEquals($data, $responseData['data']);
@@ -93,10 +93,10 @@ class ApiResponsesTest extends TestCase
     public function test_success_returns_json_response_with_empty_data_by_default(): void
     {
         $response = $this->controller->success();
-        
+
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        
+
         $responseData = $response->getData(true);
         $this->assertArrayHasKey('data', $responseData);
         $this->assertEquals([], $responseData['data']);
@@ -106,10 +106,10 @@ class ApiResponsesTest extends TestCase
     {
         $data = ['message' => 'Custom success'];
         $response = $this->controller->success($data, Response::HTTP_CREATED);
-        
+
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
-        
+
         $responseData = $response->getData(true);
         $this->assertArrayHasKey('data', $responseData);
         $this->assertEquals($data, $responseData['data']);
@@ -120,18 +120,18 @@ class ApiResponsesTest extends TestCase
         $data = [
             'users' => [
                 ['id' => 1, 'name' => 'John'],
-                ['id' => 2, 'name' => 'Jane']
+                ['id' => 2, 'name' => 'Jane'],
             ],
             'meta' => [
                 'total' => 2,
-                'page' => 1
-            ]
+                'page' => 1,
+            ],
         ];
         $response = $this->controller->success($data);
-        
+
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        
+
         $responseData = $response->getData(true);
         $this->assertArrayHasKey('data', $responseData);
         $this->assertEquals($data, $responseData['data']);
@@ -140,10 +140,10 @@ class ApiResponsesTest extends TestCase
     public function test_success_handles_null_data(): void
     {
         $response = $this->controller->success(null);
-        
+
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        
+
         $responseData = $response->getData(true);
         $this->assertArrayHasKey('data', $responseData);
         $this->assertNull($responseData['data']);
@@ -153,10 +153,10 @@ class ApiResponsesTest extends TestCase
     {
         $data = 'Simple string response';
         $response = $this->controller->success($data);
-        
+
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        
+
         $responseData = $response->getData(true);
         $this->assertArrayHasKey('data', $responseData);
         $this->assertEquals($data, $responseData['data']);
@@ -165,10 +165,10 @@ class ApiResponsesTest extends TestCase
     public function test_success_handles_boolean_data(): void
     {
         $response = $this->controller->success(true);
-        
+
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        
+
         $responseData = $response->getData(true);
         $this->assertArrayHasKey('data', $responseData);
         $this->assertTrue($responseData['data']);
@@ -177,10 +177,10 @@ class ApiResponsesTest extends TestCase
     public function test_success_handles_numeric_data(): void
     {
         $response = $this->controller->success(42);
-        
+
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        
+
         $responseData = $response->getData(true);
         $this->assertArrayHasKey('data', $responseData);
         $this->assertEquals(42, $responseData['data']);
@@ -191,7 +191,7 @@ class ApiResponsesTest extends TestCase
         $methods = [
             ['unprocessableEntity', 'Test message'],
             ['unauthorized', 'Auth failed'],
-            ['forbidden', 'Access denied']
+            ['forbidden', 'Access denied'],
         ];
 
         foreach ($methods as [$method, $message]) {

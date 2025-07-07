@@ -9,6 +9,12 @@ enum CacheKey: string
     case USER_ROLES = 'user:role';
     case USER_PERMISSIONS = 'user:permission';
 
+    // ROLE
+    case ROLE_PERMISSIONS = 'role:permission';
+
+    // PERMISSION
+    case PERMISSIONS = 'permissions';
+
     // DASHBOARD
     case ORG_USERS_COUNT = 'org:user:count';
     case ORG_USER_GROUPS_COUNT = 'org:user_group:count';
@@ -19,14 +25,10 @@ enum CacheKey: string
     case ORG_SESSIONS_SCHEDULED_COUNT = 'org:session:scheduled:count';
     case ORG_SESSIONS_ACTIVE_COUNT = 'org:session:active:count';
 
-
-
-
-
     // NOT SURE
-    
+
     case ORG_USERS = 'org_users';
-    
+
     case SETTING_VALUE = 'settings:value';
     case SETTING_KEY = 'settings:key';
     case SETTING_ALL = 'settings:all';
@@ -38,5 +40,4 @@ enum CacheKey: string
         return "{$this->value}:{$id}";
     }
 
-   
 }

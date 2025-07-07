@@ -70,7 +70,7 @@ class SettingsListCommandTest extends TestCase
 
     public function test_format_value_with_boolean()
     {
-        $command = new SettingsListCommand();
+        $command = new SettingsListCommand;
         $reflectionMethod = new \ReflectionMethod($command, 'formatValue');
         $reflectionMethod->setAccessible(true);
 
@@ -80,7 +80,7 @@ class SettingsListCommandTest extends TestCase
 
     public function test_format_value_with_array()
     {
-        $command = new SettingsListCommand();
+        $command = new SettingsListCommand;
         $reflectionMethod = new \ReflectionMethod($command, 'formatValue');
         $reflectionMethod->setAccessible(true);
 
@@ -91,7 +91,7 @@ class SettingsListCommandTest extends TestCase
 
     public function test_format_value_with_string()
     {
-        $command = new SettingsListCommand();
+        $command = new SettingsListCommand;
         $reflectionMethod = new \ReflectionMethod($command, 'formatValue');
         $reflectionMethod->setAccessible(true);
 

@@ -11,7 +11,7 @@ class RequestScopeTest extends TestCase
     {
         $cases = RequestScope::cases();
         $this->assertCount(5, $cases);
-        
+
         $this->assertContains(RequestScope::READ_ONLY, $cases);
         $this->assertContains(RequestScope::READ_WRITE, $cases);
         $this->assertContains(RequestScope::DDL, $cases);

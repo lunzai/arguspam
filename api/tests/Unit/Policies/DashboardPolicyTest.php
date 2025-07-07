@@ -20,18 +20,18 @@ class DashboardPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new DashboardPolicy();
+        $this->policy = new DashboardPolicy;
         $this->user = User::factory()->create();
     }
 
-    public function test_viewAny_returns_true_when_user_has_permission(): void
+    public function test_view_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'dashboard:viewany');
 
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_viewAny_returns_false_when_user_lacks_permission(): void
+    public function test_view_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->viewAny($this->user));
     }
@@ -60,7 +60,7 @@ class DashboardPolicyTest extends TestCase
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_viewAny_with_similar_but_different_permission_names(): void
+    public function test_view_any_with_similar_but_different_permission_names(): void
     {
         // Test with similar but different permission names
         $this->giveUserPermission($this->user, 'dashboard:view'); // Note: 'view' not 'viewany'
@@ -80,7 +80,7 @@ class DashboardPolicyTest extends TestCase
     {
         $role1 = Role::factory()->create();
         $role2 = Role::factory()->create();
-        
+
         $permission1 = Permission::firstOrCreate(
             ['name' => 'dashboard:viewany'],
             ['description' => 'View Any Dashboard']
@@ -92,7 +92,7 @@ class DashboardPolicyTest extends TestCase
 
         $role1->permissions()->attach($permission1);
         $role2->permissions()->attach($permission2);
-        
+
         $this->user->roles()->attach([$role1->id, $role2->id]);
         $this->user->clearUserRolePermissionCache();
 
@@ -105,9 +105,9 @@ class DashboardPolicyTest extends TestCase
         $userWithOtherPerms = User::factory()->create();
         $this->giveUserPermission($userWithOtherPerms, 'user:view');
         $this->giveUserPermission($userWithOtherPerms, 'asset:view');
-        
+
         $this->assertFalse($this->policy->viewAny($userWithOtherPerms));
-        
+
         // Different user with dashboard permission should have access
         $userWithDashboard = User::factory()->create();
         $this->giveUserPermission($userWithDashboard, 'dashboard:viewany');

@@ -24,7 +24,7 @@ class EnforceUserAccessRestrictionsTest extends TestCase
     {
         parent::setUp();
 
-        $this->middleware = new EnforceUserAccessRestrictions();
+        $this->middleware = new EnforceUserAccessRestrictions;
         $this->user = User::factory()->create();
     }
 
@@ -123,7 +123,7 @@ class EnforceUserAccessRestrictionsTest extends TestCase
         });
 
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
-        
+
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Access denied due to access restrictions', $responseData['message']);
         $this->assertEquals('ip_address', $responseData['restriction_type']);
@@ -190,7 +190,7 @@ class EnforceUserAccessRestrictionsTest extends TestCase
         });
 
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
-        
+
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Access denied due to access restrictions', $responseData['message']);
         $this->assertEquals('time_window', $responseData['restriction_type']);
@@ -262,7 +262,7 @@ class EnforceUserAccessRestrictionsTest extends TestCase
         });
 
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
-        
+
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Access denied due to access restrictions', $responseData['message']);
         $this->assertEquals('device', $responseData['restriction_type']);
@@ -296,7 +296,7 @@ class EnforceUserAccessRestrictionsTest extends TestCase
         });
 
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
-        
+
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Access denied due to access restrictions', $responseData['message']);
         $this->assertEquals('device', $responseData['restriction_type']);

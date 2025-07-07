@@ -20,7 +20,7 @@ class UserRolePolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new UserRolePolicy();
+        $this->policy = new UserRolePolicy;
         $this->user = User::factory()->create();
     }
 

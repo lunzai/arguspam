@@ -22,7 +22,7 @@ class EnsureOrganizationIdIsValidTest extends TestCase
     {
         parent::setUp();
 
-        $this->middleware = new EnsureOrganizationIdIsValid();
+        $this->middleware = new EnsureOrganizationIdIsValid;
         $this->user = User::factory()->create();
         $this->org = Org::factory()->create();
     }
@@ -39,7 +39,7 @@ class EnsureOrganizationIdIsValidTest extends TestCase
         });
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        
+
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Organization ID is required', $responseData['message']);
         $this->assertArrayHasKey('errors', $responseData);
@@ -60,7 +60,7 @@ class EnsureOrganizationIdIsValidTest extends TestCase
         });
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        
+
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Organization ID is required', $responseData['message']);
         $this->assertArrayHasKey('errors', $responseData);
@@ -81,7 +81,7 @@ class EnsureOrganizationIdIsValidTest extends TestCase
         });
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        
+
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Organization ID is required', $responseData['message']);
         $this->assertArrayHasKey('errors', $responseData);
@@ -102,7 +102,7 @@ class EnsureOrganizationIdIsValidTest extends TestCase
         });
 
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
-        
+
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Unauthorized access to organization', $responseData['message']);
         $this->assertArrayHasKey('errors', $responseData);
@@ -113,7 +113,7 @@ class EnsureOrganizationIdIsValidTest extends TestCase
     public function test_handle_returns_forbidden_when_organization_id_does_not_exist(): void
     {
         $nonExistentOrgId = 99999;
-        
+
         $request = Request::create('/test');
         $request->setUserResolver(function () {
             return $this->user;
@@ -125,7 +125,7 @@ class EnsureOrganizationIdIsValidTest extends TestCase
         });
 
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
-        
+
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Unauthorized access to organization', $responseData['message']);
         $this->assertArrayHasKey('errors', $responseData);
@@ -273,7 +273,7 @@ class EnsureOrganizationIdIsValidTest extends TestCase
         });
 
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
-        
+
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Unauthorized access to organization', $responseData['message']);
         $this->assertArrayHasKey('errors', $responseData);
@@ -295,7 +295,7 @@ class EnsureOrganizationIdIsValidTest extends TestCase
 
         // Zero is treated as empty/falsy by the middleware, so it returns BAD_REQUEST
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
-        
+
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Organization ID is required', $responseData['message']);
         $this->assertArrayHasKey('errors', $responseData);
@@ -316,7 +316,7 @@ class EnsureOrganizationIdIsValidTest extends TestCase
         });
 
         $this->assertEquals(Response::HTTP_FORBIDDEN, $response->getStatusCode());
-        
+
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Unauthorized access to organization', $responseData['message']);
         $this->assertArrayHasKey('errors', $responseData);
@@ -453,10 +453,10 @@ class EnsureOrganizationIdIsValidTest extends TestCase
     {
         $org1 = Org::factory()->create();
         $org2 = Org::factory()->create();
-        
+
         // Attach user to org1 only
         $this->user->orgs()->attach($org1);
-        
+
         // Verify user has access to org1
         $request1 = Request::create('/test');
         $request1->setUserResolver(function () {
@@ -469,7 +469,7 @@ class EnsureOrganizationIdIsValidTest extends TestCase
         });
 
         $this->assertEquals(200, $response1->getStatusCode());
-        
+
         // Verify user does not have access to org2
         $request2 = Request::create('/test');
         $request2->setUserResolver(function () {

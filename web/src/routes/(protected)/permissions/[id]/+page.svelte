@@ -23,7 +23,7 @@
 	<Card.Header class="flex items-center justify-between px-3">
 		<Card.Title class="text-lg">{modelTitle} Details</Card.Title>
 		<Card.Action>
-			<Button
+			<!-- <Button
 				variant="outline"
 				class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
 				href={`/${modelName}/${model.id}/edit`}
@@ -38,7 +38,7 @@
 			>
 				<Trash2 class="h-4 w-4" />
 				Delete
-			</Button>
+			</Button> -->
 		</Card.Action>
 	</Card.Header>
 	<Separator />
@@ -56,7 +56,7 @@
 				<DL.Label>Description</DL.Label>
 				<DL.Content>{model.description || '-'}</DL.Content>
 			</DL.Row>
-			<DL.Row>
+			<!-- <DL.Row>
 				<DL.Label>Created At</DL.Label>
 				<DL.Content>
 					{relativeDateTime(model.created_at)}
@@ -67,7 +67,7 @@
 				<DL.Content>
 					{relativeDateTime(model.updated_at)}
 				</DL.Content>
-			</DL.Row>
+			</DL.Row> -->
 		</DL.Root>
 	</Card.Content>
 </Card.Root>

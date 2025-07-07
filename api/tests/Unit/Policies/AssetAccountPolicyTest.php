@@ -4,8 +4,8 @@ namespace Tests\Unit\Policies;
 
 use App\Enums\AssetAccessRole;
 use App\Models\Asset;
-use App\Models\AssetAccount;
 use App\Models\AssetAccessGrant;
+use App\Models\AssetAccount;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
@@ -27,7 +27,7 @@ class AssetAccountPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new AssetAccountPolicy();
+        $this->policy = new AssetAccountPolicy;
         $this->user = User::factory()->create();
         $this->asset = Asset::factory()->create();
         $this->assetAccount = AssetAccount::factory()->create([
@@ -35,14 +35,14 @@ class AssetAccountPolicyTest extends TestCase
         ]);
     }
 
-    public function test_viewAny_returns_true_when_user_has_permission(): void
+    public function test_view_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'assetaccount:viewany');
 
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_viewAny_returns_false_when_user_lacks_permission(): void
+    public function test_view_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->viewAny($this->user));
     }
@@ -109,38 +109,38 @@ class AssetAccountPolicyTest extends TestCase
         $this->assertFalse($this->policy->create($this->user));
     }
 
-    public function test_updateAny_returns_true_when_user_has_permission(): void
+    public function test_update_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'assetaccount:updateany');
 
         $this->assertTrue($this->policy->updateAny($this->user));
     }
 
-    public function test_updateAny_returns_false_when_user_lacks_permission(): void
+    public function test_update_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->updateAny($this->user));
     }
 
-    public function test_deleteAny_returns_true_when_user_has_permission(): void
+    public function test_delete_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'assetaccount:deleteany');
 
         $this->assertTrue($this->policy->deleteAny($this->user));
     }
 
-    public function test_deleteAny_returns_false_when_user_lacks_permission(): void
+    public function test_delete_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->deleteAny($this->user));
     }
 
-    public function test_restoreAny_returns_true_when_user_has_permission(): void
+    public function test_restore_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'assetaccount:restoreany');
 
         $this->assertTrue($this->policy->restoreAny($this->user));
     }
 
-    public function test_restoreAny_returns_false_when_user_lacks_permission(): void
+    public function test_restore_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->restoreAny($this->user));
     }
@@ -197,10 +197,10 @@ class AssetAccountPolicyTest extends TestCase
         $restoreUser = User::factory()->create();
 
         $this->giveUserPermission($viewAnyUser, 'assetaccount:viewany');
-        
+
         $this->giveUserAssetAccess($assetViewUser, $this->asset);
         $this->giveUserPermission($assetViewUser, 'assetaccount:view');
-        
+
         $this->giveUserPermission($createUser, 'assetaccount:create');
         $this->giveUserPermission($updateUser, 'assetaccount:updateany');
         $this->giveUserPermission($deleteUser, 'assetaccount:deleteany');

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\user\UserCollection;
 use App\Models\Org;
-use App\Models\OrgUser;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 

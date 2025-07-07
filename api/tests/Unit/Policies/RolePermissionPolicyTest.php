@@ -21,7 +21,7 @@ class RolePermissionPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new RolePermissionPolicy();
+        $this->policy = new RolePermissionPolicy;
         $this->user = User::factory()->create();
         $this->role = Role::factory()->create();
     }
@@ -115,7 +115,7 @@ class RolePermissionPolicyTest extends TestCase
         // It only checks if user has the permission regardless of the role
         $role1 = Role::factory()->create();
         $role2 = Role::factory()->create();
-        
+
         $this->giveUserPermission($this->user, 'rolepermission:create');
 
         // Should return same result for any role
@@ -162,15 +162,15 @@ class RolePermissionPolicyTest extends TestCase
         // Test that create and delete permissions are completely independent
         $createOnlyUser = User::factory()->create();
         $deleteOnlyUser = User::factory()->create();
-        
+
         $this->giveUserPermission($createOnlyUser, 'rolepermission:create');
         $this->giveUserPermission($deleteOnlyUser, 'rolepermission:delete');
-        
+
         // Create-only user
         $this->assertTrue($this->policy->create($createOnlyUser, $this->role));
         $this->assertFalse($this->policy->delete($createOnlyUser, $this->role));
-        
-        // Delete-only user  
+
+        // Delete-only user
         $this->assertFalse($this->policy->create($deleteOnlyUser, $this->role));
         $this->assertTrue($this->policy->delete($deleteOnlyUser, $this->role));
     }
@@ -184,13 +184,13 @@ class RolePermissionPolicyTest extends TestCase
             'rolepermission:update',
             'role:permission:create',
             'permission:create',
-            'rolepermissions:create'
+            'rolepermissions:create',
         ];
 
         foreach ($variations as $variation) {
             $testUser = User::factory()->create();
             $this->giveUserPermission($testUser, $variation);
-            
+
             $this->assertFalse($this->policy->create($testUser, $this->role), "Permission '{$variation}' should not grant create access");
             $this->assertFalse($this->policy->delete($testUser, $this->role), "Permission '{$variation}' should not grant delete access");
         }
@@ -200,7 +200,7 @@ class RolePermissionPolicyTest extends TestCase
     {
         $role1 = Role::factory()->create();
         $role2 = Role::factory()->create();
-        
+
         $permission1 = Permission::firstOrCreate(
             ['name' => 'rolepermission:create'],
             ['description' => 'Create Role Permission']
@@ -212,7 +212,7 @@ class RolePermissionPolicyTest extends TestCase
 
         $role1->permissions()->attach($permission1);
         $role2->permissions()->attach($permission2);
-        
+
         $this->user->roles()->attach([$role1->id, $role2->id]);
         $this->user->clearUserRolePermissionCache();
 

@@ -11,7 +11,7 @@ class RestrictionTypeTest extends TestCase
     {
         $cases = RestrictionType::cases();
         $this->assertCount(4, $cases);
-        
+
         $this->assertContains(RestrictionType::IP_ADDRESS, $cases);
         $this->assertContains(RestrictionType::TIME_WINDOW, $cases);
         $this->assertContains(RestrictionType::LOCATION, $cases);

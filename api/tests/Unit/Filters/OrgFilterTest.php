@@ -31,7 +31,7 @@ class OrgFilterTest extends TestCase
     public function test_sortable_fields_are_defined(): void
     {
         $filter = $this->createFilter();
-        
+
         $reflection = new \ReflectionClass($filter);
         $property = $reflection->getProperty('sortable');
         $property->setAccessible(true);
@@ -172,7 +172,7 @@ class OrgFilterTest extends TestCase
     public function test_inheritance_from_query_filter(): void
     {
         $filter = $this->createFilter();
-        
+
         $this->assertInstanceOf(\App\Http\Filters\QueryFilter::class, $filter);
     }
 

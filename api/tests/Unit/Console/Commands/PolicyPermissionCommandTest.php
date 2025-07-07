@@ -5,7 +5,6 @@ namespace Tests\Unit\Console\Commands;
 use App\Console\Commands\PolicyPermission;
 use App\Services\PolicyPermissionService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Collection;
 use Tests\TestCase;
 
 class PolicyPermissionCommandTest extends TestCase
@@ -17,7 +16,7 @@ class PolicyPermissionCommandTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->mockService = $this->createMock(PolicyPermissionService::class);
         $this->app->instance(PolicyPermissionService::class, $this->mockService);
     }
@@ -215,11 +214,11 @@ class PolicyPermissionCommandTest extends TestCase
     {
         $service = $this->createMock(PolicyPermissionService::class);
         $command = new PolicyPermission($service);
-        
+
         $reflection = new \ReflectionClass($command);
         $serviceProperty = $reflection->getProperty('service');
         $serviceProperty->setAccessible(true);
-        
+
         $this->assertSame($service, $serviceProperty->getValue($command));
     }
 }

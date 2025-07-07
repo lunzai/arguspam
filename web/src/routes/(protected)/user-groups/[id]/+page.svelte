@@ -7,7 +7,7 @@
 	import { relativeDateTime } from '$utils/date';
 	import { StatusBadge } from '$components/badge';
 	import type { ResourceItem } from '$resources/api';
-	import type { UserGroupResource } from '$lib/resources/user-group';
+	import type { UserGroupResource } from '$resources/user-group';
 	import type { UserGroup } from '$models/user-group';
 	import type { User } from '$models/user';
 	import type { ColumnDef } from '@tanstack/table-core';
@@ -20,14 +20,6 @@
 	import SearchDropdown, { type ListItem } from '$components/search-dropdown';
 	import type { UserCollection } from '$resources/user';
 	import { enhance } from '$app/forms';
-	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { UserGroupSchema } from '$validations/user-group';
-	import { Input } from '$ui/input';
-	import * as Select from '$ui/select';
-	import { Textarea } from '$ui/textarea';
-	import * as Form from '$ui/form';
-	import { capitalizeWords } from '$utils/string';
 	import FormDialog from '../form-dialog.svelte';
 
 	let { data } = $props();
@@ -48,34 +40,6 @@
 	let deleteUserGroupDialogIsLoading = $state(false);
 	let editUserGroupDialogIsOpen = $state(false);
 
-	const editUserGroupForm = superForm(data.form, {
-		validators: zodClient(UserGroupSchema),
-		delayMs: 100,
-		onUpdate({ form, result }) {
-			if (!form.valid) {
-				return;
-			}
-			if (result.type === 'success') {
-				toast.success(result.data.message);
-				invalidate('user-groups:view');
-				editUserGroupDialogIsOpen = false;
-			} else if (result.type === 'failure') {
-				toast.error(result.data.error);
-			}
-		}
-	});
-
-	const { 
-		form: editUserGroupFormData, 
-		enhance: editUserGroupDialogEnhance, 
-		submitting: editUserGroupDialogSubmitting, 
-		delayed: editUserGroupDialogDelayed 
-	} = editUserGroupForm;
-
-	function handleEditUserGroupDialogCancel() {
-		editUserGroupDialogIsOpen = false;
-	}
-
 	function resetDeleteDialogIds() {
 		deleteUserDialogRelatedId = 0;
 	}
@@ -93,7 +57,7 @@
 		try {
 			addUserDialogIsLoading = true;
 			const formData = new FormData();
-			formData.append('userIds', addUserDialogSelectedList.map(item => item.id).join(','));
+			formData.append('userIds', addUserDialogSelectedList.map((item) => item.id).join(','));
 			const response = await fetch('?/addUsers', {
 				method: 'POST',
 				body: formData
@@ -104,15 +68,12 @@
 				toast.success('Users added successfully');
 				invalidate('user-groups:data');
 				addUserDialogIsOpen = false;
-			}
-			else {
+			} else {
 				toast.error('Failed to add users');
 			}
-		}
-		catch (error) {
+		} catch (error) {
 			toast.error('Failed to add users');
-		}
-		finally {
+		} finally {
 			addUserDialogIsLoading = false;
 		}
 	}
@@ -139,12 +100,16 @@
 
 	const userList = $derived(
 		userCollection.data
-			.filter(({ attributes: { id } }) => !groupUsers.some(({ attributes: { id: groupUserId } }) => groupUserId === id))
+			.filter(
+				({ attributes: { id } }) =>
+					!groupUsers.some(({ attributes: { id: groupUserId } }) => groupUserId === id)
+			)
 			.map(({ attributes: { id, name, email } }) => ({
-		id,
-		label: `ID#${id} - ${name} (${email})`,
-		searchValue: `${id} ${name} ${email}`
-	})));
+				id,
+				label: `ID#${id} - ${name} (${email})`,
+				searchValue: `${id} ${name} ${email}`
+			}))
+	);
 </script>
 
 <h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.name}</h1>
@@ -156,7 +121,7 @@
 				variant="outline"
 				size="sm"
 				class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-				onclick={() => editUserGroupDialogIsOpen = true}
+				onclick={() => (editUserGroupDialogIsOpen = true)}
 			>
 				<Pencil class="h-4 w-4" />
 				Edit
@@ -165,7 +130,7 @@
 				variant="outline"
 				size="sm"
 				class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
-				onclick={() => deleteUserGroupDialogIsOpen = true}
+				onclick={() => (deleteUserGroupDialogIsOpen = true)}
 			>
 				<Trash2 class="h-4 w-4" />
 				Delete
@@ -221,7 +186,7 @@
 				variant="outline"
 				size="sm"
 				class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-				onclick={() => addUserDialogIsOpen = true}
+				onclick={() => (addUserDialogIsOpen = true)}
 			>
 				<UserPlus class="h-4 w-4" />
 				Add User
@@ -233,8 +198,8 @@
 		{#if hasUsers}
 			<SimpleDataTable data={groupUsers.map((user) => user.attributes)} columns={usersColumns} />
 		{:else}
-			<div class="flex items-center justify-center h-full">
-				<p class="text-gray-500 text-sm">No users found</p>
+			<div class="flex h-full items-center justify-center">
+				<p class="text-sm text-gray-500">No users found</p>
 			</div>
 		{/if}
 	</Card.Content>
@@ -244,8 +209,8 @@
 	isOpen={editUserGroupDialogIsOpen}
 	{model}
 	data={data.form}
-	onSuccess={() => {
-		invalidate('user-groups:view');
+	onSuccess={async () => {
+		await invalidate('user-groups:view');
 		editUserGroupDialogIsOpen = false;
 	}}
 />
@@ -347,9 +312,7 @@
 	</div>
 {/snippet}
 
-<AlertDialog.Root
-	bind:open={deleteUserGroupDialogIsOpen}
->
+<AlertDialog.Root bind:open={deleteUserGroupDialogIsOpen}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
 			<AlertDialog.Title>
@@ -367,13 +330,11 @@
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
 			{#if hasUsers}
-				<AlertDialog.Cancel type="reset">
-					Ok
-				</AlertDialog.Cancel>
+				<AlertDialog.Cancel type="reset">Ok</AlertDialog.Cancel>
 			{:else}
-				<form 
-					method="POST" 
-					action="?/delete" 
+				<form
+					method="POST"
+					action="?/delete"
 					use:enhance={({ cancel }) => {
 						if (hasUsers) {
 							toast.error('Unable to delete user group');
@@ -387,17 +348,17 @@
 								});
 								deleteUserGroupDialogIsLoading = false;
 								deleteUserGroupDialogIsOpen = false;
-							}
-							else {
+							} else {
 								toast.error('Failed to delete user group');
 							}
 							deleteUserGroupDialogIsLoading = false;
 							deleteUserGroupDialogIsOpen = false;
-						}
+						};
 					}}
 				>
-					<input type="hidden" name="userIds" value={deleteUserDialogRelatedId} />
-					<AlertDialog.Cancel disabled={deleteUserDialogIsLoading} type="reset">Cancel</AlertDialog.Cancel>
+					<AlertDialog.Cancel disabled={deleteUserDialogIsLoading} type="reset"
+						>Cancel</AlertDialog.Cancel
+					>
 					<AlertDialog.Action disabled={deleteUserDialogIsLoading} type="submit">
 						Delete
 					</AlertDialog.Action>
@@ -405,8 +366,10 @@
 			{/if}
 		</AlertDialog.Footer>
 		{#if deleteUserGroupDialogIsLoading}
-			<div class="absolute inset-0 bg-gray-50/50 z-10 transition-all rounded-lg flex items-center justify-center">
-				<Loader2 class="w-8 h-8 animate-spin text-gray-300" />
+			<div
+				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
+			>
+				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
 			</div>
 		{/if}
 	</AlertDialog.Content>
@@ -425,9 +388,9 @@
 			<AlertDialog.Title>Are you sure?</AlertDialog.Title>
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
-			<form 
-				method="POST" 
-				action="?/deleteUser" 
+			<form
+				method="POST"
+				action="?/deleteUser"
 				use:enhance={({ formElement, formData, action, cancel, submitter }) => {
 					if (!deleteUserDialogRelatedId) {
 						toast.error('No user selected');
@@ -439,62 +402,61 @@
 							toast.success('User deleted successfully');
 							invalidate('user-groups:data');
 							cancel();
-						}
-						else {
+						} else {
 							toast.error('Failed to remove user');
 						}
 						deleteUserDialogIsLoading = false;
 						deleteUserDialogIsOpen = false;
 						resetDeleteDialogIds();
-					}
+					};
 				}}
 			>
 				<input type="hidden" name="userIds" value={deleteUserDialogRelatedId} />
-				<AlertDialog.Cancel disabled={deleteUserDialogIsLoading} type="reset">Cancel</AlertDialog.Cancel>
+				<AlertDialog.Cancel disabled={deleteUserDialogIsLoading} type="reset"
+					>Cancel</AlertDialog.Cancel
+				>
 				<AlertDialog.Action disabled={deleteUserDialogIsLoading} type="submit">
 					Delete
 				</AlertDialog.Action>
 			</form>
 		</AlertDialog.Footer>
 		{#if deleteUserDialogIsLoading}
-			<div class="absolute inset-0 bg-gray-50/50 z-10 transition-all rounded-lg flex items-center justify-center">
-				<Loader2 class="w-8 h-8 animate-spin text-gray-300" />
+			<div
+				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
+			>
+				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
 			</div>
 		{/if}
 	</AlertDialog.Content>
 </AlertDialog.Root>
 
 <Dialog.Root bind:open={addUserDialogIsOpen}>
-	<Dialog.Content 
+	<Dialog.Content
 		class="sm:max-w-xl"
 		interactOutsideBehavior="ignore"
 		onOpenAutoFocus={(e) => e.preventDefault()}
 	>
 		<Dialog.Header>
-            <Dialog.Title>Add User</Dialog.Title>
-            <Dialog.Description>Search users by name or email.</Dialog.Description>
+			<Dialog.Title>Add User</Dialog.Title>
+			<Dialog.Description>Search users by name or email.</Dialog.Description>
 		</Dialog.Header>
 		<div class="relative">
-			<SearchDropdown 
-				initialList={userList} 
+			<SearchDropdown
+				initialList={userList}
 				submitButtonLabel="Add"
 				searchPlaceholder="Search users by name or email"
 				bind:selectedList={addUserDialogSelectedList}
 			/>
 		</div>
 		<Dialog.Footer>
-            <Button 
-				variant="outline" 
-				onclick={handleAddUserDialogCancel}
-			>Cancel</Button>
-			<Button 
-				variant="default" 
-				onclick={handleAddUserDialogSubmit}
-			>Add</Button>
+			<Button variant="outline" onclick={handleAddUserDialogCancel}>Cancel</Button>
+			<Button variant="default" onclick={handleAddUserDialogSubmit}>Add</Button>
 		</Dialog.Footer>
 		{#if addUserDialogIsLoading}
-			<div class="absolute inset-0 bg-gray-50/50 z-10 transition-all rounded-lg flex items-center justify-center">
-				<Loader2 class="w-8 h-8 animate-spin text-gray-300" />
+			<div
+				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
+			>
+				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
 			</div>
 		{/if}
 	</Dialog.Content>

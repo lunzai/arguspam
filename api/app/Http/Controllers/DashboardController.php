@@ -6,10 +6,9 @@ use App\Enums\CacheKey;
 use App\Enums\RequestStatus;
 use App\Enums\SessionStatus;
 use App\Enums\Status;
-use App\Policies\DashboardPolicy;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -45,7 +44,7 @@ class DashboardController extends Controller
                     ->count();
             }
         );
-        
+
         $assetCount = Cache::flexible(
             CacheKey::ORG_ASSETS_COUNT->key($currentOrgId),
             $cacheFlexibleDuration,
@@ -58,7 +57,7 @@ class DashboardController extends Controller
                     ->count();
             }
         );
-        
+
         $pendingRequestCount = Cache::flexible(
             CacheKey::ORG_REQUESTS_PENDING_COUNT->key($currentOrgId),
             $cacheFlexibleDuration,
@@ -71,7 +70,7 @@ class DashboardController extends Controller
                     ->count();
             }
         );
-        
+
         $requestCount = Cache::flexible(
             CacheKey::ORG_REQUESTS_COUNT->key($currentOrgId),
             $cacheFlexibleDuration,
@@ -83,7 +82,7 @@ class DashboardController extends Controller
                     ->count();
             }
         );
-        
+
         $scheduledSessionCount = Cache::flexible(
             CacheKey::ORG_SESSIONS_SCHEDULED_COUNT->key($currentOrgId),
             $cacheFlexibleDuration,
@@ -96,7 +95,7 @@ class DashboardController extends Controller
                     ->count();
             }
         );
-        
+
         $activeSessionCount = Cache::flexible(
             CacheKey::ORG_SESSIONS_ACTIVE_COUNT->key($currentOrgId),
             $cacheFlexibleDuration,
@@ -109,7 +108,7 @@ class DashboardController extends Controller
                     ->count();
             }
         );
-        
+
         $sessionCount = Cache::flexible(
             CacheKey::ORG_SESSIONS_COUNT->key($currentOrgId),
             $cacheFlexibleDuration,
@@ -121,7 +120,7 @@ class DashboardController extends Controller
                     ->count();
             }
         );
-        
+
         return response()->json([
             'data' => [
                 'user_count' => $userCount,

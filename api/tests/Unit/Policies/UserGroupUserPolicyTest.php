@@ -20,7 +20,7 @@ class UserGroupUserPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new UserGroupUserPolicy();
+        $this->policy = new UserGroupUserPolicy;
         $this->user = User::factory()->create();
     }
 
@@ -145,15 +145,15 @@ class UserGroupUserPolicyTest extends TestCase
         // Test that create and delete permissions are completely independent
         $createOnlyUser = User::factory()->create();
         $deleteOnlyUser = User::factory()->create();
-        
+
         $this->giveUserPermission($createOnlyUser, 'usergroupuser:create');
         $this->giveUserPermission($deleteOnlyUser, 'usergroupuser:delete');
-        
+
         // Create-only user
         $this->assertTrue($this->policy->create($createOnlyUser));
         $this->assertFalse($this->policy->delete($createOnlyUser));
-        
-        // Delete-only user  
+
+        // Delete-only user
         $this->assertFalse($this->policy->create($deleteOnlyUser));
         $this->assertTrue($this->policy->delete($deleteOnlyUser));
     }

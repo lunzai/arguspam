@@ -152,7 +152,6 @@ class SettingTest extends TestCase
         $this->setting->typed_value = 'invalid json string';
     }
 
-
     public function test_setting_uses_correct_traits(): void
     {
         $traits = class_uses_recursive(Setting::class);

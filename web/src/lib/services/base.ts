@@ -8,10 +8,12 @@ export interface BaseFilterParams {
 	sort?: string[];
 	filter?: Record<string, any>;
 	count?: string[];
+	perPage?: number;
 }
 
 export interface BaseFindByIdParams {
 	include?: string[];
+	count?: string[];
 }
 
 export interface BaseUpdateRequest {
@@ -61,6 +63,9 @@ export abstract class BaseService<
 		}
 		if (params.count && params.count.length > 0) {
 			queryParams.set('count', params.count.join(','));
+		}
+		if (params.perPage) {
+			queryParams.set('per_page', params.perPage.toString());
 		}
 		return queryParams.toString();
 	}

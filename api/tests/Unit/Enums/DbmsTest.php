@@ -11,7 +11,7 @@ class DbmsTest extends TestCase
     {
         $cases = Dbms::cases();
         $this->assertCount(7, $cases);
-        
+
         $this->assertContains(Dbms::MYSQL, $cases);
         $this->assertContains(Dbms::POSTGRESQL, $cases);
         $this->assertContains(Dbms::SQLSERVER, $cases);

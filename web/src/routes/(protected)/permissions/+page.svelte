@@ -33,26 +33,26 @@
 			sortable: true,
 			filterable: true
 		},
-		{
-			key: 'created_at',
-			title: 'Created At',
-			sortable: true,
-			filterable: false,
-			visible: true,
-			renderer: (value: string) => {
-				return value ? shortDateTime(value) : '-';
-			}
-		},
-		{
-			key: 'updated_at',
-			title: 'Updated At',
-			sortable: true,
-			filterable: false,
-			visible: true,
-			renderer: (value: string) => {
-				return value ? shortDateTime(value) : '';
-			}
-		},
+		// {
+		// 	key: 'created_at',
+		// 	title: 'Created At',
+		// 	sortable: true,
+		// 	filterable: false,
+		// 	visible: true,
+		// 	renderer: (value: string) => {
+		// 		return value ? shortDateTime(value) : '-';
+		// 	}
+		// },
+		// {
+		// 	key: 'updated_at',
+		// 	title: 'Updated At',
+		// 	sortable: true,
+		// 	filterable: false,
+		// 	visible: true,
+		// 	renderer: (value: string) => {
+		// 		return value ? shortDateTime(value) : '';
+		// 	}
+		// },
 		{
 			key: 'actions',
 			title: 'Actions',
@@ -65,13 +65,6 @@
 							label: 'View',
 							icon: NotebookText,
 							href: `/${modelName}/${row.id}`,
-							variant: 'link',
-							class: 'hover:text-blue-500'
-						},
-						{
-							label: 'Edit',
-							icon: Pencil,
-							href: `/${modelName}/${row.id}/edit`,
 							variant: 'link',
 							class: 'hover:text-blue-500'
 						}

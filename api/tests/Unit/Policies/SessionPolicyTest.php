@@ -33,7 +33,7 @@ class SessionPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new SessionPolicy();
+        $this->policy = new SessionPolicy;
         $this->user = User::factory()->create();
         $this->requester = User::factory()->create();
         $this->approver = User::factory()->create();
@@ -54,14 +54,14 @@ class SessionPolicyTest extends TestCase
         ]);
     }
 
-    public function test_viewAny_returns_true_when_user_has_permission(): void
+    public function test_view_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'session:viewany');
 
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_viewAny_returns_false_when_user_lacks_permission(): void
+    public function test_view_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->viewAny($this->user));
     }
@@ -95,26 +95,26 @@ class SessionPolicyTest extends TestCase
         $this->assertFalse($this->policy->view($this->user, $this->session));
     }
 
-    public function test_auditAny_returns_true_when_user_has_permission(): void
+    public function test_audit_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'session:auditany');
 
         $this->assertTrue($this->policy->auditAny($this->user));
     }
 
-    public function test_auditAny_returns_false_when_user_lacks_permission(): void
+    public function test_audit_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->auditAny($this->user));
     }
 
-    public function test_updateAny_returns_true_when_user_has_permission(): void
+    public function test_update_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'session:updateany');
 
         $this->assertTrue($this->policy->updateAny($this->user));
     }
 
-    public function test_updateAny_returns_false_when_user_lacks_permission(): void
+    public function test_update_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->updateAny($this->user));
     }
@@ -141,14 +141,14 @@ class SessionPolicyTest extends TestCase
         $this->assertFalse($this->policy->update($this->user, $this->session));
     }
 
-    public function test_terminateAny_returns_true_when_user_has_permission(): void
+    public function test_terminate_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'session:terminateany');
 
         $this->assertTrue($this->policy->terminateAny($this->user));
     }
 
-    public function test_terminateAny_returns_false_when_user_lacks_permission(): void
+    public function test_terminate_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->terminateAny($this->user));
     }
@@ -176,14 +176,14 @@ class SessionPolicyTest extends TestCase
         $this->assertFalse($this->policy->terminate($this->requester, $this->session));
     }
 
-    public function test_retrieveSecret_returns_true_when_user_is_requester_with_permission(): void
+    public function test_retrieve_secret_returns_true_when_user_is_requester_with_permission(): void
     {
         $this->giveUserPermission($this->requester, 'session:retrievesecret');
 
         $this->assertTrue($this->policy->retrieveSecret($this->requester, $this->session));
     }
 
-    public function test_retrieveSecret_returns_false_when_user_is_not_requester(): void
+    public function test_retrieve_secret_returns_false_when_user_is_not_requester(): void
     {
         $this->giveUserPermission($this->user, 'session:retrievesecret');
 
@@ -218,26 +218,26 @@ class SessionPolicyTest extends TestCase
         $this->assertFalse($this->policy->end($this->user, $this->session));
     }
 
-    public function test_deleteAny_returns_true_when_user_has_permission(): void
+    public function test_delete_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'session:deleteany');
 
         $this->assertTrue($this->policy->deleteAny($this->user));
     }
 
-    public function test_deleteAny_returns_false_when_user_lacks_permission(): void
+    public function test_delete_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->deleteAny($this->user));
     }
 
-    public function test_restoreAny_returns_true_when_user_has_permission(): void
+    public function test_restore_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'session:restoreany');
 
         $this->assertTrue($this->policy->restoreAny($this->user));
     }
 
-    public function test_restoreAny_returns_false_when_user_lacks_permission(): void
+    public function test_restore_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->restoreAny($this->user));
     }
@@ -263,7 +263,7 @@ class SessionPolicyTest extends TestCase
         $viewAnyUser = User::factory()->create();
         $requesterUser = User::factory()->create();
         $approverUser = User::factory()->create();
-        
+
         // Create a session with specific requester
         $testSession = Session::factory()->create([
             'org_id' => $this->org->id,
@@ -348,7 +348,7 @@ class SessionPolicyTest extends TestCase
             'session:viewany', 'session:view', 'session:auditany', 'session:updateany',
             'session:update', 'session:terminateany', 'session:terminate',
             'session:retrievesecret', 'session:start', 'session:end',
-            'session:deleteany', 'session:restoreany'
+            'session:deleteany', 'session:restoreany',
         ];
 
         foreach ($permissions as $permission) {

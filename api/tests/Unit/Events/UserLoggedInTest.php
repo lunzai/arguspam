@@ -14,9 +14,9 @@ class UserLoggedInTest extends TestCase
     public function test_event_can_be_instantiated()
     {
         $user = User::factory()->create();
-        
+
         $event = new UserLoggedIn($user);
-        
+
         $this->assertInstanceOf(UserLoggedIn::class, $event);
         $this->assertEquals($user->id, $event->user->id);
         $this->assertEquals($user->email, $event->user->email);
@@ -35,9 +35,9 @@ class UserLoggedInTest extends TestCase
     public function test_event_can_be_dispatched()
     {
         $user = User::factory()->create();
-        
+
         $result = UserLoggedIn::dispatch($user);
-        
+
         $this->assertIsArray($result);
     }
 
@@ -45,11 +45,11 @@ class UserLoggedInTest extends TestCase
     {
         $user = User::factory()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com'
+            'email' => 'test@example.com',
         ]);
-        
+
         $event = new UserLoggedIn($user);
-        
+
         $this->assertEquals('Test User', $event->user->name);
         $this->assertEquals('test@example.com', $event->user->email);
         $this->assertEquals($user->id, $event->user->id);

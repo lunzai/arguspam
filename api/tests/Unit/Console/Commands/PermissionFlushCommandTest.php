@@ -92,7 +92,7 @@ class PermissionFlushCommandTest extends TestCase
 
     public function test_command_signature()
     {
-        $command = new PermissionFlush();
+        $command = new PermissionFlush;
         $this->assertStringContainsString('permission:flush', $command->getName());
         $this->assertStringContainsString('force', $command->getDefinition()->getOption('force')->getName());
         $this->assertStringContainsString('f', $command->getDefinition()->getOption('force')->getShortcut());
@@ -100,7 +100,7 @@ class PermissionFlushCommandTest extends TestCase
 
     public function test_command_description()
     {
-        $command = new PermissionFlush();
+        $command = new PermissionFlush;
         $this->assertEquals('Delete all permissions from the database', $command->getDescription());
     }
 }

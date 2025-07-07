@@ -22,19 +22,19 @@ class SettingPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new SettingPolicy();
+        $this->policy = new SettingPolicy;
         $this->user = User::factory()->create();
         $this->setting = Setting::factory()->create();
     }
 
-    public function test_viewAny_returns_true_when_user_has_permission(): void
+    public function test_view_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'setting:viewany');
 
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_viewAny_returns_false_when_user_lacks_permission(): void
+    public function test_view_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->viewAny($this->user));
     }
@@ -99,14 +99,14 @@ class SettingPolicyTest extends TestCase
         $this->assertFalse($this->policy->restore($this->user, $this->setting));
     }
 
-    public function test_forceDelete_returns_true_when_user_has_permission(): void
+    public function test_force_delete_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'setting:forcedelete');
 
         $this->assertTrue($this->policy->forceDelete($this->user, $this->setting));
     }
 
-    public function test_forceDelete_returns_false_when_user_lacks_permission(): void
+    public function test_force_delete_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->forceDelete($this->user, $this->setting));
     }
@@ -115,7 +115,7 @@ class SettingPolicyTest extends TestCase
     {
         $permissions = [
             'setting:viewany', 'setting:view', 'setting:create', 'setting:update',
-            'setting:delete', 'setting:restore', 'setting:forcedelete'
+            'setting:delete', 'setting:restore', 'setting:forcedelete',
         ];
 
         foreach ($permissions as $permission) {
@@ -222,7 +222,7 @@ class SettingPolicyTest extends TestCase
         // It only checks if user has the permission regardless of the setting
         $setting1 = Setting::factory()->create(['key' => 'setting1']);
         $setting2 = Setting::factory()->create(['key' => 'setting2']);
-        
+
         $this->giveUserPermission($this->user, 'setting:view');
 
         // Should return same result for any setting
@@ -247,22 +247,22 @@ class SettingPolicyTest extends TestCase
         $createOnlyUser = User::factory()->create();
         $updateOnlyUser = User::factory()->create();
         $deleteOnlyUser = User::factory()->create();
-        
+
         $this->giveUserPermission($createOnlyUser, 'setting:create');
         $this->giveUserPermission($updateOnlyUser, 'setting:update');
         $this->giveUserPermission($deleteOnlyUser, 'setting:delete');
-        
+
         // Create-only user
         $this->assertTrue($this->policy->create($createOnlyUser));
         $this->assertFalse($this->policy->update($createOnlyUser, $this->setting));
         $this->assertFalse($this->policy->delete($createOnlyUser, $this->setting));
-        
-        // Update-only user  
+
+        // Update-only user
         $this->assertFalse($this->policy->create($updateOnlyUser));
         $this->assertTrue($this->policy->update($updateOnlyUser, $this->setting));
         $this->assertFalse($this->policy->delete($updateOnlyUser, $this->setting));
 
-        // Delete-only user  
+        // Delete-only user
         $this->assertFalse($this->policy->create($deleteOnlyUser));
         $this->assertFalse($this->policy->update($deleteOnlyUser, $this->setting));
         $this->assertTrue($this->policy->delete($deleteOnlyUser, $this->setting));
@@ -278,13 +278,13 @@ class SettingPolicyTest extends TestCase
             'setting:updates',
             'setting:deletes',
             'settings:view',
-            'config:view'
+            'config:view',
         ];
 
         foreach ($variations as $variation) {
             $testUser = User::factory()->create();
             $this->giveUserPermission($testUser, $variation);
-            
+
             $this->assertFalse($this->policy->view($testUser, $this->setting), "Permission '{$variation}' should not grant view access");
             $this->assertFalse($this->policy->create($testUser), "Permission '{$variation}' should not grant create access");
             $this->assertFalse($this->policy->update($testUser, $this->setting), "Permission '{$variation}' should not grant update access");
@@ -295,7 +295,7 @@ class SettingPolicyTest extends TestCase
     {
         $role1 = Role::factory()->create();
         $role2 = Role::factory()->create();
-        
+
         $permission1 = Permission::firstOrCreate(
             ['name' => 'setting:view'],
             ['description' => 'View Setting']
@@ -307,7 +307,7 @@ class SettingPolicyTest extends TestCase
 
         $role1->permissions()->attach($permission1);
         $role2->permissions()->attach($permission2);
-        
+
         $this->user->roles()->attach([$role1->id, $role2->id]);
         $this->user->clearUserRolePermissionCache();
 

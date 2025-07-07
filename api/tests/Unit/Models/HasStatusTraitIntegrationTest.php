@@ -3,9 +3,9 @@
 namespace Tests\Unit\Models;
 
 use App\Enums\Status;
+use App\Models\Asset;
 use App\Models\Org;
 use App\Models\UserGroup;
-use App\Models\Asset;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

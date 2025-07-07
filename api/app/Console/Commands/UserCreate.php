@@ -6,7 +6,6 @@ use App\Enums\Status;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Hash;
 
 class UserCreate extends Command
 {
@@ -32,18 +31,18 @@ class UserCreate extends Command
         $roles = Role::all();
         $roleOptions = $roles->pluck('name', 'id')->toArray();
         $defaultRole = config('auth.default_user_role');
-        
+
         $name = $this->ask('Name');
         $email = $this->ask('Email');
         $password = $this->secret('Password');
-        
+
         $selectedRoles = [];
         if (!empty($roleOptions)) {
             $selectedRoles = $this->choice('Roles', $roleOptions, $defaultRole, null, true);
         } else {
             $this->warn('No roles available. User will be created without roles.');
         }
-        
+
         if (!$this->confirm('Are you sure you want to create user?')) {
             return;
         }

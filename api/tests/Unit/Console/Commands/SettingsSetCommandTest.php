@@ -123,7 +123,7 @@ class SettingsSetCommandTest extends TestCase
 
     public function test_parse_value_for_type_boolean()
     {
-        $command = new SettingsSetCommand();
+        $command = new SettingsSetCommand;
         $reflectionMethod = new \ReflectionMethod($command, 'parseValueForType');
         $reflectionMethod->setAccessible(true);
 
@@ -135,7 +135,7 @@ class SettingsSetCommandTest extends TestCase
 
     public function test_parse_value_for_type_integer()
     {
-        $command = new SettingsSetCommand();
+        $command = new SettingsSetCommand;
         $reflectionMethod = new \ReflectionMethod($command, 'parseValueForType');
         $reflectionMethod->setAccessible(true);
 
@@ -146,7 +146,7 @@ class SettingsSetCommandTest extends TestCase
 
     public function test_parse_value_for_type_float()
     {
-        $command = new SettingsSetCommand();
+        $command = new SettingsSetCommand;
         $reflectionMethod = new \ReflectionMethod($command, 'parseValueForType');
         $reflectionMethod->setAccessible(true);
 
@@ -157,7 +157,7 @@ class SettingsSetCommandTest extends TestCase
 
     public function test_parse_value_for_type_json()
     {
-        $command = new SettingsSetCommand();
+        $command = new SettingsSetCommand;
         $reflectionMethod = new \ReflectionMethod($command, 'parseValueForType');
         $reflectionMethod->setAccessible(true);
 
@@ -168,7 +168,7 @@ class SettingsSetCommandTest extends TestCase
 
     public function test_parse_value_for_type_string()
     {
-        $command = new SettingsSetCommand();
+        $command = new SettingsSetCommand;
         $reflectionMethod = new \ReflectionMethod($command, 'parseValueForType');
         $reflectionMethod->setAccessible(true);
 
@@ -177,7 +177,7 @@ class SettingsSetCommandTest extends TestCase
 
     public function test_format_value()
     {
-        $command = new SettingsSetCommand();
+        $command = new SettingsSetCommand;
         $reflectionMethod = new \ReflectionMethod($command, 'formatValue');
         $reflectionMethod->setAccessible(true);
 
@@ -191,7 +191,7 @@ class SettingsSetCommandTest extends TestCase
 
     public function test_parse_value_for_type_array()
     {
-        $command = new SettingsSetCommand();
+        $command = new SettingsSetCommand;
         $reflectionMethod = new \ReflectionMethod($command, 'parseValueForType');
         $reflectionMethod->setAccessible(true);
 
@@ -448,7 +448,7 @@ class SettingsSetCommandTest extends TestCase
 
     public function test_parse_value_for_type_json_invalid()
     {
-        $command = new SettingsSetCommand();
+        $command = new SettingsSetCommand;
         $reflectionMethod = new \ReflectionMethod($command, 'parseValueForType');
         $reflectionMethod->setAccessible(true);
 

@@ -23,28 +23,28 @@ class UserGroupPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new UserGroupPolicy();
+        $this->policy = new UserGroupPolicy;
         $this->user = User::factory()->create();
         $this->groupMember = User::factory()->create();
         $this->userGroup = UserGroup::factory()->create();
-        
+
         // Add groupMember to the userGroup
         $this->groupMember->userGroups()->attach($this->userGroup);
     }
 
-    public function test_viewAny_returns_true_when_user_has_permission(): void
+    public function test_view_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'usergroup:viewany');
 
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_viewAny_returns_false_when_user_lacks_permission(): void
+    public function test_view_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->viewAny($this->user));
     }
 
-    public function test_view_returns_true_when_user_has_viewAny_permission(): void
+    public function test_view_returns_true_when_user_has_view_any_permission(): void
     {
         $this->giveUserPermission($this->user, 'usergroup:viewany');
 
@@ -63,7 +63,7 @@ class UserGroupPolicyTest extends TestCase
         $this->assertFalse($this->policy->view($this->groupMember, $this->userGroup));
     }
 
-    public function test_view_returns_false_when_user_is_not_group_member_and_lacks_viewAny_permission(): void
+    public function test_view_returns_false_when_user_is_not_group_member_and_lacks_view_any_permission(): void
     {
         $this->giveUserPermission($this->user, 'usergroup:view');
 
@@ -82,19 +82,19 @@ class UserGroupPolicyTest extends TestCase
         $this->assertFalse($this->policy->create($this->user));
     }
 
-    public function test_updateAny_returns_true_when_user_has_permission(): void
+    public function test_update_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'usergroup:updateany');
 
         $this->assertTrue($this->policy->updateAny($this->user));
     }
 
-    public function test_updateAny_returns_false_when_user_lacks_permission(): void
+    public function test_update_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->updateAny($this->user));
     }
 
-    public function test_update_returns_true_when_user_has_updateAny_permission(): void
+    public function test_update_returns_true_when_user_has_update_any_permission(): void
     {
         $this->giveUserPermission($this->user, 'usergroup:updateany');
 
@@ -113,33 +113,33 @@ class UserGroupPolicyTest extends TestCase
         $this->assertFalse($this->policy->update($this->groupMember, $this->userGroup));
     }
 
-    public function test_update_returns_false_when_user_is_not_group_member_and_lacks_updateAny_permission(): void
+    public function test_update_returns_false_when_user_is_not_group_member_and_lacks_update_any_permission(): void
     {
         $this->giveUserPermission($this->user, 'usergroup:update');
 
         $this->assertFalse($this->policy->update($this->user, $this->userGroup));
     }
 
-    public function test_deleteAny_returns_true_when_user_has_permission(): void
+    public function test_delete_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'usergroup:deleteany');
 
         $this->assertTrue($this->policy->deleteAny($this->user));
     }
 
-    public function test_deleteAny_returns_false_when_user_lacks_permission(): void
+    public function test_delete_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->deleteAny($this->user));
     }
 
-    public function test_restoreAny_returns_true_when_user_has_permission(): void
+    public function test_restore_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'usergroup:restoreany');
 
         $this->assertTrue($this->policy->restoreAny($this->user));
     }
 
-    public function test_restoreAny_returns_false_when_user_lacks_permission(): void
+    public function test_restore_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->restoreAny($this->user));
     }
@@ -148,13 +148,13 @@ class UserGroupPolicyTest extends TestCase
     {
         // Create another user group
         $anotherUserGroup = UserGroup::factory()->create();
-        
+
         // User is member of first group but not second
         $this->giveUserPermission($this->groupMember, 'usergroup:view');
 
         // Should be able to view group they belong to
         $this->assertTrue($this->policy->view($this->groupMember, $this->userGroup));
-        
+
         // Should not be able to view group they don't belong to
         $this->assertFalse($this->policy->view($this->groupMember, $anotherUserGroup));
     }
@@ -163,13 +163,13 @@ class UserGroupPolicyTest extends TestCase
     {
         // Create another user group
         $anotherUserGroup = UserGroup::factory()->create();
-        
+
         // User is member of first group but not second
         $this->giveUserPermission($this->groupMember, 'usergroup:update');
 
         // Should be able to update group they belong to
         $this->assertTrue($this->policy->update($this->groupMember, $this->userGroup));
-        
+
         // Should not be able to update group they don't belong to
         $this->assertFalse($this->policy->update($this->groupMember, $anotherUserGroup));
     }

@@ -1,10 +1,9 @@
 import type { Actions, PageServerLoad } from './$types';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import { UserGroupService } from '$services/user-group';
-import type { UserGroupResource } from '$resources/user-group';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { setFormErrors } from '$lib/utils/form';
+import { setFormErrors } from '$utils/form';
 import type { UserGroup } from '$models/user-group';
 import { UserGroupSchema } from '$validations/user-group';
 
@@ -33,7 +32,7 @@ export const actions = {
 			return fail(422, { form });
 		}
 		const data = form.data;
-		try {			
+		try {
 			const userGroupService = new UserGroupService(authToken as string, currentOrgId);
 			const response = await userGroupService.create(data);
 			return {
@@ -49,5 +48,5 @@ export const actions = {
 			}
 			return fail(400, { form, error: `Failed to create user group` });
 		}
-	},
+	}
 } satisfies Actions;

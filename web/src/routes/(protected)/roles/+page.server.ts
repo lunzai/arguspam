@@ -30,7 +30,7 @@ export const actions = {
 			return fail(422, { form });
 		}
 		const data = form.data;
-		try {			
+		try {
 			const roleService = new RoleService(authToken as string, currentOrgId);
 			const response = await roleService.create(data);
 			return {
@@ -46,5 +46,5 @@ export const actions = {
 			}
 			return fail(400, { form, error: `Failed to create role` });
 		}
-	},
+	}
 } satisfies Actions;

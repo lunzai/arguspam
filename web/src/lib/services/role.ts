@@ -16,7 +16,7 @@ export class RoleService extends BaseService<Role> {
 			message: 'Permissions synced successfully'
 		};
 	}
-	
+
 	async getPermissions(id: number) {
 		return await this.api.get(`${this.endpoint}/${id}/permissions`);
 	}

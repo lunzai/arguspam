@@ -15,7 +15,7 @@ export const load = async ({ params, locals, depends }) => {
 	const { authToken, currentOrgId } = locals;
 	const modelService = new RoleService(authToken as string, currentOrgId);
 	const model = (await modelService.findById(id, {
-		include: ['permissions', 'users'],
+		include: ['permissions', 'users']
 		// count: ['users'],
 	})) as RoleResource;
 	const rolePermissionCollection = await modelService.getPermissions(Number(id));
@@ -28,10 +28,10 @@ export const load = async ({ params, locals, depends }) => {
 		{
 			name: model.data.attributes.name,
 			description: model.data.attributes.description,
-			is_default: model.data.attributes.is_default,
+			is_default: model.data.attributes.is_default
 		},
 		zod(RoleSchema)
-	);	
+	);
 	return {
 		form,
 		model,
@@ -85,11 +85,7 @@ export const actions = {
 			const { id } = params;
 			const { authToken, currentOrgId } = locals;
 			const data = await request.formData();
-			const permissionIds = data
-				.get('permissionIds')
-				?.toString()
-				.split(',')
-				.map(Number) ?? [];
+			const permissionIds = data.get('permissionIds')?.toString().split(',').map(Number) ?? [];
 			const roleService = new RoleService(authToken as string, currentOrgId);
 			const response = await roleService.syncPermissions(Number(id), permissionIds);
 			console.log('RESPONSE', response);
@@ -99,5 +95,5 @@ export const actions = {
 				message: error instanceof Error ? error.message : 'Unknown error'
 			});
 		}
-	},
+	}
 } satisfies Actions;

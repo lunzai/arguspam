@@ -16,7 +16,7 @@
 	import FormDialog from './form-dialog.svelte';
 	import { goto } from '$app/navigation';
 
-	let { data } : { data: any } = $props();
+	let { data }: { data: any } = $props();
 
 	let initialSearchParams = page.url.searchParams;
 	initialSearchParams.set('count', 'users');
@@ -148,16 +148,16 @@
 	}
 </script>
 
-<div class="flex justify-between items-center">
+<div class="flex items-center justify-between">
 	<h1 class="text-2xl font-medium capitalize">User Groups</h1>
-	<Button 
-		variant="outline" 
-		class="gap-2 hover:border-blue-200 hover:text-blue-500 hover:bg-blue-50"
+	<Button
+		variant="outline"
+		class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
 		onclick={() => {
 			addUserGroupDialogIsOpen = true;
 		}}
 	>
-		<PlusIcon class="w-4 h-4" />
+		<PlusIcon class="h-4 w-4" />
 		<span>Add User Group</span>
 	</Button>
 </div>
@@ -167,7 +167,7 @@
 	model={data.model}
 	data={data.form}
 	onSuccess={async (data: UserGroup) => {
-		console.log('onSuccess', data);		
+		console.log('onSuccess', data);
 		await goto(`/user-groups/${data.id}`);
 		addUserGroupDialogIsOpen = false;
 	}}

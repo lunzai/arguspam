@@ -19,8 +19,12 @@
 	import { goto } from '$app/navigation';
 
 	let { data } = $props();
-	const rolePermissionCollection = $derived(data.rolePermissionCollection as ApiCollectionResponse<Permission>);
-	const permissionCollection = $derived(data.permissionCollection as ApiCollectionResponse<Permission>);
+	const rolePermissionCollection = $derived(
+		data.rolePermissionCollection as ApiCollectionResponse<Permission>
+	);
+	const permissionCollection = $derived(
+		data.permissionCollection as ApiCollectionResponse<Permission>
+	);
 	const modelResource = $derived(data.model as RoleResource);
 	const model = $derived(modelResource.data.attributes as Role);
 	const hasUsers = $derived(modelResource.data.relationships?.users?.length ?? 0 > 0) as boolean;
@@ -29,39 +33,34 @@
 	let isDefault = $derived(model.is_default ? 'Yes' : 'No');
 
 	let permissionList = $derived(
-		Object
-			.entries(
-				permissionCollection.data
-					.reduce(
-						(groups: any, item: ResourceItem<Permission>) => {
-							const key = item.attributes.name.split(':')[0];
-							(groups[key] = groups[key] || []).push({
-								attributes: item.attributes,
-								selected: false
-							});
-							return groups as any;
-					}, {})
-			)
-			.map(
-				([groupName, items]) => (
-					{ 
-						groupName: groupName as string, 
-						items: items as { attributes: Permission, selected: boolean }[] 
-					})
-			)
-		);
-	let selectedPermssion = $derived(rolePermissionCollection.data.map((p: ResourceItem<Permission>) => p.attributes));
+		Object.entries(
+			permissionCollection.data.reduce((groups: any, item: ResourceItem<Permission>) => {
+				const key = item.attributes.name.split(':')[0];
+				(groups[key] = groups[key] || []).push({
+					attributes: item.attributes,
+					selected: false
+				});
+				return groups as any;
+			}, {})
+		).map(([groupName, items]) => ({
+			groupName: groupName as string,
+			items: items as { attributes: Permission; selected: boolean }[]
+		}))
+	);
+	let selectedPermssion = $derived(
+		rolePermissionCollection.data.map((p: ResourceItem<Permission>) => p.attributes)
+	);
 	let savePermissionsIsLoading = $state(false);
 	let savePermissionsIsLocked = $state(true);
 	let editRoleDialogIsOpen = $state(false);
 	let deleteRoleDialogIsOpen = $state(false);
 	let deleteRoleDialogIsLoading = $state(false);
-	
+
 	async function handleSavePermissions() {
 		try {
 			savePermissionsIsLoading = true;
 			const formData = new FormData();
-			formData.append('permissionIds', selectedPermssion.map(p => p.id).join(','));
+			formData.append('permissionIds', selectedPermssion.map((p) => p.id).join(','));
 			const response = await fetch('?/permissions', {
 				method: 'POST',
 				body: formData
@@ -70,8 +69,7 @@
 			if (result.type === 'success') {
 				toast.success('Permissions saved successfully');
 				invalidate('roles:data');
-			}
-			else {
+			} else {
 				toast.error('Failed to save permissions');
 			}
 		} catch (error) {
@@ -92,7 +90,7 @@
 					variant="outline"
 					size="sm"
 					class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-					onclick={() => editRoleDialogIsOpen = true}
+					onclick={() => (editRoleDialogIsOpen = true)}
 				>
 					<Pencil class="h-4 w-4" />
 					Edit
@@ -102,7 +100,7 @@
 					size="sm"
 					class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
 					disabled={hasUsers}
-					onclick={() => deleteRoleDialogIsOpen = true}
+					onclick={() => (deleteRoleDialogIsOpen = true)}
 				>
 					<Trash2 class="h-4 w-4" />
 					Delete
@@ -149,47 +147,56 @@
 	</Card.Content>
 </Card.Root>
 
-<Card.Root class="gap-3 rounded-lg py-3 shadow-none relative">
+<Card.Root class="relative gap-3 rounded-lg py-3 shadow-none">
 	{#if savePermissionsIsLoading}
-		<div class="absolute inset-0 bg-gray-50/50 z-10 transition-all rounded-lg flex items-center justify-center">
-			<Loader2 class="w-8 h-8 animate-spin text-gray-300" />
+		<div
+			class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
+		>
+			<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
 		</div>
 	{/if}
 	<Card.Header class="flex items-center justify-between px-3">
 		<Card.Title class="text-lg">Permissions</Card.Title>
 		<Card.Action>
-			<Button 
-				variant="outline" 
+			<Button
+				variant="outline"
 				size="sm"
-				class="transition-all duration-200 group relative
-				{savePermissionsIsLocked ? 
-					'text-gray-500 border-gray-200 hover:bg-green-50 hover:text-green-500 hover:border-green-200' : 
-					'text-green-500 border-green-200 hover:bg-gray-50 hover:text-gray-500 hover:border-gray-200'}
-				" 
+				class="group relative transition-all duration-200
+				{savePermissionsIsLocked
+					? 'border-gray-200 text-gray-500 hover:border-green-200 hover:bg-green-50 hover:text-green-500'
+					: 'border-green-200 text-green-500 hover:border-gray-200 hover:bg-gray-50 hover:text-gray-500'}
+				"
 				onclick={() => {
 					savePermissionsIsLocked = !savePermissionsIsLocked;
 				}}
 			>
 				{#if savePermissionsIsLocked}
 					<div class="relative size-4">
-						<LockKeyhole class="absolute top-0 left-0 size-4 transition-all duration-500 group-hover:opacity-0" />
-						<LockKeyholeOpen class="absolute top-0 left-0 size-4 transition-all duration-500 opacity-0 group-hover:opacity-100" />
+						<LockKeyhole
+							class="absolute top-0 left-0 size-4 transition-all duration-500 group-hover:opacity-0"
+						/>
+						<LockKeyholeOpen
+							class="absolute top-0 left-0 size-4 opacity-0 transition-all duration-500 group-hover:opacity-100"
+						/>
 					</div>
 				{:else}
 					<div class="relative size-4">
-						<LockKeyholeOpen class="absolute top-0 left-0 size-4 transition-all duration-500 group-hover:opacity-0" />
-						<LockKeyhole class="absolute top-0 left-0 size-4 transition-all duration-500 opacity-0 group-hover:opacity-100" />
+						<LockKeyholeOpen
+							class="absolute top-0 left-0 size-4 transition-all duration-500 group-hover:opacity-0"
+						/>
+						<LockKeyhole
+							class="absolute top-0 left-0 size-4 opacity-0 transition-all duration-500 group-hover:opacity-100"
+						/>
 					</div>
 				{/if}
-				
 			</Button>
 			<Button
 				disabled={savePermissionsIsLocked}
 				variant="outline"
 				size="sm"
-				class="transition-all duration-200 
-				text-blue-500 border-blue-200 hover:bg-blue-50 hover:text-blue-500
-				{savePermissionsIsLocked ? 'text-gray-500 border-gray-200 bg-gray-50 cursor-not-allowed' : ''}
+				class="border-blue-200 text-blue-500 
+				transition-all duration-200 hover:bg-blue-50 hover:text-blue-500
+				{savePermissionsIsLocked ? 'cursor-not-allowed border-gray-200 bg-gray-50 text-gray-500' : ''}
 				"
 				onclick={() => {
 					handleSavePermissions();
@@ -205,25 +212,31 @@
 		<div class="flex flex-col gap-6 pt-1">
 			{#each permissionList as permission (permission.groupName)}
 				<div class="flex flex-col gap-2">
-					<div class="font-semibold capitalize">{permission.items[0].attributes.description.split(':')[0].trim()}</div>
-					<div class="grid grid-cols-4 gap-2 border border-gray-200 rounded-md p-3">
+					<div class="font-semibold capitalize">
+						{permission.items[0].attributes.description.split(':')[0].trim()}
+					</div>
+					<div class="grid grid-cols-4 gap-2 rounded-md border border-gray-200 p-3">
 						{#each permission.items as item (item.attributes.id)}
-							<div class="flex gap-2 items-center">
-								<Checkbox 
+							<div class="flex items-center gap-2">
+								<Checkbox
 									disabled={savePermissionsIsLocked}
 									value={item.attributes.name}
 									id={item.attributes.name}
-									class="border-gray-300 size-4"
-									checked={selectedPermssion.some(p => p.id === item.attributes.id)}
+									class="size-4 border-gray-300"
+									checked={selectedPermssion.some((p) => p.id === item.attributes.id)}
 									onCheckedChange={(checked) => {
 										if (checked) {
 											selectedPermssion.push(item.attributes);
 										} else {
-											selectedPermssion = selectedPermssion.filter(p => p.id !== item.attributes.id);
+											selectedPermssion = selectedPermssion.filter(
+												(p) => p.id !== item.attributes.id
+											);
 										}
 									}}
 								/>
-								<label for={item.attributes.name}>{item.attributes.description.split(':')[1].trim()}</label>
+								<label for={item.attributes.name}
+									>{item.attributes.description.split(':')[1].trim()}</label
+								>
 							</div>
 						{/each}
 					</div>
@@ -243,9 +256,7 @@
 	}}
 />
 
-<AlertDialog.Root
-	bind:open={deleteRoleDialogIsOpen}
->
+<AlertDialog.Root bind:open={deleteRoleDialogIsOpen}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
 			<AlertDialog.Title>
@@ -263,13 +274,11 @@
 		</AlertDialog.Header>
 		<AlertDialog.Footer>
 			{#if hasUsers}
-				<AlertDialog.Cancel type="reset">
-					Ok
-				</AlertDialog.Cancel>
+				<AlertDialog.Cancel type="reset">Ok</AlertDialog.Cancel>
 			{:else}
-				<form 
-					method="POST" 
-					action="?/delete" 
+				<form
+					method="POST"
+					action="?/delete"
 					use:enhance={({ cancel }) => {
 						if (hasUsers) {
 							toast.error('Unable to delete user group');
@@ -281,16 +290,17 @@
 								goto(result?.location || '/user-groups', { invalidateAll: true }).then(() => {
 									toast.success('User group deleted successfully');
 								});
-							}
-							else {
+							} else {
 								toast.error('Failed to delete user group');
 							}
 							deleteRoleDialogIsLoading = false;
 							deleteRoleDialogIsOpen = false;
-						}
+						};
 					}}
 				>
-					<AlertDialog.Cancel disabled={deleteRoleDialogIsLoading} type="reset">Cancel</AlertDialog.Cancel>
+					<AlertDialog.Cancel disabled={deleteRoleDialogIsLoading} type="reset"
+						>Cancel</AlertDialog.Cancel
+					>
 					<AlertDialog.Action disabled={deleteRoleDialogIsLoading} type="submit">
 						Delete
 					</AlertDialog.Action>
@@ -298,8 +308,10 @@
 			{/if}
 		</AlertDialog.Footer>
 		{#if deleteRoleDialogIsLoading}
-			<div class="absolute inset-0 bg-gray-50/50 z-10 transition-all rounded-lg flex items-center justify-center">
-				<Loader2 class="w-8 h-8 animate-spin text-gray-300" />
+			<div
+				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
+			>
+				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
 			</div>
 		{/if}
 	</AlertDialog.Content>

@@ -20,13 +20,12 @@
 		onSuccess: (data: UserGroup) => Promise<void>;
 	}
 
-	let { 
-		isOpen = $bindable(false), 
-		model = $bindable(), 
+	let {
+		isOpen = $bindable(false),
+		model = $bindable(),
 		data = $bindable(),
-		onSuccess = async (data: UserGroup) => {}, 
-	} : Props = $props();
-
+		onSuccess = async (data: UserGroup) => {}
+	}: Props = $props();
 
 	const form = superForm(data, {
 		validators: zodClient(UserGroupSchema),
@@ -45,11 +44,7 @@
 		}
 	});
 
-	const { 
-		form: formData, 
-		enhance, 
-		submitting,
-	} = form;
+	const { form: formData, enhance, submitting } = form;
 
 	function handleCancel() {
 		isOpen = false;
@@ -57,59 +52,48 @@
 </script>
 
 <Dialog.Root bind:open={isOpen}>
-	<Dialog.Content 
-		class="sm:max-w-2xl"
-		interactOutsideBehavior="ignore"
-	>
+	<Dialog.Content class="sm:max-w-2xl" interactOutsideBehavior="ignore">
 		{#if $submitting}
-			<div class="absolute inset-0 bg-gray-50/50 z-10 transition-all rounded-lg flex items-center justify-center">
-				<Loader2 class="w-8 h-8 animate-spin text-gray-300" />
+			<div
+				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
+			>
+				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
 			</div>
 		{/if}
-		<form 
-			class="space-y-6"
-			method="POST" 
-			action="?/save"
-			use:enhance
-		>
+		<form class="space-y-6" method="POST" action="?/save" use:enhance>
 			<input type="hidden" name="id" value={model?.id} />
 			<input type="hidden" name="org_id" value={model?.org_id} />
 			<Dialog.Header>
 				<Dialog.Title>Edit User Group</Dialog.Title>
 				<Dialog.Description>Edit user group details.</Dialog.Description>
 			</Dialog.Header>
-			<div class="space-y-6">	
-				<Form.Field form={form} name="name">
+			<div class="space-y-6">
+				<Form.Field {form} name="name">
 					<Form.Control>
 						<Form.Label>Name</Form.Label>
-						<Input 
-							type="text" 
-							name="name" 
-							bind:value={$formData.name} 
-							disabled={$submitting} 
-						/>
+						<Input type="text" name="name" bind:value={$formData.name} disabled={$submitting} />
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
-				<Form.Field form={form} name="description">
+				<Form.Field {form} name="description">
 					<Form.Control>
 						<Form.Label>Description</Form.Label>
-						<Textarea 
-							name="description" 
-							bind:value={$formData.description} 
-							disabled={$submitting} 
+						<Textarea
+							name="description"
+							bind:value={$formData.description}
+							disabled={$submitting}
 							class="min-h-30"
 						/>
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
-				<Form.Field form={form} name="status">
+				<Form.Field {form} name="status">
 					<Form.Control>
 						<Form.Label>Status</Form.Label>
 						<Select.Root
 							name="status"
 							type="single"
-							bind:value={$formData.status} 
+							bind:value={$formData.status}
 							disabled={$submitting}
 						>
 							<Select.Trigger class="w-64">
@@ -125,14 +109,8 @@
 				</Form.Field>
 			</div>
 			<Dialog.Footer>
-				<Button 
-					variant="outline" 
-					onclick={handleCancel}
-				>Cancel</Button>
-				<Button 
-					variant="default" 
-					type="submit"
-				>Save</Button>
+				<Button variant="outline" onclick={handleCancel}>Cancel</Button>
+				<Button variant="default" type="submit">Save</Button>
 			</Dialog.Footer>
 		</form>
 	</Dialog.Content>

@@ -32,7 +32,7 @@ export const actions = {
 			return fail(422, { form });
 		}
 		const data = form.data;
-		try {			
+		try {
 			const userGroupService = new UserGroupService(authToken as string, currentOrgId);
 			const response = await userGroupService.create(data);
 			return {
@@ -48,5 +48,5 @@ export const actions = {
 			}
 			return fail(400, { form, error: `Failed to create user group` });
 		}
-	},
+	}
 } satisfies Actions;

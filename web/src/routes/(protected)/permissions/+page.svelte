@@ -67,7 +67,7 @@
 							href: `/${modelName}/${row.id}`,
 							variant: 'link',
 							class: 'hover:text-blue-500'
-						},
+						}
 					]
 				};
 			}

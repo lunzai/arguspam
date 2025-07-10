@@ -4,6 +4,7 @@ import {
 	clearCurrentOrgId,
 	getAuthToken,
 	getCurrentOrgId,
+	setAuthToken,
 	setCurrentOrgId
 } from '$utils/cookie';
 import { PUBLIC_AUTH_LOGIN_PATH } from '$env/static/public';
@@ -32,6 +33,8 @@ export const handle: Handle = async ({ event, resolve }) => {
 			}
 			event.locals.user = userResource.data.attributes;
 			event.locals.userOrgs = orgCollection.data;
+			setCurrentOrgId(event.cookies, currentOrgId);
+			setAuthToken(event.cookies, authToken);	
 		} catch (error) {
 			clearAuthCookie(event.cookies);
 			clearCurrentOrgId(event.cookies);

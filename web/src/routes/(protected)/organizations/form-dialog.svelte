@@ -6,30 +6,31 @@
 	import * as Dialog from '$ui/dialog';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { UserGroupSchema } from '$validations/user-group';
+	import { OrgSchema } from '$validations/org';
 	import { toast } from 'svelte-sonner';
 	import { capitalizeWords } from '$utils/string';
 	import { Button } from '$ui/button';
 	import { Loader2 } from '@lucide/svelte';
-	import type { UserGroup } from '$models/user-group';
+	import type { Org } from '$models/org';
 
 	interface Props {
 		isOpen: boolean;
-		model: UserGroup;
+		model: Org;
 		data: any;
-		onSuccess: (data: UserGroup) => Promise<void>;
+		onSuccess: (data: Org) => Promise<void>;
 	}
 
 	let {
 		isOpen = $bindable(false),
 		model = $bindable(),
 		data = $bindable(),
-		onSuccess = async (data: UserGroup) => {}
+		onSuccess = async (data: Org) => {}
 	}: Props = $props();
+
 	let isNewRecord = $derived(!model?.id);
 
 	const form = superForm(data, {
-		validators: zodClient(UserGroupSchema),
+		validators: zodClient(OrgSchema),
 		delayMs: 100,
 		async onUpdate({ form, result }) {
 			if (!form.valid) {
@@ -37,7 +38,7 @@
 			}
 			if (result.type === 'success') {
 				toast.success(result.data.message);
-				await onSuccess(result.data.model as UserGroup);
+				await onSuccess(result.data.model as Org);
 				isOpen = false;
 			} else if (result.type === 'failure') {
 				toast.error(result.data.error);
@@ -63,11 +64,10 @@
 		{/if}
 		<form class="space-y-6" method="POST" action="?/save" use:enhance>
 			<input type="hidden" name="id" value={model?.id} />
-			<input type="hidden" name="org_id" value={model?.org_id} />
 			<Dialog.Header>
-				<Dialog.Title>{isNewRecord ? 'Add User Group' : 'Edit User Group'}</Dialog.Title>
+				<Dialog.Title>{isNewRecord ? 'Add Organization' : 'Edit Organization'}</Dialog.Title>
 				<Dialog.Description>
-					{isNewRecord ? 'Add user group details.' : 'Edit user group details.'}
+					{isNewRecord ? 'Add organization details.' : 'Edit organization details.'}
 				</Dialog.Description>
 			</Dialog.Header>
 			<div class="space-y-6">

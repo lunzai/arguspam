@@ -33,26 +33,6 @@
 			sortable: true,
 			filterable: true
 		},
-		// {
-		// 	key: 'created_at',
-		// 	title: 'Created At',
-		// 	sortable: true,
-		// 	filterable: false,
-		// 	visible: true,
-		// 	renderer: (value: string) => {
-		// 		return value ? shortDateTime(value) : '-';
-		// 	}
-		// },
-		// {
-		// 	key: 'updated_at',
-		// 	title: 'Updated At',
-		// 	sortable: true,
-		// 	filterable: false,
-		// 	visible: true,
-		// 	renderer: (value: string) => {
-		// 		return value ? shortDateTime(value) : '';
-		// 	}
-		// },
 		{
 			key: 'actions',
 			title: 'Actions',

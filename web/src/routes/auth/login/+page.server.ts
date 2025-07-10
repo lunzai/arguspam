@@ -7,6 +7,7 @@ import { loginSchema } from '$validations/auth';
 import { zod } from 'sveltekit-superforms/adapters';
 import { getAuthToken, setAuthToken, setCurrentOrgId } from '$utils/cookie';
 import { redirect } from '@sveltejs/kit';
+import { ADMIN_EMAIL, ADMIN_PASSWORD } from '$env/static/private';
 
 export const load: PageServerLoad = async ({ cookies }) => {
 	const token = getAuthToken(cookies);
@@ -14,7 +15,13 @@ export const load: PageServerLoad = async ({ cookies }) => {
 		return redirect(302, '/');
 	}
 	return {
-		form: await superValidate(zod(loginSchema))
+		form: await superValidate(
+			{
+				email: ADMIN_EMAIL,
+				password: ADMIN_PASSWORD
+			},
+			zod(loginSchema)
+		)
 	};
 };
 

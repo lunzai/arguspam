@@ -3,7 +3,7 @@
 	import { Input } from '$ui/input';
 	import { Button } from '$ui/button';
 	import { loginSchema, type Login } from '$validations/auth';
-	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
+	import { type SuperValidated, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 
@@ -17,7 +17,7 @@
 		validators: zodClient(loginSchema)
 	});
 
-	const { form: formData, enhance, errors, message } = form;
+	const { form: formData, enhance, message } = form;
 	if ($message) {
 		toast.success($message);
 	}

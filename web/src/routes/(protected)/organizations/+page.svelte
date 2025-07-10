@@ -10,11 +10,20 @@
 	import { shortDateTime } from '$lib/utils/date';
 	import type { ColumnDefinition } from '$components/data-table/types';
 	import { page } from '$app/state';
-	import { Pencil, NotebookText } from '@lucide/svelte';
+	import { Pencil, NotebookText, Plus, PlusIcon } from '@lucide/svelte';
 	import type { CellBadge } from '$components/data-table/types';
+	import { Button } from '$ui/button';
+	import { Dialog } from '$ui/dialog';
+	import FormDialog from './form-dialog.svelte';
+	import { OrgSchema } from '$validations/org';
+	import { goto } from '$app/navigation';
+
+	let { data }: { data: any } = $props();
 
 	let initialSearchParams = page.url.searchParams;
 	const modelName = 'organizations';
+
+	let addOrgDialogIsOpen = $state(false);
 
 	export const columns: ColumnDefinition<Org>[] = [
 		{
@@ -85,13 +94,6 @@
 							href: `/${modelName}/${row.id}`,
 							variant: 'link',
 							class: 'hover:text-blue-500'
-						},
-						{
-							label: 'Edit',
-							icon: Pencil,
-							href: `/${modelName}/${row.id}/edit`,
-							variant: 'link',
-							class: 'hover:text-blue-500'
 						}
 					]
 				};
@@ -140,7 +142,30 @@
 	}
 </script>
 
-<h1 class="text-2xl font-medium capitalize">{modelName}</h1>
+<div class="flex items-center justify-between">
+	<h1 class="text-2xl font-medium capitalize">{modelName}</h1>
+	<Button
+		variant="outline"
+		class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
+		onclick={() => {
+			addOrgDialogIsOpen = true;
+		}}
+	>
+		<PlusIcon class="h-4 w-4" />
+		<span>Add Organization</span>
+	</Button>
+</div>
+
+<FormDialog
+	isOpen={addOrgDialogIsOpen}
+	model={data.model}
+	data={data.form}
+	onSuccess={async (data: Org) => {
+		console.log('onSuccess', data);
+		await goto(`/${modelName}/${data.id}`);
+		addOrgDialogIsOpen = false;
+	}}
+/>
 
 <!-- Data Table Component -->
 <DataTable

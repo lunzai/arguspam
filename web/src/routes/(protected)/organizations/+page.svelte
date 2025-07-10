@@ -22,9 +22,9 @@
 
 	let initialSearchParams = page.url.searchParams;
 	const modelName = 'organizations';
-	
+
 	let addOrgDialogIsOpen = $state(false);
-	
+
 	export const columns: ColumnDefinition<Org>[] = [
 		{
 			key: 'id',
@@ -94,7 +94,7 @@
 							href: `/${modelName}/${row.id}`,
 							variant: 'link',
 							class: 'hover:text-blue-500'
-						},
+						}
 					]
 				};
 			}

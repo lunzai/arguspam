@@ -47,7 +47,7 @@
 		</DataTableHeaderCell>
 	{/if}
 
-	{#each columns as column}
+	{#each columns as column (column.key)}
 		<DataTableHeaderCell
 			className={headerCellClassName}
 			align={column.align}

@@ -5,9 +5,8 @@
 	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
-	import { StatusBadge, RedBadge, GreenBadge, YellowBadge } from '$components/badge';
+	import { StatusBadge } from '$components/badge';
 	import type { ResourceItem } from '$resources/api';
-	import { Badge } from '$ui/badge';
 	import { toast } from 'svelte-sonner';
 	import type { OrgResource } from '$lib/resources/org';
 	import type { Org } from '$models/org';
@@ -219,8 +218,6 @@
 		{/if}
 	</Card.Content>
 </Card.Root>
-
-
 
 <FormDialog
 	isOpen={editOrgDialogIsOpen}

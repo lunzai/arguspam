@@ -34,7 +34,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 			event.locals.user = userResource.data.attributes;
 			event.locals.userOrgs = orgCollection.data;
 			setCurrentOrgId(event.cookies, currentOrgId);
-			setAuthToken(event.cookies, authToken);	
+			setAuthToken(event.cookies, authToken);
 		} catch (error) {
 			clearAuthCookie(event.cookies);
 			clearCurrentOrgId(event.cookies);

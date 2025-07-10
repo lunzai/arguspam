@@ -15,10 +15,13 @@ export const load: PageServerLoad = async ({ cookies }) => {
 		return redirect(302, '/');
 	}
 	return {
-		form: await superValidate({
-			email: ADMIN_EMAIL,
-			password: ADMIN_PASSWORD
-		}, zod(loginSchema))
+		form: await superValidate(
+			{
+				email: ADMIN_EMAIL,
+				password: ADMIN_PASSWORD
+			},
+			zod(loginSchema)
+		)
 	};
 };
 

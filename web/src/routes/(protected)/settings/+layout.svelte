@@ -3,6 +3,10 @@
 	import { Separator } from '$ui/separator';
 	import SidebarNav from '$components/page-sidebar/sidebar.svelte';
 
+	let {
+		children,
+	} = $props();
+
 	const sidebarNavItems = [
 		{
 			title: 'Account',
@@ -12,22 +16,21 @@
 			title: 'Security',
 			href: '/settings/security'
 		}
-		// {
-		// 	title: 'Preferences',
-		// 	href: '/settings/preferences'
-		// }
 	];
+	
 </script>
 
-<h1 class="text-2xl font-medium">Settings</h1>
-<Separator class="my-4" />
-<div
-	class="flex flex-col space-y-8 lg:max-w-5xl lg:flex-row lg:space-y-0 lg:space-x-12 xl:max-w-7xl"
->
-	<aside class="w-48">
-		<SidebarNav items={sidebarNavItems} />
-	</aside>
-	<div class="flex-1">
-		<slot />
-	</div>
+<div class="flex flex-col space-y-4">
+    <h1 class="text-xl font-medium capitalize">Settings</h1>
+    <Separator />
+    <div
+        class="flex flex-col lg:flex-row mt-2 gap-8"
+    >
+        <aside class="w-48">
+            <SidebarNav items={sidebarNavItems} />
+        </aside>
+        <div class="flex-1">
+            {@render children()}
+        </div>
+    </div>
 </div>

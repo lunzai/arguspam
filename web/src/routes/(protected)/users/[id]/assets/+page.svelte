@@ -16,20 +16,8 @@
 	import * as DropdownMenu from '$ui/dropdown-menu';
 
 	let { data } = $props();
-	// const modelResource = $derived(data.model as UserResource);
-	// const model = $derived(modelResource.data.attributes as User);
-	// const orgs = $derived(modelResource.data.relationships?.orgs as ResourceItem<Org>[]);
-	// const userGroups = $derived(
-	// 	modelResource.data.relationships?.userGroups as ResourceItem<UserGroup>[]
-	// );
-	// const roles = $derived(modelResource.data.relationships?.roles as ResourceItem<Role>[]);
-	// const modelName = 'users';
-	// const modelTitle = 'User';
 </script>
 
-<!-- <h1 class="text-2xl font-medium">{modelTitle} - #{model.id} - {model.name}</h1> -->
-
-	
 <Card.Root class="w-full">
 	<Card.Header class="flex justify-between items-center">
 	 	<Card.Title class="text-lg">Assets</Card.Title>

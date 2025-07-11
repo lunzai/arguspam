@@ -8,6 +8,7 @@
 	import type { User } from '$models/user';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
+	import * as Card from '$ui/card';
 
 	let { data } = $props();
 
@@ -31,36 +32,41 @@
 	const { form: formData, enhance, submitting, delayed } = form;
 </script>
 
-<div class="space-y-6">
-	<div>
-		<h1 class="text-2xl font-medium">Profile Settings</h1>
-		<p class="text-muted-foreground">Update your personal information.</p>
-	</div>
-
-	<form method="POST" use:enhance class="max-w-xl space-y-6">
-		<Form.Field {form} name="name">
-			<Form.Control>
-				<Form.Label>Full Name</Form.Label>
-				<Input type="text" name="name" bind:value={$formData.name} disabled={$submitting} />
-			</Form.Control>
-			<Form.FieldErrors />
-		</Form.Field>
-
-		<div class="space-y-2">
-			<label for="email" class="flex gap-2 text-sm leading-none font-medium select-none"
-				>Email</label
-			>
-			<Input type="email" value={data.user.email} readonly disabled />
-			<p class="text-muted-foreground text-sm">
-				Email address cannot be changed. Contact your administrator to update your email.
-			</p>
-		</div>
-
-		<Form.Button type="submit" disabled={$submitting}>
-			{#if $delayed}
-				<Loader2 className="size-4 animate-spin" />
-			{/if}
-			Update Profile
-		</Form.Button>
-	</form>
-</div>
+<form method="POST" use:enhance>
+	<Card.Root class="w-full">
+		<Card.Header class="">
+			<Card.Title class="text-lg">Profile Settings</Card.Title>
+			<Card.Description>Update your personal information.</Card.Description>
+			<Card.Action>
+			</Card.Action>
+		</Card.Header>
+		<Card.Content>
+			<div class="space-y-6 max-w-xl">
+				<Form.Field {form} name="name">
+					<Form.Control>
+						<Form.Label>Full Name</Form.Label>
+						<Input type="text" name="name" bind:value={$formData.name} disabled={$submitting} />
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+	
+				<div class="space-y-2">
+					<label for="email" class="flex gap-2 text-sm leading-none font-medium select-none"
+						>Email</label
+					>
+					<Input type="email" value={data.user.email} readonly disabled />
+					<p class="text-muted-foreground text-sm">
+						Email address cannot be changed. Contact your administrator to update your email.
+					</p>
+				</div>
+	
+				<Form.Button type="submit" disabled={$submitting}>
+					{#if $delayed}
+						<Loader2 className="size-4 animate-spin" />
+					{/if}
+					Update Profile
+				</Form.Button>
+			</div>
+		</Card.Content>
+	</Card.Root>
+</form>

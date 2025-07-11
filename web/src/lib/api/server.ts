@@ -22,7 +22,9 @@ export class ServerApi {
 			httpsAgent: new https.Agent({
 				// Only disable SSL verification in development
 				// TODO: REMOVE THIS
-				rejectUnauthorized: !dev
+				// rejectUnauthorized: !dev 
+				// CORS SSL CSRF
+				rejectUnauthorized: false,
 			})
 		});
 	}

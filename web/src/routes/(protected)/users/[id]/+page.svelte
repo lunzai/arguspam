@@ -3,7 +3,7 @@
 	import type { User } from '$models/user';
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
-	import { Pencil, Trash2, MailCheck, ShieldOff, ShieldCheck, ShieldAlert } from '@lucide/svelte';
+	import { Pencil, Trash2, MailCheck, ShieldOff, ShieldCheck, ShieldAlert, MoreHorizontal, SquareAsterisk } from '@lucide/svelte';
 	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
@@ -13,44 +13,38 @@
 	import { Badge } from '$ui/badge';
 	import type { UserGroup } from '$models/user-group';
 	import type { Role } from '$models/role';
+	import * as DropdownMenu from '$ui/dropdown-menu';
+	import { page } from '$app/state';
 
 	let { data } = $props();
-	const modelResource = $derived(data.user as UserResource);
+	const modelResource = $derived(data.model as UserResource);
 	const model = $derived(modelResource.data.attributes as User);
 	const orgs = $derived(modelResource.data.relationships?.orgs as ResourceItem<Org>[]);
 	const userGroups = $derived(
 		modelResource.data.relationships?.userGroups as ResourceItem<UserGroup>[]
 	);
 	const roles = $derived(modelResource.data.relationships?.roles as ResourceItem<Role>[]);
-	const modelName = 'users';
-	const modelTitle = 'User';
 </script>
 
-<h1 class="text-2xl font-medium">{modelTitle} - #{model.id} - {model.name}</h1>
-<Card.Root class="gap-3 rounded-lg py-3 shadow-none">
-	<Card.Header class="flex items-center justify-between px-3">
-		<Card.Title class="text-lg">{modelTitle} Details</Card.Title>
+<!-- <h1 class="text-2xl font-medium">{modelTitle} - #{model.id} - {model.name}</h1> -->
+
+	
+<Card.Root class="w-full">
+	<Card.Header class="flex justify-between items-center">
+	 	<Card.Title class="text-lg">Profile</Card.Title>
+		<!-- <Card.Description>User #{model.id} - {model.name}</Card.Description> -->
 		<Card.Action>
-			<Button
-				variant="outline"
-				class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-				href={`/${modelName}/${model.id}/edit`}
-			>
-				<Pencil class="h-4 w-4" />
+	  		<Button variant="outline">
+				<Pencil class="h-4 w-4" />	
 				Edit
 			</Button>
-			<Button
-				variant="outline"
-				class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
-				href={`/${modelName}/${model.id}/delete`}
-			>
+			<Button variant="outline" class="text-destructive">
 				<Trash2 class="h-4 w-4" />
-				Delete
+				Delete User
 			</Button>
-		</Card.Action>
+	 	</Card.Action>
 	</Card.Header>
-	<Separator />
-	<Card.Content class="gap-3 px-3">
+	<Card.Content>
 		<DL.Root divider={null}>
 			<DL.Row>
 				<DL.Label>ID</DL.Label>

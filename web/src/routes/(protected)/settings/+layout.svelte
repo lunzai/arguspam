@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import { Separator } from '$ui/separator';
-	import SidebarNav from '$components/settings-sidebar/sidebar.svelte';
+	import SidebarNav from '$components/page-sidebar/sidebar.svelte';
 
 	const sidebarNavItems = [
 		{

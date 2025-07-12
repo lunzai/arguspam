@@ -36,7 +36,8 @@ class UpdateAccessRestrictionRequest extends BaseAccessRestrictionRequest
         match ($this->input('type')) {
             AccessRestrictionType::IP_ADDRESS->value => $rules = array_merge($rules, $this->getIpAddressRules()),
             AccessRestrictionType::TIME_WINDOW->value => $rules = array_merge($rules, $this->getTimeWindowRules()),
-            AccessRestrictionType::LOCATION->value => $rules = array_merge($rules, $this->getLocationRules()),
+            AccessRestrictionType::COUNTRY->value => $rules = array_merge($rules, $this->getCountryRules()),
+            default => null,
         };
         return $rules;
     }

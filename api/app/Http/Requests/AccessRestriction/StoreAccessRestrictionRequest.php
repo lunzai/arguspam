@@ -29,14 +29,15 @@ class StoreAccessRestrictionRequest extends BaseAccessRestrictionRequest
             'type' => ['bail', 'required', new Enum(AccessRestrictionType::class)],
             'data' => ['bail', 'required', 'array'],
             'status' => ['required', new Enum(Status::class)],
-            'weight' => ['required', 'integer', 'min:0', 'default:0'],
+            'weight' => ['required', 'integer', 'min:0'],
             'data.allow' => ['required_without:data.deny', 'array', 'min:1'],
             'data.deny' => ['required_without:data.allow', 'array', 'min:1'],
         ];
         match ($this->input('type')) {
             AccessRestrictionType::IP_ADDRESS->value => $rules = array_merge($rules, $this->getIpAddressRules()),
             AccessRestrictionType::TIME_WINDOW->value => $rules = array_merge($rules, $this->getTimeWindowRules()),
-            AccessRestrictionType::LOCATION->value => $rules = array_merge($rules, $this->getLocationRules()),
+            AccessRestrictionType::COUNTRY->value => $rules = array_merge($rules, $this->getCountryRules()),
+            default => null,
         };
         return $rules;
     }

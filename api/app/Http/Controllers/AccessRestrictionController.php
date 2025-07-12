@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\CacheKey;
 use App\Http\Filters\AccessRestrictionFilter;
 use App\Http\Resources\AccessRestriction\AccessRestrictionCollection;
+use App\Http\Resources\AccessRestriction\AccessRestrictionResource;
 use App\Http\Requests\AccessRestriction\StoreAccessRestrictionRequest;
 use App\Http\Requests\AccessRestriction\UpdateAccessRestrictionRequest;
 use App\Models\AccessRestriction;
@@ -33,25 +34,40 @@ class AccessRestrictionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAccessRestrictionRequest $request)
+    public function store(StoreAccessRestrictionRequest $request) : AccessRestrictionResource
     {
-        //
+        $this->authorize('create', AccessRestriction::class);
+        $validated = $request->validated();
+        $accessRestriction = AccessRestriction::create($validated);
+        Cache::forget(CacheKey::ACCESS_RESTRICTIONS->value);
+
+        return new AccessRestrictionResource($accessRestriction);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(AccessRestriction $accessRestriction)
+    public function show(string $id) : AccessRestrictionResource
     {
-        //
+        $accessRestrictionQuery = AccessRestriction::query();
+        $this->applyIncludes($accessRestrictionQuery, request());
+        $accessRestriction = $accessRestrictionQuery->findOrFail($id);
+        $this->authorize('view', $accessRestriction);
+
+        return new AccessRestrictionResource($accessRestriction);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAccessRestrictionRequest $request, AccessRestriction $accessRestriction)
+    public function update(UpdateAccessRestrictionRequest $request, AccessRestriction $accessRestriction) : AccessRestrictionResource
     {
-        //
+        $this->authorize('update', $accessRestriction);
+        $validated = $request->validated();
+        $accessRestriction->update($validated);
+        Cache::forget(CacheKey::ACCESS_RESTRICTIONS->value);
+
+        return new AccessRestrictionResource($accessRestriction);
     }
 
     /**
@@ -59,6 +75,15 @@ class AccessRestrictionController extends Controller
      */
     public function destroy(AccessRestriction $accessRestriction)
     {
-        //
+        $this->authorize('delete', $accessRestriction);
+        if ($accessRestriction->users()->exists()) {
+            return $this->unprocessableEntity('Cannot delete access restriction with assigned users.');
+        }
+        if ($accessRestriction->userGroups()->exists()) {
+            return $this->unprocessableEntity('Cannot delete access restriction with assigned user groups.');
+        }
+        $accessRestriction->delete();
+        Cache::forget(CacheKey::ACCESS_RESTRICTIONS->value);
+        return $this->noContent();
     }
 }

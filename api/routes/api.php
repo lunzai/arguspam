@@ -17,6 +17,9 @@ use App\Http\Controllers\SessionAuditController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SettingGroupController;
+use App\Http\Controllers\AccessRestrictionController;
+use App\Http\Controllers\AccessRestrictionUserController;
+use App\Http\Controllers\AccessRestrictionUserGroupController;
 use App\Http\Controllers\UserAccessRestrictionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
@@ -73,6 +76,7 @@ Route::middleware('auth:sanctum')->group(function () {
         'users' => UserController::class,
         'roles' => RoleController::class,
         'permissions' => PermissionController::class,
+        'access-restrictions' => AccessRestrictionController::class,
     ]);
 
     Route::get('/settings', [SettingController::class, 'index']);
@@ -98,4 +102,12 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['store', 'index']);
     Route::delete('orgs/{org}/users', [OrgUserController::class, 'destroy'])
         ->name('orgs.users.destroy');
+    Route::apiResource('access-restrictions.users', AccessRestrictionUserController::class)
+        ->only(['store', 'index']);
+    Route::delete('access-restrictions/{access_restriction}/users', [AccessRestrictionUserController::class, 'destroy'])
+        ->name('access-restrictions.users.destroy');
+    Route::apiResource('access-restrictions.user-groups', AccessRestrictionUserGroupController::class)
+        ->only(['store', 'index']);
+    Route::delete('access-restrictions/{access_restriction}/user-groups', [AccessRestrictionUserGroupController::class, 'destroy'])
+        ->name('access-restrictions.user-groups.destroy');
 });

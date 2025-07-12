@@ -12,7 +12,7 @@ class AccessRestrictionUserGroupPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyPermission('accessrestrictionuser:viewany');
+        return $user->hasAnyPermission('accessrestrictionusergroup:viewany');
     }
 
     /**
@@ -20,7 +20,7 @@ class AccessRestrictionUserGroupPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasAnyPermission('accessrestrictionuser:create');
+        return $user->hasAnyPermission('accessrestrictionusergroup:create');
     }
 
     /**
@@ -28,6 +28,6 @@ class AccessRestrictionUserGroupPolicy
      */
     public function delete(User $user, AccessRestriction $accessRestriction): bool
     {
-        return $user->hasAnyPermission('accessrestrictionuser:delete');
+        return $user->hasAnyPermission('accessrestrictionusergroup:delete');
     }
 }

@@ -32,9 +32,7 @@ class OrgUserController extends Controller
             'user_ids' => ['required', 'array', 'min:1'],
             'user_ids.*' => ['required', 'exists:users,id'],
         ]);
-
         $org->users()->syncWithoutDetaching($validated['user_ids']);
-
         return $this->created();
     }
 
@@ -45,9 +43,7 @@ class OrgUserController extends Controller
             'user_ids' => ['required', 'array', 'min:1'],
             'user_ids.*' => ['integer', 'exists:users,id'],
         ]);
-
         $org->users()->detach($validated['user_ids']);
-
         return $this->noContent();
     }
 }

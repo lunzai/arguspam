@@ -12,7 +12,7 @@ class AccessRestrictionUserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasAnyPermission('accessrestriction:viewany');
+        return $user->hasAnyPermission('accessrestrictionuser:viewany');
     }
 
     /**
@@ -20,7 +20,7 @@ class AccessRestrictionUserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasAnyPermission('accessrestriction:create');
+        return $user->hasAnyPermission('accessrestrictionuser:create');
     }
 
     /**
@@ -28,6 +28,6 @@ class AccessRestrictionUserPolicy
      */
     public function delete(User $user, AccessRestriction $accessRestriction): bool
     {
-        return $user->hasAnyPermission('accessrestriction:delete');
+        return $user->hasAnyPermission('accessrestrictionuser:delete');
     }
 }

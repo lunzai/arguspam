@@ -11,6 +11,9 @@ enum CacheKey: string
     case USER_ROLES = 'user:role';
     case USER_PERMISSIONS = 'user:permission';
 
+    // USER GROUP
+    case USER_GROUPS = 'user_groups';
+
     // ROLE
     case ROLES = 'roles';
     case ROLE_PERMISSIONS = 'role:permission';
@@ -20,6 +23,8 @@ enum CacheKey: string
 
     // ACCESS RESTRICTION
     case ACCESS_RESTRICTIONS = 'access_restrictions';
+    case ACCESS_RESTRICTION_USERS = 'access_restriction:users';
+    case ACCESS_RESTRICTION_USER_GROUPS = 'access_restriction:user_groups';
 
     // DASHBOARD
     case ORG_USERS_COUNT = 'org:user:count';

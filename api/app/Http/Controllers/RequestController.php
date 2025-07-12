@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CacheKey;
 use App\Http\Filters\RequestFilter;
 use App\Http\Requests\Request\StoreRequestRequest;
 use App\Http\Requests\Request\UpdateRequestRequest;
@@ -9,8 +10,10 @@ use App\Http\Resources\Request\RequestCollection;
 use App\Http\Resources\Request\RequestResource;
 use App\Models\Request as RequestModel;
 use App\Traits\IncludeRelationships;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class RequestController extends Controller
 {
@@ -19,14 +22,18 @@ class RequestController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(RequestFilter $filter): RequestCollection
+    public function index(RequestFilter $filter, Request $request): RequestCollection
     {
         $this->authorize('viewAny', RequestModel::class);
-        $request = RequestModel::filter($filter);
-
-        return new RequestCollection(
-            $request->paginate(config('pam.pagination.per_page'))
+        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $requests = Cache::remember(
+            CacheKey::REQUESTS->key($request->get(config('pam.org.request_attribute'))),
+            config('cache.default_ttl'),
+            function () use ($filter, $pagination) {
+                return RequestModel::filter($filter)->paginate($pagination);
+            }
         );
+        return new RequestCollection($requests);
     }
 
     public function store(StoreRequestRequest $request): RequestResource

@@ -16,7 +16,7 @@ class DashboardController extends Controller
     {
         $this->authorize('dashboard:viewany');
         $cacheFlexibleDuration = [300, 3600];
-        $currentOrgId = request()->current_org_id;
+        $currentOrgId = request()->get(config('pam.org.request_attribute'));
 
         $userCount = Cache::flexible(
             CacheKey::ORG_USERS_COUNT->key($currentOrgId),

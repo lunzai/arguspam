@@ -10,4 +10,9 @@ class PasswordPolicy
     {
         return $user->hasAnyPermission('password:update');
     }
+
+    public function updateAny(User $user): bool
+    {
+        return $user->hasAnyPermission('password:updateany');
+    }
 }

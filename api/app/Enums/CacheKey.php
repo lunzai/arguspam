@@ -5,15 +5,21 @@ namespace App\Enums;
 enum CacheKey: string
 {
     // IN USE
+    // USER
+    case USERS = 'users';
     case USER_ORG = 'user:org';
     case USER_ROLES = 'user:role';
     case USER_PERMISSIONS = 'user:permission';
 
     // ROLE
+    case ROLES = 'roles';
     case ROLE_PERMISSIONS = 'role:permission';
 
     // PERMISSION
     case PERMISSIONS = 'permissions';
+
+    // ACCESS RESTRICTION
+    case ACCESS_RESTRICTIONS = 'access_restrictions';
 
     // DASHBOARD
     case ORG_USERS_COUNT = 'org:user:count';
@@ -25,10 +31,27 @@ enum CacheKey: string
     case ORG_SESSIONS_SCHEDULED_COUNT = 'org:session:scheduled:count';
     case ORG_SESSIONS_ACTIVE_COUNT = 'org:session:active:count';
 
-    // NOT SURE
-
+    // ORG    
+    case ORGS = 'orgs';
     case ORG_USERS = 'org_users';
 
+    // ASSET
+    case ASSETS = 'assets';
+    case ASSET_ACCESS_GRANTS = 'asset:access_grants';
+
+    // ACTION AUDIT
+    case ACTION_AUDITS = 'action_audits';
+
+    // REQUEST
+    case REQUESTS = 'requests';
+
+    // SESSION
+    case SESSIONS = 'sessions';
+    case SESSION_AUDITS = 'session_audits';
+
+
+
+    // NOT SURE
     case SETTING_VALUE = 'settings:value';
     case SETTING_KEY = 'settings:key';
     case SETTING_ALL = 'settings:all';

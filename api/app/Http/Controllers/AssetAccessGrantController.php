@@ -2,23 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CacheKey;
 use App\Http\Resources\AssetAccessGrant\AssetAccessGrantCollection;
 use App\Models\Asset;
 use App\Models\AssetAccessGrant;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 
 // TODO: REWRITE
 class AssetAccessGrantController extends Controller
 {
     use IncludeRelationships;
 
-    public function index(Asset $asset): AssetAccessGrantCollection
+    public function index(Asset $asset, Request $request): AssetAccessGrantCollection
     {
         $this->authorize('viewAny', AssetAccessGrant::class);
-        $grants = $asset->accessGrants()->paginate(config('pam.pagination.per_page'));
-
+        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $grants = Cache::remember(
+            CacheKey::ASSET_ACCESS_GRANTS->value,
+            config('cache.default_ttl'),
+            function () use ($asset, $pagination) {
+                return $asset->accessGrants()->paginate($pagination);
+            }
+        );
         return new AssetAccessGrantCollection($grants);
     }
 

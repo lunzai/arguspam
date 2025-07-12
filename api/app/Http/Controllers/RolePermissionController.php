@@ -11,14 +11,15 @@ use Illuminate\Support\Facades\Cache;
 
 class RolePermissionController extends Controller
 {
-    public function index(Role $role): PermissionCollection
+    public function index(Role $role, Request $request): PermissionCollection
     {
         $this->authorize('rolepermission:index');
+        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
         $permissions = Cache::remember(
             CacheKey::ROLE_PERMISSIONS->key($role->id),
             config('cache.default_ttl'),
-            function () use ($role) {
-                return $role->permissions;
+            function () use ($role, $pagination) {
+                return $role->permissions()->paginate($pagination);
             }
         );
         return new PermissionCollection($permissions);

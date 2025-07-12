@@ -31,12 +31,9 @@ class SettingPolicy
         return $user->hasAnyPermission('setting:create');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, Setting $setting): bool
+    public function updateAny(User $user): bool
     {
-        return $user->hasAnyPermission('setting:update');
+        return $user->hasAnyPermission('setting:updateany');
     }
 
     /**

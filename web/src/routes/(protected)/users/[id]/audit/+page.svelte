@@ -31,9 +31,9 @@
 
 	
 <Card.Root class="w-full">
-	<Card.Header class="flex justify-between items-center">
+	<Card.Header>
 	 	<Card.Title class="text-lg">Aduit</Card.Title>
-		<!-- <Card.Description>User #{model.id} - {model.name}</Card.Description> -->
+		<Card.Description>View user audit log.</Card.Description>
 		<Card.Action>
 	  		<Button variant="outline">
 				<Pencil class="h-4 w-4" />	

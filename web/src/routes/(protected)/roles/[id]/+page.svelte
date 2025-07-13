@@ -247,7 +247,7 @@
 </Card.Root>
 
 <FormDialog
-	isOpen={editRoleDialogIsOpen}
+	bind:isOpen={editRoleDialogIsOpen}
 	{model}
 	data={data.form}
 	onSuccess={async () => {

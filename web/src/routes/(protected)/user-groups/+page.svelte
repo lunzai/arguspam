@@ -163,7 +163,7 @@
 </div>
 
 <FormDialog
-	isOpen={addUserGroupDialogIsOpen}
+	bind:isOpen={addUserGroupDialogIsOpen}
 	model={data.model}
 	data={data.form}
 	onSuccess={async (data: UserGroup) => {

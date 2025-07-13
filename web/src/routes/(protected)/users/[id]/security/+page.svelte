@@ -29,23 +29,44 @@
 
 <!-- <h1 class="text-2xl font-medium">{modelTitle} - #{model.id} - {model.name}</h1> -->
 
-	
-<Card.Root class="w-full">
-	<Card.Header class="flex justify-between items-center">
-	 	<Card.Title class="text-lg">Security</Card.Title>
-		<!-- <Card.Description>User #{model.id} - {model.name}</Card.Description> -->
-		<Card.Action>
-	  		<Button variant="outline">
-				<Pencil class="h-4 w-4" />	
-				Edit
-			</Button>
-			<Button variant="outline" class="text-destructive">
-				<Trash2 class="h-4 w-4" />
-				Delete User
-			</Button>
-	 	</Card.Action>
-	</Card.Header>
-	<Card.Content>
-		2FA / Reset Password
-	</Card.Content>
-</Card.Root>
+<div class="space-y-6">
+	<Card.Root class="w-full">
+		<Card.Header class="">
+			<Card.Title class="text-lg">Reset Password</Card.Title>
+			<Card.Description>Reset the user's password.</Card.Description>
+			<Card.Action>
+				<Button variant="outline">
+					<Pencil class="h-4 w-4" />	
+					Edit
+				</Button>
+				<Button variant="outline" class="text-destructive">
+					<Trash2 class="h-4 w-4" />
+					Delete User
+				</Button>
+			</Card.Action>
+		</Card.Header>
+		<Card.Content>
+			Reset Password
+		</Card.Content>
+	</Card.Root>
+
+	<Card.Root class="w-full">
+		<Card.Header>
+			<Card.Title class="text-lg">Two-Factor Authentication</Card.Title>
+			<Card.Description>Enable or disable two-factor authentication.</Card.Description>
+			<Card.Action>
+				<Button variant="outline">
+					<Pencil class="h-4 w-4" />	
+					Edit
+				</Button>
+				<Button variant="outline" class="text-destructive">
+					<Trash2 class="h-4 w-4" />
+					Delete User
+				</Button>
+			</Card.Action>
+		</Card.Header>
+		<Card.Content>
+			Enforce 2FA / Reset 2FA
+		</Card.Content>
+	</Card.Root>
+</div>

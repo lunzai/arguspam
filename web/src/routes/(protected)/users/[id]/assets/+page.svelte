@@ -19,9 +19,9 @@
 </script>
 
 <Card.Root class="w-full">
-	<Card.Header class="flex justify-between items-center">
+	<Card.Header>
 	 	<Card.Title class="text-lg">Assets</Card.Title>
-		<!-- <Card.Description>User #{model.id} - {model.name}</Card.Description> -->
+		<Card.Description>Manage user assets.</Card.Description>
 		<Card.Action>
 	  		<Button variant="outline">
 				<Pencil class="h-4 w-4" />	

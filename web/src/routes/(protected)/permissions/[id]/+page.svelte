@@ -19,9 +19,10 @@
 </script>
 
 <h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.name}</h1>
-<Card.Root class="gap-3 rounded-lg py-3 shadow-none">
-	<Card.Header class="flex items-center justify-between px-3">
-		<Card.Title class="text-lg">{modelTitle} Details</Card.Title>
+<Card.Root class="w-full">
+	<Card.Header>
+		<Card.Title class="text-lg">{modelTitle}</Card.Title>
+		<Card.Description>View {modelTitle.toLowerCase()} details.</Card.Description>
 		<Card.Action>
 			<!-- <Button
 				variant="outline"
@@ -41,8 +42,7 @@
 			</Button> -->
 		</Card.Action>
 	</Card.Header>
-	<Separator />
-	<Card.Content class="gap-3 px-3">
+	<Card.Content>
 		<DL.Root divider={null}>
 			<DL.Row>
 				<DL.Label>ID</DL.Label>

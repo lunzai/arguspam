@@ -35,4 +35,11 @@ export class UserService extends BaseService<BaseModel> {
 			new_password_confirmation: confirmNewPassword
 		});
 	}
+
+	async updateRoles(id: number, roleIds: number[]): Promise<void> {
+		console.log('service:updateRoles', id, roleIds);
+		return await this.api.post<void>(`${this.endpoint}/${id}/roles`, {
+			role_ids: roleIds
+		});
+	}
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
-	import { Pencil, Trash2, UserPlus, Loader2 } from '@lucide/svelte';
+	import { Pencil, Trash2, UserPlus } from '@lucide/svelte';
 	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
@@ -21,6 +21,7 @@
 	import SearchDropdown, { type ListItem } from '$components/search-dropdown';
 	import { enhance } from '$app/forms';
 	import FormDialog from '../form-dialog.svelte';
+	import Loader from '$components/loader.svelte';
 
 	let { data } = $props();
 	const modelName = 'organizations';
@@ -114,9 +115,10 @@
 </script>
 
 <h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.name}</h1>
-<Card.Root class="gap-3 rounded-lg py-3 shadow-none">
-	<Card.Header class="flex items-center justify-between px-3">
-		<Card.Title class="text-lg">{modelTitle} Details</Card.Title>
+<Card.Root class="w-full">
+	<Card.Header>
+		<Card.Title class="text-lg">{modelTitle}</Card.Title>
+		<Card.Description>View {modelTitle.toLowerCase()} details.</Card.Description>
 		<Card.Action>
 			<Button
 				variant="outline"
@@ -136,8 +138,7 @@
 			</Button>
 		</Card.Action>
 	</Card.Header>
-	<Separator />
-	<Card.Content class="gap-3 px-3">
+	<Card.Content>
 		<DL.Root divider={null}>
 			<DL.Row>
 				<DL.Label>ID</DL.Label>
@@ -192,9 +193,10 @@
 	</div>
 {/snippet}
 
-<Card.Root class="gap-3 rounded-lg py-3 shadow-none">
-	<Card.Header class="flex items-center justify-between px-3">
+<Card.Root class="w-full">
+	<Card.Header>
 		<Card.Title>Users</Card.Title>
+		<Card.Description>View {modelTitle.toLowerCase()} users.</Card.Description>
 		<Card.Action>
 			<Button
 				variant="outline"
@@ -207,8 +209,7 @@
 			</Button>
 		</Card.Action>
 	</Card.Header>
-	<Separator />
-	<Card.Content class="gap-3 px-3">
+	<Card.Content>
 		{#if hasUsers}
 			<SimpleDataTable data={orgUsers.map((user) => user.attributes)} columns={usersColumns} />
 		{:else}
@@ -283,11 +284,7 @@
 			{/if}
 		</AlertDialog.Footer>
 		{#if deleteOrgDialogIsLoading}
-			<div
-				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
-			>
-				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
-			</div>
+			<Loader show={deleteOrgDialogIsLoading} />
 		{/if}
 	</AlertDialog.Content>
 </AlertDialog.Root>
@@ -338,11 +335,7 @@
 			</form>
 		</AlertDialog.Footer>
 		{#if deleteUserDialogIsLoading}
-			<div
-				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
-			>
-				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
-			</div>
+			<Loader show={deleteUserDialogIsLoading} />
 		{/if}
 	</AlertDialog.Content>
 </AlertDialog.Root>
@@ -370,11 +363,7 @@
 			<Button variant="default" onclick={handleAddUserDialogSubmit}>Add</Button>
 		</Dialog.Footer>
 		{#if addUserDialogIsLoading}
-			<div
-				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
-			>
-				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
-			</div>
+			<Loader show={addUserDialogIsLoading} />
 		{/if}
 	</Dialog.Content>
 </Dialog.Root>

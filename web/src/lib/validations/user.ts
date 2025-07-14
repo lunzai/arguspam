@@ -43,6 +43,14 @@ export const UserSchema = z.object({
 	status: z.enum(['active', 'inactive']).default('active')
 });
 
+export const UserUpdateRolesSchema = z.object({
+	// roleIds: z.array(z.coerce.number().int().positive()).min(1)
+	roleIds: z
+		.array(z.string())
+		.min(1, 'Please select at least one role')
+});
+
 export type UserProfile = z.infer<typeof userProfileSchema>;
 export type ChangePassword = z.infer<typeof changePasswordSchema>;
 export type User = z.infer<typeof UserSchema>;
+export type UserUpdateRoles = z.infer<typeof UserUpdateRolesSchema>;

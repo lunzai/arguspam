@@ -22,22 +22,25 @@
 	import { Input } from '$ui/input';
 	import { toast } from 'svelte-sonner';
 	import FormDialog from './form-dialog.svelte';
-	import { goto } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
+	import * as Select from '$ui/select';
+	import { capitalizeWords } from '$utils/string';
+	import RoleFormDialog from './role-form-dialog.svelte';
 
 	let { data } = $props();
 	const modelResource = $derived(data.model as UserResource);
 	const model = $derived(modelResource.data.attributes as User);
 	const orgs = $derived(modelResource.data.relationships?.orgs as ResourceItem<Org>[]);
+	const roles = $derived(data.roles as ResourceItem<Role>[]);
 	const userGroups = $derived(
 		modelResource.data.relationships?.userGroups as ResourceItem<UserGroup>[]
 	);
-	const roles = $derived(modelResource.data.relationships?.roles as ResourceItem<Role>[]);
-
+	const userRoles = $derived(
+		modelResource.data.relationships?.roles as ResourceItem<Role>[]
+	);
 	let editUserDialogIsOpen = $state(false);
+	let updateRolesDialogIsOpen = $state(false);
 </script>
-
-<!-- <h1 class="text-2xl font-medium">{modelTitle} - #{model.id} - {model.name}</h1> -->
-
 	
 <Card.Root class="w-full">
 	<Card.Header>
@@ -60,7 +63,7 @@
 							<UserRoundPen class="h-4 w-4" />
 							Edit User
 						</DropdownMenu.Item>
-						<DropdownMenu.Item>
+						<DropdownMenu.Item onclick={() => updateRolesDialogIsOpen = true}>
 							<ContactRound class="h-4 w-4" />
 							Update Roles
 						</DropdownMenu.Item>
@@ -157,7 +160,7 @@
 				<DL.Label>Roles</DL.Label>
 				<DL.Content>
 					<div class="flex flex-wrap gap-1">
-						{#each roles as role}
+						{#each userRoles as role}
 							<Badge variant="outline" class="text-sm">
 								{role.attributes.name}
 							</Badge>
@@ -199,7 +202,16 @@
 	data={data.form}
 	onSuccess={async (data: User) => {
 		console.log('onSuccess', data);
-		await goto(`/users/${data.id}`);
 		editUserDialogIsOpen = false;
+	}}
+/>
+
+<RoleFormDialog
+	bind:isOpen={updateRolesDialogIsOpen}
+	roles={roles}
+	bind:data={data.updateRolesForm}
+	onSuccess={async (data: User) => {
+		console.log('onSuccess', data);
+		updateRolesDialogIsOpen = false;
 	}}
 />

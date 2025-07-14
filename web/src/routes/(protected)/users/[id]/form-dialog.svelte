@@ -6,12 +6,12 @@
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import { Button } from '$ui/button';
-	import { Loader2 } from '@lucide/svelte';
 	import * as Select from '$ui/select';
 	import { capitalizeWords } from '$utils/string';
 	import { UserSchema } from '$validations/user';
 	import type { User } from '$models/user';
-
+	import Loader from '$components/loader.svelte';
+	
 	interface Props {
 		isOpen: boolean;
 		model: User;
@@ -54,11 +54,7 @@
 <Dialog.Root bind:open={isOpen}>
 	<Dialog.Content class="sm:max-w-2xl" interactOutsideBehavior="ignore">
 		{#if $submitting}
-			<div
-				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
-			>
-				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
-			</div>
+			<Loader show={$submitting} />
 		{/if}
 		<form class="space-y-6" method="POST" action="?/save" use:enhance>
 			<input type="hidden" name="id" value={model?.id} />

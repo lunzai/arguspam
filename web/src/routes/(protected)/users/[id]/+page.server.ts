@@ -6,16 +6,28 @@ import { setFormErrors } from '$utils/form';
 import type { Role } from '$models/role';
 import { RoleSchema } from '$validations/role';
 import { RoleService } from '$services/role';
-import { UserSchema } from '$lib/validations/user';
+import { UserSchema, UserUpdateRolesSchema } from '$lib/validations/user';
 import { UserService } from '$lib/services/user';
 
-export const load: PageServerLoad = async ({ depends, parent }) => {
-	depends('user:show');
+export const load: PageServerLoad = async ({ depends, parent, locals }) => {
+	depends('user:view');
+	const { authToken, currentOrgId } = locals;
 	const data = await parent();
+	const roles = await new RoleService(authToken as string, currentOrgId).findAll({
+		perPage: 1000,
+		filter: {
+			status: 'active'
+		}
+	});
 	const form = await superValidate(data.model.data.attributes, zod(UserSchema));
+	const updateRolesForm = await superValidate({
+		roleIds: data.model.data.relationships?.roles?.map((role) => role.attributes.id.toString()) ?? []
+	}, zod(UserUpdateRolesSchema));
 	return {
 		form,
+		updateRolesForm,
 		model: data.model,
+		roles: roles.data,
 		title: 'User'
 	};
 };
@@ -44,6 +56,33 @@ export const actions = {
 				return fail(400, { form });
 			}
 			return fail(400, { form, error: `Failed to update user` });
+		}
+	},
+	roles: async ({ request, locals, params }) => {
+		const { authToken, currentOrgId } = locals;
+		const { id } = params;
+		const form = await superValidate(request, zod(UserUpdateRolesSchema));
+		if (!form.valid) {
+			console.log('server:form', form);
+			return fail(422, { form });
+		}
+		try {
+			const data = form.data;
+			const roleIds = data.roleIds.map((roleId: string) => parseInt(roleId));
+			const userService = new UserService(authToken as string, currentOrgId);
+			const response = await userService.updateRoles(parseInt(id), roleIds);
+			console.log('server:response', response);
+			return {
+				success: true,
+				message: `User roles updated successfully`,
+				form: form,
+			};
+		} catch (error: any) {
+			if (error.response?.status === 422) {
+				setFormErrors(form, error.response.data);
+				return fail(400, { form });
+			}
+			return fail(400, { form, error: `Failed to update user roles` });
 		}
 	}
 } satisfies Actions;

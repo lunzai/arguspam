@@ -100,7 +100,6 @@ export const actions = {
 			}
 			const orgService = new OrgService(authToken as string, currentOrgId);
 			const response = await orgService.addUsers(Number(id), userIds);
-			console.log('RESPONSE', response);
 			return;
 		} catch (error) {
 			return fail(400, {

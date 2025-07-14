@@ -96,7 +96,7 @@
 	let resultTo = $derived(pagination.pageIndex * pagination.pageSize + pagination.pageSize);
 </script>
 
-<div class="flex flex-col gap-3">
+<div class="flex flex-col gap-6">
 	<Input placeholder="Search..." onkeyup={handleKeyUp} bind:value={globalFilter} />
 
 	{#if table.getPageCount() > 1}

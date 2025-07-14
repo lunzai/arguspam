@@ -15,13 +15,15 @@ class AccessRestrictionUserGroupController extends Controller
     {
         $this->authorize('accessrestrictionusergroup:viewany', $accessRestriction);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $users = Cache::remember(
-            CacheKey::ACCESS_RESTRICTION_USER_GROUPS->key($accessRestriction->id),
-            config('cache.default_ttl'),
-            function () use ($accessRestriction, $pagination) {
-                return $accessRestriction->userGroups()->paginate($pagination);
-            }
-        );
+        // $users = Cache::remember(
+        //     CacheKey::ACCESS_RESTRICTION_USER_GROUPS->key($accessRestriction->id),
+        //     config('cache.default_ttl'),
+        //     function () use ($accessRestriction, $pagination) {
+        //         return $accessRestriction->userGroups()->paginate($pagination);
+        //     }
+        // );
+        $users = $accessRestriction->userGroups()
+            ->paginate($pagination);
         return new UserCollection($users);
     }
 

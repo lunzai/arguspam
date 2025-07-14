@@ -19,13 +19,15 @@ class AuditController extends Controller
     {
         $this->authorize('viewAny', ActionAudit::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $actionAudits = Cache::remember(
-            CacheKey::ACTION_AUDITS->value,
-            config('cache.default_ttl'),
-            function () use ($filter, $pagination) {
-                return ActionAudit::filter($filter)->paginate($pagination);
-            }
-        );
+        // $actionAudits = Cache::remember(
+        //     CacheKey::ACTION_AUDITS->value,
+        //     config('cache.default_ttl'),
+        //     function () use ($filter, $pagination) {
+        //         return ActionAudit::filter($filter)->paginate($pagination);
+        //     }
+        // );
+        $actionAudits = ActionAudit::filter($filter)
+            ->paginate($pagination);
         return new ActionAuditCollection($actionAudits);
     }
 

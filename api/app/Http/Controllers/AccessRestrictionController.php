@@ -21,13 +21,15 @@ class AccessRestrictionController extends Controller
     {
         $this->authorize('viewAny', AccessRestriction::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $accessRestrictions = Cache::remember(
-            CacheKey::ACCESS_RESTRICTIONS->value,
-            config('cache.default_ttl'),
-            function () use ($filter, $pagination) {
-                return AccessRestriction::filter($filter)->paginate($pagination);
-            }
-        );
+        // $accessRestrictions = Cache::remember(
+        //     CacheKey::ACCESS_RESTRICTIONS->value,
+        //     config('cache.default_ttl'),
+        //     function () use ($filter, $pagination) {
+        //         return AccessRestriction::filter($filter)->paginate($pagination);
+        //     }
+        // );
+        $accessRestrictions = AccessRestriction::filter($filter)
+            ->paginate($pagination);
         return new AccessRestrictionCollection($accessRestrictions);
     }
 

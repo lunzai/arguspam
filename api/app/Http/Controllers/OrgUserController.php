@@ -15,13 +15,15 @@ class OrgUserController extends Controller
     {
         $this->authorize('orguser:viewany', $org);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $users = Cache::remember(
-            CacheKey::ORG_USERS->key($org->id),
-            config('cache.default_ttl'),
-            function () use ($org, $pagination) {
-                return $org->users()->paginate($pagination);
-            }
-        );
+        // $users = Cache::remember(
+        //     CacheKey::ORG_USERS->key($org->id),
+        //     config('cache.default_ttl'),
+        //     function () use ($org, $pagination) {
+        //         return $org->users()->paginate($pagination);
+        //     }
+        // );
+        $users = $org->users()
+            ->paginate($pagination);
         return new UserCollection($users);
     }
 

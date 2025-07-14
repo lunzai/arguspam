@@ -23,13 +23,15 @@ class AssetController extends Controller
     {
         $this->authorize('viewAny', Asset::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $assets = Cache::remember(
-            CacheKey::ASSETS->value,
-            config('cache.default_ttl'),
-            function () use ($filter, $pagination) {
-                return Asset::filter($filter)->paginate($pagination);
-            }
-        );
+        // $assets = Cache::remember(
+        //     CacheKey::ASSETS->value,
+        //     config('cache.default_ttl'),
+        //     function () use ($filter, $pagination) {
+        //         return Asset::filter($filter)->paginate($pagination);
+        //     }
+        // );
+        $assets = Asset::filter($filter)
+            ->paginate($pagination);
         return new AssetCollection($assets);
     }
 

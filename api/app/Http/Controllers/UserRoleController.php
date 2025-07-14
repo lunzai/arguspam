@@ -16,7 +16,7 @@ class UserRoleController extends Controller
             'role_ids.*' => ['required', 'exists:roles,id'],
         ]);
 
-        $user->roles()->syncWithoutDetaching($validated['role_ids']);
+        $user->roles()->sync($validated['role_ids']);
 
         return $this->created();
     }

@@ -22,13 +22,15 @@ class SessionController extends Controller
     {
         $this->authorize('viewAny', Session::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $sessions = Cache::remember(
-            CacheKey::SESSIONS->key($request->get(config('pam.org.request_attribute'))),
-            config('cache.default_ttl'),
-            function () use ($filter, $pagination) {
-                return Session::filter($filter)->paginate($pagination);
-            }
-        );
+        // $sessions = Cache::remember(
+        //     CacheKey::SESSIONS->key($request->get(config('pam.org.request_attribute'))),
+        //     config('cache.default_ttl'),
+        //     function () use ($filter, $pagination) {
+        //         return Session::filter($filter)->paginate($pagination);
+        //     }
+        // );
+        $sessions = Session::filter($filter)
+            ->paginate($pagination);
         return new SessionCollection($sessions);
     }
 

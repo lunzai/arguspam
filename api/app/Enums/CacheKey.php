@@ -63,7 +63,7 @@ enum CacheKey: string
     case SETTING_GROUP = 'settings:group';
     case SETTING_GROUP_ALL = 'settings:group:all';
 
-    public function key(int $id): string
+    public function key($id): string
     {
         return "{$this->value}:{$id}";
     }

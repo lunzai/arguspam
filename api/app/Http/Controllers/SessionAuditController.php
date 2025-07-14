@@ -19,13 +19,14 @@ class SessionAuditController extends Controller
     {
         $this->authorize('viewAny', SessionAudit::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $sessionAudits = Cache::remember(
-            CacheKey::SESSION_AUDITS->value,
-            config('cache.default_ttl'),
-            function () use ($pagination) {
-                return SessionAudit::paginate($pagination);
-            }
-        );
+        // $sessionAudits = Cache::remember(
+        //     CacheKey::SESSION_AUDITS->value,
+        //     config('cache.default_ttl'),
+        //     function () use ($pagination) {
+        //         return SessionAudit::paginate($pagination);
+        //     }
+        // );
+        $sessionAudits = SessionAudit::paginate($pagination);
         return new SessionAuditCollection($sessionAudits);
     }
 

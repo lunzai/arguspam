@@ -23,13 +23,15 @@ class UserGroupController extends Controller
     {
         $this->authorize('viewAny', UserGroup::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $userGroups = Cache::remember(
-            CacheKey::USER_GROUPS->key($request->get(config('pam.org.request_attribute'))),
-            config('cache.default_ttl'),
-            function () use ($filter, $pagination) {
-                return UserGroup::filter($filter)->paginate($pagination);
-            }
-        );
+        // $userGroups = Cache::remember(
+        //     CacheKey::USER_GROUPS->key($request->get(config('pam.org.request_attribute'))),
+        //     config('cache.default_ttl'),
+        //     function () use ($filter, $pagination) {
+        //         return UserGroup::filter($filter)->paginate($pagination);
+        //     }
+        // );
+        $userGroups = UserGroup::filter($filter)
+            ->paginate($pagination);
         return new UserGroupCollection($userGroups);
     }
 

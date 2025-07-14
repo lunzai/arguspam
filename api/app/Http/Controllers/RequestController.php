@@ -26,13 +26,15 @@ class RequestController extends Controller
     {
         $this->authorize('viewAny', RequestModel::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $requests = Cache::remember(
-            CacheKey::REQUESTS->key($request->get(config('pam.org.request_attribute'))),
-            config('cache.default_ttl'),
-            function () use ($filter, $pagination) {
-                return RequestModel::filter($filter)->paginate($pagination);
-            }
-        );
+        // $requests = Cache::remember(
+        //     CacheKey::REQUESTS->key($request->get(config('pam.org.request_attribute'))),
+        //     config('cache.default_ttl'),
+        //     function () use ($filter, $pagination) {
+        //         return RequestModel::filter($filter)->paginate($pagination);
+        //     }
+        // );
+        $requests = RequestModel::filter($filter)
+            ->paginate($pagination);
         return new RequestCollection($requests);
     }
 

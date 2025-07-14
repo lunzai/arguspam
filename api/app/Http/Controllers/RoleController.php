@@ -25,13 +25,15 @@ class RoleController extends Controller
     {
         $this->authorize('viewAny', Role::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $roles = Cache::remember(
-            CacheKey::ROLES->value,
-            config('cache.default_ttl'),
-            function () use ($filter, $pagination) {
-                return Role::filter($filter)->paginate($pagination);  
-            }
-        );
+        // $roles = Cache::remember(
+        //     CacheKey::ROLES->value,
+        //     config('cache.default_ttl'),
+        //     function () use ($filter, $pagination) {
+        //         return Role::filter($filter)->paginate($pagination);  
+        //     }
+        // );
+        $roles = Role::filter($filter)
+            ->paginate($pagination);
         return new RoleCollection($roles);
     }
 

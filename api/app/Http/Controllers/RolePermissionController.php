@@ -15,13 +15,15 @@ class RolePermissionController extends Controller
     {
         $this->authorize('rolepermission:index');
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $permissions = Cache::remember(
-            CacheKey::ROLE_PERMISSIONS->key($role->id),
-            config('cache.default_ttl'),
-            function () use ($role, $pagination) {
-                return $role->permissions()->paginate($pagination);
-            }
-        );
+        // $permissions = Cache::remember(
+        //     CacheKey::ROLE_PERMISSIONS->key($role->id),
+        //     config('cache.default_ttl'),
+        //     function () use ($role, $pagination) {
+        //         return $role->permissions()->paginate($pagination);
+        //     }
+        // );
+        $permissions = $role->permissions()
+            ->paginate($pagination);
         return new PermissionCollection($permissions);
     }
 

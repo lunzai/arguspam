@@ -23,13 +23,15 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $users = Cache::remember(
-            CacheKey::USERS->value,
-            config('cache.default_ttl'),
-            function () use ($filter, $pagination) {
-                return User::filter($filter)->paginate($pagination);
-            }
-        );
+        // $users = Cache::remember(
+        //     CacheKey::USERS->key($request->get('page', 1)),
+        //     config('cache.default_ttl'),
+        //     function () use ($filter, $pagination) {
+        //         return User::filter($filter)->paginate($pagination);
+        //     }
+        // );
+        $users = User::filter($filter)
+            ->paginate($pagination);
         return new UserCollection($users);
     }
 

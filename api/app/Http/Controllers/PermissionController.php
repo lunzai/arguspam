@@ -25,7 +25,7 @@ class PermissionController extends Controller
         $this->authorize('viewAny', Permission::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
         $permissions = Cache::remember(
-            CacheKey::PERMISSIONS->value,
+            CacheKey::PERMISSIONS->key($request->get('page', 1)),
             config('cache.default_ttl'),
             function () use ($filter, $pagination) {
                 return Permission::filter($filter)->paginate($pagination);

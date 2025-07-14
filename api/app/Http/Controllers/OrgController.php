@@ -23,13 +23,15 @@ class OrgController extends Controller
     {
         $this->authorize('viewAny', Org::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $orgs = Cache::remember(
-            CacheKey::ORGS->value,
-            config('cache.default_ttl'),
-            function () use ($filter, $pagination) {
-                return Org::filter($filter)->paginate($pagination);
-            }
-        );
+        // $orgs = Cache::remember(
+        //     CacheKey::ORGS->value,
+        //     config('cache.default_ttl'),
+        //     function () use ($filter, $pagination) {
+        //         return Org::filter($filter)->paginate($pagination);
+        //     }
+        // );
+        $orgs = Org::filter($filter)
+            ->paginate($pagination);
         return new OrgCollection($orgs);
     }
 

@@ -20,13 +20,15 @@ class AssetAccessGrantController extends Controller
     {
         $this->authorize('viewAny', AssetAccessGrant::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $grants = Cache::remember(
-            CacheKey::ASSET_ACCESS_GRANTS->value,
-            config('cache.default_ttl'),
-            function () use ($asset, $pagination) {
-                return $asset->accessGrants()->paginate($pagination);
-            }
-        );
+        // $grants = Cache::remember(
+        //     CacheKey::ASSET_ACCESS_GRANTS->value,
+        //     config('cache.default_ttl'),
+        //     function () use ($asset, $pagination) {
+        //         return $asset->accessGrants()->paginate($pagination);
+        //     }
+        // );
+        $grants = $asset->accessGrants()
+            ->paginate($pagination);
         return new AssetAccessGrantCollection($grants);
     }
 

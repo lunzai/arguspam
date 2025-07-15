@@ -42,4 +42,10 @@ export class UserService extends BaseService<BaseModel> {
 			role_ids: roleIds
 		});
 	}
+
+	async updateTwoFactor(id: number, enabled: boolean): Promise<UserResource> {
+		return await this.update(id, {
+			two_factor_enabled: enabled
+		}) as UserResource;
+	}
 }

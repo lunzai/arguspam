@@ -20,6 +20,7 @@ use App\Http\Controllers\SettingGroupController;
 use App\Http\Controllers\AccessRestrictionController;
 use App\Http\Controllers\AccessRestrictionUserController;
 use App\Http\Controllers\AccessRestrictionUserGroupController;
+use App\Http\Controllers\TwoFactorAuthenticationController;
 use App\Http\Controllers\UserAccessRestrictionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
@@ -31,6 +32,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/2fa', [AuthController::class, 'verifyTwoFactor']);
     Route::post('/logout', [AuthController::class, 'logout'])
         ->middleware('auth:sanctum');
 });
@@ -41,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/me/orgs', [UserOrgController::class, 'index']);
     Route::get('/users/me/orgs/{org}', [UserOrgController::class, 'show']);
     Route::put('/users/me/change-password', [PasswordController::class, 'update']);
-
+    
     Route::middleware(EnsureOrganizationIdIsValid::class)->group(function () {
         Route::apiResources([
             'assets' => AssetController::class,
@@ -87,6 +89,14 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['index', 'show']);
     Route::apiResource('session-audits', SessionAuditController::class)
         ->only(['index', 'show']);
+    Route::get('/users/{user}/2fa', [TwoFactorAuthenticationController::class, 'show'])
+        ->name('users.two-factor-authentication.show');
+    Route::post('/users/{user}/2fa', [TwoFactorAuthenticationController::class, 'store'])
+        ->name('users.two-factor-authentication.store');
+    Route::put('/users/{user}/2fa', [TwoFactorAuthenticationController::class, 'update'])
+        ->name('users.two-factor-authentication.update');
+    Route::delete('/users/{user}/2fa', [TwoFactorAuthenticationController::class, 'destroy'])
+        ->name('users.two-factor-authentication.destroy');
     Route::apiResource('users.roles', UserRoleController::class)
         ->only(['store']);
     Route::delete('users/{user}/roles', [UserRoleController::class, 'destroy'])
@@ -110,4 +120,5 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['store', 'index']);
     Route::delete('access-restrictions/{access_restriction}/user-groups', [AccessRestrictionUserGroupController::class, 'destroy'])
         ->name('access-restrictions.user-groups.destroy');
+
 });

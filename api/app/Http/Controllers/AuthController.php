@@ -10,6 +10,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Closure;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+use App\Enums\CacheKey;
 
 class AuthController extends Controller
 {
@@ -31,13 +35,70 @@ class AuthController extends Controller
             return $this->unauthorized('The provided credentials are incorrect.');
         }
         $user = User::where('email', $request->email)->first();
+        $data = [
+            'user' => $user,
+            'token' => null,
+            'requires_2fa' => false,
+            'temp_key' => null,
+            'temp_key_expires_at' => null,
+        ];
+        $isTwoFactorConfirmed = $user->isTwoFactorConfirmed();
+        if ($isTwoFactorConfirmed) {
+            $tempKey = Str::random(32);
+            $expiresAt = now()->addMinutes(5);
+            Cache::put(
+                CacheKey::AUTH_2FA_TEMP_KEY->key($tempKey), 
+                $user->id, 
+                $expiresAt
+            );
+            $data['requires_2fa'] = true;
+            $data['temp_key'] = $tempKey;
+            $data['temp_key_expires_at'] = $expiresAt;
+        } else {
+            $data['token'] = $user->createToken(
+                'auth_token',
+                ['*'],
+                now()->addMinutes((int) config('sanctum.expiration', 1440))
+            )->plainTextToken;
+            UserLoggedIn::dispatch($user);
+        }
+        return $this->success($data);
+    }
+
+    public function verifyTwoFactor(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'temp_key' => ['bail', 'required', 'string', 'size:32', 'regex:/^[a-zA-Z0-9]{32}$/'],
+            'code' => ['bail', 'required', 'string', 'size:6', 'regex:/^[0-9]{6}$/'],
+        ]);
+        $userId = Cache::get(
+            CacheKey::AUTH_2FA_TEMP_KEY->key($validated['temp_key'])
+        );
+        if (!$userId) {
+            return $this->unauthorized('The provided temp key is invalid.');
+        }
+        $user = User::find($userId);
+        if (!$user->isTwoFactorConfirmed()) {
+            return $this->unauthorized('Two-factor authentication is not enrolled.');
+        }
+        $request->validate([
+            'code' => [
+                function (string $attribute, mixed $value, Closure $fail) use ($user) {
+                    if (!$user->verifyTwoFactorCode($value)) {
+                        $fail('The :attribute is invalid.');
+                    }
+                },
+            ],
+        ]);
+        Cache::forget(
+            CacheKey::AUTH_2FA_TEMP_KEY->key($validated['temp_key'])
+        );
         $token = $user->createToken(
             'auth_token',
             ['*'],
             now()->addMinutes((int) config('sanctum.expiration', 1440))
         )->plainTextToken;
         UserLoggedIn::dispatch($user);
-
         return $this->success([
             'token' => $token,
             'user' => $user,

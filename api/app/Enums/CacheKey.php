@@ -5,6 +5,8 @@ namespace App\Enums;
 enum CacheKey: string
 {
     // IN USE
+    case AUTH_2FA_TEMP_KEY = 'auth:2fa:temp_key';
+
     // USER
     case USERS = 'users';
     case USER_ORG = 'user:org';

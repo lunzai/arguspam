@@ -24,12 +24,8 @@ export const load: PageServerLoad = async ({ params, locals, depends, parent }) 
 			return result.data.qr_code;
 		});
 	}
-	const twoFactorVerifyForm = await superValidate(zod(TwoFactorCodeSchema), {
-		id: 'twoFactorVerifyForm'
-	});
-	const resetPasswordForm = await superValidate(zod(ResetPasswordSchema), {
-		id: 'resetPasswordForm'
-	});
+	const twoFactorVerifyForm = await superValidate(zod(TwoFactorCodeSchema));
+	const resetPasswordForm = await superValidate(zod(ResetPasswordSchema));
 	return {
 		twoFactorVerifyForm,
 		resetPasswordForm,
@@ -98,7 +94,7 @@ export const actions = {
 		const data = form.data;
 		try {
 			const userService = new UserService(authToken as string, currentOrgId);
-			const response = await userService.verifyTwoFactor(Number(id), data.code);
+			await userService.verifyTwoFactor(Number(id), data.code);
 			return {
 				success: true,
 				message: `Two-factor authentication verified successfully`,

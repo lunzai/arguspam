@@ -2,11 +2,11 @@
 	import { Input } from '$ui/input';
 	import * as Form from '$ui/form';
 	import { toast } from 'svelte-sonner';
-	import { Loader2 } from '@lucide/svelte';
 	import { ChangePasswordSchema } from '$validations/user';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
-	import SuperDebug from 'sveltekit-superforms';
+	import Loader from '$components/loader.svelte';
+	import { Button } from '$ui/button';
 
 	let { data } = $props();
 
@@ -26,14 +26,16 @@
 		}
 	});
 
-	const { form: formData, enhance, submitting, delayed } = form;
+	const { form: formData, enhance, submitting } = form;
 </script>
 
+<Loader show={$submitting} />
 <form method="POST" action="?/changePassword" use:enhance class="max-w-xs space-y-6">
 	<Form.Field {form} name="currentPassword">
 		<Form.Control>
 			<Form.Label>Current Password</Form.Label>
 			<Input
+				autocomplete="current-password"
 				type="password"
 				name="currentPassword"
 				bind:value={$formData.currentPassword}
@@ -46,6 +48,7 @@
 		<Form.Control>
 			<Form.Label>New Password</Form.Label>
 			<Input
+				autocomplete="new-password"
 				type="password"
 				name="newPassword"
 				bind:value={$formData.newPassword}
@@ -58,6 +61,7 @@
 		<Form.Control>
 			<Form.Label>Confirm New Password</Form.Label>
 			<Input
+				autocomplete="new-password"
 				type="password"
 				name="confirmNewPassword"
 				bind:value={$formData.confirmNewPassword}
@@ -66,10 +70,12 @@
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
-	<Form.Button type="submit" disabled={$submitting}>
-		{#if $delayed}
-			<Loader2 className="size-4 animate-spin" />
-		{/if}
-		Change Password
-	</Form.Button>
+	<div class="flex gap-3">
+		<Form.Button type="submit" disabled={$submitting}>
+			Change Password
+		</Form.Button>
+		<Button variant="outline" onclick={() => form.reset()}>
+			Reset
+		</Button>
+	</div>
 </form>

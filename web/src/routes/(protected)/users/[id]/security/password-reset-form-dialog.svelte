@@ -59,7 +59,12 @@
 			<Form.Field {form} name="newPassword">
 				<Form.Control>
 					<Form.Label>New Password</Form.Label>
-					<Input type="password" name="newPassword" bind:value={$formData.newPassword} />
+					<Input 
+                        type="password" 
+                        name="newPassword" 
+                        bind:value={$formData.newPassword} 
+                        autocomplete="new-password" 
+                    />
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -70,6 +75,7 @@
 						type="password"
 						name="confirmNewPassword"
 						bind:value={$formData.confirmNewPassword}
+						autocomplete="new-password"
 					/>
 				</Form.Control>
 				<Form.FieldErrors />

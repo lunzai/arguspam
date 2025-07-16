@@ -3,8 +3,6 @@ import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
-import type { Role } from '$models/role';
-import { RoleSchema } from '$validations/role';
 import { RoleService } from '$services/role';
 import { UserSchema, UserUpdateRolesSchema } from '$lib/validations/user';
 import { UserService } from '$lib/services/user';

@@ -25,13 +25,14 @@ export const handle: Handle = async ({ event, resolve }) => {
 		try {
 			const authService = new AuthService(authToken);
 			const userResource: UserResource = await authService.me();
+			const user = userResource.data.attributes;
 			const userService = new UserService(authToken);
 			const orgCollection = await userService.getOrgs();
 			if (!currentOrgId || !(await userService.checkOrgAccess(currentOrgId))) {
 				currentOrgId = orgCollection.data[0].attributes.id;
 				setCurrentOrgId(event.cookies, currentOrgId);
 			}
-			event.locals.user = userResource.data.attributes;
+			event.locals.user = user;
 			event.locals.userOrgs = orgCollection.data;
 			setCurrentOrgId(event.cookies, currentOrgId);
 			setAuthToken(event.cookies, authToken);

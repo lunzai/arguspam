@@ -4,6 +4,8 @@
 	import { Separator } from '$ui/separator/index.js';
 	import * as Sidebar from '$ui/sidebar/index.js';
 	import { page } from '$app/state';
+	import { toast } from 'svelte-sonner';
+
 	let { children } = $props();
 
 	interface BreadcrumbItem {

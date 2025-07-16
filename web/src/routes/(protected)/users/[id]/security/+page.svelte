@@ -8,9 +8,9 @@
 	import { Switch } from '$ui/switch';
 	import Loader from '$components/loader.svelte';
 	import { toast } from 'svelte-sonner';
-	import TwoFactorFormDialog from './two-factor-form-dialog.svelte';
+	import TwoFactorFormDialog from '$components/2fa/two-factor-form-dialog.svelte';
 	import { invalidate } from '$app/navigation';
-	import TwoFactorDisableDialog from './two-factor-disable-dialog.svelte';
+	import TwoFactorDisableDialog from '$components/2fa/two-factor-disable-dialog.svelte';
 	import PasswordResetDialog from './password-reset-form-dialog.svelte';
 
 	let { data } = $props();

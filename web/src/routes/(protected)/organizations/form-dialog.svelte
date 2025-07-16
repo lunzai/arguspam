@@ -12,7 +12,7 @@
 	import { Button } from '$ui/button';
 	import type { Org } from '$models/org';
 	import Loader from '$components/loader.svelte';
-	
+
 	interface Props {
 		isOpen: boolean;
 		model: Org;

@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const loginSchema = z.object({
+export const LoginSchema = z.object({
 	email: z
 		.string()
 		.email('Please enter a valid email address')
@@ -11,19 +11,17 @@ export const loginSchema = z.object({
 		.max(100, 'Password must be less than 100 characters')
 });
 
-export const forgotPasswordSchema = z.object({
+export const ForgotPasswordSchema = z.object({
 	email: z
 		.string()
 		.email('Please enter a valid email address')
 		.max(100, 'Email must be less than 100 characters')
 });
 
-export const twoFactorCodeSchema = z.object({
-	code: z
-		.string()
-		.regex(/^\d{6}$/, 'Code must be 6 digits')
+export const TwoFactorCodeSchema = z.object({
+	code: z.string().regex(/^\d{6}$/, 'Code must be 6 digits')
 });
 
-export type Login = z.infer<typeof loginSchema>;
-export type ForgotPassword = z.infer<typeof forgotPasswordSchema>;
-export type TwoFactorCode = z.infer<typeof twoFactorCodeSchema>;
+export type Login = z.infer<typeof LoginSchema>;
+export type ForgotPassword = z.infer<typeof ForgotPasswordSchema>;
+export type TwoFactorCode = z.infer<typeof TwoFactorCodeSchema>;

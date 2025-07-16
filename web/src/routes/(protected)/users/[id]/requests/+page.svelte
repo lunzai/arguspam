@@ -3,7 +3,16 @@
 	import type { User } from '$models/user';
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
-	import { Pencil, Trash2, MailCheck, ShieldOff, ShieldCheck, ShieldAlert, MoreHorizontal, SquareAsterisk } from '@lucide/svelte';
+	import {
+		Pencil,
+		Trash2,
+		MailCheck,
+		ShieldOff,
+		ShieldCheck,
+		ShieldAlert,
+		MoreHorizontal,
+		SquareAsterisk
+	} from '@lucide/svelte';
 	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
@@ -29,23 +38,20 @@
 
 <!-- <h1 class="text-2xl font-medium">{modelTitle} - #{model.id} - {model.name}</h1> -->
 
-	
 <Card.Root class="w-full">
 	<Card.Header>
-	 	<Card.Title class="text-lg">Requests</Card.Title>
+		<Card.Title class="text-lg">Requests</Card.Title>
 		<Card.Description>View and manage user requests.</Card.Description>
 		<Card.Action>
-	  		<Button variant="outline">
-				<Pencil class="h-4 w-4" />	
+			<Button variant="outline">
+				<Pencil class="h-4 w-4" />
 				Edit
 			</Button>
 			<Button variant="outline" class="text-destructive">
 				<Trash2 class="h-4 w-4" />
 				Delete User
 			</Button>
-	 	</Card.Action>
+		</Card.Action>
 	</Card.Header>
-	<Card.Content>
-		Requests
-	</Card.Content>
+	<Card.Content>Requests</Card.Content>
 </Card.Root>

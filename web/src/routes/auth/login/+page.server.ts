@@ -3,7 +3,7 @@ import { AuthService } from '$services/auth';
 import { UserService } from '$services/user';
 import type { PageServerLoad } from './$types';
 import { superValidate, message } from 'sveltekit-superforms';
-import { loginSchema } from '$validations/auth';
+import { LoginSchema } from '$validations/auth';
 import { zod } from 'sveltekit-superforms/adapters';
 import { getAuthToken, setAuthToken, setCurrentOrgId } from '$utils/cookie';
 import { redirect } from '@sveltejs/kit';
@@ -20,14 +20,14 @@ export const load: PageServerLoad = async ({ cookies }) => {
 				email: ADMIN_EMAIL,
 				password: ADMIN_PASSWORD
 			},
-			zod(loginSchema)
+			zod(LoginSchema)
 		)
 	};
 };
 
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
-		const form = await superValidate(request, zod(loginSchema));
+		const form = await superValidate(request, zod(LoginSchema));
 
 		if (!form.valid) {
 			return fail(422, { form });

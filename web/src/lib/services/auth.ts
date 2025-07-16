@@ -11,7 +11,7 @@ export class AuthService extends BaseService<BaseModel> {
 	}
 
 	async login(email: string, password: string): Promise<LoginResponse> {
-		return await this.api.post<LoginResponse>(`${this.endpoint}/login`, { 
+		return await this.api.post<LoginResponse>(`${this.endpoint}/login`, {
 			email,
 			password
 		});

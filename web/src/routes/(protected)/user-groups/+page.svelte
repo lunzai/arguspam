@@ -167,7 +167,6 @@
 	model={data.model}
 	data={data.form}
 	onSuccess={async (data: UserGroup) => {
-		console.log('onSuccess', data);
 		await goto(`/user-groups/${data.id}`);
 		addUserGroupDialogIsOpen = false;
 	}}

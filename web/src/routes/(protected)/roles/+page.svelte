@@ -157,7 +157,6 @@
 	model={data.model}
 	data={data.form}
 	onSuccess={async (data: Role) => {
-		console.log('onSuccess', data);
 		await goto(`/roles/${data.id}`);
 		addRoleDialogIsOpen = false;
 	}}

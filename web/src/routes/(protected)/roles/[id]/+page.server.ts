@@ -88,7 +88,6 @@ export const actions = {
 			const permissionIds = data.get('permissionIds')?.toString().split(',').map(Number) ?? [];
 			const roleService = new RoleService(authToken as string, currentOrgId);
 			const response = await roleService.syncPermissions(Number(id), permissionIds);
-			console.log('RESPONSE', response);
 			return;
 		} catch (error) {
 			return fail(400, {

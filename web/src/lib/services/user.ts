@@ -37,6 +37,13 @@ export class UserService extends BaseService<BaseModel> {
 		});
 	}
 
+	async resetPassword(id: number, newPassword: string, confirmNewPassword: string): Promise<void> {
+		return await this.api.post<void>(`${this.endpoint}/${id}/reset-password`, {
+			new_password: newPassword,
+			new_password_confirmation: confirmNewPassword
+		});
+	}
+
 	async updateRoles(id: number, roleIds: number[]): Promise<void> {
 		return await this.api.post<void>(`${this.endpoint}/${id}/roles`, {
 			role_ids: roleIds
@@ -44,9 +51,7 @@ export class UserService extends BaseService<BaseModel> {
 	}
 
 	async updateTwoFactor(id: number, enabled: boolean): Promise<void> {
-		return enabled ? 
-			await this.enableTwoFactor(id) : 
-			await this.disableTwoFactor(id);
+		return enabled ? await this.enableTwoFactor(id) : await this.disableTwoFactor(id);
 	}
 
 	async enableTwoFactor(id: number): Promise<void> {

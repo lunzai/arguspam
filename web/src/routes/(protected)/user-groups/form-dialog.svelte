@@ -10,7 +10,6 @@
 	import { toast } from 'svelte-sonner';
 	import { capitalizeWords } from '$utils/string';
 	import { Button } from '$ui/button';
-	import { Loader2 } from '@lucide/svelte';
 	import type { UserGroup } from '$models/user-group';
 	import Loader from '$components/loader.svelte';
 

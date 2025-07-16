@@ -3,7 +3,21 @@
 	import type { User } from '$models/user';
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
-	import { Pencil, Trash2, MailCheck, ShieldOff, ShieldCheck, ShieldAlert, MoreHorizontal, SquareAsterisk, UserLock, UserRoundX, UserRoundPen, Mail, ContactRound } from '@lucide/svelte';
+	import {
+		Pencil,
+		Trash2,
+		MailCheck,
+		ShieldOff,
+		ShieldCheck,
+		ShieldAlert,
+		MoreHorizontal,
+		SquareAsterisk,
+		UserLock,
+		UserRoundX,
+		UserRoundPen,
+		Mail,
+		ContactRound
+	} from '@lucide/svelte';
 	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
@@ -35,19 +49,17 @@
 	const userGroups = $derived(
 		modelResource.data.relationships?.userGroups as ResourceItem<UserGroup>[]
 	);
-	const userRoles = $derived(
-		modelResource.data.relationships?.roles as ResourceItem<Role>[]
-	);
+	const userRoles = $derived(modelResource.data.relationships?.roles as ResourceItem<Role>[]);
 	let editUserDialogIsOpen = $state(false);
 	let updateRolesDialogIsOpen = $state(false);
 </script>
-	
+
 <Card.Root class="w-full">
 	<Card.Header>
-	 	<Card.Title class="text-lg">Profile</Card.Title>
+		<Card.Title class="text-lg">Profile</Card.Title>
 		<Card.Description>View user profile.</Card.Description>
 		<Card.Action>
-	  		<DropdownMenu.Root >
+			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
 					<Button variant="outline">
 						<MoreHorizontal class="h-4 w-4" />
@@ -59,11 +71,11 @@
 							<Mail class="h-4 w-4" />
 							Change Email
 						</DropdownMenu.Item> -->
-						<DropdownMenu.Item onclick={() => editUserDialogIsOpen = true}>
+						<DropdownMenu.Item onclick={() => (editUserDialogIsOpen = true)}>
 							<UserRoundPen class="h-4 w-4" />
 							Edit User
 						</DropdownMenu.Item>
-						<DropdownMenu.Item onclick={() => updateRolesDialogIsOpen = true}>
+						<DropdownMenu.Item onclick={() => (updateRolesDialogIsOpen = true)}>
 							<ContactRound class="h-4 w-4" />
 							Update Roles
 						</DropdownMenu.Item>
@@ -75,13 +87,13 @@
 					<DropdownMenu.Separator />
 					<DropdownMenu.Group>
 						<DropdownMenu.Item>
-							<UserRoundX class="h-4 w-4 text-destructive" />
+							<UserRoundX class="text-destructive h-4 w-4" />
 							<span class="text-destructive">Delete User</span>
 						</DropdownMenu.Item>
 					</DropdownMenu.Group>
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
-	 	</Card.Action>
+		</Card.Action>
 	</Card.Header>
 	<Card.Content>
 		<DL.Root divider={null}>
@@ -198,20 +210,18 @@
 
 <FormDialog
 	bind:isOpen={editUserDialogIsOpen}
-	model={model}
+	{model}
 	data={data.form}
 	onSuccess={async (data: User) => {
-		console.log('onSuccess', data);
 		editUserDialogIsOpen = false;
 	}}
 />
 
 <RoleFormDialog
 	bind:isOpen={updateRolesDialogIsOpen}
-	roles={roles}
+	{roles}
 	bind:data={data.updateRolesForm}
 	onSuccess={async (data: User) => {
-		console.log('onSuccess', data);
 		updateRolesDialogIsOpen = false;
 	}}
 />

@@ -9,8 +9,8 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 	const user = (await userService.findById(id, {
 		include: ['orgs', 'roles', 'userGroups']
 	})) as UserResource;
-    return {
-        model: user,
-        title: `User - #${user.data.attributes.id} - ${user.data.attributes.name}`
-    };
+	return {
+		model: user,
+		title: `User - #${user.data.attributes.id} - ${user.data.attributes.name}`
+	};
 };

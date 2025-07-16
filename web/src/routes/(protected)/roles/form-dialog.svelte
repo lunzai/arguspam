@@ -10,7 +10,7 @@
 	import { Button } from '$ui/button';
 	import type { Role } from '$models/role';
 	import Loader from '$components/loader.svelte';
-	
+
 	interface Props {
 		isOpen: boolean;
 		model: Role;

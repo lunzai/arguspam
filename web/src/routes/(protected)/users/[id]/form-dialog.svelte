@@ -11,7 +11,7 @@
 	import { UserSchema } from '$validations/user';
 	import type { User } from '$models/user';
 	import Loader from '$components/loader.svelte';
-	
+
 	interface Props {
 		isOpen: boolean;
 		model: User;
@@ -42,7 +42,7 @@
 			}
 		}
 	});
-	
+
 	const { form: formData, enhance, submitting } = form;
 
 	function handleCancel() {
@@ -76,7 +76,7 @@
 						<Input type="text" name="name" bind:value={$formData.name} disabled={$submitting} />
 					</Form.Control>
 					<Form.FieldErrors />
-				</Form.Field>				
+				</Form.Field>
 				<Form.Field {form} name="status">
 					<Form.Control>
 						<Form.Label>Status</Form.Label>

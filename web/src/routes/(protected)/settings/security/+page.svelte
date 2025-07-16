@@ -11,8 +11,7 @@
 		<Card.Header class="">
 			<Card.Title class="text-lg">Password</Card.Title>
 			<Card.Description>Change your password.</Card.Description>
-			<Card.Action>
-			</Card.Action>
+			<Card.Action></Card.Action>
 		</Card.Header>
 		<Card.Content>
 			<ChangePasswordForm data={data.changePasswordForm} />
@@ -23,8 +22,7 @@
 		<Card.Header class="">
 			<Card.Title class="text-lg">Two-Factor Authentication</Card.Title>
 			<Card.Description>Enable or disable two-factor authentication.</Card.Description>
-			<Card.Action>
-			</Card.Action>
+			<Card.Action></Card.Action>
 		</Card.Header>
 		<Card.Content>
 			<TwoFactorAuthenticationForm />

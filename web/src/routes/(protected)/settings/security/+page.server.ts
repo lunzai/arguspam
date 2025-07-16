@@ -1,13 +1,13 @@
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { changePasswordSchema } from '$validations/user';
+import { ChangePasswordSchema } from '$validations/user';
 import { fail, type Actions } from '@sveltejs/kit';
 import { UserService } from '$services/user';
 import type { ApiValidationErrorResponse } from '$resources/api';
 import { setFormErrors } from '$lib/utils/form';
 
 export const load = async () => {
-	const changePasswordForm = await superValidate(zod(changePasswordSchema));
+	const changePasswordForm = await superValidate(zod(ChangePasswordSchema));
 
 	return {
 		changePasswordForm,
@@ -18,7 +18,7 @@ export const load = async () => {
 export const actions: Actions = {
 	changePassword: async ({ request, locals }) => {
 		const { authToken } = locals;
-		const changePasswordForm = await superValidate(request, zod(changePasswordSchema));
+		const changePasswordForm = await superValidate(request, zod(ChangePasswordSchema));
 		if (!changePasswordForm.valid) {
 			return fail(422, { changePasswordForm });
 		}

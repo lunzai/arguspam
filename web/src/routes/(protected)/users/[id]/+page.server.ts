@@ -20,9 +20,13 @@ export const load: PageServerLoad = async ({ depends, parent, locals }) => {
 		}
 	});
 	const form = await superValidate(data.model.data.attributes, zod(UserSchema));
-	const updateRolesForm = await superValidate({
-		roleIds: data.model.data.relationships?.roles?.map((role) => role.attributes.id.toString()) ?? []
-	}, zod(UserUpdateRolesSchema));
+	const updateRolesForm = await superValidate(
+		{
+			roleIds:
+				data.model.data.relationships?.roles?.map((role) => role.attributes.id.toString()) ?? []
+		},
+		zod(UserUpdateRolesSchema)
+	);
 	return {
 		form,
 		updateRolesForm,
@@ -63,7 +67,6 @@ export const actions = {
 		const { id } = params;
 		const form = await superValidate(request, zod(UserUpdateRolesSchema));
 		if (!form.valid) {
-			console.log('server:form', form);
 			return fail(422, { form });
 		}
 		try {
@@ -71,11 +74,10 @@ export const actions = {
 			const roleIds = data.roleIds.map((roleId: string) => parseInt(roleId));
 			const userService = new UserService(authToken as string, currentOrgId);
 			const response = await userService.updateRoles(parseInt(id), roleIds);
-			console.log('server:response', response);
 			return {
 				success: true,
 				message: `User roles updated successfully`,
-				form: form,
+				form: form
 			};
 		} catch (error: any) {
 			if (error.response?.status === 422) {

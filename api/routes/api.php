@@ -97,6 +97,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->name('users.two-factor-authentication.update');
     Route::delete('/users/{user}/2fa', [TwoFactorAuthenticationController::class, 'destroy'])
         ->name('users.two-factor-authentication.destroy');
+    Route::post('/users/{user}/reset-password', [PasswordController::class, 'store'])
+        ->name('users.reset-password.store');
     Route::apiResource('users.roles', UserRoleController::class)
         ->only(['store']);
     Route::delete('users/{user}/roles', [UserRoleController::class, 'destroy'])

@@ -18,7 +18,6 @@
 	let twoFactorEnabled = $derived(data.user.two_factor_enabled);
 	let twoFactorEnrolled = $derived(twoFactorEnabled && data.user.two_factor_confirmed_at !== null);
 	let showTwoFactorSetup = $state(false);
-	let isCurrentUser = $derived(data.user.id == data.user.id);
 
 	async function handleTwoFactorChange(checked: boolean) {
 		try {
@@ -97,39 +96,22 @@
 			<Card.Content>
 				<div class="space-y-6">
 					{#if !twoFactorEnrolled}
-						<blockquote
-							class="space-y-1 border-l-4 border-blue-300 bg-blue-50 py-3 pl-4 text-blue-500"
-						>
-							<p>User will be required to setup two-factor authentication when they next login.</p>
-							<p>To setup two-factor authentication, please click the button below.</p>
-						</blockquote>
-						{#if showTwoFactorSetup || isCurrentUser}
+						{#if showTwoFactorSetup}
 							<TwoFactorFormDialog
 								data={data.twoFactorVerifyForm}
 								qrCode={data.qrCode}
-								{isCurrentUser}
+								isCurrentUser={true}
 								bind:isSubmitting={twoFactorIsLoading}
 								bind:showTwoFactorSetup
 								onSuccess={handleVerifyTwoFactor}
 							/>
-						{:else}
-							<Button
-								onclick={() => {
-									showTwoFactorSetup = true;
-								}}
-								variant="outline"
-								class="transition-all duration-200 hover:border-green-200 hover:bg-green-50 hover:text-green-500"
-							>
-								<ShieldPlus class="h-4 w-4" />
-								Setup User 2FA
-							</Button>
 						{/if}
 					{:else}
 						<blockquote
 							class="space-y-1 border-l-4 border-green-300 bg-green-50 py-3 pl-4 text-green-500"
 						>
 							<p>
-								User has already setup two-factor authentication on {shortDateTime(
+								You have already setup two-factor authentication on {shortDateTime(
 									data.user.two_factor_confirmed_at ?? ''
 								)}.
 							</p>

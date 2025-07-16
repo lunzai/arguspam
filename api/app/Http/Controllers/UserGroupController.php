@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CacheKey;
 use App\Http\Filters\UserGroupFilter;
 use App\Http\Requests\UserGroup\StoreUserGroupRequest;
 use App\Http\Requests\UserGroup\UpdateUserGroupRequest;
@@ -9,22 +10,29 @@ use App\Http\Resources\UserGroup\UserGroupCollection;
 use App\Http\Resources\UserGroup\UserGroupResource;
 use App\Models\UserGroup;
 use App\Traits\IncludeRelationships;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
-// TODO: refactor like UserAccessRestrictionController
 class UserGroupController extends Controller
 {
     use IncludeRelationships;
 
-    public function index(UserGroupFilter $filter): UserGroupCollection
+    public function index(UserGroupFilter $filter, Request $request): UserGroupCollection
     {
         $this->authorize('viewAny', UserGroup::class);
-        $userGroup = UserGroup::filter($filter);
-
-        return new UserGroupCollection(
-            $userGroup->paginate(config('pam.pagination.per_page'))
-        );
+        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        // $userGroups = Cache::remember(
+        //     CacheKey::USER_GROUPS->key($request->get(config('pam.org.request_attribute'))),
+        //     config('cache.default_ttl'),
+        //     function () use ($filter, $pagination) {
+        //         return UserGroup::filter($filter)->paginate($pagination);
+        //     }
+        // );
+        $userGroups = UserGroup::filter($filter)
+            ->paginate($pagination);
+        return new UserGroupCollection($userGroups);
     }
 
     public function store(StoreUserGroupRequest $request): UserGroupResource

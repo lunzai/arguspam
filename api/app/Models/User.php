@@ -10,12 +10,14 @@ use App\Traits\HasBlamable;
 use App\Traits\HasRbac;
 use App\Traits\HasStatus;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use PragmaRX\Google2FAQRCode\Google2FA;
 
 class User extends Authenticatable
 {
@@ -26,9 +28,14 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        // 'password',
         'status',
-        // 'two_factor_enabled',
+    ];
+
+    protected $guarded = [
+        'two_factor_enabled',
+        'two_factor_secret',
+        'two_factor_recovery_codes',
+        'two_factor_confirmed_at',
     ];
 
     protected $hidden = [
@@ -59,6 +66,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'last_login_at' => 'datetime',
             'two_factor_enabled' => 'boolean',
+            'two_factor_enabled_at' => 'datetime',
+            'two_factor_confirmed_at' => 'datetime',
+            'two_factor_secret' => 'encrypted',
             'password' => 'hashed',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
@@ -76,6 +86,59 @@ class User extends Authenticatable
         'two_factor_enabled' => 'MFA',
         'last_login_at' => 'Last Login At',
     ];
+
+    public function twoFactorQrCode(): Attribute
+    {
+        $appName = config('app.name');
+        if (config('app.env') !== 'production' && config('app.env') !== 'prod') {
+            $appName = $appName.' ('.config('app.env').')';
+        }
+        return Attribute::make(
+            get: function () use ($appName) {
+                if (!$this->twoFactorPendingConfirmation) {
+                    return null;
+                }
+                $inlineQr = (new Google2FA)->getQRCodeInline(
+                    $appName,
+                    $this->email,
+                    $this->two_factor_secret,
+                );
+                return 'data:image/svg+xml;base64,'.base64_encode($inlineQr);
+            }
+        );
+    }
+
+    public function twoFactorPendingConfirmation(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->isTwoFactorPendingConfirmation(),
+        );
+    }
+
+    public function verifyTwoFactorCode(string $code): bool
+    {
+        return (new Google2FA)->verifyKey($this->two_factor_secret, $code);
+    }
+
+    public function isTwoFactorEnabled(): bool
+    {
+        return $this->two_factor_enabled;
+    }
+
+    public function isTwoFactorConfirmed(): bool
+    {
+        return $this->two_factor_confirmed_at !== null;
+    }
+
+    public function isTwoFactorPendingConfirmation(): bool
+    {
+        return $this->isTwoFactorEnabled() && !$this->isTwoFactorConfirmed();
+    }
+
+    public function generateTwoFactorSecret(): string
+    {
+        return (new Google2FA)->generateSecretKey();
+    }
 
     public function inOrg(Org $org): bool
     {

@@ -168,9 +168,8 @@ class EnsureOrganizationIdIsValidTest extends TestCase
             $capturedRequest = $req;
             return response()->json(['success' => true]);
         });
-
         $this->assertNotNull($capturedRequest);
-        $this->assertEquals($this->org->id, $capturedRequest->get('current_org_id'));
+        $this->assertEquals($this->org->id, $capturedRequest?->get(config('pam.org.request_attribute')));
     }
 
     public function test_handle_with_multiple_organizations(): void
@@ -406,8 +405,8 @@ class EnsureOrganizationIdIsValidTest extends TestCase
         });
 
         $this->assertNotNull($capturedRequest);
-        $this->assertEquals('existing_value', $capturedRequest->get('existing_param'));
-        $this->assertEquals($this->org->id, $capturedRequest->get('current_org_id'));
+        $this->assertEquals('existing_value', $capturedRequest?->get('existing_param'));
+        $this->assertEquals($this->org->id, $capturedRequest?->get(config('pam.org.request_attribute')));
     }
 
     public function test_handle_with_case_sensitive_header(): void

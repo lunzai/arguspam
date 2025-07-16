@@ -25,9 +25,9 @@ class StoreOrgRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:100', 'min:2'],
+            'name' => ['bail', 'required', 'string', 'max:100', 'min:2'],
             'description' => ['nullable', 'string'],
-            'status' => ['required', new Enum(Status::class)],
+            'status' => ['bail', 'required', new Enum(Status::class)],
         ];
     }
 

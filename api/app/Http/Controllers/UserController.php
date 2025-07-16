@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CacheKey;
 use App\Http\Filters\UserFilter;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
@@ -9,21 +10,29 @@ use App\Http\Resources\User\UserCollection;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use App\Traits\IncludeRelationships;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
     use IncludeRelationships;
 
-    public function index(UserFilter $filter): UserCollection
+    public function index(UserFilter $filter, Request $request): UserCollection
     {
         $this->authorize('viewAny', User::class);
-        $user = User::filter($filter);
-
-        return new UserCollection(
-            $user->paginate(config('pam.pagination.per_page'))
-        );
+        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        // $users = Cache::remember(
+        //     CacheKey::USERS->key($request->get('page', 1)),
+        //     config('cache.default_ttl'),
+        //     function () use ($filter, $pagination) {
+        //         return User::filter($filter)->paginate($pagination);
+        //     }
+        // );
+        $users = User::filter($filter)
+            ->paginate($pagination);
+        return new UserCollection($users);
     }
 
     public function store(StoreUserRequest $request): UserResource

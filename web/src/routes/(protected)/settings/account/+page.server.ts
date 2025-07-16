@@ -1,6 +1,6 @@
 import { superValidate, setError } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { userProfileSchema } from '$validations/user';
+import { UserProfileSchema } from '$validations/user';
 import { fail, type Actions } from '@sveltejs/kit';
 import { UserService } from '$services/user';
 import { authStore } from '$stores/auth';
@@ -14,7 +14,7 @@ export const load = async ({ locals }: any) => {
 		{
 			name: user?.name || ''
 		},
-		zod(userProfileSchema)
+		zod(UserProfileSchema)
 	);
 	return {
 		form,
@@ -26,7 +26,7 @@ export const load = async ({ locals }: any) => {
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const { authToken } = locals;
-		const form = await superValidate(request, zod(userProfileSchema));
+		const form = await superValidate(request, zod(UserProfileSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

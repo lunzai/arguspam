@@ -107,4 +107,10 @@ abstract class QueryFilter
     {
         return $this->builder->where($field, $value);
     }
+
+    protected function filterBetween(string $field, string $value): Builder
+    {
+        $arr = explode(',', $value);
+        return $this->builder->whereBetween($field, [$arr[0], $arr[1]]);
+    }
 }

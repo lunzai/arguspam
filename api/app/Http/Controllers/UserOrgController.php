@@ -17,15 +17,16 @@ class UserOrgController extends Controller
     public function index(): OrgCollection
     {
         $this->authorize('userorg:viewany');
-        $orgs = Cache::remember(
-            CacheKey::USER_ORG->key(Auth::user()->id),
-            config('cache.default_ttl'),
-            function () {
-                return Auth::user()
-                    ->orgs()
-                    ->get();
-            },
-        );
+        // $orgs = Cache::remember(
+        //     CacheKey::USER_ORG->key(Auth::user()->id),
+        //     config('cache.default_ttl'),
+        //     function () {
+        //         return Auth::user()
+        //             ->orgs()
+        //             ->get();
+        //     },
+        // );
+        $orgs = Auth::user()->orgs()->get();
         return new OrgCollection($orgs);
     }
 

@@ -28,6 +28,11 @@ class AssetPolicy
         return $user->hasAnyPermission('asset:update');
     }
 
+    public function updateAny(User $user): bool
+    {
+        return $user->hasAnyPermission('asset:updateany');
+    }
+
     public function delete(User $user, Asset $asset): bool
     {
         return $user->hasAnyPermission('asset:delete');

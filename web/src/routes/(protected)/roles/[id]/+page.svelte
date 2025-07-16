@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
-	import { Pencil, Trash2, Save, Loader2, LockKeyhole, LockKeyholeOpen } from '@lucide/svelte';
+	import { Pencil, Trash2, Save, LockKeyhole, LockKeyholeOpen } from '@lucide/svelte';
 	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
@@ -17,6 +17,7 @@
 	import * as AlertDialog from '$ui/alert-dialog';
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
+	import Loader from '$components/loader.svelte';
 
 	let { data } = $props();
 	const rolePermissionCollection = $derived(
@@ -81,9 +82,10 @@
 </script>
 
 <h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.name}</h1>
-<Card.Root class="gap-3 rounded-lg py-3 shadow-none">
-	<Card.Header class="flex items-center justify-between px-3">
-		<Card.Title class="text-lg">{modelTitle} Details</Card.Title>
+<Card.Root class="w-full">
+	<Card.Header>
+		<Card.Title class="text-lg">{modelTitle}</Card.Title>
+		<Card.Description>View {modelTitle.toLowerCase()} details.</Card.Description>
 		<Card.Action>
 			{#if !model.is_default}
 				<Button
@@ -110,8 +112,7 @@
 			{/if}
 		</Card.Action>
 	</Card.Header>
-	<Separator />
-	<Card.Content class="gap-3 px-3">
+	<Card.Content>
 		<DL.Root divider={null}>
 			<DL.Row>
 				<DL.Label>ID</DL.Label>
@@ -147,16 +148,13 @@
 	</Card.Content>
 </Card.Root>
 
-<Card.Root class="relative gap-3 rounded-lg py-3 shadow-none">
+<Card.Root class="relative w-full">
 	{#if savePermissionsIsLoading}
-		<div
-			class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
-		>
-			<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
-		</div>
+		<Loader show={savePermissionsIsLoading} />
 	{/if}
-	<Card.Header class="flex items-center justify-between px-3">
+	<Card.Header>
 		<Card.Title class="text-lg">Permissions</Card.Title>
+		<Card.Description>View {modelTitle.toLowerCase()} permissions.</Card.Description>
 		<Card.Action>
 			<Button
 				variant="outline"
@@ -207,8 +205,7 @@
 			</Button>
 		</Card.Action>
 	</Card.Header>
-	<Separator />
-	<Card.Content class="gap-3 px-3 text-sm">
+	<Card.Content>
 		<div class="flex flex-col gap-6 pt-1">
 			{#each permissionList as permission (permission.groupName)}
 				<div class="flex flex-col gap-2">
@@ -247,7 +244,7 @@
 </Card.Root>
 
 <FormDialog
-	isOpen={editRoleDialogIsOpen}
+	bind:isOpen={editRoleDialogIsOpen}
 	{model}
 	data={data.form}
 	onSuccess={async () => {
@@ -308,11 +305,7 @@
 			{/if}
 		</AlertDialog.Footer>
 		{#if deleteRoleDialogIsLoading}
-			<div
-				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
-			>
-				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
-			</div>
+			<Loader show={deleteRoleDialogIsLoading} />
 		{/if}
 	</AlertDialog.Content>
 </AlertDialog.Root>

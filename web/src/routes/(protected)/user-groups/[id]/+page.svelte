@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
-	import { Loader2, Pencil, Trash2, UserPlus } from '@lucide/svelte';
+	import { Pencil, Trash2, UserPlus } from '@lucide/svelte';
 	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
@@ -21,6 +21,7 @@
 	import type { UserCollection } from '$resources/user';
 	import { enhance } from '$app/forms';
 	import FormDialog from '../form-dialog.svelte';
+	import Loader from '$components/loader.svelte';
 
 	let { data } = $props();
 	const modelName = 'user-groups';
@@ -65,8 +66,8 @@
 			const result = await response.json();
 			if (result.type === 'success') {
 				addUserDialogSelectedList = [];
+				invalidate('user-groups:view');
 				toast.success('Users added successfully');
-				invalidate('user-groups:data');
 				addUserDialogIsOpen = false;
 			} else {
 				toast.error('Failed to add users');
@@ -113,9 +114,10 @@
 </script>
 
 <h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.name}</h1>
-<Card.Root class="gap-3 rounded-lg py-3 shadow-none">
-	<Card.Header class="flex items-center justify-between px-3">
-		<Card.Title>{modelTitle} Details</Card.Title>
+<Card.Root class="w-full">
+	<Card.Header>
+		<Card.Title class="text-lg">{modelTitle}</Card.Title>
+		<Card.Description>View {modelTitle.toLowerCase()} details.</Card.Description>
 		<Card.Action>
 			<Button
 				variant="outline"
@@ -137,8 +139,7 @@
 			</Button>
 		</Card.Action>
 	</Card.Header>
-	<Separator />
-	<Card.Content class="gap-3 px-3">
+	<Card.Content>
 		<DL.Root divider={null}>
 			<DL.Row>
 				<DL.Label>ID</DL.Label>
@@ -178,9 +179,10 @@
 	</Card.Content>
 </Card.Root>
 
-<Card.Root class="gap-3 rounded-lg py-3 shadow-none">
-	<Card.Header class="flex items-center justify-between px-3">
+<Card.Root class="w-full">
+	<Card.Header>
 		<Card.Title>Users</Card.Title>
+		<Card.Description>View {modelTitle.toLowerCase()} users.</Card.Description>
 		<Card.Action>
 			<Button
 				variant="outline"
@@ -193,8 +195,7 @@
 			</Button>
 		</Card.Action>
 	</Card.Header>
-	<Separator />
-	<Card.Content class="gap-3 px-3">
+	<Card.Content>
 		{#if hasUsers}
 			<SimpleDataTable data={groupUsers.map((user) => user.attributes)} columns={usersColumns} />
 		{:else}
@@ -206,96 +207,13 @@
 </Card.Root>
 
 <FormDialog
-	isOpen={editUserGroupDialogIsOpen}
+	bind:isOpen={editUserGroupDialogIsOpen}
 	{model}
 	data={data.form}
 	onSuccess={async () => {
-		await invalidate('user-groups:view');
 		editUserGroupDialogIsOpen = false;
 	}}
 />
-
-<!-- <Dialog.Root bind:open={editUserGroupDialogIsOpen}>
-	<Dialog.Content 
-		class="sm:max-w-2xl"
-		interactOutsideBehavior="ignore"
-	>
-		<form 
-			class="space-y-6"
-			method="POST" 
-			action="?/save" 
-			use:editUserGroupDialogEnhance
-		>
-			<input type="hidden" name="id" value={model.id} />
-			<input type="hidden" name="org_id" value={model.org_id} />
-			<Dialog.Header>
-				<Dialog.Title>Edit User Group</Dialog.Title>
-				<Dialog.Description>Edit user group details.</Dialog.Description>
-			</Dialog.Header>
-			<div class="space-y-6">	
-				<Form.Field form={editUserGroupForm} name="name">
-					<Form.Control>
-						<Form.Label>Name</Form.Label>
-						<Input 
-							type="text" 
-							name="name" 
-							bind:value={$editUserGroupFormData.name} 
-							disabled={$editUserGroupDialogSubmitting} 
-						/>
-					</Form.Control>
-					<Form.FieldErrors />
-				</Form.Field>
-				<Form.Field form={editUserGroupForm} name="description">
-					<Form.Control>
-						<Form.Label>Description</Form.Label>
-						<Textarea 
-							name="description" 
-							bind:value={$editUserGroupFormData.description} 
-							disabled={$editUserGroupDialogSubmitting} 
-							class="min-h-30"
-						/>
-					</Form.Control>
-					<Form.FieldErrors />
-				</Form.Field>
-				<Form.Field form={editUserGroupForm} name="status">
-					<Form.Control>
-						<Form.Label>Status</Form.Label>
-						<Select.Root
-							name="status"
-							type="single"
-							bind:value={$editUserGroupFormData.status} 
-							disabled={$editUserGroupDialogSubmitting}
-						>
-							<Select.Trigger class="w-64">
-								{$editUserGroupFormData.status ? capitalizeWords($editUserGroupFormData.status) : 'Select status'}
-							</Select.Trigger>
-							<Select.Content>
-								<Select.Item value="active" label="Active" />
-								<Select.Item value="inactive" label="Inactive" />
-							</Select.Content>
-						</Select.Root>
-					</Form.Control>
-					<Form.FieldErrors />
-				</Form.Field>
-			</div>
-			<Dialog.Footer>
-				<Button 
-					variant="outline" 
-					onclick={handleEditUserGroupDialogCancel}
-				>Cancel</Button>
-				<Button 
-					variant="default" 
-					type="submit"
-				>Save</Button>
-			</Dialog.Footer>
-			{#if $editUserGroupDialogSubmitting}
-				<div class="absolute inset-0 bg-gray-50/50 z-10 transition-all rounded-lg flex items-center justify-center">
-					<Loader2 class="w-8 h-8 animate-spin text-gray-300" />
-				</div>
-			{/if}
-		</form>
-	</Dialog.Content>
-</Dialog.Root> -->
 
 {#snippet DataTableActions({ modelId, RelatedId }: { modelId: number; RelatedId: number })}
 	<div class="flex justify-end">
@@ -366,11 +284,7 @@
 			{/if}
 		</AlertDialog.Footer>
 		{#if deleteUserGroupDialogIsLoading}
-			<div
-				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
-			>
-				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
-			</div>
+			<Loader show={deleteUserGroupDialogIsLoading} />
 		{/if}
 	</AlertDialog.Content>
 </AlertDialog.Root>
@@ -400,7 +314,7 @@
 					return async ({ result, update }) => {
 						if (result.type === 'success') {
 							toast.success('User deleted successfully');
-							invalidate('user-groups:data');
+							invalidate('user-groups:view');
 							cancel();
 						} else {
 							toast.error('Failed to remove user');
@@ -421,11 +335,7 @@
 			</form>
 		</AlertDialog.Footer>
 		{#if deleteUserDialogIsLoading}
-			<div
-				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
-			>
-				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
-			</div>
+			<Loader show={deleteUserDialogIsLoading} />
 		{/if}
 	</AlertDialog.Content>
 </AlertDialog.Root>
@@ -453,11 +363,7 @@
 			<Button variant="default" onclick={handleAddUserDialogSubmit}>Add</Button>
 		</Dialog.Footer>
 		{#if addUserDialogIsLoading}
-			<div
-				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
-			>
-				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
-			</div>
+			<Loader show={addUserDialogIsLoading} />
 		{/if}
 	</Dialog.Content>
 </Dialog.Root>

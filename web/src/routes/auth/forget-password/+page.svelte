@@ -3,14 +3,14 @@
 	import * as Form from '$ui/form';
 	import { toast } from 'svelte-sonner';
 	import { Loader2 } from '@lucide/svelte';
-	import { changePasswordSchema } from '$validations/user';
+	import { ChangePasswordSchema } from '$validations/user';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 
 	let { data } = $props();
 
 	const form = superForm(data.form, {
-		validators: zodClient(changePasswordSchema),
+		validators: zodClient(ChangePasswordSchema),
 		delayMs: 100,
 		resetForm: false,
 		onUpdate({ form, result }) {

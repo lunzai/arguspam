@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CacheKey;
 use App\Http\Filters\RoleFilter;
 use App\Http\Requests\Role\StoreRoleRequest;
 use App\Http\Requests\Role\UpdateRoleRequest;
@@ -9,7 +10,9 @@ use App\Http\Resources\Role\RoleCollection;
 use App\Http\Resources\Role\RoleResource;
 use App\Models\Role;
 use App\Traits\IncludeRelationships;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 
 class RoleController extends Controller
 {
@@ -18,14 +21,20 @@ class RoleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(RoleFilter $filter): RoleCollection
+    public function index(RoleFilter $filter, Request $request): RoleCollection
     {
         $this->authorize('viewAny', Role::class);
-        $roles = Role::filter($filter);
-
-        return new RoleCollection(
-            $roles->paginate(config('pam.pagination.per_page'))
-        );
+        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        // $roles = Cache::remember(
+        //     CacheKey::ROLES->value,
+        //     config('cache.default_ttl'),
+        //     function () use ($filter, $pagination) {
+        //         return Role::filter($filter)->paginate($pagination);
+        //     }
+        // );
+        $roles = Role::filter($filter)
+            ->paginate($pagination);
+        return new RoleCollection($roles);
     }
 
     /**

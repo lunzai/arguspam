@@ -10,14 +10,19 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "bacon/bacon-qr-code": "^3.0",
         "dedoc/scramble": "^0.12.11",
+        "geoip2/geoip2": "~2.0",
         "laravel/framework": "^12.0",
         "laravel/prompts": "^0.3.5",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
-        "predis/predis": "^3.0"
+        "pragmarx/google2fa-qrcode": "^3.0",
+        "predis/predis": "^3.0",
+        "torann/geoip": "^3.0"
     },
     "require-dev": {
+        "barryvdh/laravel-ide-helper": "^3.5",
         "brianium/paratest": "^7.8",
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^3.5",
@@ -49,6 +54,7 @@
         "pint": "vendor/bin/pint --parallel",
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan ide-helper:generate",
             "@php artisan package:discover --ansi"
         ],
         "post-update-cmd": [

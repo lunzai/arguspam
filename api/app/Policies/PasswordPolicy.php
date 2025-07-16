@@ -6,8 +6,13 @@ use App\Models\User;
 
 class PasswordPolicy
 {
-    public function update(User $user): bool
+    public function change(User $user): bool
     {
-        return $user->hasAnyPermission('password:update');
+        return $user->hasAnyPermission('password:change');
+    }
+
+    public function resetAny(User $user): bool
+    {
+        return $user->hasAnyPermission('password:resetany');
     }
 }

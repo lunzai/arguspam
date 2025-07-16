@@ -22,7 +22,9 @@ export class ServerApi {
 			httpsAgent: new https.Agent({
 				// Only disable SSL verification in development
 				// TODO: REMOVE THIS
-				rejectUnauthorized: !dev
+				// rejectUnauthorized: !dev
+				// CORS SSL CSRF
+				rejectUnauthorized: false
 			})
 		});
 	}
@@ -91,7 +93,7 @@ export class ServerApi {
 		if (this.token) {
 			requestHeaders['Authorization'] = `Bearer ${this.token}`;
 		}
-		console.log('API', endpoint, `orgId: ${this.currentOrgId}`);
+		console.log(`API ${method}`, endpoint, `orgId: ${this.currentOrgId}`);
 		try {
 			const response = await this.axiosInstance({
 				url: endpoint,

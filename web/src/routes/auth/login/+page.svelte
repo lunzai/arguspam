@@ -2,7 +2,7 @@
 	import * as Form from '$ui/form';
 	import { Input } from '$ui/input';
 	import { Button } from '$ui/button';
-	import { loginSchema } from '$validations/auth';
+	import { LoginSchema } from '$validations/auth';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
@@ -12,7 +12,7 @@
 	let { data } = $props();
 
 	const form = superForm(data.form, {
-		validators: zodClient(loginSchema),
+		validators: zodClient(LoginSchema),
 		delayMs: 100,
 		resetForm: false,
 		onUpdate({ form, result }) {

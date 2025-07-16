@@ -87,7 +87,6 @@ export const actions = {
 			}
 			const userGroupService = new UserGroupService(authToken as string, currentOrgId);
 			const response = await userGroupService.addUsers(Number(id), userIds);
-			console.log('RESPONSE', response);
 			return;
 		} catch (error) {
 			return fail(400, {

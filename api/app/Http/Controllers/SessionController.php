@@ -2,27 +2,36 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CacheKey;
 use App\Http\Filters\SessionFilter;
 use App\Http\Requests\Session\UpdateSessionRequest;
 use App\Http\Resources\Session\SessionCollection;
 use App\Http\Resources\Session\SessionResource;
 use App\Models\Session;
 use App\Traits\IncludeRelationships;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class SessionController extends Controller
 {
     use IncludeRelationships;
 
-    public function index(SessionFilter $filter): SessionCollection
+    public function index(SessionFilter $filter, Request $request): SessionCollection
     {
         $this->authorize('viewAny', Session::class);
-        $session = Session::filter($filter);
-
-        return new SessionCollection(
-            $session->paginate(config('pam.pagination.per_page'))
-        );
+        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        // $sessions = Cache::remember(
+        //     CacheKey::SESSIONS->key($request->get(config('pam.org.request_attribute'))),
+        //     config('cache.default_ttl'),
+        //     function () use ($filter, $pagination) {
+        //         return Session::filter($filter)->paginate($pagination);
+        //     }
+        // );
+        $sessions = Session::filter($filter)
+            ->paginate($pagination);
+        return new SessionCollection($sessions);
     }
 
     public function show(string $id): SessionResource

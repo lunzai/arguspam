@@ -129,13 +129,6 @@
 							href: `/${modelName}/${row.id}`,
 							variant: 'link',
 							class: 'hover:text-blue-500'
-						},
-						{
-							label: 'Edit',
-							icon: Pencil,
-							href: `/${modelName}/${row.id}/edit`,
-							variant: 'link',
-							class: 'hover:text-blue-500'
 						}
 					]
 				};

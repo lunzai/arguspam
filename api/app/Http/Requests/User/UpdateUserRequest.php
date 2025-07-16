@@ -3,6 +3,7 @@
 namespace App\Http\Requests\User;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class UpdateUserRequest extends FormRequest
@@ -25,7 +26,14 @@ class UpdateUserRequest extends FormRequest
         // TODO: only admin can update email
         return [
             'name' => ['sometimes', 'string', 'max:100'],
-            'email' => ['sometimes', 'string', 'email', 'max:255', 'unique:App\Models\User,email'],
+            'email' => [
+                'sometimes',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users', 'email')
+                    ->ignore($this->route('user')->id),
+            ],
         ];
     }
 

@@ -11,6 +11,7 @@ use App\Models\UserAccessRestriction;
 use App\Traits\ApiResponses;
 use App\Traits\IncludeRelationships;
 
+// TODO: Remove this
 class UserAccessRestrictionController extends Controller
 {
     use ApiResponses, IncludeRelationships;

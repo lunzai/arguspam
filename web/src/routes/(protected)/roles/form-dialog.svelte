@@ -8,8 +8,8 @@
 	import { RoleSchema } from '$validations/role';
 	import { toast } from 'svelte-sonner';
 	import { Button } from '$ui/button';
-	import { Loader2 } from '@lucide/svelte';
 	import type { Role } from '$models/role';
+	import Loader from '$components/loader.svelte';
 
 	interface Props {
 		isOpen: boolean;
@@ -45,6 +45,7 @@
 	const { form: formData, enhance, submitting } = form;
 
 	function handleCancel() {
+		form.reset();
 		isOpen = false;
 	}
 </script>
@@ -52,11 +53,7 @@
 <Dialog.Root bind:open={isOpen}>
 	<Dialog.Content class="sm:max-w-2xl" interactOutsideBehavior="ignore">
 		{#if $submitting}
-			<div
-				class="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-gray-50/50 transition-all"
-			>
-				<Loader2 class="h-8 w-8 animate-spin text-gray-300" />
-			</div>
+			<Loader show={$submitting} />
 		{/if}
 		<form class="space-y-6" method="POST" action="?/save" use:enhance>
 			<input type="hidden" name="id" value={model?.id} />

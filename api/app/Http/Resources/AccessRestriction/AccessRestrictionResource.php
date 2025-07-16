@@ -2,10 +2,10 @@
 
 namespace App\Http\Resources\AccessRestriction;
 
-use Illuminate\Http\Request;
 use App\Http\Resources\Resource;
 use App\Http\Resources\User\UserResource;
 use App\Http\Resources\UserGroup\UserGroupResource;
+use Illuminate\Http\Request;
 
 class AccessRestrictionResource extends Resource
 {

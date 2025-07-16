@@ -10,9 +10,9 @@ use App\Http\Resources\UserGroup\UserGroupCollection;
 use App\Http\Resources\UserGroup\UserGroupResource;
 use App\Models\UserGroup;
 use App\Traits\IncludeRelationships;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class UserGroupController extends Controller

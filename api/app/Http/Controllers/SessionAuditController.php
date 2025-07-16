@@ -14,7 +14,7 @@ class SessionAuditController extends Controller
 {
     use IncludeRelationships;
 
-    # TODO: Change to nested controller and route
+    // TODO: Change to nested controller and route
     public function index(Request $request): SessionAuditCollection
     {
         $this->authorize('viewAny', SessionAudit::class);

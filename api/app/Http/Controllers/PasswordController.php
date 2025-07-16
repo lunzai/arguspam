@@ -14,9 +14,6 @@ class PasswordController extends Controller
 {
     /**
      * Reset password for any user
-     *
-     * @param ResetPasswordRequest $request
-     * @return Response|JsonResponse
      */
     public function store(ResetPasswordRequest $request, User $user): Response|JsonResponse
     {
@@ -29,9 +26,6 @@ class PasswordController extends Controller
 
     /**
      * Change password for the current user
-     *
-     * @param ChangePasswordRequest $request
-     * @return Response|JsonResponse
      */
     public function update(ChangePasswordRequest $request): Response|JsonResponse
     {

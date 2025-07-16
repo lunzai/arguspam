@@ -40,7 +40,7 @@ class BaseAccessRestrictionRequest extends FormRequest
             'data.*.*.end_time.after' => 'End time must be after start time.',
             'data.*.*.timezone.required' => 'Timezone is required.',
             'data.*.*.timezone.timezone' => 'Must be a valid timezone.',
-            
+
             // Country messages
             'data.*.*.size' => 'Country code must be exactly 2 characters.',
             'data.*.*.regex' => 'Country code must be uppercase letters only.',

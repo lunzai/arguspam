@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Enums\CacheKey;
 use App\Http\Filters\AccessRestrictionFilter;
-use App\Http\Resources\AccessRestriction\AccessRestrictionCollection;
-use App\Http\Resources\AccessRestriction\AccessRestrictionResource;
 use App\Http\Requests\AccessRestriction\StoreAccessRestrictionRequest;
 use App\Http\Requests\AccessRestriction\UpdateAccessRestrictionRequest;
+use App\Http\Resources\AccessRestriction\AccessRestrictionCollection;
+use App\Http\Resources\AccessRestriction\AccessRestrictionResource;
 use App\Models\AccessRestriction;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
@@ -17,7 +17,7 @@ class AccessRestrictionController extends Controller
 {
     use IncludeRelationships;
 
-    public function index(AccessRestrictionFilter $filter, Request $request) : AccessRestrictionCollection
+    public function index(AccessRestrictionFilter $filter, Request $request): AccessRestrictionCollection
     {
         $this->authorize('viewAny', AccessRestriction::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
@@ -36,7 +36,7 @@ class AccessRestrictionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAccessRestrictionRequest $request) : AccessRestrictionResource
+    public function store(StoreAccessRestrictionRequest $request): AccessRestrictionResource
     {
         $this->authorize('create', AccessRestriction::class);
         $validated = $request->validated();
@@ -49,7 +49,7 @@ class AccessRestrictionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id) : AccessRestrictionResource
+    public function show(string $id): AccessRestrictionResource
     {
         $accessRestrictionQuery = AccessRestriction::query();
         $this->applyIncludes($accessRestrictionQuery, request());
@@ -62,7 +62,7 @@ class AccessRestrictionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAccessRestrictionRequest $request, AccessRestriction $accessRestriction) : AccessRestrictionResource
+    public function update(UpdateAccessRestrictionRequest $request, AccessRestriction $accessRestriction): AccessRestrictionResource
     {
         $this->authorize('update', $accessRestriction);
         $validated = $request->validated();

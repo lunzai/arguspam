@@ -2,9 +2,8 @@
 
 namespace App\Http\Resources\AccessRestriction;
 
-use Illuminate\Http\Request;
 use App\Http\Resources\Collection;
-use App\Http\Resources\AccessRestriction\AccessRestrictionResource;
+use Illuminate\Http\Request;
 
 class AccessRestrictionCollection extends Collection
 {

@@ -38,7 +38,7 @@ enum CacheKey: string
     case ORG_SESSIONS_SCHEDULED_COUNT = 'org:session:scheduled:count';
     case ORG_SESSIONS_ACTIVE_COUNT = 'org:session:active:count';
 
-    // ORG    
+    // ORG
     case ORGS = 'orgs';
     case ORG_USERS = 'org_users';
 
@@ -55,8 +55,6 @@ enum CacheKey: string
     // SESSION
     case SESSIONS = 'sessions';
     case SESSION_AUDITS = 'session_audits';
-
-
 
     // NOT SURE
     case SETTING_VALUE = 'settings:value';

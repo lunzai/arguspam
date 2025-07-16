@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
 use Closure;
+use Illuminate\Http\Request;
 
 class TwoFactorAuthenticationController extends Controller
 {
@@ -13,7 +13,7 @@ class TwoFactorAuthenticationController extends Controller
      */
     public function store(User $user)
     {
-        # TODO: Re-evaluate authorization in all controllers
+        // TODO: Re-evaluate authorization in all controllers
         // $this->authorize('twofactorauthentication:create', $user);
         if ($user->two_factor_enabled) {
             return $this->unprocessableEntity('Two-factor authentication is already enabled.');
@@ -61,9 +61,9 @@ class TwoFactorAuthenticationController extends Controller
         $request->validate([
             'code' => [
                 'bail',
-                'required', 
-                'string', 
-                'size:6', 
+                'required',
+                'string',
+                'size:6',
                 'regex:/^[0-9]{6}$/',
                 function (string $attribute, mixed $value, Closure $fail) use ($user) {
                     if (!$user->verifyTwoFactorCode($value)) {

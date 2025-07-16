@@ -9,9 +9,9 @@ use App\Http\Resources\Session\SessionCollection;
 use App\Http\Resources\Session\SessionResource;
 use App\Models\Session;
 use App\Traits\IncludeRelationships;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class SessionController extends Controller

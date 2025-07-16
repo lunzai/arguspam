@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AccessRestrictionController;
+use App\Http\Controllers\AccessRestrictionUserController;
+use App\Http\Controllers\AccessRestrictionUserGroupController;
 use App\Http\Controllers\AssetAccessGrantController;
 use App\Http\Controllers\AssetAccountController;
 use App\Http\Controllers\AssetController;
@@ -17,9 +20,6 @@ use App\Http\Controllers\SessionAuditController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SettingGroupController;
-use App\Http\Controllers\AccessRestrictionController;
-use App\Http\Controllers\AccessRestrictionUserController;
-use App\Http\Controllers\AccessRestrictionUserGroupController;
 use App\Http\Controllers\TwoFactorAuthenticationController;
 use App\Http\Controllers\UserAccessRestrictionController;
 use App\Http\Controllers\UserController;
@@ -43,7 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/me/orgs', [UserOrgController::class, 'index']);
     Route::get('/users/me/orgs/{org}', [UserOrgController::class, 'show']);
     Route::put('/users/me/change-password', [PasswordController::class, 'update']);
-    
+
     Route::middleware(EnsureOrganizationIdIsValid::class)->group(function () {
         Route::apiResources([
             'assets' => AssetController::class,

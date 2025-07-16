@@ -29,7 +29,7 @@ class RoleController extends Controller
         //     CacheKey::ROLES->value,
         //     config('cache.default_ttl'),
         //     function () use ($filter, $pagination) {
-        //         return Role::filter($filter)->paginate($pagination);  
+        //         return Role::filter($filter)->paginate($pagination);
         //     }
         // );
         $roles = Role::filter($filter)

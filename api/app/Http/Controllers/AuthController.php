@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CacheKey;
 use App\Events\UserLoggedIn;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
+use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Closure;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
-use App\Enums\CacheKey;
 
 class AuthController extends Controller
 {
@@ -47,8 +47,8 @@ class AuthController extends Controller
             $tempKey = Str::random(32);
             $expiresAt = now()->addMinutes(5);
             Cache::put(
-                CacheKey::AUTH_2FA_TEMP_KEY->key($tempKey), 
-                $user->id, 
+                CacheKey::AUTH_2FA_TEMP_KEY->key($tempKey),
+                $user->id,
                 $expiresAt
             );
             $data['requires_2fa'] = true;

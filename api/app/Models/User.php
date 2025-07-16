@@ -10,10 +10,10 @@ use App\Traits\HasBlamable;
 use App\Traits\HasRbac;
 use App\Traits\HasStatus;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -91,19 +91,19 @@ class User extends Authenticatable
     {
         $appName = config('app.name');
         if (config('app.env') !== 'production' && config('app.env') !== 'prod') {
-            $appName = $appName . ' ('.config('app.env').')';
+            $appName = $appName.' ('.config('app.env').')';
         }
         return Attribute::make(
-            get: function() use ($appName) { 
+            get: function () use ($appName) {
                 if (!$this->twoFactorPendingConfirmation) {
                     return null;
                 }
-                $inlineQr = (new Google2FA())->getQRCodeInline(
+                $inlineQr = (new Google2FA)->getQRCodeInline(
                     $appName,
                     $this->email,
                     $this->two_factor_secret,
                 );
-                return 'data:image/svg+xml;base64,' . base64_encode($inlineQr);
+                return 'data:image/svg+xml;base64,'.base64_encode($inlineQr);
             }
         );
     }
@@ -117,7 +117,7 @@ class User extends Authenticatable
 
     public function verifyTwoFactorCode(string $code): bool
     {
-        return (new Google2FA())->verifyKey($this->two_factor_secret, $code);
+        return (new Google2FA)->verifyKey($this->two_factor_secret, $code);
     }
 
     public function isTwoFactorEnabled(): bool
@@ -137,7 +137,7 @@ class User extends Authenticatable
 
     public function generateTwoFactorSecret(): string
     {
-        return (new Google2FA())->generateSecretKey();
+        return (new Google2FA)->generateSecretKey();
     }
 
     public function inOrg(Org $org): bool

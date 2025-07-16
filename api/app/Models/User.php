@@ -94,12 +94,17 @@ class User extends Authenticatable
             $appName = $appName . ' ('.config('app.env').')';
         }
         return Attribute::make(
-            get: fn () => $this->twoFactorPendingConfirmation ?
-                (new Google2FA())->getQRCodeInline(
+            get: function() use ($appName) { 
+                if (!$this->twoFactorPendingConfirmation) {
+                    return null;
+                }
+                $inlineQr = (new Google2FA())->getQRCodeInline(
                     $appName,
                     $this->email,
                     $this->two_factor_secret,
-                ) : null,
+                );
+                return 'data:image/svg+xml;base64,' . base64_encode($inlineQr);
+            }
         );
     }
 
@@ -128,6 +133,11 @@ class User extends Authenticatable
     public function isTwoFactorPendingConfirmation(): bool
     {
         return $this->isTwoFactorEnabled() && !$this->isTwoFactorConfirmed();
+    }
+
+    public function generateTwoFactorSecret(): string
+    {
+        return (new Google2FA())->generateSecretKey();
     }
 
     public function inOrg(Org $org): bool

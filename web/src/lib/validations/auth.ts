@@ -18,5 +18,12 @@ export const forgotPasswordSchema = z.object({
 		.max(100, 'Email must be less than 100 characters')
 });
 
+export const twoFactorCodeSchema = z.object({
+	code: z
+		.string()
+		.regex(/^\d{6}$/, 'Code must be 6 digits')
+});
+
 export type Login = z.infer<typeof loginSchema>;
 export type ForgotPassword = z.infer<typeof forgotPasswordSchema>;
+export type TwoFactorCode = z.infer<typeof twoFactorCodeSchema>;

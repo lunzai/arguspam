@@ -15,12 +15,17 @@ export interface AuthState {
 
 export interface LoginResponse {
 	data: {
+		token: string | null;
+		user: User;
+		temp_key: string | null;
+		temp_key_expires_at: string | null;
+		requires_2fa: boolean | null;
+	};
+}
+
+export interface Login2faResponse {
+	data: {
 		token: string;
 		user: User;
 	};
 }
-
-// export interface RegisterResponse {
-//     token: string;
-//     user: User;
-// }

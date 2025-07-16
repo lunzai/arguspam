@@ -2,6 +2,7 @@ import { BaseService } from './base.js';
 import type { BaseModel } from '$models/base-model';
 import type { OrgCollection } from '$resources/org';
 import type { UserResource } from '$lib/resources/user.js';
+import type { TwoFactorQrCodeResponse } from '$resources/user';
 
 export class UserService extends BaseService<BaseModel> {
 	protected readonly endpoint = '/users';
@@ -37,15 +38,32 @@ export class UserService extends BaseService<BaseModel> {
 	}
 
 	async updateRoles(id: number, roleIds: number[]): Promise<void> {
-		console.log('service:updateRoles', id, roleIds);
 		return await this.api.post<void>(`${this.endpoint}/${id}/roles`, {
 			role_ids: roleIds
 		});
 	}
 
-	async updateTwoFactor(id: number, enabled: boolean): Promise<UserResource> {
-		return await this.update(id, {
-			two_factor_enabled: enabled
-		}) as UserResource;
+	async updateTwoFactor(id: number, enabled: boolean): Promise<void> {
+		return enabled ? 
+			await this.enableTwoFactor(id) : 
+			await this.disableTwoFactor(id);
+	}
+
+	async enableTwoFactor(id: number): Promise<void> {
+		return await this.api.post<void>(`${this.endpoint}/${id}/2fa`);
+	}
+
+	async disableTwoFactor(id: number): Promise<void> {
+		return await this.api.delete<void>(`${this.endpoint}/${id}/2fa`);
+	}
+
+	async getTwoFactorQrCode(id: number): Promise<TwoFactorQrCodeResponse> {
+		return await this.api.get<TwoFactorQrCodeResponse>(`${this.endpoint}/${id}/2fa`);
+	}
+
+	async verifyTwoFactor(id: number, code: string): Promise<UserResource> {
+		return await this.api.put<UserResource>(`${this.endpoint}/${id}/2fa`, {
+			code: code
+		});
 	}
 }

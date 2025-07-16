@@ -1,6 +1,6 @@
 import { BaseService } from './base.js';
 import type { BaseModel } from '$models/base-model.js';
-import type { LoginResponse } from '$resources/auth';
+import type { LoginResponse, Login2faResponse } from '$resources/auth';
 import type { UserResource } from '$resources/user';
 
 export class AuthService extends BaseService<BaseModel> {
@@ -11,7 +11,17 @@ export class AuthService extends BaseService<BaseModel> {
 	}
 
 	async login(email: string, password: string): Promise<LoginResponse> {
-		return await this.api.post<LoginResponse>(`${this.endpoint}/login`, { email, password });
+		return await this.api.post<LoginResponse>(`${this.endpoint}/login`, { 
+			email,
+			password
+		});
+	}
+
+	async verify2fa(code: string, tempKey: string): Promise<Login2faResponse> {
+		return await this.api.post<Login2faResponse>(`${this.endpoint}/2fa`, {
+			code,
+			temp_key: tempKey
+		});
 	}
 
 	async logout(): Promise<void> {

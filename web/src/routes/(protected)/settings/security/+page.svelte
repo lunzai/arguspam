@@ -5,19 +5,16 @@
 	import TwoFactorDisableDialog from '$components/2fa/two-factor-disable-dialog.svelte';
 	import { Switch } from '$ui/switch';
 	import { shortDateTime } from '$utils/date';
-	import { ShieldPlus } from '@lucide/svelte';
 	import Loader from '$components/loader.svelte';
 	import { invalidate } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
-	import { Button } from '$ui/button';
-	import { onMount } from 'svelte';
-	import { page } from '$app/state';
 
 	let { data } = $props();
 	let twoFactorIsLoading = $state(false);
-	let twoFactorEnabled = $derived(data.user.two_factor_enabled);
-	let twoFactorEnrolled = $derived(twoFactorEnabled && data.user.two_factor_confirmed_at !== null);
-	let showTwoFactorSetup = $state(false);
+	let user = $derived(data.user);
+	let require2faSetup = $derived(user.two_factor_enabled && !user.two_factor_confirmed_at);
+	let is2faConfirmed = $derived(user.two_factor_confirmed_at !== null);
+	let is2faEnabled = $derived(user.two_factor_enabled);
 
 	async function handleTwoFactorChange(checked: boolean) {
 		try {
@@ -50,20 +47,6 @@
 	async function handleVerifyTwoFactor() {
 		twoFactorIsLoading = false;
 	}
-
-	onMount(() => {
-		if (data.user.two_factor_enabled && !data.user.two_factor_confirmed_at) {
-			toast.warning('Please verify your two-factor authentication to continue.', {
-				duration: Number.POSITIVE_INFINITY
-			});
-		}
-		if (page.url.hash !== '') {
-			window.scrollTo({
-				top: document.getElementById(page.url.hash.slice(1))?.offsetTop,
-				behavior: 'smooth'
-			});
-		}
-	});
 </script>
 
 <div class="space-y-6">
@@ -85,24 +68,24 @@
 			<Card.Description>Enable or disable two-factor authentication.</Card.Description>
 			<Card.Action>
 				<Switch
-					disabled={twoFactorEnrolled}
+					disabled={is2faConfirmed}
 					class="data-[state=checked]:bg-green-500"
-					checked={data.user.two_factor_enabled}
+					checked={is2faEnabled}
 					onCheckedChange={handleTwoFactorChange}
 				/>
 			</Card.Action>
 		</Card.Header>
-		{#if twoFactorEnabled}
-			<Card.Content>
+		{#if is2faEnabled}
+			<Card.Content id="2fa">
 				<div class="space-y-6">
-					{#if !twoFactorEnrolled}
-						{#if showTwoFactorSetup}
+					{#if !is2faConfirmed}
+						{#if require2faSetup}
 							<TwoFactorFormDialog
 								data={data.twoFactorVerifyForm}
 								qrCode={data.qrCode}
 								isCurrentUser={true}
 								bind:isSubmitting={twoFactorIsLoading}
-								bind:showTwoFactorSetup
+								bind:showTwoFactorSetup={require2faSetup}
 								onSuccess={handleVerifyTwoFactor}
 							/>
 						{/if}

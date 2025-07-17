@@ -5,6 +5,7 @@
 	import * as Sidebar from '$ui/sidebar/index.js';
 	import { page } from '$app/state';
 	import { toast } from 'svelte-sonner';
+	import { afterNavigate } from '$app/navigation';
 
 	let { children } = $props();
 
@@ -35,6 +36,13 @@
 		grants: 'Grants',
 		accounts: 'Accounts'
 	};
+
+	afterNavigate(() => {
+		const user = page.data.user;
+		if (user.two_factor_enabled && !user.two_factor_confirmed_at) {
+			toast.warning('Please verify your two-factor authentication to continue.');
+		}
+	});
 
 	function getSegmentLabel(segment: string): string {
 		return (
@@ -98,6 +106,8 @@
 
 	const breadcrumbs = $derived(generateBreadcrumbs(page));
 </script>
+
+
 
 <Sidebar.Provider>
 	<AppSidebar />

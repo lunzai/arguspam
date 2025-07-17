@@ -3,17 +3,9 @@ import { authStore } from '$stores/auth.js';
 import { orgStore } from '$lib/stores/org';
 
 export const load: LayoutLoad = async ({ data }) => {
-	if (data.user) {
-		authStore.setUser(data.user);
-	}
-	if (data.userOrgs) {
-		orgStore.setOrgs(data.userOrgs);
-	}
-	if (data.currentOrgId) {
-		orgStore.setCurrentOrgId(data.currentOrgId);
-	}
+	const { user, currentOrgId, userOrgs } = data;
+	authStore.setUser(user);
+	orgStore.setOrgs(userOrgs);
+	orgStore.setCurrentOrgId(currentOrgId);
 	delete data.authToken;
-	return {
-		data
-	};
 };

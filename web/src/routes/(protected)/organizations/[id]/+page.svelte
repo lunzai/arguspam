@@ -29,18 +29,18 @@
 	const allUsers = $derived(data.userCollection.data.map((user) => user.attributes) as User[]);
 	const modelResource = $derived(data.model as OrgResource);
 	const model = $derived(modelResource.data.attributes as Org);
-	const orgUsers = $derived(modelResource.data.relationships?.users.map((user) => user.attributes) as User[]);
+	const orgUsers = $derived(
+		modelResource.data.relationships?.users.map((user) => user.attributes) as User[]
+	);
 	const hasUsers = $derived(orgUsers.length > 0);
 	const searchUsers = $derived(
-		allUsers.filter(
-			user => !orgUsers.some(
-				({ id: orgUserId }) => orgUserId === user.id
-			)
-		).map(({ id, name, email }) => ({
-			id,
-			label: `ID#${id} - ${name} (${email})`,
-			searchValue: `${id} ${name} ${email}`
-		}))
+		allUsers
+			.filter((user) => !orgUsers.some(({ id: orgUserId }) => orgUserId === user.id))
+			.map(({ id, name, email }) => ({
+				id,
+				label: `ID#${id} - ${name} (${email})`,
+				searchValue: `${id} ${name} ${email}`
+			}))
 	);
 
 	let deleteUserDialogIsOpen = $state(false);
@@ -110,7 +110,6 @@
 				renderSnippet(DataTableActions, { modelId: model.id, RelatedId: row.original.id })
 		}
 	];
-
 </script>
 
 <h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.name}</h1>

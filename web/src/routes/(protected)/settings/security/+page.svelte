@@ -50,7 +50,7 @@
 </script>
 
 <div class="space-y-6">
-	<Card.Root class="w-full relative">
+	<Card.Root class="relative w-full">
 		<Card.Header class="">
 			<Card.Title class="text-lg">Password</Card.Title>
 			<Card.Description>Change your password.</Card.Description>

@@ -22,16 +22,20 @@ import { OrgSchema } from '$validations/org';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$lib/utils/form';
+import { UserService } from '$services/user';
 
 export const load = async ({ params, locals, depends }) => {
 	depends('organizations:view');
 	const { id } = params;
 	const { authToken, currentOrgId } = locals;
 	const orgService = new OrgService(authToken as string, currentOrgId);
+	const userService = new UserService(authToken as string);
 	const model = (await orgService.findById(id, {
 		include: ['users']
 	})) as OrgResource;
-	const userCollection = await orgService.getUsers(currentOrgId as number);
+	const userCollection = await userService.findAll({
+		perPage: 10000
+	});
 	const form = await superValidate(
 		{
 			name: model.data.attributes.name,

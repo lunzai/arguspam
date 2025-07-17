@@ -26,11 +26,22 @@
 	let { data } = $props();
 	const modelName = 'organizations';
 	const modelTitle = 'Organization';
-	const userCollection = $derived(data.userCollection as UserCollection);
+	const allUsers = $derived(data.userCollection.data.map((user) => user.attributes) as User[]);
 	const modelResource = $derived(data.model as OrgResource);
 	const model = $derived(modelResource.data.attributes as Org);
-	const orgUsers = $derived(modelResource.data.relationships?.users as ResourceItem<User>[]);
+	const orgUsers = $derived(modelResource.data.relationships?.users.map((user) => user.attributes) as User[]);
 	const hasUsers = $derived(orgUsers.length > 0);
+	const searchUsers = $derived(
+		allUsers.filter(
+			user => !orgUsers.some(
+				({ id: orgUserId }) => orgUserId === user.id
+			)
+		).map(({ id, name, email }) => ({
+			id,
+			label: `ID#${id} - ${name} (${email})`,
+			searchValue: `${id} ${name} ${email}`
+		}))
+	);
 
 	let deleteUserDialogIsOpen = $state(false);
 	let deleteUserDialogRelatedId = $state(0);
@@ -100,18 +111,6 @@
 		}
 	];
 
-	const userList = $derived(
-		userCollection.data
-			.filter(
-				({ attributes: { id } }) =>
-					!orgUsers.some(({ attributes: { id: orgUserId } }) => orgUserId === id)
-			)
-			.map(({ attributes: { id, name, email } }) => ({
-				id,
-				label: `ID#${id} - ${name} (${email})`,
-				searchValue: `${id} ${name} ${email}`
-			}))
-	);
 </script>
 
 <h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.name}</h1>
@@ -211,7 +210,7 @@
 	</Card.Header>
 	<Card.Content>
 		{#if hasUsers}
-			<SimpleDataTable data={orgUsers.map((user) => user.attributes)} columns={usersColumns} />
+			<SimpleDataTable data={orgUsers} columns={usersColumns} />
 		{:else}
 			<div class="flex h-full items-center justify-center">
 				<p class="text-sm text-gray-500">No users found</p>
@@ -352,7 +351,7 @@
 		</Dialog.Header>
 		<div class="relative">
 			<SearchDropdown
-				initialList={userList}
+				initialList={searchUsers}
 				submitButtonLabel="Add"
 				searchPlaceholder="Search users by name or email"
 				bind:selectedList={addUserDialogSelectedList}

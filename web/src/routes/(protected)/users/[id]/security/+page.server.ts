@@ -29,6 +29,7 @@ export const load: PageServerLoad = async ({ params, locals, depends, parent }) 
 	return {
 		twoFactorVerifyForm,
 		resetPasswordForm,
+		authUser: data.user,
 		model,
 		qrCode,
 		title: `User - #${model.data.attributes.id} - ${model.data.attributes.name}`

@@ -1,5 +1,8 @@
 import { BaseService } from './base.js';
 import type { Org } from '$models/org';
+import type { ApiCollectionResponse } from '$lib/resources/api';
+import type { User } from '$models/user';
+import type { BaseFindByIdParams } from './base';
 
 export class OrgService extends BaseService<Org> {
 	protected readonly endpoint = '/orgs';
@@ -8,8 +11,10 @@ export class OrgService extends BaseService<Org> {
 		super('/orgs', token, orgId);
 	}
 
-	async getUsers(orgId: number) {
-		return await this.api.get(`${this.endpoint}/${orgId}/users`);
+	async getUsers(orgId: number, params: BaseFindByIdParams = {}) {
+		const queryString = this.buildQueryParams(params);
+		const url = `${this.endpoint}/${orgId}/users?${queryString}`;
+		return await this.api.get<ApiCollectionResponse<User>>(url);
 	}
 
 	async deleteUser(id: number, userIds: string[] | number[]) {

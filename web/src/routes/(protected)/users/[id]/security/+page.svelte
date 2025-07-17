@@ -14,7 +14,7 @@
 	import PasswordResetDialog from './password-reset-form-dialog.svelte';
 
 	let { data } = $props();
-	const currentUser = $derived(data.data.user as User);
+	const currentUser = $derived(data.authUser as User);
 	const modelResource = $derived(data.model as UserResource);
 	const modelUser = $derived(modelResource.data.attributes as User);
 	const qrCode = $derived(data.qrCode);

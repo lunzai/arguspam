@@ -161,7 +161,6 @@
 	model={data.model}
 	data={data.form}
 	onSuccess={async (data: Org) => {
-		console.log('onSuccess', data);
 		await goto(`/${modelName}/${data.id}`);
 		addOrgDialogIsOpen = false;
 	}}

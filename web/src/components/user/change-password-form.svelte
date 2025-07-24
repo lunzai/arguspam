@@ -71,11 +71,7 @@
 		<Form.FieldErrors />
 	</Form.Field>
 	<div class="flex gap-3">
-		<Form.Button type="submit" disabled={$submitting}>
-			Change Password
-		</Form.Button>
-		<Button variant="outline" onclick={() => form.reset()}>
-			Reset
-		</Button>
+		<Form.Button type="submit" disabled={$submitting}>Change Password</Form.Button>
+		<Button variant="outline" onclick={() => form.reset()}>Reset</Button>
 	</div>
 </form>

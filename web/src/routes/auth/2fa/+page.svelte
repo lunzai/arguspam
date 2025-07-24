@@ -1,18 +1,19 @@
 <script lang="ts">
 	import * as Form from '$ui/form';
-	import { Input } from '$ui/input';
+	import { REGEXP_ONLY_DIGITS } from 'bits-ui';
 	import { Button } from '$ui/button';
-	import { LoginSchema } from '$validations/auth';
+	import { TwoFactorVerifySchema } from '$validations/auth';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import { Loader2 } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
+	import * as InputOTP from '$ui/input-otp';
 
 	let { data } = $props();
-
+	data.form.data.temp_key = data.tempKey;
 	const form = superForm(data.form, {
-		validators: zodClient(LoginSchema),
+		validators: zodClient(TwoFactorVerifySchema),
 		delayMs: 100,
 		resetForm: false,
 		onUpdate({ form, result }) {
@@ -40,27 +41,30 @@
 			<span class="sr-only">ArgusPAM</span>
 			<h1 class="text-xl font-bold">Welcome to ArgusPAM</h1>
 		</div>
-		<form method="POST" use:enhance class="max-w-xl space-y-6">
-			<Form.Field {form} name="email">
+		<form
+			method="POST"
+			use:enhance
+			class="flex max-w-xl flex-col items-center justify-center space-y-6"
+		>
+			<input type="hidden" name="temp_key" value={data.tempKey} />
+			<input type="hidden" name="code" value={$formData.code} />
+			<Form.Field {form} name="code" class="flex flex-col items-center justify-center">
 				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label>Email</Form.Label>
-						<Input {...props} type="email" bind:value={$formData.email} disabled={$submitting} />
-					{/snippet}
-				</Form.Control>
-				<Form.FieldErrors />
-			</Form.Field>
-			<Form.Field {form} name="password">
-				<Form.Control>
-					{#snippet children({ props })}
-						<Form.Label>Password</Form.Label>
-						<Input
-							{...props}
-							type="password"
-							bind:value={$formData.password}
-							disabled={$submitting}
-						/>
-					{/snippet}
+					<InputOTP.Root
+						maxlength={6}
+						pushPasswordManagerStrategy="none"
+						pattern={REGEXP_ONLY_DIGITS}
+						bind:value={$formData.code}
+						disabled={$submitting}
+					>
+						{#snippet children({ cells })}
+							<InputOTP.Group>
+								{#each cells as cell (cell)}
+									<InputOTP.Slot {cell} class="border-gray-300" />
+								{/each}
+							</InputOTP.Group>
+						{/snippet}
+					</InputOTP.Root>
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
@@ -68,7 +72,7 @@
 				{#if $submitting}
 					<Loader2 className="size-4 animate-spin" />
 				{/if}
-				Login
+				Verify OTP
 			</Button>
 		</form>
 	</div>

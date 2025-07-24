@@ -3,7 +3,8 @@ import {
 	COOKIE_EXPIRY,
 	COOKIE_SAME_SITE,
 	COOKIE_TOKEN_KEY,
-	COOKIE_CURRENT_ORG_KEY
+	COOKIE_CURRENT_ORG_KEY,
+	COOKIE_TEMP_KEY_KEY
 } from '$env/static/private';
 
 interface CookieOptions {
@@ -69,4 +70,23 @@ export function getCurrentOrgId(cookies: Cookies): number | null {
 
 export function clearCurrentOrgId(cookies: Cookies) {
 	clearCookie(cookies, COOKIE_CURRENT_ORG_KEY);
+}
+
+export function setTempKey(cookies: Cookies, tempKey: string, expiresAt: Date | string) {
+	const expires = expiresAt instanceof Date ? expiresAt : new Date(expiresAt);
+	if (isNaN(expires.getTime())) {
+		throw new Error('Invalid expires date provided to setTempKey');
+	}
+	cookies.set(COOKIE_TEMP_KEY_KEY, tempKey, {
+		...baseCookieOptions,
+		expires
+	});
+}
+
+export function getTempKey(cookies: Cookies): string | undefined {
+	return getCookie(cookies, COOKIE_TEMP_KEY_KEY);
+}
+
+export function clearTempKey(cookies: Cookies) {
+	clearCookie(cookies, COOKIE_TEMP_KEY_KEY);
 }

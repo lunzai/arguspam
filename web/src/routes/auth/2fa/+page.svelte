@@ -55,6 +55,7 @@
 						pushPasswordManagerStrategy="none"
 						pattern={REGEXP_ONLY_DIGITS}
 						bind:value={$formData.code}
+						disabled={$submitting}
 					>
 						{#snippet children({ cells })}
 							<InputOTP.Group>
@@ -68,7 +69,7 @@
 				<Form.FieldErrors />
 			</Form.Field>
 			<Button type="submit" disabled={$submitting}>
-				{#if $delayed}
+				{#if $submitting}
 					<Loader2 className="size-4 animate-spin" />
 				{/if}
 				Verify OTP

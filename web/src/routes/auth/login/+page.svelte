@@ -45,7 +45,7 @@
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label>Email</Form.Label>
-						<Input {...props} type="email" bind:value={$formData.email} />
+						<Input {...props} type="email" bind:value={$formData.email} disabled={$submitting} />
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors />
@@ -54,13 +54,18 @@
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label>Password</Form.Label>
-						<Input {...props} type="password" bind:value={$formData.password} />
+						<Input
+							{...props}
+							type="password"
+							bind:value={$formData.password}
+							disabled={$submitting}
+						/>
 					{/snippet}
 				</Form.Control>
 				<Form.FieldErrors />
 			</Form.Field>
 			<Button type="submit" disabled={$submitting}>
-				{#if $delayed}
+				{#if $submitting}
 					<Loader2 className="size-4 animate-spin" />
 				{/if}
 				Login

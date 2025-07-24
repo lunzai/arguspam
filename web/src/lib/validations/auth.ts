@@ -22,6 +22,12 @@ export const TwoFactorCodeSchema = z.object({
 	code: z.string().regex(/^\d{6}$/, 'Code must be 6 digits')
 });
 
+export const TwoFactorVerifySchema = z.object({
+	code: z.string().regex(/^\d{6}$/, 'Code must be 6 digits'),
+	temp_key: z.string().regex(/^[a-zA-Z0-9]{32}$/, 'Invalid temp key')
+});
+
 export type Login = z.infer<typeof LoginSchema>;
 export type ForgotPassword = z.infer<typeof ForgotPasswordSchema>;
 export type TwoFactorCode = z.infer<typeof TwoFactorCodeSchema>;
+export type TwoFactorVerify = z.infer<typeof TwoFactorVerifySchema>;

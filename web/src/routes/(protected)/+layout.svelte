@@ -107,8 +107,6 @@
 	const breadcrumbs = $derived(generateBreadcrumbs(page));
 </script>
 
-
-
 <Sidebar.Provider>
 	<AppSidebar />
 	<Sidebar.Inset class="min-w-0 overflow-hidden">

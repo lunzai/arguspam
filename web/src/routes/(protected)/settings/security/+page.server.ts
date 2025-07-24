@@ -11,7 +11,7 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
 	depends('settings:security');
 	let qrCode = null;
 	const { authToken, currentOrgId, user } = locals;
-	
+
 	const userService = new UserService(authToken as string, currentOrgId);
 	if (user.two_factor_enabled && !user.two_factor_confirmed_at) {
 		qrCode = await userService.getTwoFactorQrCode(Number(user.id)).then((result) => {
@@ -72,7 +72,7 @@ export const actions: Actions = {
 	},
 	removeTwoFactor: async ({ request, locals }) => {
 		const { authToken, currentOrgId, user } = locals;
-		
+
 		try {
 			const userService = new UserService(authToken as string, currentOrgId);
 			await userService.disableTwoFactor(Number(user.id));

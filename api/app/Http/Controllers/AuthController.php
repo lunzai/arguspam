@@ -45,7 +45,7 @@ class AuthController extends Controller
         $isTwoFactorConfirmed = $user->isTwoFactorConfirmed();
         if ($isTwoFactorConfirmed) {
             $tempKey = Str::random(32);
-            $expiresAt = now()->addMinutes(5);
+            $expiresAt = now()->addMinutes((int) config('pam.auth.temp_key_expiration', 5));
             Cache::put(
                 CacheKey::AUTH_2FA_TEMP_KEY->key($tempKey),
                 $user->id,

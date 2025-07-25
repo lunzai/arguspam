@@ -17,7 +17,7 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { OrgService } from '$services/org';
-import type { OrgResource } from '$resources/org';
+import type { ApiOrgResource } from '$resources/org';
 import { OrgSchema } from '$validations/org';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -32,7 +32,7 @@ export const load = async ({ params, locals, depends }) => {
 	const userService = new UserService(authToken as string);
 	const model = (await orgService.findById(id, {
 		include: ['users']
-	})) as OrgResource;
+	})) as ApiOrgResource;
 	const userCollection = await userService.findAll({
 		perPage: 10000
 	});

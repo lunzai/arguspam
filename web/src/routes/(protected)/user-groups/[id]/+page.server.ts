@@ -1,12 +1,12 @@
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { UserGroupService } from '$services/user-group';
-import type { UserGroupResource } from '$resources/user-group';
+import type { ApiUserGroupResource } from '$resources/user-group';
 import { OrgService } from '$services/org';
 import { UserGroupSchema } from '$validations/user-group';
 import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
-import { setFormErrors } from '$lib/utils/form';
+import { setFormErrors } from '$utils/form';
 
 export const load = async ({ params, locals, depends }) => {
 	depends('user-groups:view');
@@ -15,7 +15,7 @@ export const load = async ({ params, locals, depends }) => {
 	const userGroupService = new UserGroupService(authToken as string, currentOrgId);
 	const model = (await userGroupService.findById(id, {
 		include: ['users']
-	})) as UserGroupResource;
+	})) as ApiUserGroupResource;
 	const orgService = new OrgService(authToken as string, currentOrgId);
 	const userCollection = await orgService.getUsers(currentOrgId as number);
 	const form = await superValidate(

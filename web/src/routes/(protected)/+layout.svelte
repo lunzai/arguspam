@@ -1,8 +1,8 @@
 <script lang="ts">
 	import AppSidebar from '$components/sidebar/app-sidebar.svelte';
-	import * as Breadcrumb from '$ui/breadcrumb/index.js';
-	import { Separator } from '$ui/separator/index.js';
-	import * as Sidebar from '$ui/sidebar/index.js';
+	import * as Breadcrumb from '$ui/breadcrumb';
+	import { Separator } from '$ui/separator';
+	import * as Sidebar from '$ui/sidebar';
 	import { page } from '$app/state';
 	import { toast } from 'svelte-sonner';
 	import { afterNavigate } from '$app/navigation';
@@ -130,7 +130,7 @@
 				</Breadcrumb.List>
 			</Breadcrumb.Root>
 		</header>
-		<div class="flex min-w-0 flex-1 flex-col gap-4 overflow-hidden p-4">
+		<div class="flex min-w-0 flex-1 flex-col gap-6 overflow-hidden px-6 py-4">
 			{@render children()}
 			<!-- <div class="grid auto-rows-min gap-4 md:grid-cols-3">
 				<div class="bg-muted/50 aspect-video rounded-xl"></div>

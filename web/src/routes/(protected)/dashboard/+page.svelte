@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import * as Card from '$ui/card';
-	import { LoaderCircle } from '@lucide/svelte';
 
 	let { data }: { data: PageData } = $props();
 	let dashboardData = $derived(data.dashboard);

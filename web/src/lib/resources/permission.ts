@@ -1,5 +1,7 @@
 import type { Permission } from '$models/permission';
-import type { ApiResourceResponse, ApiCollectionResponse } from '$resources/api';
+import type { ApiResourceResponse, ApiCollectionResponse, Resource, Collection } from '$resources/api';
 
-export interface PermissionCollection extends ApiCollectionResponse<Permission> {}
-export interface PermissionResource extends ApiResourceResponse<Permission> {}
+export interface ApiPermissionCollection extends ApiCollectionResponse<Permission> {}
+export interface ApiPermissionResource extends ApiResourceResponse<Permission> {}
+export interface PermissionResource extends Resource<Permission> {}
+export interface PermissionCollection extends Collection<Permission> {}

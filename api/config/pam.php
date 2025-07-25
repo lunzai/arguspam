@@ -14,6 +14,11 @@ return [
         'request_attribute' => 'current_org_id',
     ],
 
+    'auth' => [
+        'temp_key_expiration' => env('AUTH_TEMP_KEY_EXPIRATION', 5), // 10 minutes
+        'bypass_2fa' => env('AUTH_BYPASS_2FA', false),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Password Management

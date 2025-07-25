@@ -1,5 +1,7 @@
 import type { Role } from '$models/role';
-import type { ApiResourceResponse, ApiCollectionResponse } from '$resources/api';
+import type { ApiResourceResponse, ApiCollectionResponse, Resource, Collection } from '$resources/api';
 
-export interface RoleCollection extends ApiCollectionResponse<Role> {}
-export interface RoleResource extends ApiResourceResponse<Role> {}
+export interface ApiRoleCollection extends ApiCollectionResponse<Role> {}
+export interface ApiRoleResource extends ApiResourceResponse<Role> {}
+export interface RoleResource extends Resource<Role> {}
+export interface RoleCollection extends Collection<Role> {}

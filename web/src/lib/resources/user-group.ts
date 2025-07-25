@@ -1,5 +1,7 @@
 import type { UserGroup } from '$models/user-group';
-import type { ApiResourceResponse, ApiCollectionResponse } from '$resources/api';
+import type { ApiResourceResponse, ApiCollectionResponse, Resource, Collection } from '$resources/api';
 
-export interface UserGroupCollection extends ApiCollectionResponse<UserGroup> {}
-export interface UserGroupResource extends ApiResourceResponse<UserGroup> {}
+export interface ApiUserGroupCollection extends ApiCollectionResponse<UserGroup> {}
+export interface ApiUserGroupResource extends ApiResourceResponse<UserGroup> {}
+export interface UserGroupResource extends Resource<UserGroup> {}
+export interface UserGroupCollection extends Collection<UserGroup> {}

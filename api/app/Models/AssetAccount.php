@@ -49,6 +49,7 @@ class AssetAccount extends Model
 
     public static $includable = [
         'asset',
+        'requests',
         'sessions',
         'createdBy',
         'updatedBy',

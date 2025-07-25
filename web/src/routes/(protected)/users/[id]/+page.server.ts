@@ -4,8 +4,8 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
 import { RoleService } from '$services/role';
-import { UserSchema, UserUpdateRolesSchema } from '$lib/validations/user';
-import { UserService } from '$lib/services/user';
+import { UserSchema, UserUpdateRolesSchema } from '$validations/user';
+import { UserService } from '$services/user';
 
 export const load: PageServerLoad = async ({ depends, parent, locals }) => {
 	depends('user:view');

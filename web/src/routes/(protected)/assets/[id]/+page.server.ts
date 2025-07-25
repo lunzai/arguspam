@@ -1,13 +1,13 @@
 import { AssetService } from '$services/asset';
-import type { AssetResource } from '$lib/resources/asset';
+import type { ApiAssetResource } from '$resources/asset';
 
 export const load = async ({ params, locals }) => {
 	const { id } = params;
 	const { authToken, currentOrgId } = locals;
 	const modelService = new AssetService(authToken as string, currentOrgId);
 	const model = (await modelService.findById(id, {
-		include: ['account', 'accessGrants']
-	})) as AssetResource;
+		include: ['accounts', 'accessGrants']
+	})) as ApiAssetResource;
 	return {
 		model,
 		title: `Asset - #${model.data.attributes.id} - ${model.data.attributes.name}`

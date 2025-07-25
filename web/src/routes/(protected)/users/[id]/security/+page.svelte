@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { UserResource } from '$lib/resources/user.js';
+	import type { ApiUserResource } from '$resources/user';
 	import type { User } from '$models/user';
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
@@ -15,7 +15,7 @@
 
 	let { data } = $props();
 	const currentUser = $derived(data.authUser as User);
-	const modelResource = $derived(data.model as UserResource);
+	const modelResource = $derived(data.model as ApiUserResource);
 	const modelUser = $derived(modelResource.data.attributes as User);
 	const qrCode = $derived(data.qrCode);
 	let twoFactorEnabled = $derived(modelUser.two_factor_enabled);
@@ -143,7 +143,7 @@
 						>
 							<p>
 								User has already setup two-factor authentication on {shortDateTime(
-									modelUser.two_factor_confirmed_at ?? ''
+									modelUser.two_factor_confirmed_at ?? new Date()
 								)}.
 							</p>
 							<p>To remove two-factor authentication, please click the button below.</p>

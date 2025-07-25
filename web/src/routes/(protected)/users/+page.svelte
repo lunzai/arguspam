@@ -7,11 +7,11 @@
 		FilterConfig,
 		SortConfig
 	} from '$components/data-table/types';
-	import { shortDateTime } from '$lib/utils/date';
+	import { shortDateTime } from '$utils/date';
 	import type { ColumnDefinition } from '$components/data-table/types';
 	import type { CellBadge } from '$components/data-table/types';
 	import { page } from '$app/state';
-	import { Pencil, NotebookText } from '@lucide/svelte';
+	import { NotebookText } from '@lucide/svelte';
 
 	let initialSearchParams = page.url.searchParams;
 	const modelName = 'users';

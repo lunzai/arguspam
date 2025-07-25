@@ -1,18 +1,11 @@
 <script lang="ts">
 	import * as Card from '$ui/card';
-	import { Button } from '$ui/button';
-	import { Pencil, Trash2, MailCheck, ShieldOff, ShieldCheck, ShieldAlert } from '@lucide/svelte';
-	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
-	import { relativeDateTime } from '$utils/date';
-	import { StatusBadge, RedBadge, GreenBadge, YellowBadge } from '$components/badge';
-	import type { ResourceItem } from '$resources/api';
-	import { Badge } from '$ui/badge';
-	import type { PermissionResource } from '$lib/resources/permission';
+	import type { ApiPermissionResource } from '$resources/permission';
 	import type { Permission } from '$models/permission';
 
 	let { data } = $props();
-	const modelResource = $derived(data.model as PermissionResource);
+	const modelResource = $derived(data.model as ApiPermissionResource);
 	const model = $derived(modelResource.data.attributes as Permission);
 	const modelName = 'permissions';
 	const modelTitle = 'Permission';

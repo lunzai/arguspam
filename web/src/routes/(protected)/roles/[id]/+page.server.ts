@@ -1,5 +1,5 @@
 import { RoleService } from '$services/role';
-import type { RoleResource } from '$resources/role';
+import type { ApiRoleResource } from '$resources/role';
 import { PermissionService } from '$services/permission';
 import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms';
@@ -17,7 +17,7 @@ export const load = async ({ params, locals, depends }) => {
 	const model = (await modelService.findById(id, {
 		include: ['permissions', 'users']
 		// count: ['users'],
-	})) as RoleResource;
+	})) as ApiRoleResource;
 	const rolePermissionCollection = await modelService.getPermissions(Number(id));
 	const permissionService = new PermissionService(authToken as string, currentOrgId);
 	const permissionCollection = await permissionService.findAll({

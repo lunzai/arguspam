@@ -3,10 +3,10 @@
 	import { Separator } from '$ui/separator';
 	import SidebarNav from '$components/page-sidebar/sidebar.svelte';
 	import type { User } from '$models/user';
-	import type { UserResource } from '$resources/user';
+	import type { ApiUserResource } from '$resources/user';
 
 	let { children } = $props();
-	const modelResource = $state(page.data.model as UserResource);
+	const modelResource = $state(page.data.model as ApiUserResource);
 	const model = $state(modelResource.data.attributes as User);
 
 	const sidebarNavItems = [

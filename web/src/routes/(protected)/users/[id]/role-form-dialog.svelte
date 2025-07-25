@@ -3,8 +3,7 @@
 	import * as Form from '$ui/form';
 	import * as Select from '$ui/select';
 	import { UserUpdateRolesSchema } from '$validations/user';
-	import type { ResourceItem } from '$resources/api';
-	import type { Role } from '$models/role';
+	import type { RoleResource } from '$resources/role';
 	import type { User } from '$models/user';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
@@ -14,7 +13,7 @@
 
 	interface Props {
 		isOpen: boolean;
-		roles: ResourceItem<Role>[];
+		roles: RoleResource[];
 		data: any;
 		onSuccess: (data: User) => Promise<void>;
 	}

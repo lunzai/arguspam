@@ -1,21 +1,26 @@
 <script lang="ts">
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
-	import { Pencil, Trash2, MailCheck, ShieldOff, ShieldCheck, ShieldAlert } from '@lucide/svelte';
-	import { Separator } from '$ui/separator';
+	import { Pencil, Trash2 } from '@lucide/svelte';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
-	import { StatusBadge, RedBadge, GreenBadge, YellowBadge } from '$components/badge';
-	import type { ResourceItem } from '$resources/api';
-	import { Badge } from '$ui/badge';
-	import type { AssetResource } from '$lib/resources/asset';
+	import { StatusBadge } from '$components/badge';
+    import type { ApiAssetResource } from '$resources/asset';
 	import type { Asset } from '$models/asset';
-
+    import type { AssetAccountCollection } from '$lib/resources/asset-account';
+    import * as Tabs from '$ui/tabs';
+    import AccountsTab from './tab/accounts.svelte';
+    import AccessGrantsTab from './tab/access-grant.svelte';
+    import RequestsTab from './tab/requests.svelte';
+    import SessionsTab from './tab/sessions.svelte';
+    
 	let { data } = $props();
-	const modelResource = $derived(data.model as AssetResource);
+	const modelResource = $derived(data.model as ApiAssetResource);
 	const model = $derived(modelResource.data.attributes as Asset);
+    const accounts = $derived(modelResource.data.relationships?.accounts as AssetAccountCollection);
 	const modelName = 'assets';
 	const modelTitle = 'Asset';
+    
 </script>
 
 <h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.name}</h1>
@@ -74,93 +79,6 @@
 					<StatusBadge bind:status={model.status} class="text-sm" />
 				</DL.Content>
 			</DL.Row>
-			<!-- <DL.Row>
-				<DL.Label>Email</DL.Label>
-				<DL.Content>
-					<div class="flex items-center gap-2">
-						{user.email}
-						{#if user.email_verified_at}
-							<GreenBadge>
-								<MailCheck class="h-4 w-4" />
-								Verified
-							</GreenBadge>
-						{/if}
-					</div>
-				</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>2FA</DL.Label>
-				<DL.Content>
-					<div class="flex items-center gap-2">
-						{#if user.two_factor_enabled}
-							{#if user.two_factor_confirmed_at}
-								<GreenBadge class="text-sm">
-									<ShieldCheck class="h-4 w-4" />
-									Enrolled
-								</GreenBadge>
-							{:else}
-								<YellowBadge class="text-sm">
-									<ShieldAlert class="h-4 w-4" />
-									Pending Enrollment
-								</YellowBadge>
-							{/if}
-						{:else}
-							<RedBadge class="text-sm">
-								<ShieldOff class="h-4 w-4" />
-								Not Enabled
-							</RedBadge>
-						{/if}
-					</div>
-				</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Organizations</DL.Label>
-				<DL.Content>
-					<div class="flex flex-wrap gap-1">
-						{#each orgs as org}
-							<Badge variant="outline" class="text-sm">
-								{org.attributes.name}
-							</Badge>
-						{/each}
-					</div>
-				</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>User Groups</DL.Label>
-				<DL.Content>
-					<div class="flex flex-wrap gap-1">
-						{#each userGroups as userGroup}
-							<Badge variant="outline" class="text-sm">
-								{userGroup.attributes.name}
-							</Badge>
-						{/each}
-					</div>
-				</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Roles</DL.Label>
-				<DL.Content>
-					<div class="flex flex-wrap gap-1">
-						{#each roles as role}
-							<Badge variant="outline" class="text-sm">
-								{role.attributes.name}
-							</Badge>
-						{/each}
-					</div>
-				</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Status</DL.Label>
-				<DL.Content>
-					<StatusBadge status={user.status} class="text-sm" />
-				</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Last Login</DL.Label>
-				<DL.Content>
-					{relativeDateTime(user.last_login_at)}
-				</DL.Content>
-			</DL.Row> -->
 			<DL.Row>
 				<DL.Label>Created At</DL.Label>
 				<DL.Content>
@@ -176,3 +94,24 @@
 		</DL.Root>
 	</Card.Content>
 </Card.Root>
+
+<Tabs.Root value="accounts" class="gap-6">
+    <Tabs.List class="p-[4px] h-auto">
+        <Tabs.Trigger value="accounts" class="px-5 py-1.5">Accounts</Tabs.Trigger>
+        <Tabs.Trigger value="access-grants" class="px-5 py-1.5">Access Grants</Tabs.Trigger>
+        <Tabs.Trigger value="requests" class="px-5 py-1.5">Requests</Tabs.Trigger>
+        <Tabs.Trigger value="sessions" class="px-5 py-1.5">Sessions</Tabs.Trigger>
+    </Tabs.List>
+    <Tabs.Content value="accounts">
+        <AccountsTab asset={model} list={accounts} />
+    </Tabs.Content>
+    <Tabs.Content value="access-grants">
+        <AccessGrantsTab />
+    </Tabs.Content>
+    <Tabs.Content value="requests">
+        <RequestsTab />
+    </Tabs.Content>
+    <Tabs.Content value="sessions">
+        <SessionsTab />
+    </Tabs.Content>
+</Tabs.Root>

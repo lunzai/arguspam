@@ -1,18 +1,14 @@
 <script lang="ts">
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
-	import { Pencil, Trash2, MailCheck, ShieldOff, ShieldCheck, ShieldAlert } from '@lucide/svelte';
-	import { Separator } from '$ui/separator';
+	import { Pencil, Trash2 } from '@lucide/svelte';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
-	import { StatusBadge, RedBadge, GreenBadge, YellowBadge } from '$components/badge';
-	import type { ResourceItem } from '$resources/api';
-	import { Badge } from '$ui/badge';
-	import type { RequestResource } from '$lib/resources/request';
+	import type { ApiRequestResource } from '$resources/request';
 	import type { Request } from '$models/request';
 
 	let { data } = $props();
-	const modelResource = $derived(data.model as RequestResource);
+	const modelResource = $derived(data.model as ApiRequestResource);
 	const model = $derived(modelResource.data.attributes as Request);
 	const modelName = 'requests';
 	const modelTitle = 'Request';

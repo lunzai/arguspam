@@ -10,12 +10,10 @@
 	import { shortDateTime } from '$lib/utils/date';
 	import type { ColumnDefinition } from '$components/data-table/types';
 	import { page } from '$app/state';
-	import { Pencil, NotebookText, Plus, PlusIcon } from '@lucide/svelte';
+	import { NotebookText, PlusIcon } from '@lucide/svelte';
 	import type { CellBadge } from '$components/data-table/types';
 	import { Button } from '$ui/button';
-	import { Dialog } from '$ui/dialog';
 	import FormDialog from './form-dialog.svelte';
-	import { OrgSchema } from '$validations/org';
 	import { goto } from '$app/navigation';
 
 	let { data }: { data: any } = $props();

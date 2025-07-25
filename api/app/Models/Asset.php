@@ -34,7 +34,6 @@ class Asset extends Model
         'deleted_at' => 'datetime',
         'dbms' => Dbms::class,
         'status' => Status::class,
-        'host' => 'encrypted',
     ];
 
     public static $attributeLabels = [

@@ -9,7 +9,6 @@ import { OrgSchema } from '$validations/org';
 
 export const load: PageServerLoad = async ({ locals, depends }) => {
 	depends('organizations:list');
-	const { currentOrgId } = locals;
 	const model = {
 		name: '',
 		description: '',

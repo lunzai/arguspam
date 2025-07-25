@@ -46,6 +46,7 @@
 	});
 
 	const { form: formData, enhance, submitting } = form;
+    $formData.org_id = model.org_id;
 
 	function handleCancel() {
 		isOpen = false;
@@ -56,8 +57,8 @@
 	<Dialog.Content class="sm:max-w-2xl" interactOutsideBehavior="ignore">
 		<Loader show={$submitting} />
 		<form class="space-y-6" method="POST" action="?/save" use:enhance>
-			<input type="hidden" name="id" value={model?.id} />
-			<input type="hidden" name="org_id" value={model?.org_id} />
+			<input type="hidden" name="id" value={model.id} />
+			<input type="hidden" name="org_id" value={$formData.org_id} />
 			<Dialog.Header>
 				<Dialog.Title>{isNewRecord ? 'Add User Group' : 'Edit User Group'}</Dialog.Title>
 				<Dialog.Description>

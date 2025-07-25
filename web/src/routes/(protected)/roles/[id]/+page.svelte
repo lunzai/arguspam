@@ -2,12 +2,12 @@
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
 	import { Pencil, Trash2, Save, LockKeyhole, LockKeyholeOpen } from '@lucide/svelte';
-	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
 	import { StatusBadge } from '$components/badge';
-	import type { ResourceItem, ApiCollectionResponse } from '$resources/api';
-	import type { RoleResource } from '$resources/role';
+	import type { ApiCollectionResponse } from '$resources/api';
+	import type { ApiRoleResource } from '$resources/role';
+	import type { PermissionResource } from '$resources/permission';
 	import type { Role } from '$models/role';
 	import type { Permission } from '$models/permission';
 	import { Checkbox } from '$ui/checkbox';
@@ -26,7 +26,7 @@
 	const permissionCollection = $derived(
 		data.permissionCollection as ApiCollectionResponse<Permission>
 	);
-	const modelResource = $derived(data.model as RoleResource);
+	const modelResource = $derived(data.model as ApiRoleResource);
 	const model = $derived(modelResource.data.attributes as Role);
 	const hasUsers = $derived(modelResource.data.relationships?.users?.length ?? 0 > 0) as boolean;
 	const modelName = 'roles';
@@ -35,7 +35,7 @@
 
 	let permissionList = $derived(
 		Object.entries(
-			permissionCollection.data.reduce((groups: any, item: ResourceItem<Permission>) => {
+			permissionCollection.data.reduce((groups: any, item: PermissionResource) => {
 				const key = item.attributes.name.split(':')[0];
 				(groups[key] = groups[key] || []).push({
 					attributes: item.attributes,
@@ -49,7 +49,7 @@
 		}))
 	);
 	let selectedPermssion = $derived(
-		rolePermissionCollection.data.map((p: ResourceItem<Permission>) => p.attributes)
+        rolePermissionCollection.data.map((p: PermissionResource) => p.attributes)
 	);
 	let savePermissionsIsLoading = $state(false);
 	let savePermissionsIsLocked = $state(true);

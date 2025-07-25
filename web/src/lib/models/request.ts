@@ -1,13 +1,12 @@
 import type { BaseModel } from '$models/base-model.js';
 
 export interface Request extends BaseModel {
-	id: number;
 	org_id: number;
 	asset_id: number;
 	asset_account_id: number;
 	requester_id: number;
-	start_datetime: string;
-	end_datetime: string;
+	start_datetime: Date;
+	end_datetime: Date;
 	duration: number;
 	reason: string;
 	intended_query: string;
@@ -20,9 +19,7 @@ export interface Request extends BaseModel {
 	ai_risk_rating: 'low' | 'medium' | 'high' | 'critical';
 	status: 'pending' | 'approved' | 'rejected' | 'expired';
 	approved_by: number;
-	approved_at: string;
+	approved_at: Date;
 	rejected_by: number;
-	rejected_at: string;
-	created_at: string;
-	updated_at: string;
+	rejected_at: Date;
 }

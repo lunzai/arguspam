@@ -1,55 +1,38 @@
 <script lang="ts">
-	import type { UserResource } from '$lib/resources/user.js';
+	import type { ApiUserResource } from '$resources/user.js';
 	import type { User } from '$models/user';
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
 	import {
-		Pencil,
-		Trash2,
 		MailCheck,
 		ShieldOff,
 		ShieldCheck,
 		ShieldAlert,
-		MoreHorizontal,
-		SquareAsterisk,
-		UserLock,
+		MoreHorizontal,     
 		UserRoundX,
 		UserRoundPen,
-		Mail,
 		ContactRound
 	} from '@lucide/svelte';
-	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
 	import { StatusBadge, RedBadge, GreenBadge, YellowBadge } from '$components/badge';
-	import type { ResourceItem } from '$resources/api';
-	import type { Org } from '$models/org';
 	import { Badge } from '$ui/badge';
-	import type { UserGroup } from '$models/user-group';
-	import type { Role } from '$models/role';
 	import * as DropdownMenu from '$ui/dropdown-menu';
-	import { page } from '$app/state';
-	import * as Dialog from '$ui/dialog';
-	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
-	import * as Form from '$ui/form';
-	import { Input } from '$ui/input';
-	import { toast } from 'svelte-sonner';
 	import FormDialog from './form-dialog.svelte';
-	import { goto, invalidate } from '$app/navigation';
-	import * as Select from '$ui/select';
-	import { capitalizeWords } from '$utils/string';
 	import RoleFormDialog from './role-form-dialog.svelte';
+	import type { OrgResource } from '$resources/org';
+    import type { RoleResource } from '$resources/role';
+    import type { UserGroupResource } from '$resources/user-group';
 
 	let { data } = $props();
-	const modelResource = $derived(data.model as UserResource);
+	const modelResource = $derived(data.model as ApiUserResource);
 	const model = $derived(modelResource.data.attributes as User);
-	const orgs = $derived(modelResource.data.relationships?.orgs as ResourceItem<Org>[]);
-	const roles = $derived(data.roles as ResourceItem<Role>[]);
+	const orgs = $derived(modelResource.data.relationships?.orgs as OrgResource[]);
+	const roles = $derived(data.roles as RoleResource[]);
 	const userGroups = $derived(
-		modelResource.data.relationships?.userGroups as ResourceItem<UserGroup>[]
+		modelResource.data.relationships?.userGroups as UserGroupResource[] 
 	);
-	const userRoles = $derived(modelResource.data.relationships?.roles as ResourceItem<Role>[]);
+	const userRoles = $derived(modelResource.data.relationships?.roles as RoleResource[]);
 	let editUserDialogIsOpen = $state(false);
 	let updateRolesDialogIsOpen = $state(false);
 </script>

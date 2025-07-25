@@ -31,8 +31,10 @@ class StoreAssetRequest extends FormRequest
             'description' => ['nullable', 'string'],
             'status' => ['required', new Enum(Status::class)],
             'host' => ['required', 'string', 'max:255'],
-            'port' => ['required', 'integer', 'min:1', 'max:65535'],
+            'port' => ['required', 'integer', 'min:0', 'max:65535'],
             'dbms' => ['required', new Enum(Dbms::class)],
+            'username' => ['required', 'string', 'max:255'],
+            'password' => ['required', 'string', 'max:255'],
         ];
     }
 

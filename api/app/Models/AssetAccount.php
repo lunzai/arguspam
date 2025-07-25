@@ -15,7 +15,6 @@ class AssetAccount extends Model
 
     protected $fillable = [
         'asset_id',
-        'name',
         'username',
         'password',
         'type',
@@ -32,6 +31,10 @@ class AssetAccount extends Model
         'type' => AssetAccountType::class,
         'password' => 'encrypted',
         'username' => 'encrypted',
+    ];
+
+    protected $hidden = [
+        'password',
     ];
 
     public static $attributeLabels = [

@@ -3,17 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Enums\CacheKey;
+use App\Enums\AssetAccountType;
 use App\Http\Filters\AssetFilter;
 use App\Http\Requests\Asset\StoreAssetRequest;
 use App\Http\Requests\Asset\UpdateAssetRequest;
 use App\Http\Resources\Asset\AssetCollection;
 use App\Http\Resources\Asset\AssetResource;
 use App\Models\Asset;
+use App\Models\AssetAccount;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class AssetController extends Controller
 {
@@ -39,8 +42,20 @@ class AssetController extends Controller
     {
         $this->authorize('create', Asset::class);
         $validated = $request->validated();
-        $asset = Asset::create($validated);
-
+        $asset = DB::transaction(function () use ($validated) {
+            $asset = Asset::create($validated);
+            $account = new AssetAccount([
+                'asset_id' => $asset->id,
+                'username' => $validated['username'],
+                'password' => $validated['password'],
+                'type' => AssetAccountType::ADMIN,
+                'is_active' => true,
+            ]);
+            $asset->accounts()->save($account);
+            $asset->refresh();
+            return $asset;
+        });
+        $asset->load('accounts');
         return new AssetResource($asset);
     }
 

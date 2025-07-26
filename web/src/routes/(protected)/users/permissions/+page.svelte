@@ -43,7 +43,7 @@
 						{
 							label: 'View',
 							icon: NotebookText,
-							href: `/${modelName}/${row.id}`,
+							href: `/users/${modelName}/${row.id}`,
 							variant: 'link',
 							class: 'hover:text-blue-500'
 						}
@@ -73,20 +73,15 @@
 	};
 
 	// Event handlers
-	function handleDataChange(data: Permission[]) {
-	}
+	function handleDataChange(data: Permission[]) {}
 
-	function handlePaginationChange(pagination: PaginationConfig) {
-	}
+	function handlePaginationChange(pagination: PaginationConfig) {}
 
-	function handleFilterChange(filters: FilterConfig) {
-	}
+	function handleFilterChange(filters: FilterConfig) {}
 
-	function handleSortChange(sort: SortConfig) {
-	}
+	function handleSortChange(sort: SortConfig) {}
 
-	function handleRowSelect(selectedRows: Set<string | number>) {
-	}
+	function handleRowSelect(selectedRows: Set<string | number>) {}
 </script>
 
 <h1 class="text-2xl font-medium capitalize">{modelName}</h1>

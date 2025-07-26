@@ -9,7 +9,7 @@ import type { Asset } from '$lib/models/asset';
 
 export const load: PageServerLoad = async ({ locals, depends }) => {
 	depends('assets:list');
-    const { currentOrgId } = locals;
+	const { currentOrgId } = locals;
 	const model = {
 		org_id: Number(currentOrgId),
 		name: '',

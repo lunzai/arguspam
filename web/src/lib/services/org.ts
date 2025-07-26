@@ -11,7 +11,7 @@ export class OrgService extends BaseService<Org> {
 	}
 
 	async getUsers(orgId: number, params: BaseFindByIdParams = { perPage: 10000 }) {
-        const queryString = this.buildQueryParams(params);
+		const queryString = this.buildQueryParams(params);
 		const url = `${this.endpoint}/${orgId}/users?${queryString}`;
 		return await this.api.get<ApiUserCollection>(url);
 	}

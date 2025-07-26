@@ -5,22 +5,21 @@
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
 	import { StatusBadge } from '$components/badge';
-    import type { ApiAssetResource } from '$resources/asset';
+	import type { ApiAssetResource } from '$resources/asset';
 	import type { Asset } from '$models/asset';
-    import type { AssetAccountCollection } from '$lib/resources/asset-account';
-    import * as Tabs from '$ui/tabs';
-    import AccountsTab from './tab/accounts.svelte';
-    import AccessGrantsTab from './tab/access-grant.svelte';
-    import RequestsTab from './tab/requests.svelte';
-    import SessionsTab from './tab/sessions.svelte';
-    
+	import type { AssetAccountCollection } from '$lib/resources/asset-account';
+	import * as Tabs from '$ui/tabs';
+	import AccountsTab from './tab/accounts.svelte';
+	import AccessGrantsTab from './tab/access-grant.svelte';
+	import RequestsTab from './tab/requests.svelte';
+	import SessionsTab from './tab/sessions.svelte';
+
 	let { data } = $props();
 	const modelResource = $derived(data.model as ApiAssetResource);
 	const model = $derived(modelResource.data.attributes as Asset);
-    const accounts = $derived(modelResource.data.relationships?.accounts as AssetAccountCollection);
+	const accounts = $derived(modelResource.data.relationships?.accounts as AssetAccountCollection);
 	const modelName = 'assets';
 	const modelTitle = 'Asset';
-    
 </script>
 
 <h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.name}</h1>
@@ -96,22 +95,22 @@
 </Card.Root>
 
 <Tabs.Root value="accounts" class="gap-6">
-    <Tabs.List class="p-[4px] h-auto">
-        <Tabs.Trigger value="accounts" class="px-5 py-1.5">Accounts</Tabs.Trigger>
-        <Tabs.Trigger value="access-grants" class="px-5 py-1.5">Access Grants</Tabs.Trigger>
-        <Tabs.Trigger value="requests" class="px-5 py-1.5">Requests</Tabs.Trigger>
-        <Tabs.Trigger value="sessions" class="px-5 py-1.5">Sessions</Tabs.Trigger>
-    </Tabs.List>
-    <Tabs.Content value="accounts">
-        <AccountsTab asset={model} list={accounts} />
-    </Tabs.Content>
-    <Tabs.Content value="access-grants">
-        <AccessGrantsTab />
-    </Tabs.Content>
-    <Tabs.Content value="requests">
-        <RequestsTab />
-    </Tabs.Content>
-    <Tabs.Content value="sessions">
-        <SessionsTab />
-    </Tabs.Content>
+	<Tabs.List class="h-auto p-[4px]">
+		<Tabs.Trigger value="accounts" class="px-5 py-1.5">Accounts</Tabs.Trigger>
+		<Tabs.Trigger value="access-grants" class="px-5 py-1.5">Access Grants</Tabs.Trigger>
+		<Tabs.Trigger value="requests" class="px-5 py-1.5">Requests</Tabs.Trigger>
+		<Tabs.Trigger value="sessions" class="px-5 py-1.5">Sessions</Tabs.Trigger>
+	</Tabs.List>
+	<Tabs.Content value="accounts">
+		<AccountsTab asset={model} list={accounts} />
+	</Tabs.Content>
+	<Tabs.Content value="access-grants">
+		<AccessGrantsTab />
+	</Tabs.Content>
+	<Tabs.Content value="requests">
+		<RequestsTab />
+	</Tabs.Content>
+	<Tabs.Content value="sessions">
+		<SessionsTab />
+	</Tabs.Content>
 </Tabs.Root>

@@ -127,20 +127,15 @@
 	};
 
 	// Event handlers
-	function handleDataChange(data: UserGroup[]) {
-	}
+	function handleDataChange(data: UserGroup[]) {}
 
-	function handlePaginationChange(pagination: PaginationConfig) {
-	}
+	function handlePaginationChange(pagination: PaginationConfig) {}
 
-	function handleFilterChange(filters: FilterConfig) {
-	}
+	function handleFilterChange(filters: FilterConfig) {}
 
-	function handleSortChange(sort: SortConfig) {
-	}
+	function handleSortChange(sort: SortConfig) {}
 
-	function handleRowSelect(selectedRows: Set<string | number>) {
-	}
+	function handleRowSelect(selectedRows: Set<string | number>) {}
 </script>
 
 <div class="flex items-center justify-between">

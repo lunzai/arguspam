@@ -21,7 +21,7 @@ export const load = async ({ params, locals, depends }) => {
 	const rolePermissionCollection = await modelService.getPermissions(Number(id));
 	const permissionService = new PermissionService(authToken as string, currentOrgId);
 	const permissionCollection = await permissionService.findAll({
-		perPage: 1000,
+		perPage: 10000,
 		sort: ['name']
 	});
 	const form = await superValidate(
@@ -78,7 +78,7 @@ export const actions = {
 				message: error instanceof Error ? error.message : 'Unknown error'
 			});
 		}
-		redirect(302, '/roles');
+		redirect(302, '/users/roles');
 	},
 	permissions: async ({ request, locals, params }) => {
 		try {

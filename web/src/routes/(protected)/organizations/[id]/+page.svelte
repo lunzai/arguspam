@@ -216,7 +216,7 @@
 </Card.Root>
 
 <FormDialog
-	isOpen={editOrgDialogIsOpen}
+	bind:isOpen={editOrgDialogIsOpen}
 	{model}
 	data={data.form}
 	onSuccess={async () => {

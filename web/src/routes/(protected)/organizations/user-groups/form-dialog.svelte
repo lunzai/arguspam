@@ -46,7 +46,7 @@
 	});
 
 	const { form: formData, enhance, submitting } = form;
-    $formData.org_id = model.org_id;
+	$formData.org_id = model.org_id;
 
 	function handleCancel() {
 		isOpen = false;

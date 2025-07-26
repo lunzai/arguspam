@@ -49,7 +49,7 @@
 		}))
 	);
 	let selectedPermssion = $derived(
-        rolePermissionCollection.data.map((p: PermissionResource) => p.attributes)
+		rolePermissionCollection.data.map((p: PermissionResource) => p.attributes)
 	);
 	let savePermissionsIsLoading = $state(false);
 	let savePermissionsIsLocked = $state(true);
@@ -284,7 +284,7 @@
 						deleteRoleDialogIsLoading = true;
 						return async ({ result, update }) => {
 							if (result.type === 'redirect') {
-								goto(result?.location || '/user-groups', { invalidateAll: true }).then(() => {
+								goto(result?.location || '/users/roles', { invalidateAll: true }).then(() => {
 									toast.success('User group deleted successfully');
 								});
 							} else {

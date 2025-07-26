@@ -66,14 +66,26 @@
 				<Form.Field {form} name="email">
 					<Form.Control>
 						<Form.Label>Email</Form.Label>
-						<Input type="email" name="email" bind:value={$formData.email} disabled={$submitting} />
+						<Input
+							type="email"
+							name="email"
+							bind:value={$formData.email}
+							disabled={$submitting}
+							data-1p-ignore
+						/>
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>
 				<Form.Field {form} name="name">
 					<Form.Control>
 						<Form.Label>Name</Form.Label>
-						<Input type="text" name="name" bind:value={$formData.name} disabled={$submitting} />
+						<Input
+							type="text"
+							name="name"
+							bind:value={$formData.name}
+							disabled={$submitting}
+							data-1p-ignore
+						/>
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>

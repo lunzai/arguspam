@@ -1,8 +1,7 @@
 <script lang="ts">
-    import * as Card from '$ui/card';
-    import { Button } from '$ui/button';
-    import { Pencil, Trash2 } from '@lucide/svelte';
-
+	import * as Card from '$ui/card';
+	import { Button } from '$ui/button';
+	import { Pencil, Trash2 } from '@lucide/svelte';
 </script>
 
 <Card.Root class="w-full">
@@ -26,7 +25,5 @@
 			</Button>
 		</Card.Action>
 	</Card.Header>
-	<Card.Content>
-        Coming Soon...
-    </Card.Content>
+	<Card.Content>Coming Soon...</Card.Content>
 </Card.Root>

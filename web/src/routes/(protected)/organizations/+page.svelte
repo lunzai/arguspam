@@ -119,20 +119,15 @@
 	};
 
 	// Event handlers
-        function handleDataChange(data: Org[]) {
-        }
+	function handleDataChange(data: Org[]) {}
 
-        function handlePaginationChange(pagination: PaginationConfig) {
-        }
+	function handlePaginationChange(pagination: PaginationConfig) {}
 
-        function handleFilterChange(filters: FilterConfig) {
-        }
+	function handleFilterChange(filters: FilterConfig) {}
 
-        function handleSortChange(sort: SortConfig) {
-        }
+	function handleSortChange(sort: SortConfig) {}
 
-        function handleRowSelect(selectedRows: Set<string | number>) {
-        }
+	function handleRowSelect(selectedRows: Set<string | number>) {}
 </script>
 
 <div class="flex items-center justify-between">
@@ -150,7 +145,7 @@
 </div>
 
 <FormDialog
-	isOpen={addOrgDialogIsOpen}
+	bind:isOpen={addOrgDialogIsOpen}
 	model={data.model}
 	data={data.form}
 	onSuccess={async (data: Org) => {

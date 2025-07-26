@@ -4,7 +4,7 @@
 	import { Pencil, Trash2 } from '@lucide/svelte';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
-    import type { ApiSessionResource } from '$resources/session';
+	import type { ApiSessionResource } from '$resources/session';
 	import type { Session } from '$models/session';
 
 	let { data } = $props();

@@ -4,7 +4,7 @@ export interface AssetAccount extends BaseModel {
 	asset_id: number;
 	username: string;
 	password: string;
-    type: 'admin' | 'jit';
-    expires_at: Date | null;
-    is_active: boolean;
+	type: 'admin' | 'jit';
+	expires_at: Date | null;
+	is_active: boolean;
 }

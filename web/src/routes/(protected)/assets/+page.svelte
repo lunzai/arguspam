@@ -126,20 +126,15 @@
 	};
 
 	// Event handlers
-	function handleDataChange(data: Asset[]) {
-	}
+	function handleDataChange(data: Asset[]) {}
 
-	function handlePaginationChange(pagination: PaginationConfig) {
-	}
+	function handlePaginationChange(pagination: PaginationConfig) {}
 
-	function handleFilterChange(filters: FilterConfig) {
-	}
+	function handleFilterChange(filters: FilterConfig) {}
 
-	function handleSortChange(sort: SortConfig) {
-	}
+	function handleSortChange(sort: SortConfig) {}
 
-	function handleRowSelect(selectedRows: Set<string | number>) {
-	}
+	function handleRowSelect(selectedRows: Set<string | number>) {}
 </script>
 
 <div class="flex items-center justify-between">
@@ -157,7 +152,7 @@
 </div>
 
 <FormDialog
-	isOpen={addAssetDialogIsOpen}
+	bind:isOpen={addAssetDialogIsOpen}
 	model={data.model}
 	data={data.form}
 	onSuccess={async (data: Asset) => {

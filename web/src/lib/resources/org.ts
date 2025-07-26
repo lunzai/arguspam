@@ -1,4 +1,9 @@
-import type { ApiCollectionResponse, ApiResourceResponse, Resource, Collection } from '$resources/api';
+import type {
+	ApiCollectionResponse,
+	ApiResourceResponse,
+	Resource,
+	Collection
+} from '$resources/api';
 import type { Org } from '$models/org';
 
 export interface ApiOrgCollection extends ApiCollectionResponse<Org> {}

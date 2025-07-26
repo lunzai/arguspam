@@ -162,20 +162,15 @@
 	};
 
 	// Event handlers
-	function handleDataChange(data: Session[]) {
-	}
+	function handleDataChange(data: Session[]) {}
 
-	function handlePaginationChange(pagination: PaginationConfig) {
-	}
+	function handlePaginationChange(pagination: PaginationConfig) {}
 
-	function handleFilterChange(filters: FilterConfig) {
-	}
+	function handleFilterChange(filters: FilterConfig) {}
 
-	function handleSortChange(sort: SortConfig) {
-	}
+	function handleSortChange(sort: SortConfig) {}
 
-	function handleRowSelect(selectedRows: Set<string | number>) {
-	}
+	function handleRowSelect(selectedRows: Set<string | number>) {}
 </script>
 
 <h1 class="text-2xl font-medium capitalize">{modelName}</h1>

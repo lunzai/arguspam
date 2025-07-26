@@ -1,5 +1,10 @@
 import type { Request } from '$models/request';
-import type { ApiResourceResponse, ApiCollectionResponse, Resource, Collection } from '$resources/api';
+import type {
+	ApiResourceResponse,
+	ApiCollectionResponse,
+	Resource,
+	Collection
+} from '$resources/api';
 
 export interface ApiRequestCollection extends ApiCollectionResponse<Request> {}
 export interface ApiRequestResource extends ApiResourceResponse<Request> {}

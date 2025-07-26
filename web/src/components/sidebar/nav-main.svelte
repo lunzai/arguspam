@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Collapsible from '$ui/collapsible';
 	import * as Sidebar from '$ui/sidebar';
-    import { page } from '$app/state';
+	import { page } from '$app/state';
 	import {
 		ChevronRight,
 		LayoutDashboardIcon,
@@ -12,11 +12,11 @@
 		Settings2Icon,
 		MessageSquare,
 		Cctv,
-		ClipboardPlus,
+		ClipboardPlus
 	} from '@lucide/svelte';
 	import type { Component } from 'svelte';
 
-    const pathname = $state(page.url.pathname);
+	const pathname = $state(page.url.pathname);
 
 	interface NavItem {
 		title: string;
@@ -42,19 +42,19 @@
 			icon: MessageSquare,
 			isActive: pathname.startsWith('/announcements')
 		},
-        {
+		{
 			title: 'Requests',
 			url: '/requests',
 			icon: ClipboardPlus,
 			isActive: pathname.startsWith('/requests')
 		},
-        {
+		{
 			title: 'Sessions',
 			url: '/sessions',
 			icon: SquareTerminalIcon,
 			isActive: pathname.startsWith('/sessions')
 		},
-        {
+		{
 			title: 'Audits',
 			url: '/audits',
 			icon: Cctv,
@@ -72,7 +72,7 @@
 			title: 'Assets',
 			url: '/assets',
 			icon: ServerIcon,
-			isActive: pathname.startsWith('/assets'),
+			isActive: pathname.startsWith('/assets')
 		},
 		{
 			title: 'Organizations',
@@ -95,18 +95,18 @@
 			url: '#',
 			icon: Users,
 			isActive: pathname.startsWith('/users'),
-            items: [
+			items: [
 				{
 					title: 'Users',
 					url: '/users'
 				},
 				{
 					title: 'Roles',
-					url: '/roles'
+					url: '/users/roles'
 				},
 				{
 					title: 'Permissions',
-					url: '/permissions'
+					url: '/users/permissions'
 				}
 			]
 		}
@@ -172,5 +172,5 @@
 	</Sidebar.Group>
 {/snippet}
 
-{@render navGroup('Platform', platformNavItems)}
+{@render navGroup('Workbench', platformNavItems)}
 {@render navGroup('Administration', adminNavItems)}

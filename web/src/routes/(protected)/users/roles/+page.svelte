@@ -87,7 +87,7 @@
 						{
 							label: 'View',
 							icon: NotebookText,
-							href: `/${modelName}/${row.id}`,
+							href: `/users/${modelName}/${row.id}`,
 							variant: 'link',
 							class: 'hover:text-blue-500'
 						}
@@ -117,20 +117,15 @@
 	};
 
 	// Event handlers
-	function handleDataChange(data: Role[]) {
-	}
+	function handleDataChange(data: Role[]) {}
 
-	function handlePaginationChange(pagination: PaginationConfig) {
-	}
+	function handlePaginationChange(pagination: PaginationConfig) {}
 
-	function handleFilterChange(filters: FilterConfig) {
-	}
+	function handleFilterChange(filters: FilterConfig) {}
 
-	function handleSortChange(sort: SortConfig) {
-	}
+	function handleSortChange(sort: SortConfig) {}
 
-	function handleRowSelect(selectedRows: Set<string | number>) {
-	}
+	function handleRowSelect(selectedRows: Set<string | number>) {}
 </script>
 
 <div class="flex items-center justify-between">
@@ -152,7 +147,7 @@
 	model={data.model}
 	data={data.form}
 	onSuccess={async (data: Role) => {
-		await goto(`/roles/${data.id}`);
+		await goto(`/users/${modelName}/${data.id}`);
 		addRoleDialogIsOpen = false;
 	}}
 />

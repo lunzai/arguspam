@@ -1,5 +1,10 @@
 import type { Session } from '$models/session';
-import type { ApiResourceResponse, ApiCollectionResponse, Resource, Collection } from '$resources/api';
+import type {
+	ApiResourceResponse,
+	ApiCollectionResponse,
+	Resource,
+	Collection
+} from '$resources/api';
 
 export interface ApiSessionCollection extends ApiCollectionResponse<Session> {}
 export interface ApiSessionResource extends ApiResourceResponse<Session> {}

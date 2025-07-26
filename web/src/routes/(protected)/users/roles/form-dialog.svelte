@@ -59,14 +59,24 @@
 			<input type="hidden" name="id" value={model?.id} />
 			<input type="hidden" name="is_default" value={false} />
 			<Dialog.Header>
-				<Dialog.Title>Edit Role</Dialog.Title>
-				<Dialog.Description>Edit role details.</Dialog.Description>
+				<Dialog.Title>
+					{model?.id ? 'Edit' : 'Add'} Role
+				</Dialog.Title>
+				<Dialog.Description>
+					{model?.id ? 'Edit' : 'Add'} role details.
+				</Dialog.Description>
 			</Dialog.Header>
 			<div class="space-y-6">
 				<Form.Field {form} name="name">
 					<Form.Control>
 						<Form.Label>Name</Form.Label>
-						<Input type="text" name="name" bind:value={$formData.name} disabled={$submitting} />
+						<Input
+							type="text"
+							name="name"
+							bind:value={$formData.name}
+							disabled={$submitting}
+							data-1p-ignore
+						/>
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>

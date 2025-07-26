@@ -260,7 +260,7 @@
 						deleteUserGroupDialogIsLoading = true;
 						return async ({ result, update }) => {
 							if (result.type === 'redirect') {
-								goto(result?.location || '/user-groups', { invalidateAll: true }).then(() => {
+								goto(result?.location || '/organizations/user-groups', { invalidateAll: true }).then(() => {
 									toast.success('User group deleted successfully');
 								});
 								deleteUserGroupDialogIsLoading = false;

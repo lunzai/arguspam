@@ -97,7 +97,7 @@
 						{
 							label: 'View',
 							icon: NotebookText,
-							href: `/${modelName}/${row.id}`,
+							href: `/organizations/${modelName}/${row.id}`,
 							variant: 'link',
 							class: 'hover:text-blue-500'
 						}
@@ -128,23 +128,18 @@
 
 	// Event handlers
 	function handleDataChange(data: UserGroup[]) {
-		// console.log('Data changed:', data);
 	}
 
 	function handlePaginationChange(pagination: PaginationConfig) {
-		// console.log('Pagination changed:', pagination);
 	}
 
 	function handleFilterChange(filters: FilterConfig) {
-		// console.log('Filters changed:', filters);
 	}
 
 	function handleSortChange(sort: SortConfig) {
-		// console.log('Sort changed:', sort);
 	}
 
 	function handleRowSelect(selectedRows: Set<string | number>) {
-		// console.log('Selected rows:', selectedRows);
 	}
 </script>
 
@@ -167,7 +162,7 @@
 	model={data.model}
 	data={data.form}
 	onSuccess={async (data: UserGroup) => {
-		await goto(`/user-groups/${data.id}`);
+		await goto(`/organizations/user-groups/${data.id}`);
 		addUserGroupDialogIsOpen = false;
 	}}
 />

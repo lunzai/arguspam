@@ -118,23 +118,18 @@
 
 	// Event handlers
 	function handleDataChange(data: Role[]) {
-		// console.log('Data changed:', data);
 	}
 
 	function handlePaginationChange(pagination: PaginationConfig) {
-		// console.log('Pagination changed:', pagination);
 	}
 
 	function handleFilterChange(filters: FilterConfig) {
-		// console.log('Filters changed:', filters);
 	}
 
 	function handleSortChange(sort: SortConfig) {
-		// console.log('Sort changed:', sort);
 	}
 
 	function handleRowSelect(selectedRows: Set<string | number>) {
-		// console.log('Selected rows:', selectedRows);
 	}
 </script>
 

@@ -7,7 +7,7 @@
 		FilterConfig,
 		SortConfig
 	} from '$components/data-table/types';
-	import { shortDateTime } from '$lib/utils/date';
+	import { shortDateTime } from '$utils/date';
 	import type { ColumnDefinition } from '$components/data-table/types';
 	import { page } from '$app/state';
 	import { NotebookText, PlusIcon } from '@lucide/svelte';
@@ -119,25 +119,20 @@
 	};
 
 	// Event handlers
-	function handleDataChange(data: Org[]) {
-		// console.log('Data changed:', data);
-	}
+        function handleDataChange(data: Org[]) {
+        }
 
-	function handlePaginationChange(pagination: PaginationConfig) {
-		// console.log('Pagination changed:', pagination);
-	}
+        function handlePaginationChange(pagination: PaginationConfig) {
+        }
 
-	function handleFilterChange(filters: FilterConfig) {
-		// console.log('Filters changed:', filters);
-	}
+        function handleFilterChange(filters: FilterConfig) {
+        }
 
-	function handleSortChange(sort: SortConfig) {
-		// console.log('Sort changed:', sort);
-	}
+        function handleSortChange(sort: SortConfig) {
+        }
 
-	function handleRowSelect(selectedRows: Set<string | number>) {
-		// console.log('Selected rows:', selectedRows);
-	}
+        function handleRowSelect(selectedRows: Set<string | number>) {
+        }
 </script>
 
 <div class="flex items-center justify-between">

@@ -10,8 +10,8 @@ export class OrgService extends BaseService<Org> {
 		super('/orgs', token, orgId);
 	}
 
-	async getUsers(orgId: number, params: BaseFindByIdParams = {}) {
-		const queryString = this.buildQueryParams(params);
+	async getUsers(orgId: number, params: BaseFindByIdParams = { perPage: 10000 }) {
+        const queryString = this.buildQueryParams(params);
 		const url = `${this.endpoint}/${orgId}/users?${queryString}`;
 		return await this.api.get<ApiUserCollection>(url);
 	}

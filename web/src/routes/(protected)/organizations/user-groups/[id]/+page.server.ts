@@ -72,7 +72,7 @@ export const actions = {
 				message: error instanceof Error ? error.message : 'Unknown error'
 			});
 		}
-		redirect(302, '/user-groups');
+		redirect(302, '/organizations/user-groups');
 	},
 	addUsers: async ({ request, locals, params }) => {
 		try {

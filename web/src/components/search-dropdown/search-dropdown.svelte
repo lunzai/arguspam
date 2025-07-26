@@ -52,6 +52,7 @@
 
 	let inputRef = $state<HTMLInputElement | null>(null);
 	let dropdownRef = $state<HTMLDivElement | null>(null);
+	let selectedListDivRef = $state<HTMLDivElement | null>(null);
 
 	function handleFocus(event: FocusEvent) {
 		showDropdown = true;
@@ -65,6 +66,14 @@
 	function handleSelect(row: ListItem) {
 		selectedList.push(row);
 		onSelect?.(row, selectedList);
+        if (selectedListDivRef) {
+            requestAnimationFrame(() => {
+                selectedListDivRef?.scrollTo({
+                    top: selectedListDivRef?.scrollHeight,
+                    behavior: 'smooth'
+                });
+            });
+        }
 	}
 
 	function handleRemove(row: ListItem) {
@@ -75,7 +84,7 @@
 
 <div class="flex min-w-0 flex-col gap-1 space-y-1 space-x-1 rounded-md border shadow-xs">
 	{#if selectedList.length > 0}
-		<div class="flex w-full flex-wrap gap-1 p-2 pb-1">
+		<div class="flex w-full flex-wrap gap-1 p-2 pb-1 max-h-60 overflow-y-scroll" bind:this={selectedListDivRef}>
 			{#each selectedList as item, index}
 				<div class="flex items-center gap-2 rounded-md border border-gray-200 p-0.5 px-2">
 					<span class="text-sm text-nowrap">{item.label || item.renderSelected?.(item, index)}</span

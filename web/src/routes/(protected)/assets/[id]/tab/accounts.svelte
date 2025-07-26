@@ -14,7 +14,6 @@
         asset,
         list
     }: Props = $props();
-    console.log(list);
 </script>
 
 <Card.Root class="w-full">

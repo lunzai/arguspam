@@ -18,8 +18,8 @@ class DatabaseDriverFactory
                 'host' => $asset->host,
                 'port' => $asset->port,
                 'database' => $credentials['database'] ?? null,
-                'username' => $credentials['username'] ?? $asset->username,
-                'password' => $credentials['password'] ?? $asset->password,
+                'username' => $credentials['username'],
+                'password' => $credentials['password'],
             ],
         ]);
 

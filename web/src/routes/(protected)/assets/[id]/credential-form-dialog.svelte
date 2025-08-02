@@ -11,7 +11,7 @@
 	import { Button } from '$ui/button';
 	import type { Asset } from '$models/asset';
 	import Loader from '$components/loader.svelte';
-	import { AssetSchema } from '$lib/validations/asset';
+	import { AssetCredentialsSchema } from '$lib/validations/asset';
 
 	interface Props {
 		isOpen: boolean;
@@ -27,10 +27,8 @@
 		onSuccess = async (data: Asset) => {}
 	}: Props = $props();
 
-	let isNewRecord = $derived(!model?.id);
-
 	const form = superForm(data, {
-		validators: zodClient(AssetSchema),
+		validators: zodClient(AssetCredentialsSchema),
 		delayMs: 100,
 		async onUpdate({ form, result }) {
 			if (!form.valid) {
@@ -47,7 +45,6 @@
 	});
 
 	const { form: formData, enhance, submitting } = form;
-	$formData.org_id = model.org_id;
 
 	function handleCancel() {
 		isOpen = false;
@@ -59,26 +56,12 @@
 		{#if $submitting}
 			<Loader show={$submitting} />
 		{/if}
-		<form class="space-y-6" method="POST" action="?/save" use:enhance>
-			<input type="hidden" name="org_id" value={$formData.org_id} />
+		<form class="space-y-6" method="POST" action="?/updateCredentials" use:enhance>
 			<Dialog.Header>
-				<Dialog.Title>Add Asset</Dialog.Title>
-				<Dialog.Description>Add asset details.</Dialog.Description>
+				<Dialog.Title>Edit Credentials</Dialog.Title>
+				<Dialog.Description>Edit asset credentials.</Dialog.Description>
 			</Dialog.Header>
 			<div class="space-y-6">
-				<Form.Field {form} name="name">
-					<Form.Control>
-						<Form.Label>Name</Form.Label>
-						<Input
-							type="text"
-							name="name"
-							bind:value={$formData.name}
-							disabled={$submitting}
-							data-1p-ignore
-						/>
-					</Form.Control>
-					<Form.FieldErrors />
-				</Form.Field>
 				<div class="grid grid-cols-2 gap-6">
 					<Form.Field {form} name="host">
 						<Form.Control>
@@ -110,6 +93,7 @@
 							<Input
 								type="text"
 								name="username"
+                                placeholder="Leave blank to keep current"
 								bind:value={$formData.username}
 								disabled={$submitting}
 								data-1p-ignore
@@ -123,6 +107,7 @@
 							<Input
 								type="password"
 								name="password"
+                                placeholder="Leave blank to keep current"
 								bind:value={$formData.password}
 								disabled={$submitting}
 								data-1p-ignore
@@ -157,44 +142,11 @@
 						</Form.Control>
 						<Form.FieldErrors />
 					</Form.Field>
-					<Form.Field {form} name="status">
-						<Form.Control>
-							<Form.Label>Status</Form.Label>
-							<Select.Root
-								name="status"
-								type="single"
-								bind:value={$formData.status}
-								disabled={$submitting}
-							>
-								<Select.Trigger class="w-full">
-									{$formData.status ? capitalizeWords($formData.status) : 'Select status'}
-								</Select.Trigger>
-								<Select.Content>
-									<Select.Item value="active" label="Active" />
-									<Select.Item value="inactive" label="Inactive" />
-								</Select.Content>
-							</Select.Root>
-						</Form.Control>
-						<Form.FieldErrors />
-					</Form.Field>
 				</div>
-
-				<Form.Field {form} name="description">
-					<Form.Control>
-						<Form.Label>Description</Form.Label>
-						<Textarea
-							name="description"
-							bind:value={$formData.description}
-							disabled={$submitting}
-							class="min-h-18"
-						/>
-					</Form.Control>
-					<Form.FieldErrors />
-				</Form.Field>
 			</div>
 			<Dialog.Footer>
 				<Button variant="outline" onclick={handleCancel}>Cancel</Button>
-				<Button variant="default" type="submit">Save</Button>
+				<Button variant="default" type="submit">Update</Button>
 			</Dialog.Footer>
 		</form>
 	</Dialog.Content>

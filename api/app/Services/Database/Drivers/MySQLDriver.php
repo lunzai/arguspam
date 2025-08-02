@@ -34,9 +34,9 @@ class MySQLDriver extends AbstractDatabaseDriver
             'mysql:host=%s;port=%s;dbname=%s;user=%s;password=%s;charset=utf8mb4',
             $credentials['host'],
             $credentials['port'] ?? 3306,
-            $credentials['database'],
-            $credentials['username'],
-            $credentials['password']
+            $credentials['database'] ?? '',
+            $credentials['username'] ?? '',
+            $credentials['password'] ?? ''
         );
     }
 

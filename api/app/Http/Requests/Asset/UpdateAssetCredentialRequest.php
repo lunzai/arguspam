@@ -3,16 +3,16 @@
 namespace App\Http\Requests\Asset;
 
 use App\Enums\Dbms;
-use App\Enums\Status;
 use App\Models\Asset;
+use App\Models\AssetAccount;
 use App\Services\Secrets\SecretsManager;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
 
-class StoreAssetRequest extends FormRequest
+class UpdateAssetCredentialRequest extends FormRequest
 {
-    protected SecretsManager $secretManager;
+    protected $secretManager;
 
     public function __construct(SecretsManager $secretManager)
     {
@@ -34,15 +34,24 @@ class StoreAssetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'org_id' => ['required', 'exists:App\Models\Org,id'],
-            'name' => ['required', 'string', 'max:100', 'min:2'],
-            'description' => ['nullable', 'string'],
-            'status' => ['required', new Enum(Status::class)],
-            'host' => ['required', 'string', 'max:255'],
-            'port' => ['required', 'integer', 'min:0', 'max:65535'],
+            'host' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    if (
+                        !filter_var($value, FILTER_VALIDATE_IP) &&
+                        !preg_match('/^(?=.{1,253}$)(?:(?!\d+\.)[a-zA-Z0-9_](?:[a-zA-Z0-9-_]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/', $value) &&
+                        !preg_match('/^localhost$/i', $value)
+                    ) {
+                        $fail('Invalid IP or hostname.');
+                    }
+                },
+            ],
+            'port' => ['required', 'integer', 'min:1', 'max:65535'],
             'dbms' => ['required', new Enum(Dbms::class)],
-            'username' => ['required', 'string', 'max:255'],
-            'password' => ['required', 'string', 'max:255'],
+            'username' => ['sometimes', 'nullable', 'required_with:password', 'string', 'max:255'],
+            'password' => ['sometimes', 'nullable', 'required_with:username', 'string', 'max:255'],
         ];
     }
 
@@ -50,21 +59,18 @@ class StoreAssetRequest extends FormRequest
     {
         return [
             function (Validator $validator) {
-                if ($validator->errors()->hasAny(['password', 'username'])) {
+                $adminAccount = $this->route('asset')->adminAccount;
+                if ($validator->errors()->hasAny(['password', 'username']) || !$adminAccount) {
                     return;
                 }
                 try {
                     $this->secretManager->getDatabaseDriver(new Asset([
-                        'org_id' => $this->org_id,
-                        'name' => $this->name,
-                        'description' => $this->description,
-                        'status' => $this->status,
                         'host' => $this->host,
                         'port' => $this->port,
                         'dbms' => $this->dbms,
                     ]), [
-                        'password' => $this->password,
-                        'username' => $this->username,
+                        'password' => $this->password ?? $adminAccount->password,
+                        'username' => $this->username ?? $adminAccount->username,
                     ]);
                 } catch (\Exception $e) {
                     $validator->errors()
@@ -76,16 +82,11 @@ class StoreAssetRequest extends FormRequest
 
     public function attributes(): array
     {
-        return Asset::$attributeLabels;
+        return AssetAccount::$attributeLabels;
     }
 
     protected function prepareForValidation()
     {
-        if ($this->has('status')) {
-            $this->merge([
-                'status' => strtolower($this->status),
-            ]);
-        }
         if ($this->has('dbms')) {
             $this->merge([
                 'dbms' => strtolower($this->dbms),

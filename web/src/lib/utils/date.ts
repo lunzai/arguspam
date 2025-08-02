@@ -16,5 +16,6 @@ export function relativeDateTime(
 	if (!date) {
 		return emptyValue;
 	}
-	return `${formatDistanceToNow(new Date(date))} ago ${showDatetime ? `(${shortDateTime(date)})` : ''}`;
+	const isFuture = new Date(date) > new Date();
+	return `${formatDistanceToNow(new Date(date))} ${isFuture ? '' : 'ago'} ${showDatetime ? `(${shortDateTime(date)})` : ''}`;
 }

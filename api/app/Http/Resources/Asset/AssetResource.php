@@ -2,12 +2,12 @@
 
 namespace App\Http\Resources\Asset;
 
-use App\Http\Resources\AssetAccount\AssetAccountResource;
 use App\Http\Resources\AssetAccessGrant\AssetAccessGrantResource;
-use App\Http\Resources\Request\RequestResource;
-use App\Http\Resources\Session\SessionResource;
+use App\Http\Resources\AssetAccount\AssetAccountResource;
 use App\Http\Resources\Org\OrgResource;
+use App\Http\Resources\Request\RequestResource;
 use App\Http\Resources\Resource;
+use App\Http\Resources\Session\SessionResource;
 use App\Http\Resources\User\UserResource;
 use App\Http\Resources\UserGroup\UserGroupResource;
 use Illuminate\Http\Request;
@@ -30,7 +30,7 @@ class AssetResource extends Resource
                 'status' => $this->status,
                 'host' => $this->host,
                 'port' => $this->port,
-                'dbms' => $this->dbms,
+                'dbms' => $this->dbms->label(),
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,
             ],

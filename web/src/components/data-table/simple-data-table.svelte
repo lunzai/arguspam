@@ -20,13 +20,25 @@
 	type DataTableProps<TData, TValue> = {
 		columns: ColumnDef<TData, TValue>[];
 		data: TData[];
+		pagination?: PaginationState;
+		sorting?: SortingState;
+		columnFilters?: ColumnFiltersState;
+		globalFilter?: string;
 	};
 
-	let { data, columns }: DataTableProps<TData, TValue> = $props();
-	let pagination = $state<PaginationState>({ pageIndex: 0, pageSize: 20 });
-	let sorting = $state<SortingState>([]);
-	let columnFilters = $state<ColumnFiltersState>([]);
-	let globalFilter = $state<string>('');
+	let {
+		data,
+		columns,
+		pagination: initialPagination,
+		sorting: initialSorting,
+		columnFilters: initialColumnFilters,
+		globalFilter: initialGlobalFilter
+	}: DataTableProps<TData, TValue> = $props();
+
+	let pagination = $state<PaginationState>(initialPagination ?? { pageIndex: 0, pageSize: 20 });
+	let sorting = $state<SortingState>(initialSorting ?? []);
+	let columnFilters = $state<ColumnFiltersState>(initialColumnFilters ?? []);
+	let globalFilter = $state<string>(initialGlobalFilter ?? '');
 
 	const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 		const itemRank = rankItem(row.getValue(columnId), value);

@@ -34,9 +34,9 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
             'pgsql:host=%s;port=%s;dbname=%s;user=%s;password=%s',
             $credentials['host'],
             $credentials['port'] ?? 5432,
-            $credentials['database'],
-            $credentials['username'],
-            $credentials['password']
+            $credentials['database'] ?? '',
+            $credentials['username'] ?? '',
+            $credentials['password'] ?? ''
         );
     }
 

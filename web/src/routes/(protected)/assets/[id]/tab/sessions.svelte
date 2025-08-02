@@ -9,7 +9,7 @@
 		<Card.Title class="text-lg">Sessions</Card.Title>
 		<Card.Description>Asset's sessions.</Card.Description>
 		<Card.Action>
-			<Button
+			<!-- <Button
 				variant="outline"
 				class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
 			>
@@ -22,7 +22,7 @@
 			>
 				<Trash2 class="h-4 w-4" />
 				Delete
-			</Button>
+			</Button> -->
 		</Card.Action>
 	</Card.Header>
 	<Card.Content>Coming Soon...</Card.Content>

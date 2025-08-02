@@ -7,6 +7,7 @@ use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class AssetAccount extends Model
 {
@@ -54,6 +55,14 @@ class AssetAccount extends Model
         'createdBy',
         'updatedBy',
     ];
+
+    // TODO: To remove
+    // public function wipeCredentials()
+    // {
+    //     $this->username = 'trashed_' . Str::random(8);
+    //     $this->password = Str::password();
+    //     $this->save();
+    // }
 
     public function scopeActive($query)
     {

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\CacheKey;
 use App\Enums\AssetAccountType;
+use App\Enums\CacheKey;
 use App\Http\Filters\AssetFilter;
 use App\Http\Requests\Asset\StoreAssetRequest;
 use App\Http\Requests\Asset\UpdateAssetRequest;
@@ -83,9 +83,14 @@ class AssetController extends Controller
     {
         $asset = Asset::findOrFail($id);
         $this->authorize('delete', $asset);
-        $asset->deleted_by = Auth::id();
-        $asset->save();
-        $asset->delete();
+        if ($asset->jitAccount()->exists()) {
+            throw new \Exception('Asset has 1 or more temporary accounts. Please terminate them first.');
+        }
+        DB::transaction(function () use ($asset) {
+            $asset->deleted_by = Auth::id();
+            $asset->save();
+            $asset->delete();
+        });
 
         return $this->noContent();
     }

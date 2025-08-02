@@ -40,7 +40,7 @@
 <div class="flex flex-col space-y-4">
 	<h1 class="text-xl font-medium capitalize">User #{model.id} - {model.name}</h1>
 	<Separator />
-	<div class="mt-2 flex flex-col gap-8 lg:flex-row">
+	<div class="mt-2 flex flex-col gap-6 lg:flex-row">
 		<aside class="w-48">
 			<SidebarNav items={sidebarNavItems} />
 		</aside>

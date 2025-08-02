@@ -34,6 +34,7 @@ class SecretsManager
         try {
             return DB::transaction(function () use ($session) {
                 // Get admin credentials
+                throw new Exception('SecretManager::createAccount');
                 $adminCreds = $this->getAdminCredentials($session->asset);
 
                 // Get database driver
@@ -119,9 +120,10 @@ class SecretsManager
                 return $results;
             }
 
+            throw new Exception('SecretManager::terminateAccount');
             // Get admin credentials
-            $adminCreds = $this->getAdminCredentials($session->asset);
-            $driver = $this->getDatabaseDriver($session->asset, $adminCreds);
+            // $adminCreds = $this->getAdminCredentials($session->asset);
+            $driver = $this->getDatabaseDriver($session->asset);
 
             // Retrieve query logs before termination
             try {
@@ -189,8 +191,8 @@ class SecretsManager
     public function getAdminCredentials(Asset $asset): array
     {
         $adminAccount = $asset->accounts()
-            ->where('type', AssetAccountType::ADMIN)
-            ->where('is_active', true)
+            ->admin()
+            ->active()
             ->first();
 
         if (!$adminAccount) {
@@ -198,11 +200,9 @@ class SecretsManager
         }
 
         return [
-            'host' => $asset->host,
-            'port' => $asset->port,
             'username' => $adminAccount->username,
-            'password' => Crypt::decryptString($adminAccount->password),
-            'database' => $asset->database ?? $asset->name,
+            'password' => $adminAccount->password,
+            // 'database' => $asset->database,
         ];
     }
 
@@ -224,12 +224,13 @@ class SecretsManager
      */
     public function getDatabaseDriver(Asset $asset, ?array $credentials = null): DatabaseDriverInterface
     {
-        if (!$credentials) {
-            $credentials = $this->getAdminCredentials($asset);
-        }
-
+        $credentials = [
+            'host' => $asset->host,
+            'port' => $asset->port,
+            'dbms' => $asset->dbms,
+            ...($credentials ?? $this->getAdminCredentials($asset)),
+        ];
         $driver = DatabaseDriverFactory::create($asset, $credentials, $this->config);
-
         // Test connection
         if (!$driver->testAdminConnection($credentials)) {
             throw new Exception('Failed to connect to database with admin credentials');
@@ -244,8 +245,7 @@ class SecretsManager
     public function retrieveQueryLogs(AssetAccount $account, Session $session, ?DatabaseDriverInterface $driver = null): array
     {
         if (!$driver) {
-            $adminCreds = $this->getAdminCredentials($session->asset);
-            $driver = $this->getDatabaseDriver($session->asset, $adminCreds);
+            $driver = $this->getDatabaseDriver($session->asset);
         }
 
         return $driver->retrieveUserQueryLogs(
@@ -317,10 +317,9 @@ class SecretsManager
 
         foreach ($expiredAccounts as $account) {
             try {
-                $adminCreds = $this->getAdminCredentials($account->asset);
-                $driver = $this->getDatabaseDriver($account->asset, $adminCreds);
-
-                $database = $adminCreds['database'] ?? $account->asset->name;
+                $driver = $this->getDatabaseDriver($account->asset);
+                throw new Exception('SecretManager::cleanupExpiredAccounts');
+                $database = $account->asset->database;
                 $driver->terminateUser($account->username, $database);
 
                 $account->update(['is_active' => false]);

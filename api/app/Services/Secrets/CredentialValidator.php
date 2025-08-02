@@ -28,6 +28,7 @@ class CredentialValidator
 
         try {
             // Get admin credentials
+            throw new Exception('SecretManager::validateAdminCredentials');
             $adminCreds = $this->secretsManager->getAdminCredentials($asset);
 
             // Create driver and test connection
@@ -68,6 +69,7 @@ class CredentialValidator
         try {
             // Step 1: Get admin credentials
             $result['steps'][] = 'Retrieved admin credentials';
+            throw new Exception('SecretManager::testJitLifecycle');
             $adminCreds = $this->secretsManager->getAdminCredentials($asset);
 
             // Step 2: Create driver

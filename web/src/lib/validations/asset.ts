@@ -42,7 +42,7 @@ export const AssetSchema = z.object({
 			}
 			return isValidIP(host) || isValidHostname(host);
 		}, 'Invalid host format'),
-	port: z.number().int().gte(0, 'Invalid port number').lte(65535, 'Invalid port number'),
+	port: z.number().int().gte(1, 'Invalid port number').lte(65535, 'Invalid port number'),
 	dbms: z.enum(['mysql', 'postgresql', 'sqlserver', 'oracle', 'mongodb', 'redis', 'mariadb']),
 	username: z
 		.string()
@@ -54,4 +54,40 @@ export const AssetSchema = z.object({
 		.max(100, 'Password must be less than 100 characters')
 });
 
+export const AssetUpdateSchema = z.object({
+	name: z
+		.string()
+		.min(2, 'Name must be at least 2 characters')
+		.max(100, 'Name must be less than 100 characters'),
+	description: z.string().max(255, 'Description must be less than 255 characters').nullish(),
+	status: z.enum(['active', 'inactive']).default('active')
+});
+
+export const AssetCredentialsSchema = z
+    .object({
+        host: z
+            .string()
+            .min(1, 'Host is required')
+            .max(255, 'Host must be less than 255 characters')
+            .refine((host) => {
+                if (host === '') {
+                    return true;
+                }
+                return isValidIP(host) || isValidHostname(host);
+            }, 'Invalid host format'),
+        port: z.number().int().gte(1, 'Invalid port number').lte(65535, 'Invalid port number'),
+        dbms: z.enum(['mysql', 'postgresql', 'sqlserver', 'oracle', 'mongodb', 'redis', 'mariadb']),
+        username: z
+            .string()
+            .max(100, 'Username must be less than 100 characters')
+            .nullish(),
+        password: z
+            .string()
+            .max(100, 'Password must be less than 100 characters')
+            .nullish()
+    })
+
+
 export type Asset = z.infer<typeof AssetSchema>;
+export type AssetUpdate = z.infer<typeof AssetUpdateSchema>;
+export type AssetCredentials = z.infer<typeof AssetCredentialsSchema>;

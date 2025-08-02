@@ -6,7 +6,7 @@ use App\Models\Org;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-class UserExistedInOrg implements ValidationRule
+class UserGroupExistedInOrg implements ValidationRule
 {
     protected $orgId;
 
@@ -18,11 +18,11 @@ class UserExistedInOrg implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         $existed = Org::find($this->orgId)
-            ->users()
-            ->where('users.id', $value)
+            ->userGroups()
+            ->where('user_groups.id', $value)
             ->exists();
         if (!$existed) {
-            $fail('The user does not belong to this organization.');
+            $fail('The user group does not belong to this organization.');
         }
     }
 }

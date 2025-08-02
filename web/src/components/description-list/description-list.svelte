@@ -6,6 +6,7 @@
 		children: () => any;
 		divider?: string | null;
 		class?: string;
+		dlClass?: string;
 	};
 
 	let {
@@ -13,6 +14,7 @@
 		children,
 		divider = 'divide-gray-100',
 		class: className,
+		dlClass,
 		...restProps
 	}: Props = $props();
 </script>
@@ -23,7 +25,7 @@
 	class={cn('border-gray-100', className)}
 	{...restProps}
 >
-	<dl class={divider ? `divide-y ${divider}` : ''}>
+	<dl class={cn(divider ? `divide-y ${divider}` : '', dlClass)}>
 		{@render children?.()}
 	</dl>
 </div>

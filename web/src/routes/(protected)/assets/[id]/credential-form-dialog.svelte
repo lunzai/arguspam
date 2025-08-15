@@ -93,7 +93,7 @@
 							<Input
 								type="text"
 								name="username"
-                                placeholder="Leave blank to keep current"
+								placeholder="Leave blank to keep current"
 								bind:value={$formData.username}
 								disabled={$submitting}
 								data-1p-ignore
@@ -107,7 +107,7 @@
 							<Input
 								type="password"
 								name="password"
-                                placeholder="Leave blank to keep current"
+								placeholder="Leave blank to keep current"
 								bind:value={$formData.password}
 								disabled={$submitting}
 								data-1p-ignore

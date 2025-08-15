@@ -20,7 +20,7 @@
 		isGroup: boolean;
 	}
 
-	let { approverUserGroups, approverUsers }: Props = $props();
+	let { approverUserGroups = $bindable(), approverUsers = $bindable() }: Props = $props();
 
 	const list: ListItem[] = $derived([
 		...approverUserGroups.map((row) => {

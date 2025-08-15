@@ -6,6 +6,11 @@
 	import type { UserGroupCollection } from '$lib/resources/user-group';
 	import * as Avatar from '$ui/avatar';
 	import { generateAvatar, getInitials } from '$utils/avatar';
+	import * as AlertDialog from '$ui/alert-dialog';
+	import Loader from '$components/loader.svelte';
+	import { enhance } from '$app/forms';
+	import { toast } from 'svelte-sonner';
+	import { invalidateAll } from '$app/navigation';
 
 	interface Props {
 		requesterUserGroups: UserGroupCollection;
@@ -20,7 +25,10 @@
 		isGroup: boolean;
 	}
 
-	let { requesterUserGroups, requesterUsers }: Props = $props();
+	let { requesterUserGroups = $bindable(), requesterUsers = $bindable() }: Props = $props();
+	let deleteDialogIsOpen = $state(false);
+	let deleteDialogIsLoading = $state(false);
+	let deleteRow: ListItem | null = $state(null);
 
 	const list: ListItem[] = $derived([
 		...requesterUserGroups.map((row) => {
@@ -44,7 +52,14 @@
 	]);
 
 	function handleDelete(row: ListItem) {
-		console.log(row);
+		deleteRow = row;
+		deleteDialogIsOpen = true;
+	}
+
+	function handleDeleteOpenChange(open: boolean) {
+		if (!open) {
+			deleteRow = null;
+		}
 	}
 </script>
 
@@ -111,3 +126,46 @@
 		</div>
 	</Card.Content>
 </Card.Root>
+
+<AlertDialog.Root bind:open={deleteDialogIsOpen} onOpenChangeComplete={handleDeleteOpenChange}>
+	<AlertDialog.Content>
+		<AlertDialog.Header>
+			<AlertDialog.Title>Are you sure?</AlertDialog.Title>
+			<AlertDialog.Description>
+				Are you sure you want to remove
+				<span class="font-semibold">
+					{deleteRow?.name} ({deleteRow?.isGroup ? 'User Group' : 'User'})
+				</span>
+				as the requester?
+			</AlertDialog.Description>
+		</AlertDialog.Header>
+		<AlertDialog.Footer>
+			<AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+			<form
+				method="POST"
+				action="?/removeAccess"
+				use:enhance={({ cancel }) => {
+					deleteDialogIsLoading = true;
+					return async ({ result, update }) => {
+						if (result.type === 'success') {
+							toast.success('Requester removed successfully');
+							await invalidateAll();
+							deleteDialogIsLoading = false;
+							deleteDialogIsOpen = false;
+						} else {
+							toast.error('Failed to remove requester');
+						}
+						deleteDialogIsLoading = false;
+						deleteDialogIsOpen = false;
+					};
+				}}
+			>
+				<input type="text" name="id" value={deleteRow?.id} hidden />
+				<input type="text" name="role" value="requester" hidden />
+				<input type="text" name="type" value={deleteRow?.isGroup ? 'user_group' : 'user'} hidden />
+				<AlertDialog.Action type="submit">Remove</AlertDialog.Action>
+			</form>
+		</AlertDialog.Footer>
+		<Loader show={deleteDialogIsLoading} />
+	</AlertDialog.Content>
+</AlertDialog.Root>

@@ -10,22 +10,40 @@
 	import SessionsTab from './tab/sessions.svelte';
 	import type { UserCollection } from '$lib/resources/user';
 	import type { UserGroupCollection } from '$lib/resources/user-group';
+	import { page } from '$app/state';
+	import { replaceState } from '$app/navigation';
+	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 
 	let { data } = $props();
-	const modelResource = $state(data.model as ApiAssetResource);
-	const model = $state(modelResource.data.attributes as Asset);
-	const accounts = $state(modelResource.data.relationships?.accounts as AssetAccountCollection);
-	const approverUserGroups = $state(
+	let defaultTab = $state('accounts');
+	const modelResource = $derived(data.model as ApiAssetResource);
+	const model = $derived(modelResource.data.attributes as Asset);
+	const accounts = $derived(modelResource.data.relationships?.accounts as AssetAccountCollection);
+	let approverUserGroups = $derived(
 		modelResource.data.relationships?.approverUserGroups as UserGroupCollection
 	);
-	const requesterUserGroups = $state(
+	let requesterUserGroups = $derived(
 		modelResource.data.relationships?.requesterUserGroups as UserGroupCollection
 	);
-	const approverUsers = $state(modelResource.data.relationships?.approverUsers as UserCollection);
-	const requesterUsers = $state(modelResource.data.relationships?.requesterUsers as UserCollection);
+	let approverUsers = $derived(modelResource.data.relationships?.approverUsers as UserCollection);
+	let requesterUsers = $derived(modelResource.data.relationships?.requesterUsers as UserCollection);
+
+	onMount(() => {
+		if (page.url.hash !== '') {
+			defaultTab = page.url.hash.replace('#', '');
+		}
+	});
+
+	function handleTabChange(value: string) {
+		defaultTab = value;
+		if (browser) {
+			replaceState(page.url.pathname + '#' + defaultTab, {});
+		}
+	}
 </script>
 
-<Tabs.Root value="accounts" class="gap-6">
+<Tabs.Root bind:value={defaultTab} onValueChange={handleTabChange} class="gap-6">
 	<Tabs.List class="h-auto p-[4px]">
 		<Tabs.Trigger value="accounts" class="cursor-pointer px-5 py-1.5">Accounts</Tabs.Trigger>
 		<Tabs.Trigger value="requesters" class="cursor-pointer px-5 py-1.5">Requesters</Tabs.Trigger>
@@ -41,10 +59,10 @@
 		<AccountsTab asset={model} list={accounts} />
 	</Tabs.Content>
 	<Tabs.Content value="requesters">
-		<RequestersTab {requesterUserGroups} {requesterUsers} />
+		<RequestersTab bind:requesterUserGroups bind:requesterUsers />
 	</Tabs.Content>
 	<Tabs.Content value="approvers">
-		<ApproversTab {approverUserGroups} {approverUsers} />
+		<ApproversTab bind:approverUserGroups bind:approverUsers />
 	</Tabs.Content>
 	<Tabs.Content value="requests">
 		<RequestsTab />

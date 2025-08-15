@@ -6,29 +6,22 @@
 	import { relativeDateTime } from '$utils/date';
 	import { StatusBadge, BlueBadge } from '$components/badge';
 	import { Separator } from '$ui/separator';
-	import { Badge } from '$ui/badge';
 	import * as AlertDialog from '$ui/alert-dialog';
 	import { enhance } from '$app/forms';
-	import { invalidate } from '$app/navigation';
 	import { toast } from 'svelte-sonner';
 	import Loader from '$components/loader.svelte';
 	import type { Asset } from '$models/asset';
 	import type { AssetAccountResource } from '$lib/resources/asset-account';
 	import { goto } from '$app/navigation';
 	import EditFormDialog from './edit-form-dialog.svelte';
-	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
-	import { AssetSchema, AssetCredentialsSchema } from '$validations/asset';
 	import CredentialFormDialog from './credential-form-dialog.svelte';
 
-	let { model, accounts, editForm, credentialsForm, modelResource } = $props();
+	let { model, accounts, editForm, credentialsForm } = $props();
 
 	let deleteAssetDialogIsOpen = $state(false);
 	let deleteAssetDialogIsLoading = $state(false);
 	let editAssetDialogIsOpen = $state(false);
-	let editAssetDialogIsLoading = $state(false);
 	let editCredentialsDialogIsOpen = $state(false);
-	let editCredentialsDialogIsLoading = $state(false);
 	const assetHasJitAccounts = $derived(
 		accounts.some((row: AssetAccountResource) => row.attributes.type === 'jit')
 	);
@@ -115,8 +108,6 @@
 	}}
 />
 
-
-
 <AlertDialog.Root bind:open={deleteAssetDialogIsOpen}>
 	<AlertDialog.Content>
 		<AlertDialog.Header>
@@ -167,8 +158,6 @@
 				</form>
 			{/if}
 		</AlertDialog.Footer>
-		{#if deleteAssetDialogIsLoading}
-			<Loader show={deleteAssetDialogIsLoading} />
-		{/if}
+		<Loader show={deleteAssetDialogIsLoading} />
 	</AlertDialog.Content>
 </AlertDialog.Root>

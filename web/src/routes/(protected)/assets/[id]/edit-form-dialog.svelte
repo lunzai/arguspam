@@ -114,13 +114,6 @@
 			<Dialog.Footer>
 				<Button variant="outline" onclick={handleCancel}>Cancel</Button>
 				<Button variant="default" type="submit">Update</Button>
-				<Button
-					variant="outline"
-					onclick={() => {
-						console.log('formdata', $formData);
-						console.log('data', data);
-					}}>Test</Button
-				>
 			</Dialog.Footer>
 		</form>
 	</Dialog.Content>

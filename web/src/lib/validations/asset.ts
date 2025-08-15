@@ -63,31 +63,30 @@ export const AssetUpdateSchema = z.object({
 	status: z.enum(['active', 'inactive']).default('active')
 });
 
-export const AssetCredentialsSchema = z
-    .object({
-        host: z
-            .string()
-            .min(1, 'Host is required')
-            .max(255, 'Host must be less than 255 characters')
-            .refine((host) => {
-                if (host === '') {
-                    return true;
-                }
-                return isValidIP(host) || isValidHostname(host);
-            }, 'Invalid host format'),
-        port: z.number().int().gte(1, 'Invalid port number').lte(65535, 'Invalid port number'),
-        dbms: z.enum(['mysql', 'postgresql', 'sqlserver', 'oracle', 'mongodb', 'redis', 'mariadb']),
-        username: z
-            .string()
-            .max(100, 'Username must be less than 100 characters')
-            .nullish(),
-        password: z
-            .string()
-            .max(100, 'Password must be less than 100 characters')
-            .nullish()
-    })
+export const AssetCredentialsSchema = z.object({
+	host: z
+		.string()
+		.min(1, 'Host is required')
+		.max(255, 'Host must be less than 255 characters')
+		.refine((host) => {
+			if (host === '') {
+				return true;
+			}
+			return isValidIP(host) || isValidHostname(host);
+		}, 'Invalid host format'),
+	port: z.number().int().gte(1, 'Invalid port number').lte(65535, 'Invalid port number'),
+	dbms: z.enum(['mysql', 'postgresql', 'sqlserver', 'oracle', 'mongodb', 'redis', 'mariadb']),
+	username: z.string().max(100, 'Username must be less than 100 characters').nullish(),
+	password: z.string().max(100, 'Password must be less than 100 characters').nullish()
+});
 
+export const AssetRemoveAccessSchema = z.object({
+	id: z.number().int(),
+	role: z.enum(['requester', 'approver']),
+	type: z.enum(['user', 'user_group'])
+});
 
 export type Asset = z.infer<typeof AssetSchema>;
 export type AssetUpdate = z.infer<typeof AssetUpdateSchema>;
 export type AssetCredentials = z.infer<typeof AssetCredentialsSchema>;
+export type AssetRemoveAccess = z.infer<typeof AssetRemoveAccessSchema>;

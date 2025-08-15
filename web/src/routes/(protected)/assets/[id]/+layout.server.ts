@@ -37,9 +37,9 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 		{
 			host: asset.host,
 			port: asset.port,
-			dbms: asset.dbms.toLowerCase(),
+			dbms: asset.dbms.toLowerCase()
 			// username: adminAccount.attributes.username,
-			// password: 
+			// password:
 		},
 		zod(AssetCredentialsSchema)
 	);

@@ -52,8 +52,8 @@ class AssetAccessGrantController extends Controller
         $validated = $request->validate([
             'role' => ['required', new Enum(AssetAccessRole::class)],
             'type' => ['required', 'string', 'in:user,user_group'],
-            'user_id' => ['required_if:type,user', 'integer', 'exists:users,id'],
-            'user_group_id' => ['required_if:type,user_group', 'integer', 'exists:user_groups,id'],
+            'user_id' => ['nullable', 'required_if:type,user', 'integer', 'exists:users,id'],
+            'user_group_id' => ['nullable', 'required_if:type,user_group', 'integer', 'exists:user_groups,id'],
         ]);
         $query = $asset->accessGrants()
             ->where('role', $validated['role']);

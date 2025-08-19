@@ -28,6 +28,8 @@
 	);
 	let approverUsers = $derived(modelResource.data.relationships?.approverUsers as UserCollection);
 	let requesterUsers = $derived(modelResource.data.relationships?.requesterUsers as UserCollection);
+    let allUserGroups = $derived(data.userGroupCollection?.data as UserGroupCollection);
+    let allUsers = $derived(data.userCollection?.data as UserCollection);
 
 	onMount(() => {
 		if (page.url.hash !== '') {
@@ -59,10 +61,23 @@
 		<AccountsTab asset={model} list={accounts} />
 	</Tabs.Content>
 	<Tabs.Content value="requesters">
-		<RequestersTab bind:requesterUserGroups bind:requesterUsers />
+		<RequestersTab 
+            bind:currentUserGroups={requesterUserGroups} 
+            bind:currentUsers={requesterUsers} 
+            bind:allUserGroups
+            bind:allUsers
+            role="requester"
+            rolePural="requesters"
+        />
 	</Tabs.Content>
 	<Tabs.Content value="approvers">
-		<ApproversTab bind:approverUserGroups bind:approverUsers />
+        qwe
+		<!-- <ApproversTab 
+            bind:userGroups={approverUserGroups} 
+            bind:users={approverUsers} 
+            role="approver"
+            rolePural="approvers"
+        /> -->
 	</Tabs.Content>
 	<Tabs.Content value="requests">
 		<RequestsTab />

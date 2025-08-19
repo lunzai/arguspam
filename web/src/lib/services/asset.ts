@@ -16,7 +16,7 @@ export class AssetService extends BaseService<Asset> {
 		return await this.api.put(`${this.endpoint}/${id}/credential`, data);
 	}
 
-	async addAccessGrant(
+	async addUserOrGroup(
 		id: number,
 		role: string,
 		userIds: string[] | number[],

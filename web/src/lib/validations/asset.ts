@@ -80,10 +80,19 @@ export const AssetCredentialsSchema = z.object({
 	password: z.string().max(100, 'Password must be less than 100 characters').nullish()
 });
 
+const accessRoles = ['requester', 'approver'] as const;
+const accessTypes = ['user', 'user_group'] as const;
+
 export const AssetRemoveAccessSchema = z.object({
 	id: z.number().int(),
-	role: z.enum(['requester', 'approver']),
-	type: z.enum(['user', 'user_group'])
+	role: z.enum(accessRoles),
+	type: z.enum(accessTypes)
+});
+
+export const AssetAddAccessSchema = z.object({
+	userIds: z.array(z.number().int()),
+	groupIds: z.array(z.number().int()),
+	role: z.enum(accessRoles)
 });
 
 export type Asset = z.infer<typeof AssetSchema>;

@@ -2,13 +2,15 @@ import type { PageServerLoad } from './$types';
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { AssetService } from '$services/asset';
+import { OrgService } from '$services/org';
 import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms';
 import { setFormErrors } from '$lib/utils/form';
 import {
 	AssetUpdateSchema,
 	AssetCredentialsSchema,
-	AssetRemoveAccessSchema
+	AssetRemoveAccessSchema,
+    AssetAddAccessSchema
 } from '$validations/asset';
 import type { Asset } from '$models/asset';
 import type { AssetAccount } from '$models/asset-account';
@@ -21,8 +23,13 @@ export const load: PageServerLoad = async ({ params, locals, parent, depends }) 
 	const { authToken, currentOrgId } = locals;
 	const { model, asset } = await parent();
 
+    const orgService = new OrgService(authToken as string, currentOrgId);
+    const userCollection = await orgService.getUsers(currentOrgId as number);
+    const userGroupCollection = await orgService.getUserGroups(currentOrgId as number);
 	return {
 		model,
+        userCollection,
+        userGroupCollection,
 		title: `Asset - #${asset.id} - ${asset.name}`
 	};
 };
@@ -129,39 +136,28 @@ export const actions = {
 			return fail(400, { form, error: `Failed to remove access` });
 		}
 	},
-	addUsers: async ({ request, locals, params }) => {
-		// try {
-		// 	const { id } = params;
-		// 	const { authToken, currentOrgId } = locals;
-		// 	const data = await request.formData();
-		// 	const userIds = data.get('userIds')?.toString().split(',') ?? [];
-		// 	if (userIds.length === 0) {
-		// 		return fail(400, {
-		// 			message: 'No users selected'
-		// 		});
-		// 	}
-		// 	const userGroupService = new UserGroupService(authToken as string, currentOrgId);
-		// 	const response = await userGroupService.addUsers(Number(id), userIds);
-		// 	return;
-		// } catch (error) {
-		// 	return fail(400, {
-		// 		message: error instanceof Error ? error.message : 'Unknown error'
-		// 	});
-		// }
+	addAccess: async ({ request, locals, params }) => {
+		const { id } = params;
+		const { authToken, currentOrgId } = locals;
+		const form = await superValidate(request, zod(AssetAddAccessSchema));
+		if (!form.valid) {
+			return fail(422, { form });
+		}
+		const assetService = new AssetService(authToken as string, currentOrgId);
+		try {
+			await assetService.addUserOrGroup(
+				Number(id),
+				form.data.role,
+				form.data.userIds || [],
+				form.data.groupIds || []
+			);
+			return {
+				success: true,
+				message: `Access granted successfully`,
+				form: form
+			};
+		} catch (error: any) {
+			return fail(400, { form, error: `Failed to grant access` });
+		}
 	},
-	deleteUser: async ({ request, locals, params }) => {
-		// try {
-		// 	const { id } = params;
-		// 	const { authToken, currentOrgId } = locals;
-		// 	const data = await request.formData();
-		// 	const userIds = data.get('userIds')?.toString() ?? '';
-		// 	const userGroupService = new UserGroupService(authToken as string, currentOrgId);
-		// 	await userGroupService.deleteUser(Number(id), userIds.split(','));
-		// 	return;
-		// } catch (error) {
-		// 	return fail(400, {
-		// 		message: error instanceof Error ? error.message : 'Unknown error'
-		// 	});
-		// }
-	}
 } satisfies Actions;

@@ -11,6 +11,7 @@ use App\Http\Controllers\AuditController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrgController;
+use App\Http\Controllers\OrgUserGroupController;
 use App\Http\Controllers\OrgUserController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PermissionController;
@@ -118,6 +119,8 @@ Route::middleware('auth:sanctum')->group(function () {
         ->name('roles.permissions.destroy');
     Route::apiResource('orgs.users', OrgUserController::class)
         ->only(['store', 'index']);
+    Route::apiResource('orgs.user-groups', OrgUserGroupController::class)
+        ->only(['index']);
     Route::delete('orgs/{org}/users', [OrgUserController::class, 'destroy'])
         ->name('orgs.users.destroy');
     Route::apiResource('access-restrictions.users', AccessRestrictionUserController::class)

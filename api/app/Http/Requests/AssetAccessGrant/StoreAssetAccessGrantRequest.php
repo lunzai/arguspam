@@ -33,7 +33,6 @@ class StoreAssetAccessGrantRequest extends FormRequest
             'user_ids' => [
                 'required_without:user_group_ids',
                 'array',
-                'min:1',
             ],
             'user_ids.*' => [
                 'integer',
@@ -41,7 +40,6 @@ class StoreAssetAccessGrantRequest extends FormRequest
             'user_group_ids' => [
                 'required_without:user_ids',
                 'array',
-                'min:1',
             ],
             'user_group_ids.*' => [
                 'integer',

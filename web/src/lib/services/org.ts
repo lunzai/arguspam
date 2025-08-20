@@ -17,7 +17,7 @@ export class OrgService extends BaseService<Org> {
 		return await this.api.get<ApiUserCollection>(url);
 	}
 
-    async getUserGroups(orgId: number, params: BaseFilterParams = { perPage: 10000 }) {
+	async getUserGroups(orgId: number, params: BaseFilterParams = { perPage: 10000 }) {
 		const queryString = this.buildQueryParams(params);
 		const url = `${this.endpoint}/${orgId}/user-groups?${queryString}`;
 		return await this.api.get<ApiUserGroupCollection>(url);

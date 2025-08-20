@@ -90,8 +90,16 @@ export const AssetRemoveAccessSchema = z.object({
 });
 
 export const AssetAddAccessSchema = z.object({
-	userIds: z.array(z.number().int()),
-	groupIds: z.array(z.number().int()),
+	userIds: z
+		.string()
+		.regex(/^\d+(,\d+)*$/, 'Must be comma-separated numbers')
+		.transform((val) => (val === '' ? undefined : val.split(',').map(Number)))
+		.optional(),
+	groupIds: z
+		.string()
+		.regex(/^\d+(,\d+)*$/, 'Must be comma-separated numbers')
+		.transform((val) => (val === '' ? undefined : val.split(',').map(Number)))
+		.optional(),
 	role: z.enum(accessRoles)
 });
 

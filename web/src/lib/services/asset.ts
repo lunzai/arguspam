@@ -19,8 +19,8 @@ export class AssetService extends BaseService<Asset> {
 	async addUserOrGroup(
 		id: number,
 		role: string,
-		userIds: string[] | number[],
-		userGroupIds: string[] | number[]
+		userIds: string[] | number[] = [],
+		userGroupIds: string[] | number[] = []
 	) {
 		return await this.api.post(`${this.endpoint}/${id}/access-grant`, {
 			role,

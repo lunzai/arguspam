@@ -10,7 +10,7 @@ import {
 	AssetUpdateSchema,
 	AssetCredentialsSchema,
 	AssetRemoveAccessSchema,
-    AssetAddAccessSchema
+	AssetAddAccessSchema
 } from '$validations/asset';
 import type { Asset } from '$models/asset';
 import type { AssetAccount } from '$models/asset-account';
@@ -23,13 +23,13 @@ export const load: PageServerLoad = async ({ params, locals, parent, depends }) 
 	const { authToken, currentOrgId } = locals;
 	const { model, asset } = await parent();
 
-    const orgService = new OrgService(authToken as string, currentOrgId);
-    const userCollection = await orgService.getUsers(currentOrgId as number);
-    const userGroupCollection = await orgService.getUserGroups(currentOrgId as number);
+	const orgService = new OrgService(authToken as string, currentOrgId);
+	const userCollection = await orgService.getUsers(currentOrgId as number);
+	const userGroupCollection = await orgService.getUserGroups(currentOrgId as number);
 	return {
 		model,
-        userCollection,
-        userGroupCollection,
+		userCollection,
+		userGroupCollection,
 		title: `Asset - #${asset.id} - ${asset.name}`
 	};
 };
@@ -148,8 +148,8 @@ export const actions = {
 			await assetService.addUserOrGroup(
 				Number(id),
 				form.data.role,
-				form.data.userIds || [],
-				form.data.groupIds || []
+				form.data.userIds,
+				form.data.groupIds
 			);
 			return {
 				success: true,
@@ -159,5 +159,5 @@ export const actions = {
 		} catch (error: any) {
 			return fail(400, { form, error: `Failed to grant access` });
 		}
-	},
+	}
 } satisfies Actions;

@@ -4,8 +4,7 @@
 	import type { AssetAccountCollection } from '$lib/resources/asset-account';
 	import * as Tabs from '$ui/tabs';
 	import AccountsTab from './tab/accounts.svelte';
-	import RequestersTab from './tab/requester.svelte';
-	import ApproversTab from './tab/approver.svelte';
+	import AccessTab from './tab/access.svelte';
 	import RequestsTab from './tab/requests.svelte';
 	import SessionsTab from './tab/sessions.svelte';
 	import type { UserCollection } from '$lib/resources/user';
@@ -28,8 +27,8 @@
 	);
 	let approverUsers = $derived(modelResource.data.relationships?.approverUsers as UserCollection);
 	let requesterUsers = $derived(modelResource.data.relationships?.requesterUsers as UserCollection);
-    let allUserGroups = $derived(data.userGroupCollection?.data as UserGroupCollection);
-    let allUsers = $derived(data.userCollection?.data as UserCollection);
+	let allUserGroups = $derived(data.userGroupCollection?.data as UserGroupCollection);
+	let allUsers = $derived(data.userCollection?.data as UserCollection);
 
 	onMount(() => {
 		if (page.url.hash !== '') {
@@ -61,23 +60,24 @@
 		<AccountsTab asset={model} list={accounts} />
 	</Tabs.Content>
 	<Tabs.Content value="requesters">
-		<RequestersTab 
-            bind:currentUserGroups={requesterUserGroups} 
-            bind:currentUsers={requesterUsers} 
-            bind:allUserGroups
-            bind:allUsers
-            role="requester"
-            rolePural="requesters"
-        />
+		<AccessTab
+			bind:currentUserGroups={requesterUserGroups}
+			bind:currentUsers={requesterUsers}
+			bind:allUserGroups
+			bind:allUsers
+			role="requester"
+			rolePural="requesters"
+		/>
 	</Tabs.Content>
 	<Tabs.Content value="approvers">
-        qwe
-		<!-- <ApproversTab 
-            bind:userGroups={approverUserGroups} 
-            bind:users={approverUsers} 
-            role="approver"
-            rolePural="approvers"
-        /> -->
+		<AccessTab
+			bind:currentUserGroups={approverUserGroups}
+			bind:currentUsers={approverUsers}
+			bind:allUserGroups
+			bind:allUsers
+			role="approver"
+			rolePural="approvers"
+		/>
 	</Tabs.Content>
 	<Tabs.Content value="requests">
 		<RequestsTab />

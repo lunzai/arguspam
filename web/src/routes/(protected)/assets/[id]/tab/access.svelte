@@ -11,17 +11,17 @@
 	import { enhance } from '$app/forms';
 	import { toast } from 'svelte-sonner';
 	import { invalidate } from '$app/navigation';
-    import { capitalizeWords } from '$utils/string';
-    import * as Dialog from '$ui/dialog';
-    import SearchDropdown, { type ListItem } from '$components/search-dropdown';
+	import { capitalizeWords } from '$utils/string';
+	import * as Dialog from '$ui/dialog';
+	import SearchDropdown, { type ListItem } from '$components/search-dropdown';
 
 	interface Props {
-        currentUserGroups: UserGroupCollection;
+		currentUserGroups: UserGroupCollection;
 		currentUsers: UserCollection;
 		allUserGroups: UserGroupCollection;
 		allUsers: UserCollection;
-        role: string;
-        rolePural: string;
+		role: string;
+		rolePural: string;
 	}
 
 	interface RowItem {
@@ -33,23 +33,23 @@
 	}
 
 	let {
-        currentUserGroups = $bindable(),
+		currentUserGroups = $bindable(),
 		currentUsers = $bindable(),
 		allUserGroups = $bindable(),
 		allUsers = $bindable(),
-        role = '',
-        rolePural = '',
+		role = '',
+		rolePural = ''
 	}: Props = $props();
 
-    let addDialogIsOpen = $state(false);
-    let addDialogIsLoading = $state(false);
-    let addDialogSelectedList = $state<ListItem[]>([]);
+	let addDialogIsOpen = $state(false);
+	let addDialogIsLoading = $state(false);
+	let addDialogSelectedList = $state<ListItem[]>([]);
 
 	let deleteDialogIsOpen = $state(false);
 	let deleteDialogIsLoading = $state(false);
 	let deleteRow: RowItem | null = $state(null);
 
-    const searchList = $derived(
+	const searchList = $derived(
 		allUserGroups
 			.filter(
 				({ attributes: { id: checkId } }) =>
@@ -60,18 +60,18 @@
 				label: `GID#${id} - ${name} (Group)`,
 				searchValue: `${id} ${name} Group`
 			}))
-        .concat(
-            allUsers
-            .filter(
-                ({ attributes: { id: checkId } }) =>
-                    !currentUsers.some(({ attributes: { id: compareId } }) => compareId === checkId)
-            )
-            .map(({ attributes: { id, name, email } }) => ({
-                id: `user|${id}`,
-                label: `UID#${id} - ${name} (${email})`,
-                searchValue: `${id} ${name} ${email}`
-            }))
-        )
+			.concat(
+				allUsers
+					.filter(
+						({ attributes: { id: checkId } }) =>
+							!currentUsers.some(({ attributes: { id: compareId } }) => compareId === checkId)
+					)
+					.map(({ attributes: { id, name, email } }) => ({
+						id: `user|${id}`,
+						label: `UID#${id} - ${name} (${email})`,
+						searchValue: `${id} ${name} ${email}`
+					}))
+			)
 	);
 
 	const rowList: RowItem[] = $derived([
@@ -106,47 +106,47 @@
 		}
 	}
 
-    function handleAddDialogCancel() {
-        addDialogSelectedList = [];
+	function handleAddDialogCancel() {
+		addDialogSelectedList = [];
 		addDialogIsOpen = false;
-    }
+	}
 
-    async function handleAddDialogSubmit() {
-        if (addDialogSelectedList.length === 0) {
-            toast.error('No users or groups selected');
-            return;
-        }
-        try {
-            addDialogIsLoading = true;
-            const formData = new FormData();
-            const userIds = addDialogSelectedList
-                .filter(item => item.id.startsWith('user|'))
-                .map((item) => item.id.split('|')[1]);
-            const userGroupIds = addDialogSelectedList
-                .filter(item => item.id.startsWith('group|'))
-                .map((item) => item.id.split('|')[1]);
-            formData.append('userIds', userIds.join(','));
-            formData.append('groupIds', userGroupIds.join(','));
-            formData.append('role', role);
-            const response = await fetch('?/addAccess', {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
-            if (result.type === 'success') {
-                addDialogSelectedList = [];
-                invalidate('asset:view');
-                toast.success('Access granted successfully');
-                addDialogIsOpen = false;
-            } else {
-                toast.error('Failed to grant access');
-            }
-        } catch (error) {
-            toast.error('Failed to grant access');
-        } finally {
-            addDialogIsLoading = false;
-        }
-    }
+	async function handleAddDialogSubmit() {
+		if (addDialogSelectedList.length === 0) {
+			toast.error('No users or groups selected');
+			return;
+		}
+		try {
+			addDialogIsLoading = true;
+			const formData = new FormData();
+			const userIds = addDialogSelectedList
+				.filter((item) => item.id.startsWith('user|'))
+				.map((item) => item.id.split('|')[1]);
+			const userGroupIds = addDialogSelectedList
+				.filter((item) => item.id.startsWith('group|'))
+				.map((item) => item.id.split('|')[1]);
+			formData.append('userIds', userIds.join(','));
+			formData.append('groupIds', userGroupIds.join(','));
+			formData.append('role', role);
+			const response = await fetch('?/addAccess', {
+				method: 'POST',
+				body: formData
+			});
+			const result = await response.json();
+			if (result.type === 'success') {
+				addDialogSelectedList = [];
+				invalidate('asset:view');
+				toast.success('Access granted successfully');
+				addDialogIsOpen = false;
+			} else {
+				toast.error('Failed to grant access');
+			}
+		} catch (error) {
+			toast.error('Failed to grant access');
+		} finally {
+			addDialogIsLoading = false;
+		}
+	}
 </script>
 
 <Card.Root class="w-full">
@@ -157,7 +157,9 @@
 			<Button
 				variant="outline"
 				class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-                onclick={() => { addDialogIsOpen = true }}
+				onclick={() => {
+					addDialogIsOpen = true;
+				}}
 			>
 				<Plus class="h-4 w-4" />
 				Add {capitalizeWords(role)}
@@ -178,7 +180,7 @@
 							</Avatar.Fallback>
 						{/if}
 					</Avatar.Root>
-					<div class="flex flex-1 flex-col gap-0.5">
+					<div class="flex flex-1 flex-col gap-0.5 truncate">
 						<span class="truncate font-medium">{item.name}</span>
 						<span class="text-muted-foreground truncate text-xs">
 							{item.isGroup ? 'User Group' : 'User'} #{item.id}
@@ -236,7 +238,7 @@
 					return async ({ result, update }) => {
 						if (result.type === 'success') {
 							toast.success(`${capitalizeWords(role)} removed successfully`);
-							await invalidate('user-groups:view');
+							await invalidate('asset:view');
 							deleteDialogIsLoading = false;
 							deleteDialogIsOpen = false;
 						} else {

@@ -43,9 +43,7 @@
 		})
 	]);
 
-	function handleDelete(row: ListItem) {
-		console.log(row);
-	}
+	function handleDelete(row: ListItem) {}
 </script>
 
 <Card.Root class="w-full">

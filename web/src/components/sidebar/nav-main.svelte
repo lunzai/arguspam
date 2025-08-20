@@ -1,6 +1,7 @@
 <script lang="ts">
 	import * as Collapsible from '$ui/collapsible';
 	import * as Sidebar from '$ui/sidebar';
+	import { page } from '$app/state';
 	import {
 		ChevronRight,
 		LayoutDashboardIcon,
@@ -10,9 +11,12 @@
 		Users,
 		Settings2Icon,
 		MessageSquare,
-		MessageSquareDot
+		Cctv,
+		ClipboardPlus
 	} from '@lucide/svelte';
 	import type { Component } from 'svelte';
+
+	const pathname = $state(page.url.pathname);
 
 	interface NavItem {
 		title: string;
@@ -30,33 +34,31 @@
 			title: 'Dashboard',
 			url: '/dashboard',
 			icon: LayoutDashboardIcon,
-			isActive: true
+			isActive: pathname.startsWith('/dashboard')
 		},
 		{
 			title: 'Announcements',
 			url: '/announcements',
 			icon: MessageSquare,
-			isActive: true
+			isActive: pathname.startsWith('/announcements')
+		},
+		{
+			title: 'Requests',
+			url: '/requests',
+			icon: ClipboardPlus,
+			isActive: pathname.startsWith('/requests')
 		},
 		{
 			title: 'Sessions',
-			url: '#',
+			url: '/sessions',
 			icon: SquareTerminalIcon,
-			isActive: false,
-			items: [
-				{
-					title: 'Requests',
-					url: '/requests'
-				},
-				{
-					title: 'Sessions',
-					url: '/sessions'
-				},
-				{
-					title: 'Audits X',
-					url: '/session-audits'
-				}
-			]
+			isActive: pathname.startsWith('/sessions')
+		},
+		{
+			title: 'Audits',
+			url: '/audits',
+			icon: Cctv,
+			isActive: pathname.startsWith('/audits')
 		},
 		{
 			title: 'Settings',
@@ -70,22 +72,13 @@
 			title: 'Assets',
 			url: '/assets',
 			icon: ServerIcon,
-			isActive: false,
-			items: [
-				{
-					title: 'Assets',
-					url: '/assets'
-				},
-				{
-					title: 'Accounts X',
-					url: '/assets'
-				}
-			]
+			isActive: pathname.startsWith('/assets')
 		},
 		{
 			title: 'Organizations',
 			url: '#',
 			icon: Building2,
+			isActive: pathname.startsWith('/organizations'),
 			items: [
 				{
 					title: 'Organizations',
@@ -93,7 +86,7 @@
 				},
 				{
 					title: 'User Groups',
-					url: '/user-groups'
+					url: '/organizations/user-groups'
 				}
 			]
 		},
@@ -101,6 +94,7 @@
 			title: 'Users',
 			url: '#',
 			icon: Users,
+			isActive: pathname.startsWith('/users'),
 			items: [
 				{
 					title: 'Users',
@@ -108,11 +102,11 @@
 				},
 				{
 					title: 'Roles',
-					url: '/roles'
+					url: '/users/roles'
 				},
 				{
 					title: 'Permissions',
-					url: '/permissions'
+					url: '/users/permissions'
 				}
 			]
 		}
@@ -178,5 +172,5 @@
 	</Sidebar.Group>
 {/snippet}
 
-{@render navGroup('Platform', platformNavItems)}
+{@render navGroup('Workbench', platformNavItems)}
 {@render navGroup('Administration', adminNavItems)}

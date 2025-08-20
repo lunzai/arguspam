@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Asset;
 
-use App\Enums\Dbms;
 use App\Enums\Status;
 use App\Models\Asset;
 use Illuminate\Foundation\Http\FormRequest;
@@ -15,7 +14,7 @@ class UpdateAssetRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -26,13 +25,9 @@ class UpdateAssetRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'org_id' => ['sometimes', 'exists:App\Models\Org,id'],
             'name' => ['sometimes', 'string', 'max:100', 'min:2'],
             'description' => ['sometimes', 'nullable', 'string'],
             'status' => ['sometimes', new Enum(Status::class)],
-            'host' => ['sometimes', 'string', 'max:255'],
-            'port' => ['sometimes', 'integer', 'min:1', 'max:65535'],
-            'dbms' => ['sometimes', new Enum(Dbms::class)],
         ];
     }
 
@@ -46,11 +41,6 @@ class UpdateAssetRequest extends FormRequest
         if ($this->has('status')) {
             $this->merge([
                 'status' => strtolower($this->status),
-            ]);
-        }
-        if ($this->has('dbms')) {
-            $this->merge([
-                'dbms' => strtolower($this->dbms),
             ]);
         }
     }

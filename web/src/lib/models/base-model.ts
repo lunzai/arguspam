@@ -8,7 +8,7 @@ export type Relationships<T = Record<string, RelationshipItem[]>> = T;
 // Base model interface that all models can extend
 export interface BaseModel {
 	id: number;
-	created_at: string;
-	updated_at?: string;
+	created_at: Date;
+	updated_at?: Date;
 	relationships?: Relationships;
 }

@@ -10,11 +10,16 @@
 	import { shortDateTime } from '$lib/utils/date';
 	import type { ColumnDefinition } from '$components/data-table/types';
 	import { page } from '$app/state';
-	import { Pencil, NotebookText } from '@lucide/svelte';
+	import { NotebookText, PlusIcon } from '@lucide/svelte';
 	import type { CellBadge } from '$components/data-table/types';
+	import { Button } from '$ui/button';
+	import FormDialog from './form-dialog.svelte';
+	import { goto } from '$app/navigation';
 
+	let { data }: { data: any } = $props();
 	let initialSearchParams = page.url.searchParams;
 	const modelName = 'assets';
+	let addAssetDialogIsOpen = $state(false);
 
 	export const columns: ColumnDefinition<Asset>[] = [
 		{
@@ -94,13 +99,6 @@
 							href: `/${modelName}/${row.id}`,
 							variant: 'link',
 							class: 'hover:text-blue-500'
-						},
-						{
-							label: 'Edit',
-							icon: Pencil,
-							href: `/${modelName}/${row.id}/edit`,
-							variant: 'link',
-							class: 'hover:text-blue-500'
 						}
 					]
 				};
@@ -128,28 +126,40 @@
 	};
 
 	// Event handlers
-	function handleDataChange(data: Asset[]) {
-		// console.log('Data changed:', data);
-	}
+	function handleDataChange(data: Asset[]) {}
 
-	function handlePaginationChange(pagination: PaginationConfig) {
-		// console.log('Pagination changed:', pagination);
-	}
+	function handlePaginationChange(pagination: PaginationConfig) {}
 
-	function handleFilterChange(filters: FilterConfig) {
-		// console.log('Filters changed:', filters);
-	}
+	function handleFilterChange(filters: FilterConfig) {}
 
-	function handleSortChange(sort: SortConfig) {
-		// console.log('Sort changed:', sort);
-	}
+	function handleSortChange(sort: SortConfig) {}
 
-	function handleRowSelect(selectedRows: Set<string | number>) {
-		// console.log('Selected rows:', selectedRows);
-	}
+	function handleRowSelect(selectedRows: Set<string | number>) {}
 </script>
 
-<h1 class="text-2xl font-medium capitalize">{modelName}</h1>
+<div class="flex items-center justify-between">
+	<h1 class="text-2xl font-medium capitalize">{modelName}</h1>
+	<Button
+		variant="outline"
+		class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
+		onclick={() => {
+			addAssetDialogIsOpen = true;
+		}}
+	>
+		<PlusIcon class="h-4 w-4" />
+		<span>Add Asset</span>
+	</Button>
+</div>
+
+<FormDialog
+	bind:isOpen={addAssetDialogIsOpen}
+	model={data.model}
+	data={data.form}
+	onSuccess={async (data: Asset) => {
+		await goto(`/${modelName}/${data.id}`);
+		addAssetDialogIsOpen = false;
+	}}
+/>
 
 <!-- Data Table Component -->
 <DataTable

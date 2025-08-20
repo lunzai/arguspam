@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { Button } from '$ui/button';
-	import { RotateCcwKey } from '@lucide/svelte';
 	import * as Dialog from '$ui/dialog';
 	import * as Form from '$ui/form';
 	import { Input } from '$ui/input';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
-	import { ResetPasswordSchema } from '$lib/validations/user';
+	import { ResetPasswordSchema } from '$validations/user';
 	import Loader from '$components/loader.svelte';
 
 	type Props = {

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { page } from '$app/state';
 	import { Separator } from '$ui/separator';
 	import SidebarNav from '$components/page-sidebar/sidebar.svelte';
 
@@ -24,7 +23,7 @@
 		<aside class="w-48">
 			<SidebarNav items={sidebarNavItems} />
 		</aside>
-		<div class="flex-1">
+		<div class="min-w-0 flex-1">
 			{@render children()}
 		</div>
 	</div>

@@ -162,25 +162,15 @@
 	};
 
 	// Event handlers
-	function handleDataChange(data: Request[]) {
-		// console.log('Data changed:', data);
-	}
+	function handleDataChange(data: Request[]) {}
 
-	function handlePaginationChange(pagination: PaginationConfig) {
-		// console.log('Pagination changed:', pagination);
-	}
+	function handlePaginationChange(pagination: PaginationConfig) {}
 
-	function handleFilterChange(filters: FilterConfig) {
-		// console.log('Filters changed:', filters);
-	}
+	function handleFilterChange(filters: FilterConfig) {}
 
-	function handleSortChange(sort: SortConfig) {
-		// console.log('Sort changed:', sort);
-	}
+	function handleSortChange(sort: SortConfig) {}
 
-	function handleRowSelect(selectedRows: Set<string | number>) {
-		// console.log('Selected rows:', selectedRows);
-	}
+	function handleRowSelect(selectedRows: Set<string | number>) {}
 </script>
 
 <h1 class="text-2xl font-medium capitalize">{modelName}</h1>

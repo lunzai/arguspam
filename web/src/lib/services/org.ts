@@ -1,8 +1,8 @@
 import { BaseService } from './base.js';
 import type { Org } from '$models/org';
-import type { ApiCollectionResponse } from '$lib/resources/api';
-import type { User } from '$models/user';
-import type { BaseFindByIdParams } from './base';
+import type { ApiUserCollection } from '$lib/resources/user';
+import type { BaseFilterParams } from './base';
+import type { ApiUserGroupCollection } from '$lib/resources/user-group.js';
 
 export class OrgService extends BaseService<Org> {
 	protected readonly endpoint = '/orgs';
@@ -11,10 +11,16 @@ export class OrgService extends BaseService<Org> {
 		super('/orgs', token, orgId);
 	}
 
-	async getUsers(orgId: number, params: BaseFindByIdParams = {}) {
+	async getUsers(orgId: number, params: BaseFilterParams = { perPage: 10000 }) {
 		const queryString = this.buildQueryParams(params);
 		const url = `${this.endpoint}/${orgId}/users?${queryString}`;
-		return await this.api.get<ApiCollectionResponse<User>>(url);
+		return await this.api.get<ApiUserCollection>(url);
+	}
+
+	async getUserGroups(orgId: number, params: BaseFilterParams = { perPage: 10000 }) {
+		const queryString = this.buildQueryParams(params);
+		const url = `${this.endpoint}/${orgId}/user-groups?${queryString}`;
+		return await this.api.get<ApiUserGroupCollection>(url);
 	}
 
 	async deleteUser(id: number, userIds: string[] | number[]) {

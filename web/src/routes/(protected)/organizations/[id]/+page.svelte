@@ -2,15 +2,12 @@
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
 	import { Pencil, Trash2, UserPlus } from '@lucide/svelte';
-	import { Separator } from '$ui/separator';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
 	import { StatusBadge } from '$components/badge';
-	import type { ResourceItem } from '$resources/api';
 	import { toast } from 'svelte-sonner';
-	import type { OrgResource } from '$lib/resources/org';
+	import type { ApiOrgResource } from '$resources/org';
 	import type { Org } from '$models/org';
-	import type { UserCollection } from '$resources/user';
 	import type { User } from '$models/user';
 	import { invalidate, goto } from '$app/navigation';
 	import type { ColumnDef } from '@tanstack/table-core';
@@ -27,7 +24,7 @@
 	const modelName = 'organizations';
 	const modelTitle = 'Organization';
 	const allUsers = $derived(data.userCollection.data.map((user) => user.attributes) as User[]);
-	const modelResource = $derived(data.model as OrgResource);
+	const modelResource = $derived(data.model as ApiOrgResource);
 	const model = $derived(modelResource.data.attributes as Org);
 	const orgUsers = $derived(
 		modelResource.data.relationships?.users.map((user) => user.attributes) as User[]
@@ -219,7 +216,7 @@
 </Card.Root>
 
 <FormDialog
-	isOpen={editOrgDialogIsOpen}
+	bind:isOpen={editOrgDialogIsOpen}
 	{model}
 	data={data.form}
 	onSuccess={async () => {

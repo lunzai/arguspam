@@ -1,4 +1,4 @@
-type ListItem = {
+export type ListItem = {
 	id: any;
 	label?: string;
 	selectedLabel?: string;

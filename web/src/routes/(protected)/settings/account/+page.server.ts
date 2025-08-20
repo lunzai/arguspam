@@ -1,12 +1,11 @@
-import { superValidate, setError } from 'sveltekit-superforms';
+import { superValidate } from 'sveltekit-superforms';
 import { zod } from 'sveltekit-superforms/adapters';
 import { UserProfileSchema } from '$validations/user';
 import { fail, type Actions } from '@sveltejs/kit';
 import { UserService } from '$services/user';
 import { authStore } from '$stores/auth';
 import type { User } from '$models/user';
-import type { ApiValidationErrorResponse } from '$resources/api';
-import { setFormErrors } from '$lib/utils/form';
+import { setFormErrors } from '$utils/form';
 
 export const load = async ({ locals }: any) => {
 	const { user } = locals;

@@ -70,7 +70,13 @@
 				<Form.Field {form} name="name">
 					<Form.Control>
 						<Form.Label>Name</Form.Label>
-						<Input type="text" name="name" bind:value={$formData.name} disabled={$submitting} />
+						<Input
+							type="text"
+							name="name"
+							bind:value={$formData.name}
+							disabled={$submitting}
+							data-1p-ignore
+						/>
 					</Form.Control>
 					<Form.FieldErrors />
 				</Form.Field>

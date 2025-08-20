@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\SessionStatus;
 use App\Models\Session;
 use App\Models\User;
 
@@ -14,11 +15,17 @@ class SessionPolicy
 
     public function view(User $user, Session $session): bool
     {
-        return $this->viewAny($user) ||
-            (
-                ($session->requester->is($user) || $user->canApproveAsset($user, $session->asset)) &&
-                $user->hasAnyPermission('session:view')
-            );
+        // TODO: Add $user->canAuditAsset($user, $session->asset)
+        if ($this->viewAny($user) || $user->canApprove($session->asset)) {
+            return true;
+        }
+        if (!$user->hasPermissionTo('session:view')) {
+            return false;
+        }
+        if (!$session->requester->is($user)) {
+            return false;
+        }
+        return true;
     }
 
     public function auditAny(User $user): bool
@@ -34,7 +41,7 @@ class SessionPolicy
     public function update(User $user, Session $session): bool
     {
         return $this->updateAny($user) ||
-            ($user->canApproveAsset($user, $session->asset) && $user->hasPermissionTo('session:update'));
+            ($user->canApprove($session->asset) && $user->hasPermissionTo('session:update'));
     }
 
     public function terminateAny(User $user): bool
@@ -44,27 +51,64 @@ class SessionPolicy
 
     public function terminate(User $user, Session $session): bool
     {
-        return $this->terminateAny($user) ||
-            (
-                $session->requester->isNot($user) &&
-                $user->canApproveAsset($user, $session->asset) &&
-                $user->hasPermissionTo('session:terminate')
-            );
+        if ($this->terminateAny($user)) {
+            return true;
+        }
+        if (!$user->hasPermissionTo('session:terminate')) {
+            return false;
+        }
+        if (!$session->requester->isNot($user)) {
+            return false;
+        }
+        if (!$user->canApprove($session->asset)) {
+            return false;
+        }
+        if ($session->status !== SessionStatus::ACTIVE) {
+            return false;
+        }
+        return true;
     }
 
     public function retrieveSecret(User $user, Session $session): bool
     {
-        return $session->requester->is($user) && $user->hasPermissionTo('session:retrievesecret');
+        if (!$user->hasPermissionTo('session:retrievesecret')) {
+            return false;
+        }
+        if (!$session->requester->is($user)) {
+            return false;
+        }
+        if (!$session->isActive()) {
+            return false;
+        }
+        return true;
     }
 
     public function start(User $user, Session $session): bool
     {
-        return $session->requester->is($user) && $user->hasPermissionTo('session:start');
+        if (!$user->hasPermissionTo('session:start')) {
+            return false;
+        }
+        if (!$session->requester->is($user)) {
+            return false;
+        }
+        if (!$session->canBeStarted()) {
+            return false;
+        }
+        return true;
     }
 
     public function end(User $user, Session $session): bool
     {
-        return $session->requester->is($user) && $user->hasPermissionTo('session:end');
+        if (!$user->hasPermissionTo('session:end')) {
+            return false;
+        }
+        if ($session->status !== SessionStatus::ACTIVE) {
+            return false;
+        }
+        if (!$session->requester->is($user)) {
+            return false;
+        }
+        return true;
     }
 
     public function deleteAny(User $user): bool

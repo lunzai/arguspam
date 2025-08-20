@@ -1,7 +1,7 @@
 import { BaseService } from './base.js';
 import type { BaseModel } from '$models/base-model';
-import type { OrgCollection } from '$resources/org';
-import type { UserResource } from '$lib/resources/user.js';
+import type { ApiOrgCollection } from '$resources/org';
+import type { ApiUserResource, UserResource } from '$lib/resources/user.js';
 import type { TwoFactorQrCodeResponse } from '$resources/user';
 
 export class UserService extends BaseService<BaseModel> {
@@ -12,8 +12,8 @@ export class UserService extends BaseService<BaseModel> {
 		super('/users', token, orgId);
 	}
 
-	async getOrgs(): Promise<OrgCollection> {
-		return await this.api.get<OrgCollection>(`${this.meEndpoint}/orgs`);
+	async getOrgs(): Promise<ApiOrgCollection> {
+		return await this.api.get<ApiOrgCollection>(`${this.meEndpoint}/orgs`);
 	}
 
 	async checkOrgAccess(orgId: number): Promise<boolean> {
@@ -21,8 +21,8 @@ export class UserService extends BaseService<BaseModel> {
 		return true;
 	}
 
-	async me(): Promise<UserResource> {
-		return await this.api.get<UserResource>(`${this.meEndpoint}`);
+	async me(): Promise<ApiUserResource> {
+		return await this.api.get<ApiUserResource>(`${this.meEndpoint}`);
 	}
 
 	async changePassword(

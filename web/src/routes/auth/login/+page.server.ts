@@ -56,7 +56,6 @@ export const actions: Actions = {
 				setTempKey(cookies, temp_key, temp_key_expires_at);
 				return redirect(302, '/auth/2fa');
 			} else {
-				console.log('here');
 				setAuthToken(cookies, loginResponse.data.token);
 				const userService = new UserService(loginResponse.data.token);
 				const orgCollection = await userService.getOrgs();

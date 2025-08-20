@@ -1,4 +1,4 @@
-import type { UserResource } from '$resources/user';
+import type { ApiUserResource } from '$resources/user';
 import { UserService } from '$services/user';
 import { superValidate } from 'sveltekit-superforms';
 import type { Actions } from '@sveltejs/kit';
@@ -7,15 +7,15 @@ import { fail } from '@sveltejs/kit';
 import type { User } from '$models/user';
 import type { PageServerLoad } from './$types';
 import { TwoFactorCodeSchema } from '$validations/auth';
-import { setFormErrors } from '$lib/utils/form';
-import { ResetPasswordSchema } from '$lib/validations/user';
+import { setFormErrors } from '$utils/form';
+import { ResetPasswordSchema } from '$validations/user';
 
 export const load: PageServerLoad = async ({ params, locals, depends, parent }) => {
 	depends('user:view:security');
 	const { id } = params;
 	const { authToken, currentOrgId } = locals;
 	const data = await parent();
-	const model = data.model as UserResource;
+	const model = data.model as ApiUserResource;
 	const user = model.data.attributes as User;
 	const userService = new UserService(authToken as string, currentOrgId);
 	let qrCode = null;

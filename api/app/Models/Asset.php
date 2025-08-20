@@ -11,6 +11,7 @@ use App\Traits\HasStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Asset extends Model
@@ -31,7 +32,6 @@ class Asset extends Model
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
         'dbms' => Dbms::class,
         'status' => Status::class,
     ];
@@ -48,6 +48,7 @@ class Asset extends Model
 
     public static $includable = [
         'org',
+        'adminAccount',
         'accounts',
         'accessGrants',
         'requests',
@@ -61,6 +62,26 @@ class Asset extends Model
         'createdBy',
         'updatedBy',
     ];
+
+    protected static function booted(): void
+    {
+        static::softDeleted(function (Asset $asset) {
+            $adminAccount = $asset->adminAccount()->first();
+            if ($adminAccount) {
+                $adminAccount->delete();
+            }
+        });
+    }
+
+    public function adminAccount(): HasOne
+    {
+        return $this->hasOne(AssetAccount::class)->admin();
+    }
+
+    public function jitAccount(): HasMany
+    {
+        return $this->accounts()->jit();
+    }
 
     public function accounts(): HasMany
     {

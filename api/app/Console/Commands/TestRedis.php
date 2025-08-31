@@ -75,7 +75,7 @@ class TestRedis extends Command
                     return redis.call('del', unpack(keys))
                 end
                 return 0
-            ", 0);
+            ", []);
             Cache::forget('test:cache');
 
             $this->info('✓ All tests passed! Redis is working correctly.');

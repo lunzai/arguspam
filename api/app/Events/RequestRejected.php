@@ -2,24 +2,20 @@
 
 namespace App\Events;
 
-use App\Models\Session;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SessionEnded
+class RequestRejected
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $session;
-    public array $terminationResults;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(Session $session, array $terminationResults)
+    public function __construct()
     {
-        $this->session = $session;
-        $this->terminationResults = $terminationResults;
+        //
     }
 }

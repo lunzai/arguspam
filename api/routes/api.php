@@ -24,6 +24,7 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SettingGroupController;
 use App\Http\Controllers\TwoFactorAuthenticationController;
 use App\Http\Controllers\UserAccessRestrictionController;
+use App\Http\Controllers\UserAssetController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
 use App\Http\Controllers\UserGroupUserController;
@@ -45,6 +46,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/me/orgs', [UserOrgController::class, 'index']);
     Route::get('/users/me/orgs/{org}', [UserOrgController::class, 'show']);
     Route::put('/users/me/change-password', [PasswordController::class, 'update']);
+    Route::get('/users/me/assets', [UserAssetController::class, 'index']);
 
     Route::middleware(EnsureOrganizationIdIsValid::class)->group(function () {
         Route::apiResources([

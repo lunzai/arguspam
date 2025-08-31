@@ -77,7 +77,7 @@ class PolicyPermission extends Command
                     ];
                 });
             })
-            ->sortBy(0)
+            ->sortBy('name')
             ->values();
 
         $this->table(

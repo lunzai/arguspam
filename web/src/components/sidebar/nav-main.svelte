@@ -44,15 +44,39 @@
 		},
 		{
 			title: 'Requests',
-			url: '/requests',
+			url: '#',
 			icon: ClipboardPlus,
-			isActive: pathname.startsWith('/requests')
+			isActive: pathname.startsWith('/requests'),
+			items: [
+				{
+					title: 'Assets',
+					url: '/requests/assets'
+				},
+                {
+					title: 'Pending Approval',
+					url: '/requests/pending-approval'
+				},
+				{
+					title: 'All Requests',
+					url: '/requests'
+				}
+			]
 		},
 		{
 			title: 'Sessions',
-			url: '/sessions',
+			url: '#',
 			icon: SquareTerminalIcon,
-			isActive: pathname.startsWith('/sessions')
+			isActive: pathname.startsWith('/sessions'),
+            items: [
+				{
+					title: 'My Sessions',
+					url: '/sessions/my-sessions'
+				},
+				{
+					title: 'All Sessions',
+					url: '/sessions'
+				}
+			]
 		},
 		{
 			title: 'Audits',

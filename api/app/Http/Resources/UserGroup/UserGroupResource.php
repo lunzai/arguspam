@@ -36,13 +36,13 @@ class UserGroupResource extends Resource
                     'assetAccessGrants' => AssetAccessGrantResource::collection(
                         $this->whenLoaded('assetAccessGrants')
                     ),
-                    'org' => OrgResource::collection(
+                    'org' => OrgResource::make(
                         $this->whenLoaded('org')
                     ),
-                    'createdBy' => UserResource::collection(
+                    'createdBy' => UserResource::make(
                         $this->whenLoaded('createdBy')
                     ),
-                    'updatedBy' => UserResource::collection(
+                    'updatedBy' => UserResource::make(
                         $this->whenLoaded('updatedBy')
                     ),
                 ],

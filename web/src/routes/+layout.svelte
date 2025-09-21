@@ -5,7 +5,7 @@
 	let { children } = $props();
 </script>
 
-<Toaster richColors position="top-center" duration={5000} />
+<Toaster richColors position="top-center" duration={5000} theme="light" />
 
 <svelte:head>
 	<title>

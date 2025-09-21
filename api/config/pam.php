@@ -46,7 +46,7 @@ return [
     */
     'access_request' => [
         'duration' => [
-            'min' => 10,          // 10 minutes minimum
+            'min' => 20,          // 10 minutes minimum
             'max' => 43200,       // 30 days maximum
         ],
         // 'approval_required' => true,

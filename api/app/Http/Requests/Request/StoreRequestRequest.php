@@ -3,20 +3,35 @@
 namespace App\Http\Requests\Request;
 
 use App\Enums\RequestScope;
-use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
+use App\Models\Asset;
 use App\Models\Request;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
 class StoreRequestRequest extends FormRequest
 {
+    protected $durationMin;
+    protected $durationMax;
+
+    public function __construct(array $query = [], array $request = [], array $attributes = [], array $cookies = [], array $files = [], array $server = [], $content = null)
+    {
+        parent::__construct($query, $request, $attributes, $cookies, $files, $server, $content);
+        $this->durationMin = intval(config('pam.access_request.duration.min', 10));
+        $this->durationMax = intval(config('pam.access_request.duration.max', 43200));
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        if ($this->requester_id && $this->asset_id) {
+            $asset = Asset::find($this->asset_id);
+            return $this->user()->canRequest($asset);
+        }
+        return true;
     }
 
     /**
@@ -31,24 +46,24 @@ class StoreRequestRequest extends FormRequest
             'org_id' => ['required', 'exists:App\Models\Org,id'],
             'asset_id' => ['required', 'exists:App\Models\Asset,id'],
             'asset_account_id' => ['nullable', 'exists:App\Models\AssetAccount,id'],
-            'requester_id' => ['required', 'exists:App\Models\User,id'],
+            'requester_id' => ['required', 'exists:App\Models\User,id'], 
             'start_datetime' => [
                 'required',
-                'date',
-                'after:now',
+                'date',                
             ],
             'end_datetime' => [
                 'required',
                 'date',
                 'after:start_datetime',
+                'after:now',
             ],
             'duration' => [
-                'required',
+                // 'required',
                 'integer',
-                'min:'.config('pam.request.duration.min'),
-                'max:'.config('pam.request.duration.max'),
+                'min:'.$this->durationMin,
+                'max:'.$this->durationMax,
             ],
-            'reason' => ['required', 'string', 'max:255'],
+            'reason' => ['required', 'string'],
             'intended_query' => ['nullable', 'string'],
             'scope' => ['required', new Enum(RequestScope::class)],
             'is_access_sensitive_data' => ['required', 'boolean'],
@@ -57,9 +72,27 @@ class StoreRequestRequest extends FormRequest
                 'string',
                 'required_if:is_access_sensitive_data,true',
             ],
-            'ai_note' => ['nullable', 'string'],
-            'ai_risk_rating' => ['nullable', new Enum(RiskRating::class)],
-            'status' => ['required', new Enum(RequestStatus::class)],
+            // 'ai_note' => ['nullable', 'string'],
+            // 'ai_risk_rating' => ['nullable', new Enum(RiskRating::class)],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'duration.min' => sprintf(
+                'The duration must be at least %s.', 
+                Carbon::now()
+                    ->addMinutes($this->durationMin + 1)
+                    ->longAbsoluteDiffForHumans()
+            ),
+            'duration.max' => sprintf(
+                'The duration must be less than %s.', 
+                Carbon::now()
+                    ->addMinutes($this->durationMax + 1)
+                    ->longAbsoluteDiffForHumans()
+            ),
+            'end_datetime.after' => 'The end datetime must be after :date.',
         ];
     }
 
@@ -70,14 +103,23 @@ class StoreRequestRequest extends FormRequest
 
     protected function prepareForValidation()
     {
+        $this->merge([
+            'requester_id' => $this->user()->id,
+        ]);
+        if ($this->has('start_datetime') && $this->has('end_datetime')) {
+            try {
+                $start = Carbon::parse($this->start_datetime);
+                $end = Carbon::parse($this->end_datetime);
+                $this->merge([
+                    'duration' => $start->diffInMinutes($end),
+                ]);
+            } catch (\Exception $e) {
+                // do nothing
+            }
+        }
         if ($this->has('status')) {
             $this->merge([
                 'status' => strtolower($this->status),
-            ]);
-        }
-        if ($this->has('scope')) {
-            $this->merge([
-                'scope' => strtolower($this->scope),
             ]);
         }
     }

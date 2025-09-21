@@ -11,6 +11,11 @@
 	import type { ColumnDefinition } from '$components/data-table/types';
 	import { page } from '$app/state';
 	import { Pencil, NotebookText } from '@lucide/svelte';
+	import type { Asset } from '$models/asset';
+	import type { User } from '$models/user';
+	import type { CellBadge } from '$components/data-table/types';
+    import { capitalizeWords } from '$lib/utils/string';
+    import { formatDistanceStrict } from 'date-fns';
 
 	let initialSearchParams = page.url.searchParams;
 	const modelName = 'requests';
@@ -21,99 +26,108 @@
 			title: 'ID',
 			sortable: true
 		},
-		// {
-		// 	key: 'name',
-		// 	title: 'Name',
-		// 	sortable: true,
-		// 	filterable: true
-		// },
-		// {
-		// 	key: 'email',
-		// 	title: 'Email',
-		// 	sortable: true,
-		// 	filterable: true,
-		// 	renderer: (value: string, row: Request) => {
-		// 		const mailWarningIcon =
-		// 			'<svg class="text-red-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-warning-icon lucide-mail-warning"><path d="M22 10.5V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h12.5"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M20 14v4"/><path d="M20 22v.01"/></svg>';
-		// 		return (
-		// 			`<div class="flex items-center gap-2">${value}` +
-		// 			(!row.email_verified_at ? mailWarningIcon : '') +
-		// 			'</div>'
-		// 		);
-		// 	}
-		// },
-		// {
-		// 	key: 'two_factor_enabled',
-		// 	title: '2FA',
-		// 	sortable: true,
-		// 	filterable: true,
-		// 	type: 'badge',
-		// 	componentProps: (value: string, row: Request) => {
-		// 		let values: CellBadge[] = [];
-		// 		if (row.two_factor_enabled) {
-		// 			values.push({
-		// 				value: 'Enabled',
-		// 				variant: 'outline'
-		// 			});
-		// 			values.push({
-		// 				value: row.two_factor_confirmed_at ? 'Enrolled' : 'Not Enrolled',
-		// 				variant: row.two_factor_confirmed_at ? 'outline' : 'destructive'
-		// 			});
-		// 		} else {
-		// 			values.push({
-		// 				value: 'Not Enabled',
-		// 				variant: 'secondary'
-		// 			});
-		// 		}
-		// 		return { values };
-		// 	}
-		// },
-		// {
-		// 	key: 'last_login_at',
-		// 	title: 'Last Login At',
-		// 	sortable: true,
-		// 	filterable: true,
-		// 	visible: true,
-		// 	renderer: (value: string) => {
-		// 		return value ? shortDateTime(value) : '-';
-		// 	}
-		// },
-		// {
-		// 	key: 'status',
-		// 	title: 'Status',
-		// 	sortable: true,
-		// 	filterable: true,
-		// 	type: 'badge',
-		// 	componentProps: (value: string, row: Request) => {
-		// 		let values: CellBadge[] = [
-		// 			{
-		// 				value: value === 'active' ? 'Active' : 'Inactive',
-		// 				variant: value === 'active' ? 'default' : 'secondary'
-		// 			}
-		// 		];
-		// 		return { values };
-		// 	}
-		// },
-		{
-			key: 'created_at',
-			title: 'Created At',
+        {
+            key: 'asset_id',
+            title: 'Asset',
+            sortable: true,
+            filterable: true,
+            renderer: (value: string, row: Request, relationships) => {
+                const asset = relationships.asset?.attributes as Asset;
+                return `<div>${asset?.name}</div>
+                <div class="text-muted-foreground text-xs truncate">${asset?.host}:${asset?.port}</div>
+                `;
+            }
+        },
+        {
+            key: 'start_datetime',
+            title: 'Start/End',
+            sortable: true,
+            filterable: true,
+            renderer: (value: string, row: Request) => {
+                const startDatetime = row.start_datetime;
+                const endDatetime = row.end_datetime;
+                return `<div>${shortDateTime(startDatetime)} -</div>
+                <div>${shortDateTime(endDatetime)}</div>
+                <div class="text-muted-foreground text-xs">${formatDistanceStrict(startDatetime, endDatetime)}</div>
+                `;
+            }
+        },
+        {
+            key: 'reason',
+            title: 'Reason',
+            sortable: true,
+            filterable: true,
+            renderer: (value: string, row: Request, relationships) => {
+                return `<div class="max-w-80 wrap-break-word whitespace-break-spaces">${value}</div>`;
+            }
+        },
+        {
+			key: 'status',
+			title: 'Status',
 			sortable: true,
-			filterable: false,
-			visible: true,
-			renderer: (value: string) => {
-				return value ? shortDateTime(value) : '-';
+			filterable: true,
+			type: 'badge',
+			componentProps: (value: string, row: Request) => {
+                //  "default" | "secondary" | "destructive" | "outline"
+                const wrapperClassName = 'text-sm';
+                let variant = 'default';
+                let className = '';
+                switch (value) {
+                    case 'pending':
+                        variant = 'default';
+                        break;
+                    case 'approved':
+                        variant = 'secondary';
+                        className = 'bg-green-500 text-green-500';
+                        break;
+                    case 'rejected':
+                        variant = 'destructive';
+                        break;
+                    case 'expired':
+                        variant = 'outline';
+                        break;
+                }
+				let values: CellBadge[] = [
+					{
+						value: capitalizeWords(value),
+						variant,
+                        className
+					}
+				];
+				return { values, className: wrapperClassName };
 			}
 		},
-		{
-			key: 'updated_at',
-			title: 'Updated At',
-			sortable: true,
-			filterable: false,
-			visible: false,
-			renderer: (value: string) => {
-				return value ? shortDateTime(value) : '';
-			}
-		},
+        {
+            key: 'requester_id',
+            title: 'Requester',
+            sortable: false,
+            filterable: false,
+            renderer: (value: string, row: Request, relationships) => {
+                const user = relationships.requester?.attributes as User;
+                return `
+                <div>${user?.name}</div>
+                <div class="text-muted-foreground text-xs truncate">${user?.email}</div>
+                <div class="text-muted-foreground text-xs truncate">${row.created_at ? shortDateTime(row.created_at) : '-'}</div>
+                `;
+            }
+        },
+        {
+            key: 'approver_id',
+            title: 'Approver',
+            sortable: false,
+            filterable: false,
+            renderer: (value: string, row: Request, relationships) => {
+                if (!row.approved_at) {
+                    return '-';
+                }
+                const user = relationships.approver?.attributes as User;
+                return `
+                <div>${user?.name || '-'}</div>
+                <div class="text-muted-foreground text-xs truncate">${user?.email || '-'}</div>
+                <div class="text-muted-foreground text-xs truncate">${row.approved_at ? shortDateTime(row.approved_at) : '-'}</div>
+                `;
+            }
+        },
 		{
 			key: 'actions',
 			title: 'Actions',
@@ -129,13 +143,13 @@
 							variant: 'link',
 							class: 'hover:text-blue-500'
 						},
-						{
-							label: 'Edit',
-							icon: Pencil,
-							href: `/${modelName}/${row.id}/edit`,
-							variant: 'link',
-							class: 'hover:text-blue-500'
-						}
+						// {
+						// 	label: 'Edit',
+						// 	icon: Pencil,
+						// 	href: `/${modelName}/${row.id}/edit`,
+						// 	variant: 'link',
+						// 	class: 'hover:text-blue-500'
+						// }
 					]
 				};
 			}
@@ -180,6 +194,7 @@
 	model={{} as Request}
 	{config}
 	{initialSearchParams}
+    initialInclude={['asset', 'requester', 'approver']}
 	onDataChange={handleDataChange}
 	onPaginationChange={handlePaginationChange}
 	onFilterChange={handleFilterChange}

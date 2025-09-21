@@ -12,7 +12,7 @@ export interface ColumnDefinition<T = any> {
 	booleanFalse?: string;
 	emptyText?: string;
 	componentProps?: (value: any, row: T, index: number) => Record<string, any>;
-	renderer?: (value: any, row: T, index: number) => string | HTMLElement | null;
+	renderer?: (value: any, row: T, relationships: any, index: number) => string | HTMLElement | null;
 	headerRenderer?: (column: ColumnDefinition<T>) => string | HTMLElement | null;
 	align?: 'left' | 'center' | 'right';
 }
@@ -69,7 +69,7 @@ export interface DataTableConfig<T = any> {
 }
 
 export interface DataTableState<T = any> {
-	data: T[];
+	data: Collection<T>;
 	include: string[];
 	pagination: PaginationConfig;
 	filters: FilterConfig;
@@ -126,6 +126,6 @@ export interface Resource<T> {
 
 export interface CellBadge {
 	value: string;
-	variant: 'default' | 'secondary' | 'destructive' | 'outline';
+	variant: string;
 	className?: string;
 }

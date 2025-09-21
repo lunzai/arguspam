@@ -6,6 +6,7 @@ use App\Http\Resources\Asset\AssetResource;
 use App\Http\Resources\AssetAccount\AssetAccountResource;
 use App\Http\Resources\Org\OrgResource;
 use App\Http\Resources\Resource;
+use App\Http\Resources\Session\SessionResource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
 
@@ -47,26 +48,23 @@ class RequestResource extends Resource
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
-                    'org' => OrgResource::collection(
+                    'org' => OrgResource::make(
                         $this->whenLoaded('org')
                     ),
-                    'asset' => AssetResource::collection(
+                    'asset' => AssetResource::make(
                         $this->whenLoaded('asset')
                     ),
-                    'asset_account' => AssetAccountResource::collection(
+                    'session' => SessionResource::make(
+                        $this->whenLoaded('session')
+                    ),
+                    'asset_account' => AssetAccountResource::make(
                         $this->whenLoaded('assetAccount')
                     ),
-                    'requester' => UserResource::collection(
+                    'requester' => UserResource::make(
                         $this->whenLoaded('requester')
                     ),
-                    'approver' => UserResource::collection(
+                    'approver' => UserResource::make(
                         $this->whenLoaded('approver')
-                    ),
-                    'approvedBy' => UserResource::collection(
-                        $this->whenLoaded('approvedBy')
-                    ),
-                    'rejectedBy' => UserResource::collection(
-                        $this->whenLoaded('rejectedBy')
                     ),
                 ],
             ]),

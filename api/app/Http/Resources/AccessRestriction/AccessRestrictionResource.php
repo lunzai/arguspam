@@ -36,10 +36,10 @@ class AccessRestrictionResource extends Resource
                     'userGroups' => UserGroupResource::collection(
                         $this->whenLoaded('userGroups')
                     ),
-                    'createdBy' => UserResource::collection(
+                    'createdBy' => UserResource::make(
                         $this->whenLoaded('createdBy')
                     ),
-                    'updatedBy' => UserResource::collection(
+                    'updatedBy' => UserResource::make(
                         $this->whenLoaded('updatedBy')
                     ),
                 ],

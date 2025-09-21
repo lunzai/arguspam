@@ -8,6 +8,7 @@
 
 	interface Props {
 		row: any;
+		relationships: any;
 		columns: ColumnDefinition[];
 		index: number;
 		selectable?: boolean;
@@ -19,6 +20,7 @@
 
 	let {
 		row,
+        relationships,
 		columns,
 		index,
 		selectable = false,
@@ -27,6 +29,8 @@
 		className = '',
 		cellClassName = ''
 	}: Props = $props();
+
+    let value;
 </script>
 
 <TableRow class="hover:bg-gray-50 {className}">
@@ -44,7 +48,7 @@
 	{#each columns as column}
 		<DataTableCell className={cellClassName} align={column.align}>
 			{#if column.renderer}
-				{@const renderedContent = column.renderer(row[column.key], row, index)}
+				{@const renderedContent = column.renderer(row[column.key], row, relationships, index)}
 				{#if typeof renderedContent === 'string'}
 					{@html renderedContent}
 				{:else}

@@ -55,7 +55,7 @@
 </script>
 
 <Dialog.Root bind:open={isOpen}>
-	<Dialog.Content>
+	<Dialog.Content class="max-h-[90vh] overflow-y-auto">
 		<Loader show={$submitting} />
 		<Dialog.Header>
 			<Dialog.Title>Update Roles</Dialog.Title>

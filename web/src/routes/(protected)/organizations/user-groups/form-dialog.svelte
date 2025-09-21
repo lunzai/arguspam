@@ -54,7 +54,7 @@
 </script>
 
 <Dialog.Root bind:open={isOpen}>
-	<Dialog.Content class="sm:max-w-2xl" interactOutsideBehavior="ignore">
+	<Dialog.Content class="sm:max-w-2xl max-h-[90vh] overflow-y-auto" interactOutsideBehavior="ignore">
 		<Loader show={$submitting} />
 		<form class="space-y-6" method="POST" action="?/save" use:enhance>
 			<input type="hidden" name="id" value={model.id} />

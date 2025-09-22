@@ -11,7 +11,8 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class RequestSubmitted
+
+class RequestCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

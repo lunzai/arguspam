@@ -7,12 +7,17 @@ use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
+use App\Events\RequestCreated;
+use App\Events\RequestApproved;
+use App\Events\RequestRejected;
+use App\Events\RequestSubmitted;
+use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Request extends Model
+class Request extends Model implements ShouldHandleEventsAfterCommit
 {
     /** @use HasFactory<\Database\Factories\RequestFactory> */
     use BelongsToOrganization, HasBlamable, HasFactory;
@@ -92,6 +97,35 @@ class Request extends Model
         'updatedBy',
     ];
 
+    protected $dispatchesEvents = [
+        'created' => RequestCreated::class,
+    ];
+
+    public function getAiEvaluation() : void
+    {
+        $this->ai_note = 'AI Evaluation: ' . time();
+        $this->ai_risk_rating = RiskRating::LOW;
+        $this->save();
+    }
+
+    public function submit() : void
+    {
+        $this->status = RequestStatus::SUBMITTED;
+        RequestSubmitted::dispatchIf($this->save(), $this);
+    }
+
+    public function reject() : void
+    {
+        $this->status = RequestStatus::REJECTED;
+        RequestRejected::dispatchIf($this->save(), $this);
+    }
+
+    public function approve() : void
+    {
+        $this->status = RequestStatus::APPROVED;
+        RequestApproved::dispatchIf($this->save(), $this);
+    }
+
     public function asset(): BelongsTo
     {
         return $this->belongsTo(Asset::class);
@@ -110,6 +144,11 @@ class Request extends Model
     public function approver(): BelongsTo
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function rejecter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
     }
 
     public function session(): HasOne

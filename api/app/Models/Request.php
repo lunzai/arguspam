@@ -5,12 +5,12 @@ namespace App\Models;
 use App\Enums\RequestScope;
 use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
-use App\Traits\BelongsToOrganization;
-use App\Traits\HasBlamable;
-use App\Events\RequestCreated;
 use App\Events\RequestApproved;
+use App\Events\RequestCreated;
 use App\Events\RequestRejected;
 use App\Events\RequestSubmitted;
+use App\Traits\BelongsToOrganization;
+use App\Traits\HasBlamable;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -101,26 +101,26 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         'created' => RequestCreated::class,
     ];
 
-    public function getAiEvaluation() : void
+    public function getAiEvaluation(): void
     {
-        $this->ai_note = 'AI Evaluation: ' . time();
+        $this->ai_note = 'AI Evaluation: '.time();
         $this->ai_risk_rating = RiskRating::LOW;
         $this->save();
     }
 
-    public function submit() : void
+    public function submit(): void
     {
         $this->status = RequestStatus::SUBMITTED;
         RequestSubmitted::dispatchIf($this->save(), $this);
     }
 
-    public function reject() : void
+    public function reject(): void
     {
         $this->status = RequestStatus::REJECTED;
         RequestRejected::dispatchIf($this->save(), $this);
     }
 
-    public function approve() : void
+    public function approve(): void
     {
         $this->status = RequestStatus::APPROVED;
         RequestApproved::dispatchIf($this->save(), $this);

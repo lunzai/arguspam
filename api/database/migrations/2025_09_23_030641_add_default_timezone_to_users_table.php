@@ -15,10 +15,10 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('default_timezone', 50)->after('password')->nullable();
         });
-        
+
         // Set all existing users to Asia/Singapore timezone
         DB::table('users')->update(['default_timezone' => 'Asia/Singapore']);
-        
+
         // Change column to not nullable
         Schema::table('users', function (Blueprint $table) {
             $table->string('default_timezone', 50)->change();

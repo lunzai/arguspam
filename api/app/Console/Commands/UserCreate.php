@@ -34,7 +34,7 @@ class UserCreate extends Command
 
         $searchResult = array_search($defaultRole, $roleOptions);
         $defaultRoleIndex = $searchResult === false ? null : $searchResult;
- 
+
         $name = $this->ask('Name');
         $email = $this->ask('Email');
         $password = $this->secret('Password');

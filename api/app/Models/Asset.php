@@ -146,15 +146,15 @@ class Asset extends Model
     {
         // Get direct approver users
         $directApprovers = $this->approverUsers;
-        
+
         // Get approvers from user groups
         $approverUserGroups = $this->approverUserGroups;
         $groupApprovers = collect();
-        
+
         foreach ($approverUserGroups as $userGroup) {
             $groupApprovers = $groupApprovers->merge($userGroup->users);
         }
-        
+
         // Combine and deduplicate approvers by ID
         return $directApprovers->merge($groupApprovers)->unique('id');
     }

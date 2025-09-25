@@ -4,7 +4,7 @@ return [
     'user' => [
         'default_timezone' => 'Asia/Singapore',
     ],
-    
+
     /*
     |--------------------------------------------------------------------------
     | Organization

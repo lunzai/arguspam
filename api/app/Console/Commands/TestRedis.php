@@ -69,10 +69,10 @@ class TestRedis extends Command
 
             // Cleanup all test keys including prefixed ones
             $this->info('Cleaning up test keys...');
-            
+
             // Clean direct test keys
             Redis::del(['test:string', 'test:list', 'test:hash', 'test:expire']);
-            
+
             // Clean all test-related keys using Lua script for better performance
             $deletedCount = Redis::eval("
                 local patterns = {'test:*', '*:test:*', 'perf:test:*'}
@@ -87,9 +87,9 @@ class TestRedis extends Command
                 
                 return totalDeleted
             ", 0);
-            
+
             Cache::forget('test:cache');
-            
+
             $this->info("✓ Cleaned up {$deletedCount} test keys");
 
             $this->info('✓ All tests passed! Redis is working correctly.');

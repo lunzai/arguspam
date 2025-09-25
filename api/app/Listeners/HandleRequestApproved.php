@@ -3,14 +3,14 @@
 namespace App\Listeners;
 
 use App\Events\RequestApproved;
+use App\Notifications\RequestApprovedNotifyApprover;
+use App\Notifications\RequestApprovedNotifyRequester;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\RequestApprovedNotifyRequester;
-use App\Notifications\RequestApprovedNotifyApprover;
 
-class HandleRequestApproved implements ShouldQueue, ShouldBeEncrypted
+class HandleRequestApproved implements ShouldBeEncrypted, ShouldQueue
 {
     use InteractsWithQueue;
 
@@ -40,7 +40,7 @@ class HandleRequestApproved implements ShouldQueue, ShouldBeEncrypted
     {
         \Log::error('Failed to send request approved notifications', [
             'request_id' => $event->request->id,
-            'exception' => $exception->getMessage()
+            'exception' => $exception->getMessage(),
         ]);
     }
 }

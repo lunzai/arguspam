@@ -3,14 +3,14 @@
 namespace App\Listeners;
 
 use App\Events\RequestRejected;
+use App\Notifications\RequestRejectedNotifyApprover;
+use App\Notifications\RequestRejectedNotifyRequester;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\RequestRejectedNotifyRequester;
-use App\Notifications\RequestRejectedNotifyApprover;
 
-class HandleRequestRejected implements ShouldQueue, ShouldBeEncrypted
+class HandleRequestRejected implements ShouldBeEncrypted, ShouldQueue
 {
     use InteractsWithQueue;
 
@@ -40,7 +40,7 @@ class HandleRequestRejected implements ShouldQueue, ShouldBeEncrypted
     {
         \Log::error('Failed to send request rejected notifications', [
             'request_id' => $event->request->id,
-            'exception' => $exception->getMessage()
+            'exception' => $exception->getMessage(),
         ]);
     }
 }

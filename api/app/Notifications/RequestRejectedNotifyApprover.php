@@ -46,7 +46,7 @@ class RequestRejectedNotifyApprover extends Notification implements ShouldQueue
             ->markdown('mail.request.rejected.approver', [
                 'request' => $this->request,
                 'notifiable' => $notifiable,
-                'url' => route('requests.show', $this->request)
+                'url' => route('requests.show', $this->request),
             ]);
     }
 

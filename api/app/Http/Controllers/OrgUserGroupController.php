@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Resources\UserGroup\UserGroupCollection;
 use App\Models\Org;
+use Illuminate\Http\Request;
 
 class OrgUserGroupController extends Controller
 {

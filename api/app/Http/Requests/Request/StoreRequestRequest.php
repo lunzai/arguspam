@@ -46,10 +46,10 @@ class StoreRequestRequest extends FormRequest
             'org_id' => ['required', 'exists:App\Models\Org,id'],
             'asset_id' => ['required', 'exists:App\Models\Asset,id'],
             'asset_account_id' => ['nullable', 'exists:App\Models\AssetAccount,id'],
-            'requester_id' => ['required', 'exists:App\Models\User,id'], 
+            'requester_id' => ['required', 'exists:App\Models\User,id'],
             'start_datetime' => [
                 'required',
-                'date',                
+                'date',
             ],
             'end_datetime' => [
                 'required',
@@ -81,13 +81,13 @@ class StoreRequestRequest extends FormRequest
     {
         return [
             'duration.min' => sprintf(
-                'The duration must be at least %s.', 
+                'The duration must be at least %s.',
                 Carbon::now()
                     ->addMinutes($this->durationMin + 1)
                     ->longAbsoluteDiffForHumans()
             ),
             'duration.max' => sprintf(
-                'The duration must be less than %s.', 
+                'The duration must be less than %s.',
                 Carbon::now()
                     ->addMinutes($this->durationMax + 1)
                     ->longAbsoluteDiffForHumans()

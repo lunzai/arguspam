@@ -7,7 +7,7 @@ use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class HandleRequestCreated implements ShouldQueue, ShouldBeEncrypted
+class HandleRequestCreated implements ShouldBeEncrypted, ShouldQueue
 {
     use InteractsWithQueue;
 
@@ -33,7 +33,5 @@ class HandleRequestCreated implements ShouldQueue, ShouldBeEncrypted
         $request->submit();
     }
 
-    public function failed(RequestCreated $event, \Throwable $exception): void
-    {
-    }
+    public function failed(RequestCreated $event, \Throwable $exception): void {}
 }

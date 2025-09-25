@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\CacheKey;
+use App\Enums\RequestStatus;
 use App\Http\Filters\RequestFilter;
 use App\Http\Requests\Request\StoreRequestRequest;
 use App\Http\Requests\Request\UpdateRequestRequest;
@@ -14,7 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use App\Enums\RequestStatus;
 
 class RequestController extends Controller
 {

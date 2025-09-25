@@ -9,6 +9,8 @@ use App\Http\Filters\QueryFilter;
 use App\Traits\HasBlamable;
 use App\Traits\HasRbac;
 use App\Traits\HasStatus;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,8 +20,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use PragmaRX\Google2FAQRCode\Google2FA;
-use DateTimeZone;
-use DateTime;
 
 class User extends Authenticatable
 {
@@ -91,10 +91,10 @@ class User extends Authenticatable
         'default_timezone' => 'Timezone',
     ];
 
-    public function getTimezone() : DateTimeZone
+    public function getTimezone(): DateTimeZone
     {
         return new DateTimeZone(
-            $this->default_timezone ?: 
+            $this->default_timezone ?:
             config('pam.user.default_timezone', 'UTC')
         );
     }
@@ -111,9 +111,9 @@ class User extends Authenticatable
                     return 'UTC';
                 }
                 if (preg_match('/^[+-]/', $tzName)) {
-                    return 'GMT' . $offset;
+                    return 'GMT'.$offset;
                 }
-                return 'GMT' . $offset . ' ' . $tzName;
+                return 'GMT'.$offset.' '.$tzName;
             },
         );
     }

@@ -46,7 +46,7 @@ class RequestSubmittedNotifyRequester extends Notification implements ShouldQueu
             ->markdown('mail.request.submitted.requester', [
                 'request' => $this->request,
                 'notifiable' => $notifiable,
-                'url' => route('requests.show', $this->request)
+                'url' => route('requests.show', $this->request),
             ]);
     }
 

@@ -7,7 +7,6 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-
 class RequestCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;

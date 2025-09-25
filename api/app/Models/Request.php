@@ -11,6 +11,7 @@ use App\Events\RequestRejected;
 use App\Events\RequestSubmitted;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
+use App\Services\OpenAI\OpenAIService;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -37,8 +38,8 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         'sensitive_data_note',
         'approver_note',
         'approver_risk_rating',
-        // 'ai_note',
-        // 'ai_risk_rating',
+        'ai_note',
+        'ai_risk_rating',
         'status',
         'approved_by',
         'approved_at',
@@ -103,8 +104,11 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
 
     public function getAiEvaluation(): void
     {
-        $this->ai_note = 'AI Evaluation: '.time();
-        $this->ai_risk_rating = RiskRating::LOW;
+        $openAIService = app(OpenAIService::class);
+        $evaluation = $openAIService->evaluateAccessRequest($this);
+        
+        $this->ai_note = $evaluation['ai_note'];
+        $this->ai_risk_rating = $evaluation['ai_risk_rating'];
         $this->save();
     }
 

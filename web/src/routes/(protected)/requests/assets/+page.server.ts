@@ -13,11 +13,11 @@ export const load = async ({ params, locals }) => {
 	const { authToken, currentOrgId } = locals;
 	const userService = new UserService(authToken as string, currentOrgId);
 	const assetCollection = (await userService.getRequesterAssets()) as ApiAssetCollection;
-    const form = await superValidate(zod(RequesterSchema));
+	const form = await superValidate(zod(RequesterSchema));
 	return {
 		assetCollection,
 		title: `Assets`,
-        form
+		form
 	};
 };
 
@@ -40,7 +40,7 @@ export const actions = {
 				model: response.data.attributes
 			};
 		} catch (error: any) {
-            if (error.response?.status === 422) {
+			if (error.response?.status === 422) {
 				setFormErrors(form, error.response.data);
 				return fail(400, { form });
 			}

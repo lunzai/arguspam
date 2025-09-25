@@ -9,8 +9,8 @@
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import * as Card from '$ui/card';
-    import { TIMEZONES } from '$lib/constants/timezones';
-    import * as Select from '$ui/select';
+	import { TIMEZONES } from '$lib/constants/timezones';
+	import * as Select from '$ui/select';
 
 	let { data } = $props();
 
@@ -64,14 +64,19 @@
 				<Form.Field {form} name="default_timezone">
 					<Form.Control>
 						<Form.Label>Default Timezone</Form.Label>
-						<Select.Root name="default_timezone" type="single" bind:value={$formData.default_timezone} disabled={$submitting}>
+						<Select.Root
+							name="default_timezone"
+							type="single"
+							bind:value={$formData.default_timezone}
+							disabled={$submitting}
+						>
 							<Select.Trigger class="w-full">
 								{$formData.default_timezone ? $formData.default_timezone : 'Select timezone'}
 							</Select.Trigger>
 							<Select.Content>
-							{#each TIMEZONES as timezone}
-								<Select.Item value={timezone}>{timezone}</Select.Item>
-							{/each}
+								{#each TIMEZONES as timezone}
+									<Select.Item value={timezone}>{timezone}</Select.Item>
+								{/each}
 							</Select.Content>
 						</Select.Root>
 					</Form.Control>

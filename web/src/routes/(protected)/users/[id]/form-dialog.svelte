@@ -53,7 +53,10 @@
 </script>
 
 <Dialog.Root bind:open={isOpen}>
-	<Dialog.Content class="sm:max-w-2xl max-h-[90vh] overflow-y-auto" interactOutsideBehavior="ignore">
+	<Dialog.Content
+		class="max-h-[90vh] overflow-y-auto sm:max-w-2xl"
+		interactOutsideBehavior="ignore"
+	>
 		{#if $submitting}
 			<Loader show={$submitting} />
 		{/if}
@@ -113,7 +116,12 @@
 				<Form.Field {form} name="default_timezone">
 					<Form.Control>
 						<Form.Label>Default Timezone</Form.Label>
-						<Select.Root name="default_timezone" type="single" bind:value={$formData.default_timezone} disabled={$submitting}>
+						<Select.Root
+							name="default_timezone"
+							type="single"
+							bind:value={$formData.default_timezone}
+							disabled={$submitting}
+						>
 							<Select.Trigger class="w-64">
 								{$formData.default_timezone ? $formData.default_timezone : 'Select timezone'}
 							</Select.Trigger>

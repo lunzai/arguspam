@@ -10,7 +10,7 @@ export class UserService extends BaseService<BaseModel> {
 		super('/utils', token);
 	}
 
-    async getList(): Promise<TimezoneCollection> {
-        return await this.api.get<TimezoneCollection>(`${this.endpoint}/timezones`);
-    }
+	async getList(): Promise<TimezoneCollection> {
+		return await this.api.get<TimezoneCollection>(`${this.endpoint}/timezones`);
+	}
 }

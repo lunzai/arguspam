@@ -14,8 +14,8 @@
 	import type { Asset } from '$models/asset';
 	import type { User } from '$models/user';
 	import type { CellBadge } from '$components/data-table/types';
-    import { capitalizeWords } from '$lib/utils/string';
-    import { formatDistanceStrict } from 'date-fns';
+	import { capitalizeWords } from '$lib/utils/string';
+	import { formatDistanceStrict } from 'date-fns';
 
 	let initialSearchParams = page.url.searchParams;
 	const modelName = 'requests';
@@ -26,108 +26,108 @@
 			title: 'ID',
 			sortable: true
 		},
-        {
-            key: 'asset_id',
-            title: 'Asset',
-            sortable: true,
-            filterable: true,
-            renderer: (value: string, row: Request, relationships) => {
-                const asset = relationships.asset?.attributes as Asset;
-                return `<div>${asset?.name}</div>
+		{
+			key: 'asset_id',
+			title: 'Asset',
+			sortable: true,
+			filterable: true,
+			renderer: (value: string, row: Request, relationships) => {
+				const asset = relationships.asset?.attributes as Asset;
+				return `<div>${asset?.name}</div>
                 <div class="text-muted-foreground text-xs truncate">${asset?.host}:${asset?.port}</div>
                 `;
-            }
-        },
-        {
-            key: 'start_datetime',
-            title: 'Start/End',
-            sortable: true,
-            filterable: true,
-            renderer: (value: string, row: Request) => {
-                const startDatetime = row.start_datetime;
-                const endDatetime = row.end_datetime;
-                return `<div>${shortDateTime(startDatetime)} -</div>
+			}
+		},
+		{
+			key: 'start_datetime',
+			title: 'Start/End',
+			sortable: true,
+			filterable: true,
+			renderer: (value: string, row: Request) => {
+				const startDatetime = row.start_datetime;
+				const endDatetime = row.end_datetime;
+				return `<div>${shortDateTime(startDatetime)} -</div>
                 <div>${shortDateTime(endDatetime)}</div>
                 <div class="text-muted-foreground text-xs">${formatDistanceStrict(startDatetime, endDatetime)}</div>
                 `;
-            }
-        },
-        {
-            key: 'reason',
-            title: 'Reason',
-            sortable: true,
-            filterable: true,
-            renderer: (value: string, row: Request, relationships) => {
-                return `<div class="max-w-80 wrap-break-word whitespace-break-spaces">${value}</div>`;
-            }
-        },
-        {
+			}
+		},
+		{
+			key: 'reason',
+			title: 'Reason',
+			sortable: true,
+			filterable: true,
+			renderer: (value: string, row: Request, relationships) => {
+				return `<div class="max-w-80 wrap-break-word whitespace-break-spaces">${value}</div>`;
+			}
+		},
+		{
 			key: 'status',
 			title: 'Status',
 			sortable: true,
 			filterable: true,
 			type: 'badge',
 			componentProps: (value: string, row: Request) => {
-                //  "default" | "secondary" | "destructive" | "outline"
-                const wrapperClassName = 'text-sm';
-                let variant = 'default';
-                let className = '';
-                switch (value) {
-                    case 'pending':
-                        variant = 'default';
-                        break;
-                    case 'approved':
-                        variant = 'secondary';
-                        className = 'bg-green-500 text-green-500';
-                        break;
-                    case 'rejected':
-                        variant = 'destructive';
-                        break;
-                    case 'expired':
-                        variant = 'outline';
-                        break;
-                }
+				//  "default" | "secondary" | "destructive" | "outline"
+				const wrapperClassName = 'text-sm';
+				let variant = 'default';
+				let className = '';
+				switch (value) {
+					case 'pending':
+						variant = 'default';
+						break;
+					case 'approved':
+						variant = 'secondary';
+						className = 'bg-green-500 text-green-500';
+						break;
+					case 'rejected':
+						variant = 'destructive';
+						break;
+					case 'expired':
+						variant = 'outline';
+						break;
+				}
 				let values: CellBadge[] = [
 					{
 						value: capitalizeWords(value),
 						variant,
-                        className
+						className
 					}
 				];
 				return { values, className: wrapperClassName };
 			}
 		},
-        {
-            key: 'requester_id',
-            title: 'Requester',
-            sortable: false,
-            filterable: false,
-            renderer: (value: string, row: Request, relationships) => {
-                const user = relationships.requester?.attributes as User;
-                return `
+		{
+			key: 'requester_id',
+			title: 'Requester',
+			sortable: false,
+			filterable: false,
+			renderer: (value: string, row: Request, relationships) => {
+				const user = relationships.requester?.attributes as User;
+				return `
                 <div>${user?.name}</div>
                 <div class="text-muted-foreground text-xs truncate">${user?.email}</div>
                 <div class="text-muted-foreground text-xs truncate">${row.created_at ? shortDateTime(row.created_at) : '-'}</div>
                 `;
-            }
-        },
-        {
-            key: 'approver_id',
-            title: 'Approver',
-            sortable: false,
-            filterable: false,
-            renderer: (value: string, row: Request, relationships) => {
-                if (!row.approved_at) {
-                    return '-';
-                }
-                const user = relationships.approver?.attributes as User;
-                return `
+			}
+		},
+		{
+			key: 'approver_id',
+			title: 'Approver',
+			sortable: false,
+			filterable: false,
+			renderer: (value: string, row: Request, relationships) => {
+				if (!row.approved_at) {
+					return '-';
+				}
+				const user = relationships.approver?.attributes as User;
+				return `
                 <div>${user?.name || '-'}</div>
                 <div class="text-muted-foreground text-xs truncate">${user?.email || '-'}</div>
                 <div class="text-muted-foreground text-xs truncate">${row.approved_at ? shortDateTime(row.approved_at) : '-'}</div>
                 `;
-            }
-        },
+			}
+		},
 		{
 			key: 'actions',
 			title: 'Actions',
@@ -142,7 +142,7 @@
 							href: `/${modelName}/${row.id}`,
 							variant: 'link',
 							class: 'hover:text-blue-500'
-						},
+						}
 						// {
 						// 	label: 'Edit',
 						// 	icon: Pencil,
@@ -194,7 +194,7 @@
 	model={{} as Request}
 	{config}
 	{initialSearchParams}
-    initialInclude={['asset', 'requester', 'approver']}
+	initialInclude={['asset', 'requester', 'approver']}
 	onDataChange={handleDataChange}
 	onPaginationChange={handlePaginationChange}
 	onFilterChange={handleFilterChange}

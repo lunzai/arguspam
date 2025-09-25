@@ -157,7 +157,7 @@
 				count: state.count ? state.count : undefined
 			};
 			const response = await fetchData(params);
-			state.data = response.data;            
+			state.data = response.data;
 			state.pagination = {
 				currentPage: response.meta.current_page,
 				from: response.meta.from,

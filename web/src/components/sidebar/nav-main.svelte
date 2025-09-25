@@ -52,7 +52,7 @@
 					title: 'Assets',
 					url: '/requests/assets'
 				},
-                {
+				{
 					title: 'Pending Approval',
 					url: '/requests/pending-approval'
 				},
@@ -67,7 +67,7 @@
 			url: '#',
 			icon: SquareTerminalIcon,
 			isActive: pathname.startsWith('/sessions'),
-            items: [
+			items: [
 				{
 					title: 'My Sessions',
 					url: '/sessions/my-sessions'

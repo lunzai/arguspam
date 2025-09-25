@@ -20,7 +20,7 @@
 
 	let {
 		row,
-        relationships,
+		relationships,
 		columns,
 		index,
 		selectable = false,
@@ -30,7 +30,7 @@
 		cellClassName = ''
 	}: Props = $props();
 
-    let value;
+	let value;
 </script>
 
 <TableRow class="hover:bg-gray-50 {className}">

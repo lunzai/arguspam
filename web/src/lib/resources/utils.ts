@@ -1,3 +1,3 @@
 export interface TimezoneCollection {
-    data: string[];
+	data: string[];
 }

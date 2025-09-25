@@ -343,7 +343,7 @@
 
 <Dialog.Root bind:open={addUserDialogIsOpen}>
 	<Dialog.Content
-		class="sm:max-w-xl max-h-[90vh] overflow-y-auto"
+		class="max-h-[90vh] overflow-y-auto sm:max-w-xl"
 		interactOutsideBehavior="ignore"
 		onOpenAutoFocus={(e) => e.preventDefault()}
 	>

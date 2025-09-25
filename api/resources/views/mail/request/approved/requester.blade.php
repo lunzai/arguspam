@@ -7,7 +7,7 @@ Great news! Your access request for **{{ $request->asset->name }}** has been app
 
 ## Approval Details
 - **Approved by:** {{ $request->approver->name }}
-- **Approved on:** {{ $request->approved_at->format('M d, Y H:i') }}
+- **Approved on:** {{ $request->approved_at->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
 @if($request->approver_risk_rating)
 - **Risk Rating:** {{ $request->approver_risk_rating->value }}
 @endif
@@ -17,7 +17,7 @@ Great news! Your access request for **{{ $request->asset->name }}** has been app
 
 ## Request Summary
 - **Asset:** {{ $request->asset->name }}
-- **Access Period:** {{ $request->start_datetime->format('M d, Y H:i') }} - {{ $request->end_datetime->format('M d, Y H:i') }}
+- **Access Period:** {{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} - {{ $request->end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }}  ({{ $notifiable->timezone }})
 - **Duration:** {{ $request->duration }}
 - **Reason:** {{ $request->reason }}
 

@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use App\Enums\RequestStatus;
 
 class RequestController extends Controller
 {
@@ -42,7 +43,9 @@ class RequestController extends Controller
     {
         $this->authorize('create', RequestModel::class);
         $validated = $request->validated();
-        $request = RequestModel::create($validated);
+        $request = new RequestModel($validated);
+        $request->status = RequestStatus::PENDING;
+        $request->save();
 
         return new RequestResource($request);
     }

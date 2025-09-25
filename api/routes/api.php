@@ -22,6 +22,7 @@ use App\Http\Controllers\SessionAuditController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SettingGroupController;
+use App\Http\Controllers\TimezoneController;
 use App\Http\Controllers\TwoFactorAuthenticationController;
 use App\Http\Controllers\UserAccessRestrictionController;
 use App\Http\Controllers\UserAssetController;
@@ -38,6 +39,10 @@ Route::prefix('auth')->group(function () {
     Route::post('/2fa', [AuthController::class, 'verifyTwoFactor']);
     Route::post('/logout', [AuthController::class, 'logout'])
         ->middleware('auth:sanctum');
+});
+
+Route::prefix('utils')->group(function () {
+    Route::get('/timezones', [TimezoneController::class, 'index']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {

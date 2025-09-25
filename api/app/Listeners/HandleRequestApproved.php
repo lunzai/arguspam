@@ -6,6 +6,9 @@ use App\Events\RequestApproved;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\RequestApprovedNotifyRequester;
+use App\Notifications\RequestApprovedNotifyApprover;
 
 class HandleRequestApproved implements ShouldQueue, ShouldBeEncrypted
 {
@@ -28,11 +31,16 @@ class HandleRequestApproved implements ShouldQueue, ShouldBeEncrypted
     public function handle(RequestApproved $event): void
     {
         $request = $event->request;
-        // notify requester -> requested approved
-        // notify approver -> requested approved
+        $request->requester->notify(new RequestApprovedNotifyRequester($request));
+        $approvers = $request->asset->getApprovers();
+        Notification::send($approvers, new RequestApprovedNotifyApprover($request));
     }
 
     public function failed(RequestApproved $event, \Throwable $exception): void
     {
+        \Log::error('Failed to send request approved notifications', [
+            'request_id' => $event->request->id,
+            'exception' => $exception->getMessage()
+        ]);
     }
 }

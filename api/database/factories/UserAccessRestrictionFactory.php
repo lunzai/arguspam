@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\RestrictionType;
+use App\Enums\AccessRestrictionType;
 use App\Enums\Status;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -21,8 +21,8 @@ class UserAccessRestrictionFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'type' => $this->faker->randomElement(RestrictionType::cases()),
-            'value' => $this->generateValueForType(RestrictionType::IP_ADDRESS),
+            'type' => $this->faker->randomElement(AccessRestrictionType::cases()),
+            'value' => $this->generateValueForType(AccessRestrictionType::IP_ADDRESS),
             'status' => Status::ACTIVE,
         ];
     }
@@ -30,23 +30,20 @@ class UserAccessRestrictionFactory extends Factory
     /**
      * Generate appropriate value array for the given restriction type
      */
-    private function generateValueForType(RestrictionType $type): array
+    private function generateValueForType(AccessRestrictionType $type): array
     {
         return match ($type) {
-            RestrictionType::IP_ADDRESS => [
+            AccessRestrictionType::IP_ADDRESS => [
                 'allowed_ips' => ['127.0.0.1', '192.168.1.0/24'],
             ],
-            RestrictionType::TIME_WINDOW => [
+            AccessRestrictionType::TIME_WINDOW => [
                 'days' => [1, 2, 3, 4, 5], // Monday to Friday
                 'start_time' => '09:00',
                 'end_time' => '17:00',
                 'timezone' => 'UTC',
             ],
-            RestrictionType::LOCATION => [
+            AccessRestrictionType::COUNTRY => [
                 'allowed_countries' => ['US', 'CA'],
-            ],
-            RestrictionType::DEVICE => [
-                'allowed_devices' => ['Chrome', 'Firefox'],
             ],
         };
     }
@@ -57,7 +54,7 @@ class UserAccessRestrictionFactory extends Factory
     public function ipAddress(array $allowedIps = ['127.0.0.1']): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => RestrictionType::IP_ADDRESS,
+            'type' => AccessRestrictionType::IP_ADDRESS,
             'value' => ['allowed_ips' => $allowedIps],
         ]);
     }
@@ -68,7 +65,7 @@ class UserAccessRestrictionFactory extends Factory
     public function timeWindow(array $days = [1, 2, 3, 4, 5], string $startTime = '09:00', string $endTime = '17:00', string $timezone = 'UTC'): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => RestrictionType::TIME_WINDOW,
+            'type' => AccessRestrictionType::TIME_WINDOW,
             'value' => [
                 'days' => $days,
                 'start_time' => $startTime,
@@ -84,19 +81,8 @@ class UserAccessRestrictionFactory extends Factory
     public function location(array $allowedCountries = ['US']): static
     {
         return $this->state(fn (array $attributes) => [
-            'type' => RestrictionType::LOCATION,
+            'type' => AccessRestrictionType::COUNTRY,
             'value' => ['allowed_countries' => $allowedCountries],
-        ]);
-    }
-
-    /**
-     * Create restriction with device type
-     */
-    public function device(array $allowedDevices = ['Chrome']): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'type' => RestrictionType::DEVICE,
-            'value' => ['allowed_devices' => $allowedDevices],
         ]);
     }
 

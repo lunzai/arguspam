@@ -136,4 +136,26 @@ class Asset extends Model
         return $this->users()
             ->wherePivot('role', AssetAccessRole::REQUESTER->value);
     }
+
+    /**
+     * Get all approvers for this asset (direct users + users from approver groups)
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getApprovers()
+    {
+        // Get direct approver users
+        $directApprovers = $this->approverUsers;
+        
+        // Get approvers from user groups
+        $approverUserGroups = $this->approverUserGroups;
+        $groupApprovers = collect();
+        
+        foreach ($approverUserGroups as $userGroup) {
+            $groupApprovers = $groupApprovers->merge($userGroup->users);
+        }
+        
+        // Combine and deduplicate approvers by ID
+        return $directApprovers->merge($groupApprovers)->unique('id');
+    }
 }

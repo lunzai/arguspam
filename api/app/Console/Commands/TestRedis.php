@@ -67,16 +67,30 @@ class TestRedis extends Command
             $time = round(($end - $start) * 1000, 2);
             $this->info("✓ Performance: 1000 SET operations in {$time}ms");
 
-            // Cleanup
+            // Cleanup all test keys including prefixed ones
+            $this->info('Cleaning up test keys...');
+            
+            // Clean direct test keys
             Redis::del(['test:string', 'test:list', 'test:hash', 'test:expire']);
-            Redis::eval("
-                local keys = redis.call('keys', 'perf:test:*')
-                if #keys > 0 then
-                    return redis.call('del', unpack(keys))
+            
+            // Clean all test-related keys using Lua script for better performance
+            $deletedCount = Redis::eval("
+                local patterns = {'test:*', '*:test:*', 'perf:test:*'}
+                local totalDeleted = 0
+                
+                for _, pattern in ipairs(patterns) do
+                    local keys = redis.call('keys', pattern)
+                    if #keys > 0 then
+                        totalDeleted = totalDeleted + redis.call('del', unpack(keys))
+                    end
                 end
-                return 0
-            ", []);
+                
+                return totalDeleted
+            ", 0);
+            
             Cache::forget('test:cache');
+            
+            $this->info("✓ Cleaned up {$deletedCount} test keys");
 
             $this->info('✓ All tests passed! Redis is working correctly.');
 

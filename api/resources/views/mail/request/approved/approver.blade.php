@@ -8,11 +8,11 @@ The access request for **{{ $request->asset->name }}** has been approved.
 ## Approval Summary
 - **Requester:** {{ $request->requester->name }} ({{ $request->requester->email }})
 - **Asset:** {{ $request->asset->name }}
-- **Approved on:** {{ $request->approved_at->format('M d, Y H:i') }}
+- **Approved on:** {{ $request->approved_at->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
 - **Approved by:** {{ $request->approver->name }}
 
 ## Request Details
-- **Access Period:** {{ $request->start_datetime->format('M d, Y H:i') }} - {{ $request->end_datetime->format('M d, Y H:i') }}
+- **Access Period:** {{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} - {{ $request->end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }}  ({{ $notifiable->timezone }})
 - **Duration:** {{ $request->duration }}
 - **Reason:** {{ $request->reason }}
 @if($request->approver_risk_rating)

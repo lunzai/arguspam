@@ -11,7 +11,8 @@ export const load = async ({ locals }: any) => {
 	const { user } = locals;
 	const form = await superValidate(
 		{
-			name: user?.name || ''
+			name: user?.name || '',
+			default_timezone: user?.default_timezone || ''
 		},
 		zod(UserProfileSchema)
 	);

@@ -5,6 +5,7 @@ namespace App\Enums;
 enum CacheKey: string
 {
     // IN USE
+    case TIMEZONES = 'timezones';
     case AUTH_2FA_TEMP_KEY = 'auth:2fa:temp_key';
 
     // USER

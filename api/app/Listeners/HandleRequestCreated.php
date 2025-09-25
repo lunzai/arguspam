@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Events\RequestCreated;
-use App\Enums\RequestStatus;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;

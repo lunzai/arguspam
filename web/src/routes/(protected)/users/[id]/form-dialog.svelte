@@ -11,6 +11,7 @@
 	import { UserSchema } from '$validations/user';
 	import type { User } from '$models/user';
 	import Loader from '$components/loader.svelte';
+	import { TIMEZONES } from '$lib/constants/timezones';
 
 	interface Props {
 		isOpen: boolean;
@@ -104,6 +105,22 @@
 							<Select.Content>
 								<Select.Item value="active" label="Active" />
 								<Select.Item value="inactive" label="Inactive" />
+							</Select.Content>
+						</Select.Root>
+					</Form.Control>
+					<Form.FieldErrors />
+				</Form.Field>
+				<Form.Field {form} name="default_timezone">
+					<Form.Control>
+						<Form.Label>Default Timezone</Form.Label>
+						<Select.Root name="default_timezone" type="single" bind:value={$formData.default_timezone} disabled={$submitting}>
+							<Select.Trigger class="w-64">
+								{$formData.default_timezone ? $formData.default_timezone : 'Select timezone'}
+							</Select.Trigger>
+							<Select.Content>
+								{#each TIMEZONES as timezone}
+									<Select.Item value={timezone}>{timezone}</Select.Item>
+								{/each}
 							</Select.Content>
 						</Select.Root>
 					</Form.Control>

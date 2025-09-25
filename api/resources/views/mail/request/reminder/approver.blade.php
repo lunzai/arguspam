@@ -8,14 +8,14 @@ Hello {{ $notifiable->name }},
 ## ⏰ Time-Sensitive Request
 - **Requester:** {{ $request->requester->name }} ({{ $request->requester->email }})
 - **Asset:** {{ $request->asset->name }}
-- **Requested Start:** {{ $request->start_datetime->format('M d, Y H:i') }}
-- **Requested End:** {{ $request->end_datetime->format('M d, Y H:i') }}
+- **Requested Start:** {{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
+- **Requested End:** {{ $request->end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
 - **Duration:** {{ $request->duration }}
 
 ## ⚠️ URGENT ACTION REQUIRED
 **This request will automatically EXPIRE in {{ \Carbon\Carbon::now()->diffForHumans($request->start_datetime, true) }}**
 
-If no approval or rejection action is taken by **{{ $request->start_datetime->format('M d, Y H:i') }}**, the system will automatically mark this request as expired for security compliance.
+If no approval or rejection action is taken by **{{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})**, the system will automatically mark this request as expired for security compliance.
 
 ## Request Details
 - **Business Justification:** {{ $request->reason }}

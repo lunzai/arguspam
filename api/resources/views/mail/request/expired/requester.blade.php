@@ -7,8 +7,8 @@ Your access request for **{{ $request->asset->name }}** has expired without appr
 
 ## Expiration Details
 - **Asset:** {{ $request->asset->name }}
-- **Requested Access Period:** {{ $request->start_datetime->format('M d, Y H:i') }} - {{ $request->end_datetime->format('M d, Y H:i') }}
-- **Expired on:** {{ $request->start_datetime->format('M d, Y H:i') }}
+- **Requested Access Period:** {{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} - {{ $request->end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
+- **Expired on:** {{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
 - **Duration:** {{ $request->duration }}
 - **Your Reason:** {{ $request->reason }}
 

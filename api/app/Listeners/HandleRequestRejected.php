@@ -6,6 +6,9 @@ use App\Events\RequestRejected;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\RequestRejectedNotifyRequester;
+use App\Notifications\RequestRejectedNotifyApprover;
 
 class HandleRequestRejected implements ShouldQueue, ShouldBeEncrypted
 {
@@ -28,11 +31,16 @@ class HandleRequestRejected implements ShouldQueue, ShouldBeEncrypted
     public function handle(RequestRejected $event): void
     {
         $request = $event->request;
-        // notify requester -> requested rejected
-        // notify approver -> requested rejected
+        $request->requester->notify(new RequestRejectedNotifyRequester($request));
+        $approvers = $request->asset->getApprovers();
+        Notification::send($approvers, new RequestRejectedNotifyApprover($request));
     }
 
     public function failed(RequestRejected $event, \Throwable $exception): void
     {
+        \Log::error('Failed to send request rejected notifications', [
+            'request_id' => $event->request->id,
+            'exception' => $exception->getMessage()
+        ]);
     }
 }

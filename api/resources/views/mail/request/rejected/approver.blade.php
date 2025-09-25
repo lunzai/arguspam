@@ -8,11 +8,11 @@ The access request for **{{ $request->asset->name }}** has been rejected.
 ## Rejection Summary
 - **Requester:** {{ $request->requester->name }} ({{ $request->requester->email }})
 - **Asset:** {{ $request->asset->name }}
-- **Rejected on:** {{ $request->rejected_at->format('M d, Y H:i') }}
+- **Rejected on:** {{ $request->rejected_at->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
 - **Rejected by:** {{ optional($request->rejecter)->name ?? 'System Administrator' }}
 
 ## Request Details
-- **Requested Access Period:** {{ $request->start_datetime->format('M d, Y H:i') }} - {{ $request->end_datetime->format('M d, Y H:i') }}
+- **Requested Access Period:** {{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} - {{ $request->end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
 - **Duration:** {{ $request->duration }}
 - **Requester's Reason:** {{ $request->reason }}
 @if($request->approver_risk_rating)

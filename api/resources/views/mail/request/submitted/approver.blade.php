@@ -8,7 +8,7 @@ A new access request has been submitted and requires your approval.
 ## Request Summary
 - **Requester:** {{ $request->requester->name }} ({{ $request->requester->email }})
 - **Asset:** {{ $request->asset->name }}
-- **Access Period:** {{ $request->start_datetime->format('M d, Y H:i') }} - {{ $request->end_datetime->format('M d, Y H:i') }}
+- **Access Period:** {{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} - {{ $request->end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
 - **Duration:** {{ $request->duration }}
 - **Reason:** {{ $request->reason }}
 

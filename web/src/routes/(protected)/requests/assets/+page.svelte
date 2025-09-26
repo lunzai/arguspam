@@ -20,7 +20,7 @@
 	}
 </script>
 
-<h1 class="text-2xl font-medium capitalize">Assets</h1>
+<h1 class="text-2xl font-medium capitalize">Create Request</h1>
 
 <FormDialog
 	bind:isOpen={addRequestDialogIsOpen}

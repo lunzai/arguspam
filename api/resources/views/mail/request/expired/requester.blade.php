@@ -13,7 +13,7 @@ Your access request for **{{ $request->asset->name }}** has expired without appr
 - **Your Reason:** {{ $request->reason }}
 
 ## What Happened?
-Your request was not reviewed and approved/rejected by the scheduled start time. As per security policy, requests that are not processed within the designated timeframe are automatically marked as expired to maintain system security and compliance.
+Your request was not reviewed and approved/rejected by the scheduled end time. As per security policy, requests that are not processed within the designated timeframe are automatically marked as expired to maintain system security and compliance.
 
 ## Next Steps
 If you still need access to this resource, you have the following options:

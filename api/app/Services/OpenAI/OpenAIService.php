@@ -3,6 +3,7 @@
 namespace App\Services\OpenAI;
 
 use App\Models\Request;
+use App\Models\Session;
 use Exception;
 use File;
 use Illuminate\Support\Facades\Log;
@@ -18,7 +19,7 @@ class OpenAiService
         $this->config = config('pam.openai');
     }
 
-    public function evaluateAccessRequest(Request $request)
+    public function evaluateAccessRequest(Request $request): array
     {
         $config = array_merge($this->config, config('pam.access_request.duration'));
         $systemPrompt = view('prompts.new-request.system', [
@@ -40,6 +41,12 @@ class OpenAiService
             ]);
             throw $e;
         }
+    }
+
+    public function auditSession(Session $session): array
+    {
+        // TODO: Implement session audit
+        return [];
     }
 
     private function prepareResponse(CreateResponse $response, bool $outputJson = true): array

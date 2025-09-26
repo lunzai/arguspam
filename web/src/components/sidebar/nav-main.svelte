@@ -49,7 +49,7 @@
 			isActive: pathname.startsWith('/requests'),
 			items: [
 				{
-					title: 'Assets',
+					title: 'Create Request',
 					url: '/requests/assets'
 				},
 				{

@@ -5,23 +5,26 @@ Hello {{ $notifiable->name }},
 
 We regret to inform you that your access request for **{{ $request->asset->name }}** has been rejected.
 
+## Request Summary
+- **Asset:** {{ $request->asset->name }}
+- **Requested Access Period:** {{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} - {{ $request->end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
+- **Duration:** {{ $request->durationForHumans }}
+- **Your Reason:** {!! nl2br($request->reason) !!}
+
 ## Rejection Details
 - **Rejected by:** {{ optional($request->rejecter)->name ?? 'System Administrator' }}
 - **Rejected on:** {{ $request->rejected_at->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
+@if($request->ai_risk_rating)
+- **AI Risk Rating:** {{ ucwords($request->ai_risk_rating->value) }}
+@endif
 @if($request->approver_risk_rating)
-- **Risk Rating:** {{ $request->approver_risk_rating->value }}
+- **Risk Rating:** {{ ucwords($request->approver_risk_rating->value) }}
 @endif
 @if($request->approver_note)
 
 ## Reason for Rejection
-{{ $request->approver_note }}
+{!! nl2br($request->approver_note) !!}
 @endif
-
-## Request Summary
-- **Asset:** {{ $request->asset->name }}
-- **Requested Access Period:** {{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} - {{ $request->end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
-- **Duration:** {{ $request->duration }}
-- **Your Reason:** {{ $request->reason }}
 
 ## Next Steps
 If you believe this rejection was made in error or if you need to discuss the decision further, please:

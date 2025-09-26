@@ -5,22 +5,24 @@ Hello {{ $notifiable->name }},
 
 The access request for **{{ $request->asset->name }}** has been approved.
 
-## Approval Summary
-- **Requester:** {{ $request->requester->name }} ({{ $request->requester->email }})
-- **Asset:** {{ $request->asset->name }}
-- **Approved on:** {{ $request->approved_at->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
+## Approval Details
 - **Approved by:** {{ $request->approver->name }}
-
-## Request Details
-- **Access Period:** {{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} - {{ $request->end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }}  ({{ $notifiable->timezone }})
-- **Duration:** {{ $request->duration }}
-- **Reason:** {{ $request->reason }}
+- **Approved on:** {{ $request->approved_at->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
+@if($request->ai_risk_rating)
+- **AI Risk Rating:** {{ ucwords($request->ai_risk_rating->value) }}
+@endif
 @if($request->approver_risk_rating)
-- **Approver's Risk Assessment:** {{ $request->approver_risk_rating->value }}
+- **Risk Rating:** {{ ucwords($request->approver_risk_rating->value) }}
 @endif
 @if($request->approver_note)
-- **Approver's Notes:** {{ $request->approver_note }}
+- **Approver Notes:** {!! nl2br($request->approver_note) !!}
 @endif
+
+## Request Summary
+- **Asset:** {{ $request->asset->name }}
+- **Access Period:** {{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} - {{ $request->end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }}  ({{ $notifiable->timezone }})
+- **Duration:** {{ $request->durationForHumans }}
+- **Reason:** {!! nl2br($request->reason) !!}
 
 ## Session Management & Monitoring
 The requester has been notified and instructed to:

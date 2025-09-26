@@ -9,10 +9,12 @@ use App\Events\RequestApproved;
 use App\Events\RequestCreated;
 use App\Events\RequestRejected;
 use App\Events\RequestSubmitted;
+use App\Services\OpenAI\OpenAiService;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
-use App\Services\OpenAI\OpenAIService;
+use Carbon\CarbonInterval;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -102,13 +104,23 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         'created' => RequestCreated::class,
     ];
 
-    public function getAiEvaluation(): void
+    public function durationForHumans(): Attribute
     {
-        $openAIService = app(OpenAIService::class);
-        $evaluation = $openAIService->evaluateAccessRequest($this);
-        
-        $this->ai_note = $evaluation['ai_note'];
-        $this->ai_risk_rating = $evaluation['ai_risk_rating'];
+        return Attribute::make(
+            get: function () {
+                return CarbonInterval::minutes($this->duration)
+                    ->cascade()
+                    ->forHumans();
+            },
+        );
+    }
+
+    public function getAiEvaluation(OpenAiService $openAiService): void
+    {
+        $evaluation = $openAiService->evaluateAccessRequest($this);
+
+        $this->ai_note = $evaluation['output']['ai_note'];
+        $this->ai_risk_rating = $evaluation['output']['ai_risk_rating'];
         $this->save();
     }
 

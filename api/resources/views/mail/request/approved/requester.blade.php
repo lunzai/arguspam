@@ -8,18 +8,21 @@ Great news! Your access request for **{{ $request->asset->name }}** has been app
 ## Approval Details
 - **Approved by:** {{ $request->approver->name }}
 - **Approved on:** {{ $request->approved_at->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
+@if($request->ai_risk_rating)
+- **AI Risk Rating:** {{ ucwords($request->ai_risk_rating->value) }}
+@endif
 @if($request->approver_risk_rating)
-- **Risk Rating:** {{ $request->approver_risk_rating->value }}
+- **Risk Rating:** {{ ucwords($request->approver_risk_rating->value) }}
 @endif
 @if($request->approver_note)
-- **Approver Notes:** {{ $request->approver_note }}
+- **Approver Notes:** {!! nl2br($request->approver_note) !!}
 @endif
 
 ## Request Summary
 - **Asset:** {{ $request->asset->name }}
 - **Access Period:** {{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} - {{ $request->end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }}  ({{ $notifiable->timezone }})
-- **Duration:** {{ $request->duration }}
-- **Reason:** {{ $request->reason }}
+- **Duration:** {{ $request->durationForHumans }}
+- **Reason:** {!! nl2br($request->reason) !!}
 
 ## How to Access Your Approved Resource
 

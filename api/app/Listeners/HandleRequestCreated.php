@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\RequestCreated;
+use App\Services\OpenAI\OpenAiService;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -17,7 +18,7 @@ class HandleRequestCreated implements ShouldBeEncrypted, ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct()
+    public function __construct(private OpenAiService $openAiService)
     {
         //
     }
@@ -29,7 +30,7 @@ class HandleRequestCreated implements ShouldBeEncrypted, ShouldQueue
     {
         // AI evaluation then submit -> notification (HandleRequestSubmitted)
         $request = $event->request;
-        $request->getAiEvaluation();
+        $request->getAiEvaluation($this->openAiService);
         $request->submit();
     }
 

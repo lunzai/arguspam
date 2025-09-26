@@ -3,105 +3,92 @@
 namespace App\Services\OpenAI;
 
 use App\Models\Request;
-use App\Enums\RiskRating;
-use OpenAI;
+use Exception;
+use File;
+use Illuminate\Support\Facades\Log;
+use OpenAI\Laravel\Facades\OpenAI;
+use OpenAI\Responses\Responses\CreateResponse;
 
-class OpenAIService
+class OpenAiService
 {
-    private $client;
-    
+    private array $config;
+
     public function __construct()
     {
-        $this->client = OpenAI::client(config('openai.api_key'));
+        $this->config = config('pam.openai');
     }
 
-    public function evaluateAccessRequest(Request $request): array
+    public function evaluateAccessRequest(Request $request)
     {
-        // Get duration configuration for placeholders
-        $durationConfig = config('pam.access_request.duration');
-        
-        // Prepare replacements for system prompt
-        $systemReplacements = [
-            'min' => $durationConfig['min'],
-            'max' => $durationConfig['max'],
-            'recommended_min' => $durationConfig['recommended_min'],
-            'recommended_max' => $durationConfig['recommended_max'],
-            'low_threshold' => $durationConfig['low_threshold'],
-            'medium_threshold' => $durationConfig['medium_threshold'],
-            'high_threshold' => $durationConfig['high_threshold'],
-        ];
-        
-        // Prepare replacements for user prompt
-        $userReplacements = array_merge($systemReplacements, [
-            'database_name' => $request->asset?->name ?? 'Unknown Database',
-            'start_datetime' => $request->start_datetime?->format('Y-m-d H:i:s') ?? 'N/A',
-            'end_datetime' => $request->end_datetime?->format('Y-m-d H:i:s') ?? 'N/A',
-            'duration' => $request->duration ?? 0,
-            'reason' => $request->reason ?? 'N/A',
-            'intended_query' => $request->intended_query ?? 'N/A',
-            'access_scope' => $request->scope?->value ?? 'N/A',
-            'is_sensitive_data' => $request->is_access_sensitive_data ? 'Yes' : 'No',
-            'sensitive_data_note' => $request->sensitive_data_note ?? 'N/A',
-        ]);
-        
-        // Load and process prompts
-        $systemPrompt = $this->loadPrompt('new-request/system.md', $systemReplacements);
-        $userPrompt = $this->loadPrompt('new-request/user.md', $userReplacements);
-        
-        // Get AI response
-        $response = $this->generateCompletion($systemPrompt, $userPrompt);
-        
-        // Return structured result
+        $config = array_merge($this->config, config('pam.access_request.duration'));
+        $systemPrompt = view('prompts.new-request.system', [
+            'config' => $config,
+            'request' => $request,
+        ])->render();
+        $userPrompt = view('prompts.new-request.user', [
+            'config' => $config,
+            'request' => $request,
+        ])->render();
+        $format = $this->getFormat('prompts/return-formats/request-evaluation.json');
+        try {
+            $response = $this->getResponse($systemPrompt, $userPrompt, $format);
+            return $this->prepareResponse($response);
+        } catch (Exception $e) {
+            Log::error('Access request evaluation failed', [
+                'request_id' => $request->id,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+    }
+
+    private function prepareResponse(CreateResponse $response, bool $outputJson = true): array
+    {
         return [
-            'ai_note' => $response['note'] ?? $response['ai_note'] ?? 'AI evaluation failed',
-            'ai_risk_rating' => $this->mapRiskRating($response['risk_rating'] ?? $response['ai_risk_rating'] ?? 'Medium'),
+            'id' => $response->id,
+            'created_at' => $response->createdAt,
+            'error' => $response->error,
+            'model' => $response->model,
+            'output' => $outputJson ? json_decode($response->outputText, true) : $response->outputText,
+            'reasoning' => $response->reasoning,
+            'store' => $response->store,
+            'temperature' => $response->temperature,
+            'usage' => [
+                'input_tokens' => $response->usage->inputTokens,
+                'cache_tokens' => $response->usage->inputTokensDetails->cachedTokens,
+                'output_tokens' => $response->usage->outputTokens,
+                'reasoning_tokens' => $response->usage->outputTokensDetails->reasoningTokens,
+                'total_tokens' => $response->usage->totalTokens,
+            ],
+            'response' => $response->toArray(),
         ];
     }
 
-    public function generateCompletion(string $systemPrompt, string $userPrompt): array
+    private function getResponse(string $systemPrompt, string $userPrompt, array $format = []): CreateResponse
     {
-        $config = config('pam.openai');
-        
-        $response = $this->client->chat()->create([
-            'model' => $config['model'],
-            'messages' => [
+        $response = OpenAI::responses()->create([
+            'model' => $this->config['model'],
+            'input' => [
                 [
                     'role' => 'system',
                     'content' => $systemPrompt,
                 ],
                 [
-                    'role' => 'user', 
+                    'role' => 'user',
                     'content' => $userPrompt,
-                ]
+                ],
             ],
-            'temperature' => $config['temperature'],
-            'max_tokens' => $config['max_output_tokens'],
-            'top_p' => $config['top_p'],
-            'response_format' => ['type' => 'json_object'],
+            'text' => $format,
+            'temperature' => $this->config['temperature'],
+            'max_output_tokens' => $this->config['max_output_tokens'],
+            'top_p' => $this->config['top_p'],
+            'store' => $this->config['store'],
         ]);
-
-        return json_decode($response->choices[0]->message->content, true);
+        return $response;
     }
 
-    public function loadPrompt($path, $replacements = [])
+    private function getFormat(string $path): array
     {
-        $content = file_get_contents(app_path("Services/OpenAI/prompts/{$path}"));
-        
-        foreach ($replacements as $key => $value) {
-            $content = str_replace("{{" . $key . "}}", $value, $content);
-        }
-        
-        return $content;
-    }
-
-    private function mapRiskRating(string $rating): RiskRating
-    {
-        return match($rating) {
-            'Low' => RiskRating::LOW,
-            'Medium' => RiskRating::MEDIUM,
-            'High' => RiskRating::HIGH,
-            'Critical' => RiskRating::CRITICAL,
-            default => RiskRating::MEDIUM,
-        };
+        return json_decode(File::get(resource_path($path)), true);
     }
 }

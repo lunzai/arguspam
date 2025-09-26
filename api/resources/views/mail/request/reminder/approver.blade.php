@@ -10,7 +10,7 @@ Hello {{ $notifiable->name }},
 - **Asset:** {{ $request->asset->name }}
 - **Requested Start:** {{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
 - **Requested End:** {{ $request->end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
-- **Duration:** {{ $request->duration }}
+- **Duration:** {{ $request->durationForHumans }}
 
 ## ⚠️ URGENT ACTION REQUIRED
 **This request will automatically EXPIRE in {{ \Carbon\Carbon::now()->diffForHumans($request->start_datetime, true) }}**
@@ -18,18 +18,31 @@ Hello {{ $notifiable->name }},
 If no approval or rejection action is taken by **{{ $request->start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})**, the system will automatically mark this request as expired for security compliance.
 
 ## Request Details
-- **Business Justification:** {{ $request->reason }}
+- **Business Justification:** {!! nl2br($request->reason) !!}
 @if($request->intended_query)
-- **Intended Query:** {{ $request->intended_query }}
+- **Intended Query:** {!! nl2br($request->intended_query) !!}
 @endif
 @if($request->scope)
-- **Scope:** {{ $request->scope->value }}
+- **Scope:** {{ ucwords($request->scope->value) }}
 @endif
 @if($request->is_access_sensitive_data)
 - **⚠️ Involves Sensitive Data:** Yes
 @if($request->sensitive_data_note)
-- **Sensitive Data Details:** {{ $request->sensitive_data_note }}
+- **Sensitive Data Details:** {!! nl2br($request->sensitive_data_note) !!}
 @endif
+@endif
+@if ($request->ai_note || $request->ai_risk_rating)
+<x-mail::panel>
+@if ($request->ai_risk_rating)
+**AI Risk Rating:** {{ ucwords($request->ai_risk_rating->value) }}
+@endif
+
+@if ($request->ai_note)
+**AI Note:**
+
+{!! nl2br($request->ai_note) !!}
+@endif
+</x-mail::panel>
 @endif
 
 ## Required Action

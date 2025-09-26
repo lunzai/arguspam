@@ -63,8 +63,8 @@ return [
     ],
 
     'openai' => [
-        'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
-        'temperature' => env('OPENAI_TEMPERATURE', 0.1),
+        'model' => env('OPENAI_MODEL', 'gpt-4.1-mini'),
+        'temperature' => env('OPENAI_TEMPERATURE', 0.2),
         'max_output_tokens' => env('OPENAI_MAX_OUTPUT_TOKENS', 2048),
         'top_p' => env('OPENAI_TOP_P', 1),
         'store' => env('OPENAI_STORE', true),

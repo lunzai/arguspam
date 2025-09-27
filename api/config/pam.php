@@ -1,6 +1,13 @@
 <?php
 
 return [
+
+    'app' => [
+        'web_url' => env('APP_WEB_URL', 'http://localhost'),
+        'site_url' => 'https://arguspam.com/',
+        'github_url' => 'https://github.com/lunzai/arguspam',
+    ],
+
     'user' => [
         'default_timezone' => 'Asia/Singapore',
     ],

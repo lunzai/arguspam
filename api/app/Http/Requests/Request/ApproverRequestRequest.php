@@ -3,13 +3,12 @@
 namespace App\Http\Requests\Request;
 
 use App\Enums\RequestScope;
-use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
 use App\Models\Request;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
-class UpdateRequestRequest extends FormRequest
+class ApproverRequestRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,39 +26,22 @@ class UpdateRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'org_id' => ['sometimes', 'exists:App\Models\Org,id'],
-            'asset_id' => ['sometimes', 'exists:App\Models\Asset,id'],
-            'asset_account_id' => ['sometimes', 'nullable', 'exists:App\Models\AssetAccount,id'],
-            'requester_id' => ['sometimes', 'exists:App\Models\User,id'],
             'start_datetime' => [
-                'sometimes',
                 'date',
                 'after:now',
             ],
             'end_datetime' => [
-                'sometimes',
                 'date',
                 'after:start_datetime',
             ],
             'duration' => [
-                'sometimes',
                 'integer',
                 'min:'.config('pam.access_request.duration.min'),
                 'max:'.config('pam.access_request.duration.max'),
             ],
-            'reason' => ['sometimes', 'string', 'max:255'],
-            'intended_query' => ['sometimes', 'nullable', 'string'],
-            'scope' => ['sometimes', new Enum(RequestScope::class)],
-            'is_access_sensitive_data' => ['sometimes', 'boolean'],
-            'sensitive_data_note' => [
-                'sometimes',
-                'nullable',
-                'string',
-                'required_if:is_access_sensitive_data,true',
-            ],
-            'ai_note' => ['sometimes', 'nullable', 'string'],
-            'ai_risk_rating' => ['sometimes', 'nullable', new Enum(RiskRating::class)],
-            'status' => ['sometimes', new Enum(RequestStatus::class)],
+            'scope' => [new Enum(RequestScope::class)],
+            'approver_note' => ['string'],
+            'approver_risk_rating' => [new Enum(RiskRating::class)],
         ];
     }
 

@@ -26,7 +26,7 @@ class RequestExpire extends Command
      */
     public function handle()
     {
-        $requests = Request::statusPending()
+        $requests = Request::pendingApproval()
             ->endDatetimeNowOrPast()
             ->get();
         $this->info("Found {$requests->count()} expired requests.");

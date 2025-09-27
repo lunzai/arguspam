@@ -15,6 +15,7 @@ use App\Http\Controllers\OrgUserController;
 use App\Http\Controllers\OrgUserGroupController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RequestApproverController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
@@ -61,6 +62,18 @@ Route::middleware('auth:sanctum')->group(function () {
             'user-groups' => UserGroupController::class,
         ]);
 
+        Route::apiResources([
+            'requests' => RequestController::class,
+        ]);
+        Route::apiResource('requests', RequestController::class)
+            ->except(['destroy']);
+        Route::get('/requests/{request}/approval', [RequestApproverController::class, 'show'])
+            ->name('requests.approval.show');
+        Route::put('/requests/{request}/approval', [RequestApproverController::class, 'update'])
+            ->name('requests.approval.update');
+        Route::delete('/requests/{request}/approval', [RequestApproverController::class, 'destroy'])
+            ->name('requests.approval.destroy');
+
         Route::apiResource('user-groups.users', UserGroupUserController::class)
             ->only(['store']);
         Route::delete('user-groups/{user_group}/users', [UserGroupUserController::class, 'destroy'])
@@ -75,14 +88,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/assets/{asset}/credential', [AssetAccountController::class, 'update'])
             ->name('assets.credential.update');
 
-        // Route::get('assets/{asset}/grants', [AssetAccessGrantController::class, 'index'])
-        //     ->name('assets.access-grants.index');
-        // Route::get('assets/{asset}/grants/{asset_access_grant}', [AssetAccessGrantController::class, 'show'])
-        //     ->name('assets.access-grants.show');
-        // Route::post('assets/{asset}/grants', [AssetAccessGrantController::class, 'store'])
-        //     ->name('assets.access-grants.store');
-        // Route::delete('assets/{asset}/grants/{asset_access_grant}', [AssetAccessGrantController::class, 'destroy'])
-        //     ->name('assets.access-grants.destroy');
         Route::get('dashboard', [DashboardController::class, 'index'])
             ->name('dashboard.index');
     });

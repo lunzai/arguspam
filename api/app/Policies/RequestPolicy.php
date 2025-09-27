@@ -41,12 +41,13 @@ class RequestPolicy
 
     public function approve(User $user, Request $request): bool
     {
-        return $this->approveAny($user) ||
+        return $request->canApprove() && ($this->approveAny($user) ||
             (
-                $request->requester->isNot($user) &&
+                // $request->requester->isNot($user) && // Allow for now, considering small team use case
                 $user->canApproveAsset($user, $request->asset) &&
                 $user->hasPermissionTo('request:approve')
-            );
+            )
+        );
     }
 
     public function rejectAny(User $user): bool
@@ -56,12 +57,13 @@ class RequestPolicy
 
     public function reject(User $user, Request $request): bool
     {
-        return $this->rejectAny($user) ||
+        return $request->canApprove() && ($this->rejectAny($user) ||
             (
-                $request->requester->isNot($user) &&
+                // $request->requester->isNot($user) && // Allow for now, considering small team use case
                 $user->canApproveAsset($user, $request->asset) &&
                 $user->hasPermissionTo('request:reject')
-            );
+            )
+        );
     }
 
     public function deleteAny(User $user): bool

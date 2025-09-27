@@ -70,14 +70,14 @@ class RequestController extends Controller
         return new RequestResource($request);
     }
 
-    public function destroy(string $id): Response
-    {
-        $request = RequestModel::findOrFail($id);
-        $this->authorize('delete', $request);
-        $request->deleted_by = Auth::id();
-        $request->save();
-        $request->delete();
+    // public function destroy(string $id): Response
+    // {
+    //     $request = RequestModel::findOrFail($id);
+    //     $this->authorize('delete', $request);
+    //     $request->deleted_by = Auth::id();
+    //     $request->save();
+    //     $request->delete();
 
-        return $this->noContent();
-    }
+    //     return $this->noContent();
+    // }
 }

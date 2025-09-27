@@ -1,7 +1,7 @@
 <x-mail::layout>
 {{-- Header --}}
 <x-slot:header>
-<x-mail::header :url="config('app.url')">
+<x-mail::header :url="config('pam.app.web_url')">
 {{ config('app.name') }}
 </x-mail::header>
 </x-slot:header>
@@ -21,7 +21,7 @@
 {{-- Footer --}}
 <x-slot:footer>
 <x-mail::footer>
-© {{ date('Y') }} {{ config('app.name') }}. {{ __('All rights reserved.') }}
+{{ __('Powered by') }} <a href="{{ config('pam.app.site_url') }}" style="color: #3869D4;">{{ config('app.name') }}</a> © {{ date('Y') }} {{ __('All rights reserved.') }}
 </x-mail::footer>
 </x-slot:footer>
 </x-mail::layout>

@@ -46,7 +46,7 @@ class RequestApprovedNotifyApprover extends Notification implements ShouldQueue
             ->markdown('mail.request.approved.approver', [
                 'request' => $this->request,
                 'notifiable' => $notifiable,
-                'url' => route('requests.show', $this->request),
+                'url' => config('pam.app.web_url').'/requests/'.$this->request->id,
             ]);
     }
 

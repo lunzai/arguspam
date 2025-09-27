@@ -97,6 +97,7 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         'assetAccount',
         'requester',
         'approver',
+        'rejecter',
         'session',
         'audits',
         'createdBy',
@@ -136,39 +137,29 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         RequestSubmitted::dispatchIf($this->save(), $this);
     }
 
-    public function reject($note = null, $riskRating = null): void
+    public function reject(): void
     {
-        if ($this->isExpired()) {
-            throw new \Exception('Request has expired');
-        }
-        if ($this->isPending()) {
-            throw new \Exception('Request is not submitted yet');
+        if (!$this->canApprove()) {
+            throw new \Exception('Request is not eligible for approval');
         }
         $this->status = RequestStatus::REJECTED;
         $this->rejected_at = now();
         $this->rejected_by = auth()->id;
         $this->approved_at = null;
         $this->approved_by = null;
-        $this->approver_note = $note;
-        $this->approver_risk_rating = $riskRating;
         RequestRejected::dispatchIf($this->save(), $this);
     }
 
-    public function approve($note = null, $riskRating = null): void
+    public function approve(): void
     {
-        if ($this->isExpired()) {
-            throw new \Exception('Request has expired');
-        }
-        if ($this->isPending()) {
-            throw new \Exception('Request is not submitted yet');
+        if (!$this->canApprove()) {
+            throw new \Exception('Request is not eligible for approval');
         }
         $this->status = RequestStatus::APPROVED;
         $this->approved_at = now();
         $this->approved_by = auth()->id;
         $this->rejected_at = null;
         $this->rejected_by = null;
-        $this->approver_note = $note;
-        $this->approver_risk_rating = $riskRating;
         RequestApproved::dispatchIf($this->save(), $this);
     }
 
@@ -184,6 +175,11 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         $this->approver_note = null;
         $this->approver_risk_rating = null;
         RequestExpired::dispatchIf($this->save(), $this);
+    }
+
+    public function canApprove(): bool
+    {
+        return !$this->isExpired() && !$this->isPending() && $this->end_datetime->isFuture();
     }
 
     public function canExpire(): bool
@@ -203,9 +199,9 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
     }
 
     #[Scope]
-    protected function statusPending(Builder $query): Builder
+    protected function pendingApproval(Builder $query): Builder
     {
-        return $query->where('status', RequestStatus::PENDING);
+        return $query->whereIn('status', [RequestStatus::SUBMITTED, RequestStatus::PENDING]);
     }
 
     #[Scope]

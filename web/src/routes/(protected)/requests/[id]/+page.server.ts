@@ -6,7 +6,7 @@ export const load = async ({ params, locals }) => {
 	const { authToken, currentOrgId } = locals;
 	const modelService = new RequestService(authToken as string, currentOrgId);
 	const model = (await modelService.findById(id, {
-		include: ['account', 'accessGrants', 'asset', 'requester', 'approver']
+		include: ['account', 'accessGrants', 'asset', 'requester', 'approver', 'rejecter']
 	})) as ApiRequestResource;
 	return {
 		model,

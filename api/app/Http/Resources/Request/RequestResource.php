@@ -66,6 +66,9 @@ class RequestResource extends Resource
                     'approver' => UserResource::make(
                         $this->whenLoaded('approver')
                     ),
+                    'rejecter' => UserResource::make(
+                        $this->whenLoaded('rejecter')
+                    ),
                 ],
             ]),
         ];

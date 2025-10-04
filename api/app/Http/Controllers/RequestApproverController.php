@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Request\ApproverRequestRequest;
+use App\Http\Requests\Request\ApproveRequestRequest;
+use App\Http\Requests\Request\RejectRequestRequest;
 use App\Http\Resources\Request\RequestResource;
 use App\Models\Request as RequestModel;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -17,27 +18,27 @@ class RequestApproverController extends Controller
      * @param  Request  $request
      * @return void
      */
-    public function show(RequestModel $request)
+    public function show(RequestModel $requestModel)
     {
-        if (!$request->canApprove()) {
-            throw new AuthorizationException('Request is not eligible for approval.');
-        }
-        if (!Auth::user()->canApprove($request->asset)) {
-            throw new AuthorizationException('You are not authorized to approve this request.');
-        }
-        return $this->noContent();
+        $canApproveOrCancel = $requestModel->canApprove();
+        return [
+            'data' => [
+                'canApprove' => $canApproveOrCancel && Auth::user()->canApprove($requestModel->asset),
+                'canCancel' => $canApproveOrCancel && Auth::user()->can('cancel', $requestModel),
+            ]
+        ];
     }
 
     /**
      * Approve request
      */
-    public function update(ApproverRequestRequest $request, RequestModel $requestModel): RequestResource
+    public function store(ApproveRequestRequest $request, RequestModel $requestModel): RequestResource
     {
-        $this->authorize('request:approve', $requestModel);
+        $this->authorize('approve', $requestModel);
         $validated = $request->validated();
+        $requestModel->resetApproval();
         $requestModel->update($validated);
         $requestModel->approve();
-        $requestModel->save();
 
         return new RequestResource($requestModel);
     }
@@ -45,13 +46,22 @@ class RequestApproverController extends Controller
     /**
      * Reject request
      */
-    public function destroy(ApproverRequestRequest $request, RequestModel $requestModel): RequestResource
+    public function update(RejectRequestRequest $request, RequestModel $requestModel): RequestResource
     {
-        $this->authorize('request:reject', $requestModel);
+        $this->authorize('reject', $requestModel);
         $validated = $request->validated();
+        $requestModel->resetApproval();
         $requestModel->update($validated);
         $requestModel->reject();
-        $requestModel->save();
+
+        return new RequestResource($requestModel);
+    }
+
+    public function delete(RequestModel $requestModel): RequestResource
+    {
+        $this->authorize('cancel', $requestModel);
+        $requestModel->resetApproval();
+        $requestModel->cancel();
 
         return new RequestResource($requestModel);
     }

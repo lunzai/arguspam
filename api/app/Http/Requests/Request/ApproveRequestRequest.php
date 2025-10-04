@@ -4,13 +4,12 @@ namespace App\Http\Requests\Request;
 
 use App\Enums\RequestScope;
 use App\Enums\RiskRating;
-use App\Models\Asset;
 use App\Models\Request;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
-class StoreRequestRequest extends FormRequest
+class ApproveRequestRequest extends FormRequest
 {
     protected $durationMin;
     protected $durationMax;
@@ -21,16 +20,11 @@ class StoreRequestRequest extends FormRequest
         $this->durationMin = intval(config('pam.access_request.duration.min', 10));
         $this->durationMax = intval(config('pam.access_request.duration.max', 43200));
     }
-
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        // if ($this->requester_id && $this->asset_id) {
-        //     $asset = Asset::find($this->asset_id);
-        //     return $this->user()->canRequest($asset);
-        // }
         return true;
     }
 
@@ -41,12 +35,7 @@ class StoreRequestRequest extends FormRequest
      */
     public function rules(): array
     {
-        // TODO: add validation for user's and group's asset and asset account
         return [
-            'org_id' => ['required', 'exists:App\Models\Org,id'],
-            'asset_id' => ['required', 'exists:App\Models\Asset,id'],
-            'asset_account_id' => ['nullable', 'exists:App\Models\AssetAccount,id'],
-            'requester_id' => ['required', 'exists:App\Models\User,id'],
             'start_datetime' => [
                 'required',
                 'date',
@@ -63,17 +52,9 @@ class StoreRequestRequest extends FormRequest
                 'min:'.$this->durationMin,
                 'max:'.$this->durationMax,
             ],
-            'reason' => ['required', 'string'],
-            'intended_query' => ['nullable', 'string'],
             'scope' => ['required', new Enum(RequestScope::class)],
-            'is_access_sensitive_data' => ['required', 'boolean'],
-            'sensitive_data_note' => [
-                'nullable',
-                'string',
-                'required_if:is_access_sensitive_data,true',
-            ],
-            // 'ai_note' => ['nullable', 'string'],
-            // 'ai_risk_rating' => ['nullable', new Enum(RiskRating::class)],
+            'approver_note' => ['required', 'string'],
+            'approver_risk_rating' => ['required', new Enum(RiskRating::class)],
         ];
     }
 
@@ -103,9 +84,6 @@ class StoreRequestRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $this->merge([
-            'requester_id' => $this->user()->id,
-        ]);
         if ($this->has('start_datetime') && $this->has('end_datetime')) {
             try {
                 $start = Carbon::parse($this->start_datetime);
@@ -116,11 +94,6 @@ class StoreRequestRequest extends FormRequest
             } catch (\Exception $e) {
                 // do nothing
             }
-        }
-        if ($this->has('status')) {
-            $this->merge([
-                'status' => strtolower($this->status),
-            ]);
         }
     }
 }

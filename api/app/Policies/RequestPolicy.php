@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 
 class RequestPolicy
 {
@@ -70,7 +71,7 @@ class RequestPolicy
     {
         return $user->hasPermissionTo('request:cancelany');
     }
-    
+
     public function cancel(User $user, Request $request): bool
     {
         return $request->canCancel() && ($this->cancelAny($user) ||

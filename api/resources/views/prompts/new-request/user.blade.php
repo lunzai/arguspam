@@ -16,13 +16,12 @@ Evaluate the following database access request:
 - Sensitive data note: {!! $request->sensitive_data_note !!}
 
 **Analysis Requirements:**
-- Provide an **ai_note** (150-350 words) with step-by-step reasoning:  
-  (1) context evaluation → (2) query review → (3) escalation rules applied → (4) conclusion.  
-- Convert all durations from minutes into human-readable units (e.g., “120 minutes (2 hours)”, “10080 minutes (7 days)”).  
+- Provide an concise **ai_note** (50-200 words) with step-by-step reasoning:  
+  (1) context evaluation → (2) query review → (3) conclusion.  
+- Convert all durations from minutes into human-readable units (e.g., “120 minutes → 2 hours)”, “10080 minutes → 7 days”).  
 - Highlight security, privacy, compliance, and operational risks.  
 - Reference relevant compliance frameworks (GDPR, PCI-DSS, HIPAA, SOX, SOC2) when applicable.  
-- If the query or reason is vague, assume the worst-case scenario.  
-- Identify explicitly which **Risk Escalation Rule(s)** from system context were applied.  
+- If the query or reason is vague, assume the worst-case scenario.
 - Maintain a professional, business-oriented tone (no first-person pronouns).
 
 **Risk Rating:**
@@ -30,9 +29,9 @@ Evaluate the following database access request:
 
 **Output Format (MANDATORY):**
 - Respond with **valid JSON only** — no text outside the JSON object.  
-- JSON must be pretty-printed with `\n` line breaks and indentation for readability.  
+- JSON must be pretty-printed with `\n` line breaks for readability.  
 - Use this schema exactly:  
 {
-  "ai_note": "<step-by-step analysis with human-readable durations and final recommendation>",
+  "ai_note": "<step-by-step analysis with human-readable durations and final recommendation, Use line breaks to improve readability.>",
   "ai_risk_rating": "<{!! RiskRating::toString('|') !!}>"
 }

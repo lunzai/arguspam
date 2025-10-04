@@ -103,7 +103,7 @@ class DashboardController extends Controller
                 return DB::table('sessions')
                     ->where([
                         'org_id' => $currentOrgId,
-                        'status' => SessionStatus::ACTIVE,
+                        'status' => SessionStatus::STARTED,
                     ])
                     ->count();
             }

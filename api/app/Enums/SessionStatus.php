@@ -5,8 +5,9 @@ namespace App\Enums;
 enum SessionStatus: string
 {
     case SCHEDULED = 'scheduled';
-    case ACTIVE = 'active';
+    case CANCELLED = 'cancelled';
+    case STARTED = 'started';
+    case ENDED = 'ended';
     case EXPIRED = 'expired';
     case TERMINATED = 'terminated';
-    case ENDED = 'ended';
 }

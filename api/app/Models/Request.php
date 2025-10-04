@@ -23,6 +23,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class Request extends Model implements ShouldHandleEventsAfterCommit
 {
@@ -135,6 +137,16 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         $this->save();
     }
 
+    public function resetApproval(): void
+    {
+        $this->rejected_at = null;
+        $this->rejected_by = null;
+        $this->approved_at = null;
+        $this->approved_by = null;
+        $this->approver_risk_rating = null;
+        $this->approver_note = null;
+    }
+
     public function submit(): void
     {
         if (!$this->isPending()) {
@@ -151,9 +163,7 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         }
         $this->status = RequestStatus::REJECTED;
         $this->rejected_at = now();
-        $this->rejected_by = auth()->id;
-        $this->approved_at = null;
-        $this->approved_by = null;
+        $this->rejected_by = Auth::id();
         RequestRejected::dispatchIf($this->save(), $this);
     }
 
@@ -164,9 +174,7 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         }
         $this->status = RequestStatus::APPROVED;
         $this->approved_at = now();
-        $this->approved_by = auth()->id;
-        $this->rejected_at = null;
-        $this->rejected_by = null;
+        $this->approved_by = Auth::id();
         RequestApproved::dispatchIf($this->save(), $this);
     }
 
@@ -175,37 +183,42 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         if (!$this->canExpire()) {
             throw new \Exception('Request is not expired yet');
         }
+        $this->resetApproval();
         $this->status = RequestStatus::EXPIRED;
-        $this->rejected_at = now();
-        $this->approved_at = null;
-        $this->approved_by = null;
-        $this->approver_note = null;
-        $this->approver_risk_rating = null;
         RequestExpired::dispatchIf($this->save(), $this);
     }
 
-    public function cancel(): void 
+    public function cancel(): void
     {
+        if (!$this->canCancel()) {
+            throw new \Exception('Request is not eligible for cancellation');
+        }
+        $this->resetApproval();
         $this->status = RequestStatus::CANCELLED;
-        $this->cancelled_by = auth()->id;
+        $this->cancelled_by = Auth::id();
         $this->cancelled_at = now();
         RequestCancelled::dispatchIf($this->save(), $this);
     }
 
     public function canApprove(): bool
     {
-        return !$this->isExpired() && !$this->isPending() && $this->end_datetime->isFuture();
+        return $this->isSubmitted() && $this->end_datetime->isFuture();
     }
 
     public function canCancel(): bool
     {
-        return $this->status == RequestStatus::SUBMITTED || $this->status == RequestStatus::PENDING;
+        return $this->canApprove();
     }
 
     public function canExpire(): bool
     {
-        return ($this->status == RequestStatus::SUBMITTED || $this->status == RequestStatus::PENDING) &&
+        return ($this->isSubmitted() || $this->isPending()) &&
             $this->start_datetime->isNowOrPast();
+    }
+
+    public function isSubmitted() : bool
+    {
+        return $this->status == RequestStatus::SUBMITTED;
     }
 
     public function isExpired(): bool

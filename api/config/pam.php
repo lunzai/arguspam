@@ -100,5 +100,6 @@ return [
     'rbac' => [
         'default_admin_role' => 'Admin',
         'default_user_role' => 'User',
+        'admin_bypass_gate' => env('RBAC_ADMIN_BYPASS_GATE', false),
     ],
 ];

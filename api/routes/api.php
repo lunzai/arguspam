@@ -67,12 +67,14 @@ Route::middleware('auth:sanctum')->group(function () {
         ]);
         Route::apiResource('requests', RequestController::class)
             ->except(['destroy']);
-        Route::get('/requests/{request}/can-approve', [RequestApproverController::class, 'show'])
+        Route::get('/requests/{requestModel}/can-approve', [RequestApproverController::class, 'show'])
             ->name('requests.approval.show');
-        Route::put('/requests/{request}/approve', [RequestApproverController::class, 'update'])
+        Route::post('/requests/{requestModel}/approve', [RequestApproverController::class, 'store'])
+            ->name('requests.approval.store');
+        Route::put('/requests/{requestModel}/reject', [RequestApproverController::class, 'update'])
             ->name('requests.approval.update');
-        Route::put('/requests/{request}/reject', [RequestApproverController::class, 'destroy'])
-            ->name('requests.approval.destroy');
+        Route::delete('/requests/{requestModel}/cancel', [RequestApproverController::class, 'delete'])
+            ->name('requests.approval.delete');
 
         Route::apiResource('user-groups.users', UserGroupUserController::class)
             ->only(['store']);

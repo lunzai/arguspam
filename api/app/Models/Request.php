@@ -6,6 +6,7 @@ use App\Enums\RequestScope;
 use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
 use App\Events\RequestApproved;
+use App\Events\RequestCancelled;
 use App\Events\RequestCreated;
 use App\Events\RequestExpired;
 use App\Events\RequestRejected;
@@ -50,6 +51,8 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         'approved_at',
         'rejected_by',
         'rejected_at',
+        'cancelled_by',
+        'cancelled_at',
     ];
 
     protected $casts = [
@@ -61,6 +64,7 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         'deleted_at' => 'datetime',
         'approved_at' => 'datetime',
         'rejected_at' => 'datetime',
+        'cancelled_at' => 'datetime',
         'status' => RequestStatus::class,
         'approver_risk_rating' => RiskRating::class,
         'ai_risk_rating' => RiskRating::class,
@@ -89,6 +93,8 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         'approved_at' => 'Approved At',
         'rejected_by' => 'Rejected By',
         'rejected_at' => 'Rejected At',
+        'cancelled_by' => 'Cancelled By',
+        'cancelled_at' => 'Cancelled At',
     ];
 
     public static $includable = [
@@ -102,6 +108,7 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         'audits',
         'createdBy',
         'updatedBy',
+        'cancelledBy',
     ];
 
     protected $dispatchesEvents = [
@@ -177,9 +184,22 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         RequestExpired::dispatchIf($this->save(), $this);
     }
 
+    public function cancel(): void 
+    {
+        $this->status = RequestStatus::CANCELLED;
+        $this->cancelled_by = auth()->id;
+        $this->cancelled_at = now();
+        RequestCancelled::dispatchIf($this->save(), $this);
+    }
+
     public function canApprove(): bool
     {
         return !$this->isExpired() && !$this->isPending() && $this->end_datetime->isFuture();
+    }
+
+    public function canCancel(): bool
+    {
+        return $this->status == RequestStatus::SUBMITTED || $this->status == RequestStatus::PENDING;
     }
 
     public function canExpire(): bool
@@ -239,6 +259,11 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
     public function rejecter(): BelongsTo
     {
         return $this->belongsTo(User::class, 'rejected_by');
+    }
+
+    public function cancelledBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'cancelled_by');
     }
 
     public function session(): HasOne

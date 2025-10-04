@@ -19,8 +19,8 @@ class AccessRestrictionResource extends Resource
         return [
             'attributes' => [
                 'id' => $this->id,
-                'name' => $this->name,
-                'description' => $this->description,
+                'name' => e($this->name),
+                'description' => e($this->description),
                 'type' => $this->type,
                 'data' => $this->data,
                 'status' => $this->status,

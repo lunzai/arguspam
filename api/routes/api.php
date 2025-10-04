@@ -67,11 +67,11 @@ Route::middleware('auth:sanctum')->group(function () {
         ]);
         Route::apiResource('requests', RequestController::class)
             ->except(['destroy']);
-        Route::get('/requests/{request}/approval', [RequestApproverController::class, 'show'])
+        Route::get('/requests/{request}/can-approve', [RequestApproverController::class, 'show'])
             ->name('requests.approval.show');
-        Route::put('/requests/{request}/approval', [RequestApproverController::class, 'update'])
+        Route::put('/requests/{request}/approve', [RequestApproverController::class, 'update'])
             ->name('requests.approval.update');
-        Route::delete('/requests/{request}/approval', [RequestApproverController::class, 'destroy'])
+        Route::put('/requests/{request}/reject', [RequestApproverController::class, 'destroy'])
             ->name('requests.approval.destroy');
 
         Route::apiResource('user-groups.users', UserGroupUserController::class)

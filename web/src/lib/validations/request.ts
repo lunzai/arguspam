@@ -67,11 +67,56 @@ export const RequesterSchema = z
 		}
 	);
 
-export type Requester = z.infer<typeof RequesterSchema>;
+export const ApproveSchema = z
+	.object({
+		start_datetime: z.date({
+			required_error: 'Start datetime is required',
+			invalid_type_error: 'Invalid date'
+		}),
+		end_datetime: z
+			.date({
+				required_error: 'End datetime is required',
+				invalid_type_error: 'Invalid date'
+			})
+			.min(new Date(), { message: 'End datetime must be in the future' }),
+		duration: z.number().nullish(),
+		scope: z.enum(['ReadOnly', 'ReadWrite', 'DDL', 'DML', 'All']),
+		approver_risk_rating: z.enum(['low', 'medium', 'high', 'critical']),
+		approver_note: z.string().trim().min(2, 'Approver note is required')
+	})
+	.refine(({ start_datetime, end_datetime }) => start_datetime < end_datetime, {
+		path: ['end_datetime'],
+		message: 'End datetime must be after start datetime'
+	})
+	.refine(
+		({ start_datetime, end_datetime }) => {
+			const duration = (end_datetime.getTime() - start_datetime.getTime()) / 60000;
+			return duration >= Number(PUBLIC_ACCESS_REQUEST_MIN_DURATION);
+		},
+		{
+			path: ['end_datetime'],
+			message: `Duration must be at least ${formatDistanceToNowStrict(
+				addMinutes(Date.now(), Number(PUBLIC_ACCESS_REQUEST_MIN_DURATION))
+			)}`
+		}
+	)
+	.refine(
+		({ start_datetime, end_datetime }) => {
+			const duration = (end_datetime.getTime() - start_datetime.getTime()) / 60000;
+			return duration <= Number(PUBLIC_ACCESS_REQUEST_MAX_DURATION);
+		},
+		{
+			path: ['end_datetime'],
+			message: `Duration must be at most ${formatDistanceToNowStrict(
+				addMinutes(Date.now(), Number(PUBLIC_ACCESS_REQUEST_MAX_DURATION))
+			)}`
+		}
+	);
 
-export const ApproverSchema = z.object({
-	approver_note: z.string().min(2, 'Note must be at least 2 characters').nullish(),
-	approver_risk_rating: z.enum(['low', 'medium', 'high', 'critical'])
+export const RejectSchema = z.object({
+	approver_note: z.string().trim().min(2, 'Approver note is required')
 });
 
-export type Approver = z.infer<typeof ApproverSchema>;
+export type Requester = z.infer<typeof RequesterSchema>;
+export type Approve = z.infer<typeof ApproveSchema>;
+export type Reject = z.infer<typeof RejectSchema>;

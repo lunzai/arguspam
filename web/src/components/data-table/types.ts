@@ -84,6 +84,7 @@ export interface DataTableProps<T = any> {
 	config: DataTableConfig<T>;
 	initialInclude?: string[];
 	initialData?: any[];
+	initialSort?: SortConfig;
 	initialPagination?: Partial<PaginationConfig>;
 	initialSearchParams?: URLSearchParams;
 	onDataChange?: (data: any[]) => void;

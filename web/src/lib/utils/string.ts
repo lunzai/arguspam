@@ -59,6 +59,17 @@ export function interpolate(template: string, params: Record<string, any>): stri
 export function capitalizeWords(str: string): string {
 	return str
 		.split(' ')
-		.map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+		.map((word) => ucFirst(word))
 		.join(' ');
+}
+
+export function nl2br(str: string): string {
+	// Use a regular expression to match all common line break characters
+	// (\r\n for Windows, \n for Unix/Linux/macOS)
+	// and replace them with <br> tags.
+	return str.replace(/(\r\n|\n)/g, '<br>');
+}
+
+export function ucFirst(str: string): string {
+	return str.charAt(0).toUpperCase() + str.slice(1);
 }

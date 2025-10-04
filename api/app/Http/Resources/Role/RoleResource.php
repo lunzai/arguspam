@@ -19,8 +19,8 @@ class RoleResource extends Resource
         return [
             'attributes' => [
                 'id' => $this->id,
-                'name' => $this->name,
-                'description' => $this->description,
+                'name' => e($this->name),
+                'description' => e($this->description),
                 'is_default' => $this->is_default,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,

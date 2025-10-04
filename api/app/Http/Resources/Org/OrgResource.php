@@ -19,8 +19,8 @@ class OrgResource extends Resource
         return [
             'attributes' => [
                 'id' => $this->id,
-                'name' => $this->name,
-                'description' => $this->description,
+                'name' => e($this->name),
+                'description' => e($this->description),
                 'status' => $this->status,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,

@@ -31,17 +31,17 @@
 
 	const platformNavItems = [
 		{
-			title: 'Dashboard',
+			title: 'Dashboard (TODO)',
 			url: '/dashboard',
 			icon: LayoutDashboardIcon,
 			isActive: pathname.startsWith('/dashboard')
 		},
-		{
-			title: 'Announcements',
-			url: '/announcements',
-			icon: MessageSquare,
-			isActive: pathname.startsWith('/announcements')
-		},
+		// {
+		// 	title: 'Announcements',
+		// 	url: '/announcements',
+		// 	icon: MessageSquare,
+		// 	isActive: pathname.startsWith('/announcements')
+		// },
 		{
 			title: 'Requests',
 			url: '#',
@@ -53,7 +53,7 @@
 					url: '/requests/assets'
 				},
 				{
-					title: 'Pending Approval',
+					title: 'Pending Approval (TODO)',
 					url: '/requests/pending-approval'
 				},
 				{
@@ -63,7 +63,7 @@
 			]
 		},
 		{
-			title: 'Sessions',
+			title: 'Sessions (TODO)',
 			url: '#',
 			icon: SquareTerminalIcon,
 			isActive: pathname.startsWith('/sessions'),
@@ -79,7 +79,7 @@
 			]
 		},
 		{
-			title: 'Audits',
+			title: 'Audits (TODO)',
 			url: '/audits',
 			icon: Cctv,
 			isActive: pathname.startsWith('/audits')

@@ -25,8 +25,8 @@ class UserResource extends Resource
         return [
             'attributes' => [
                 'id' => $this->id,
-                'name' => $this->name,
-                'email' => $this->email,
+                'name' => e($this->name),
+                'email' => e($this->email),
                 'default_timezone' => $this->default_timezone,
                 $this->mergeWhen($userCheckRoute, [
                     'email_verified_at' => $this->email_verified_at,

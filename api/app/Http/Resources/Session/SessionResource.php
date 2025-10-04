@@ -33,7 +33,7 @@ class SessionResource extends Resource
                 'is_jit' => $this->is_jit,
                 'account_name' => $this->account_name,
                 'jit_vault_path' => $this->jit_vault_path,
-                'session_note' => $this->session_note,
+                'session_note' => e($this->session_note),
                 'is_expired' => $this->is_expired,
                 'is_terminated' => $this->is_terminated,
                 'is_checkin' => $this->is_checkin,

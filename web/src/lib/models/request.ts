@@ -17,7 +17,7 @@ export interface Request extends BaseModel {
 	approver_risk_rating: 'low' | 'medium' | 'high' | 'critical';
 	ai_note: string;
 	ai_risk_rating: 'low' | 'medium' | 'high' | 'critical';
-	status: 'pending' | 'approved' | 'rejected' | 'expired';
+	status: 'pending' | 'approved' | 'rejected' | 'expired' | 'cancelled' | 'submitted';
 	approved_by: number;
 	approved_at: Date;
 	rejected_by: number;

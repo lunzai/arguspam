@@ -10,7 +10,7 @@ export interface ResourceItem<T> {
  */
 export interface Resource<T> {
 	attributes: T;
-	relationships?: Record<string, ResourceItem<any>[]>;
+	relationships?: Record<string, any>;
 }
 
 /**

@@ -66,6 +66,21 @@ class RequestPolicy
         );
     }
 
+    public function cancelAny(User $user): bool
+    {
+        return $user->hasPermissionTo('request:cancelany');
+    }
+    
+    public function cancel(User $user, Request $request): bool
+    {
+        return $request->canCancel() && ($this->cancelAny($user) ||
+            (
+                $request->requester->is($user) &&
+                $user->hasPermissionTo('request:cancel')
+            )
+        );
+    }
+
     public function deleteAny(User $user): bool
     {
         return $user->hasPermissionTo('request:deleteany');

@@ -195,6 +195,7 @@
 	{config}
 	{initialSearchParams}
 	initialInclude={['asset', 'requester', 'approver']}
+	initialSort={{ column: 'created_at', direction: 'desc' }}
 	onDataChange={handleDataChange}
 	onPaginationChange={handlePaginationChange}
 	onFilterChange={handleFilterChange}

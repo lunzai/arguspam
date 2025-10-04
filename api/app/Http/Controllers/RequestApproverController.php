@@ -6,7 +6,6 @@ use App\Http\Requests\Request\ApproveRequestRequest;
 use App\Http\Requests\Request\RejectRequestRequest;
 use App\Http\Resources\Request\RequestResource;
 use App\Models\Request as RequestModel;
-use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -25,7 +24,7 @@ class RequestApproverController extends Controller
             'data' => [
                 'canApprove' => $canApproveOrCancel && Auth::user()->canApprove($requestModel->asset),
                 'canCancel' => $canApproveOrCancel && Auth::user()->can('cancel', $requestModel),
-            ]
+            ],
         ];
     }
 

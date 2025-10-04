@@ -24,7 +24,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class Request extends Model implements ShouldHandleEventsAfterCommit
 {
@@ -216,7 +215,7 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
             $this->start_datetime->isNowOrPast();
     }
 
-    public function isSubmitted() : bool
+    public function isSubmitted(): bool
     {
         return $this->status == RequestStatus::SUBMITTED;
     }

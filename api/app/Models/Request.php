@@ -48,24 +48,28 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         'ai_note',
         'ai_risk_rating',
         'status',
+        'submitted_at',
         'approved_by',
         'approved_at',
         'rejected_by',
         'rejected_at',
         'cancelled_by',
         'cancelled_at',
+        'expired_at',
     ];
 
     protected $casts = [
         'start_datetime' => 'datetime',
         'end_datetime' => 'datetime',
         'is_access_sensitive_data' => 'boolean',
+        'submitted_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
         'approved_at' => 'datetime',
         'rejected_at' => 'datetime',
         'cancelled_at' => 'datetime',
+        'expired_at' => 'datetime',
         'status' => RequestStatus::class,
         'approver_risk_rating' => RiskRating::class,
         'ai_risk_rating' => RiskRating::class,
@@ -90,12 +94,14 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         'ai_note' => 'AI Note',
         'ai_risk_rating' => 'AI Risk Rating',
         'status' => 'Status',
+        'submitted_at' => 'Submitted At',
         'approved_by' => 'Approved By',
         'approved_at' => 'Approved At',
         'rejected_by' => 'Rejected By',
         'rejected_at' => 'Rejected At',
         'cancelled_by' => 'Cancelled By',
         'cancelled_at' => 'Cancelled At',
+        'expired_at' => 'Expired At',
     ];
 
     public static $includable = [
@@ -142,6 +148,7 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         $this->rejected_by = null;
         $this->approved_at = null;
         $this->approved_by = null;
+        $this->expired_at = null;
         $this->approver_risk_rating = null;
         $this->approver_note = null;
     }
@@ -152,6 +159,7 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
             throw new \Exception('Request is not pending');
         }
         $this->status = RequestStatus::SUBMITTED;
+        $this->submitted_at = now();
         RequestSubmitted::dispatchIf($this->save(), $this);
     }
 
@@ -184,6 +192,7 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         }
         $this->resetApproval();
         $this->status = RequestStatus::EXPIRED;
+        $this->expired_at = now();
         RequestExpired::dispatchIf($this->save(), $this);
     }
 

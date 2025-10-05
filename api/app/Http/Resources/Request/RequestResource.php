@@ -39,12 +39,18 @@ class RequestResource extends Resource
                 'ai_note' => e($this->ai_note),
                 'ai_risk_rating' => $this->ai_risk_rating,
                 'status' => $this->status,
+                'submitted_at' => $this->submitted_at,
                 'approved_by' => $this->approved_by,
                 'approved_at' => $this->approved_at,
                 'rejected_by' => $this->rejected_by,
                 'rejected_at' => $this->rejected_at,
+                'cancelled_by' => $this->cancelled_by,
+                'cancelled_at' => $this->cancelled_at,
+                'expired_at' => $this->expired_at,
                 'created_at' => $this->created_at,
+                'created_by' => $this->created_by,
                 'updated_at' => $this->updated_at,
+                'updated_by' => $this->updated_by,
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
@@ -68,6 +74,15 @@ class RequestResource extends Resource
                     ),
                     'rejecter' => UserResource::make(
                         $this->whenLoaded('rejecter')
+                    ),
+                    'cancelled_by' => UserResource::make(
+                        $this->whenLoaded('cancelledBy')
+                    ),
+                    'created_by' => UserResource::make(
+                        $this->whenLoaded('createdBy')
+                    ),
+                    'updated_by' => UserResource::make(
+                        $this->whenLoaded('updatedBy')
                     ),
                 ],
             ]),

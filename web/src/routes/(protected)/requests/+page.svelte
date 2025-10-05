@@ -76,9 +76,13 @@
 					case 'pending':
 						variant = 'default';
 						break;
+					case 'submitted':
+						variant = 'secondary';
+						className = 'bg-blue-500 text-white';
+						break;
 					case 'approved':
 						variant = 'secondary';
-						className = 'bg-green-500 text-green-500';
+						className = 'bg-green-500 text-white';
 						break;
 					case 'rejected':
 						variant = 'destructive';
@@ -117,14 +121,23 @@
 			sortable: false,
 			filterable: false,
 			renderer: (value: string, row: Request, relationships) => {
-				if (!row.approved_at) {
+				let user: User | null = null;
+				let datetime: Date | null = null;
+				if (row.approved_at) {
+					user = relationships.approver?.attributes as User;
+					datetime = row.approved_at;
+				}
+				if (row.rejected_at) {
+					user = relationships.rejecter?.attributes as User;
+					datetime = row.rejected_at;
+				}
+				if (!user) {
 					return '-';
 				}
-				const user = relationships.approver?.attributes as User;
 				return `
                 <div>${user?.name || '-'}</div>
                 <div class="text-muted-foreground text-xs truncate">${user?.email || '-'}</div>
-                <div class="text-muted-foreground text-xs truncate">${row.approved_at ? shortDateTime(row.approved_at) : '-'}</div>
+                <div class="text-muted-foreground text-xs truncate">${datetime ? shortDateTime(datetime) : '-'}</div>
                 `;
 			}
 		},
@@ -194,7 +207,7 @@
 	model={{} as Request}
 	{config}
 	{initialSearchParams}
-	initialInclude={['asset', 'requester', 'approver']}
+	initialInclude={['asset', 'requester', 'approver', 'rejecter']}
 	initialSort={{ column: 'created_at', direction: 'desc' }}
 	onDataChange={handleDataChange}
 	onPaginationChange={handlePaginationChange}

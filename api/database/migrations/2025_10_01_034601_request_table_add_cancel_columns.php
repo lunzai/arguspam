@@ -18,6 +18,12 @@ return new class extends Migration
             $table->timestamp('cancelled_at')
                 ->nullable()
                 ->after('cancelled_by');
+            $table->timestamp('submitted_at')
+                ->nullable()
+                ->after('status');
+            $table->timestamp('expired_at')
+                ->nullable()
+                ->after('cancelled_at');
         });
     }
 
@@ -29,6 +35,8 @@ return new class extends Migration
         Schema::table('requests', function (Blueprint $table) {
             $table->dropColumn('cancelled_by');
             $table->dropColumn('cancelled_at');
+            $table->dropColumn('submitted_at');
+            $table->dropColumn('expired_at');
         });
     }
 };

@@ -43,6 +43,15 @@
 	let rejectDialogIsOpen = $state(false);
 	let cancelDialogIsOpen = $state(false);
 	let cancelDialogIsLoading = $state(false);
+
+	const hasSubmitted = $derived(model.submitted_at !== null);
+	const hasApproval = $derived(
+		model.approved_at || model.rejected_at || model.cancelled_at || model.expired_at
+	);
+	const hasCancelled = $derived(model.cancelled_at !== null);
+	const hasApproved = $derived(model.approved_at !== null);
+	const hasRejected = $derived(model.rejected_at !== null);
+	const hasExpired = $derived(model.expired_at !== null);
 </script>
 
 <ApproveFormDialog
@@ -113,27 +122,23 @@
 					<div class="">
 						<Progress.Root className="pl-0 ml-3">
 							<Progress.Row
-								icon={model.status == 'pending' ? Bot : Check}
-								title="AI Evaluation"
-								description={model.status == 'pending'
-									? '-'
-									: relativeDateTime(model.created_at, false)}
-								color={model.status == 'pending' ? 'gray' : 'green'}
+								icon={Check}
+								title="Request Created"
+								description={relativeDateTime(model.created_at, false)}
+								color={'green'}
 							/>
 							<Progress.Row
-								icon={model.status == 'pending' ? Hourglass : Check}
-								title="Submitted"
-								description={model.status == 'pending'
-									? '-'
-									: relativeDateTime(model.created_at, false)}
-								color={model.status == 'pending' ? 'gray' : 'green'}
+								icon={hasSubmitted ? Check : Bot}
+								title="AI Evaluation"
+								description={relativeDateTime(model.submitted_at, false)}
+								color={hasSubmitted ? 'green' : 'blue'}
 							/>
-							{#if model.status == 'submitted'}
+							{#if !hasApproval}
 								<Progress.Row
 									icon={LucideClipboardCheck}
-									title="Awaiting Approval"
-									description="The request is pending approval..."
-									color="gray"
+									title="Pending Approval"
+									description="-"
+									color={hasSubmitted ? 'blue' : 'gray'}
 								/>
 							{/if}
 							{#if model.status == 'approved'}
@@ -155,8 +160,8 @@
 							{#if model.status == 'cancelled'}
 								<Progress.Row
 									icon={ClipboardX}
-									title="Cancelled"
-									description={relativeDateTime(model.updated_at, false)}
+									title="Request Cancelled"
+									description={relativeDateTime(model.cancelled_at, false)}
 									color="gray"
 								/>
 							{/if}
@@ -164,7 +169,7 @@
 								<Progress.Row
 									icon={ClipboardX}
 									title="Expired"
-									description={relativeDateTime(model.updated_at, false)}
+									description={relativeDateTime(model.expired_at, false)}
 									color="gray"
 								/>
 							{/if}
@@ -172,10 +177,8 @@
 								icon={session ? Check : SquareTerminal}
 								title="Session Created"
 								description={relativeDateTime(session?.created_at, false)}
-								color={session ? 'green' : 'gray'}
-								disabled={model.status == 'rejected' ||
-									model.status == 'cancelled' ||
-									model.status == 'expired'}
+								color={session ? 'green' : hasApproved ? 'blue' : 'gray'}
+								disabled={hasCancelled || hasExpired || hasRejected}
 							/>
 						</Progress.Root>
 					</div>

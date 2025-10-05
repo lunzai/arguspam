@@ -31,31 +31,55 @@
 
 	const platformNavItems = [
 		{
-			title: 'Dashboard',
+			title: 'Dashboard (TODO)',
 			url: '/dashboard',
 			icon: LayoutDashboardIcon,
 			isActive: pathname.startsWith('/dashboard')
 		},
-		{
-			title: 'Announcements',
-			url: '/announcements',
-			icon: MessageSquare,
-			isActive: pathname.startsWith('/announcements')
-		},
+		// {
+		// 	title: 'Announcements',
+		// 	url: '/announcements',
+		// 	icon: MessageSquare,
+		// 	isActive: pathname.startsWith('/announcements')
+		// },
 		{
 			title: 'Requests',
-			url: '/requests',
+			url: '#',
 			icon: ClipboardPlus,
-			isActive: pathname.startsWith('/requests')
+			isActive: pathname.startsWith('/requests'),
+			items: [
+				{
+					title: 'Create Request',
+					url: '/requests/assets'
+				},
+				{
+					title: 'Pending Approval (TODO)',
+					url: '/requests/pending-approval'
+				},
+				{
+					title: 'All Requests',
+					url: '/requests'
+				}
+			]
 		},
 		{
-			title: 'Sessions',
-			url: '/sessions',
+			title: 'Sessions (TODO)',
+			url: '#',
 			icon: SquareTerminalIcon,
-			isActive: pathname.startsWith('/sessions')
+			isActive: pathname.startsWith('/sessions'),
+			items: [
+				{
+					title: 'My Sessions',
+					url: '/sessions/my-sessions'
+				},
+				{
+					title: 'All Sessions',
+					url: '/sessions'
+				}
+			]
 		},
 		{
-			title: 'Audits',
+			title: 'Audits (TODO)',
 			url: '/audits',
 			icon: Cctv,
 			isActive: pathname.startsWith('/audits')

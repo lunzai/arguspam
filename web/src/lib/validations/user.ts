@@ -1,10 +1,12 @@
 import { z } from 'zod';
+import { TIMEZONES } from '$lib/constants/timezones';
 
 export const UserProfileSchema = z.object({
 	name: z
 		.string()
 		.min(2, 'Name must be at least 2 characters')
-		.max(100, 'Name must be less than 100 characters')
+		.max(100, 'Name must be less than 100 characters'),
+	default_timezone: z.enum(TIMEZONES, { message: 'Invalid timezone' }).default('UTC')
 });
 
 export const ChangePasswordSchema = z
@@ -56,7 +58,8 @@ export const UserSchema = z.object({
 		.string()
 		.email('Please enter a valid email address')
 		.max(100, 'Email must be less than 100 characters'),
-	status: z.enum(['active', 'inactive']).default('active')
+	status: z.enum(['active', 'inactive']).default('active'),
+	default_timezone: z.enum(TIMEZONES, { message: 'Invalid timezone' }).default('UTC')
 });
 
 export const UserUpdateRolesSchema = z.object({

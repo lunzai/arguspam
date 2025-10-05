@@ -11,10 +11,11 @@ use App\Http\Controllers\AuditController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrgController;
-use App\Http\Controllers\OrgUserGroupController;
 use App\Http\Controllers\OrgUserController;
+use App\Http\Controllers\OrgUserGroupController;
 use App\Http\Controllers\PasswordController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RequestApproverController;
 use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
@@ -22,6 +23,7 @@ use App\Http\Controllers\SessionAuditController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SettingGroupController;
+use App\Http\Controllers\TimezoneController;
 use App\Http\Controllers\TwoFactorAuthenticationController;
 use App\Http\Controllers\UserAccessRestrictionController;
 use App\Http\Controllers\UserAssetController;
@@ -40,6 +42,10 @@ Route::prefix('auth')->group(function () {
         ->middleware('auth:sanctum');
 });
 
+Route::prefix('utils')->group(function () {
+    Route::get('/timezones', [TimezoneController::class, 'index']);
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::get('/users/me', [AuthController::class, 'me']); // Alias for /auth/me
@@ -56,6 +62,20 @@ Route::middleware('auth:sanctum')->group(function () {
             'user-groups' => UserGroupController::class,
         ]);
 
+        Route::apiResources([
+            'requests' => RequestController::class,
+        ]);
+        Route::apiResource('requests', RequestController::class)
+            ->except(['destroy']);
+        Route::get('/requests/{requestModel}/can-approve', [RequestApproverController::class, 'show'])
+            ->name('requests.approval.show');
+        Route::post('/requests/{requestModel}/approve', [RequestApproverController::class, 'store'])
+            ->name('requests.approval.store');
+        Route::put('/requests/{requestModel}/reject', [RequestApproverController::class, 'update'])
+            ->name('requests.approval.update');
+        Route::delete('/requests/{requestModel}/cancel', [RequestApproverController::class, 'delete'])
+            ->name('requests.approval.delete');
+
         Route::apiResource('user-groups.users', UserGroupUserController::class)
             ->only(['store']);
         Route::delete('user-groups/{user_group}/users', [UserGroupUserController::class, 'destroy'])
@@ -70,14 +90,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/assets/{asset}/credential', [AssetAccountController::class, 'update'])
             ->name('assets.credential.update');
 
-        // Route::get('assets/{asset}/grants', [AssetAccessGrantController::class, 'index'])
-        //     ->name('assets.access-grants.index');
-        // Route::get('assets/{asset}/grants/{asset_access_grant}', [AssetAccessGrantController::class, 'show'])
-        //     ->name('assets.access-grants.show');
-        // Route::post('assets/{asset}/grants', [AssetAccessGrantController::class, 'store'])
-        //     ->name('assets.access-grants.store');
-        // Route::delete('assets/{asset}/grants/{asset_access_grant}', [AssetAccessGrantController::class, 'destroy'])
-        //     ->name('assets.access-grants.destroy');
         Route::get('dashboard', [DashboardController::class, 'index'])
             ->name('dashboard.index');
     });

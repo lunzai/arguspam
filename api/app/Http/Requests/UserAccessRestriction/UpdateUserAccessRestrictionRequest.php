@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\UserAccessRestriction;
 
-use App\Enums\RestrictionType;
+use App\Enums\AccessRestrictionType;
 use App\Enums\Status;
 use App\Rules\IpOrCidr;
 use Illuminate\Foundation\Http\FormRequest;
@@ -27,7 +27,7 @@ class UpdateUserAccessRestrictionRequest extends FormRequest
     {
         $rules = [
             'user_id' => ['sometimes', 'exists:users,id'],
-            'type' => ['sometimes', new Enum(RestrictionType::class)],
+            'type' => ['sometimes', new Enum(AccessRestrictionType::class)],
             'value' => ['sometimes', 'array'],
             'status' => ['sometimes', new Enum(Status::class)],
         ];
@@ -55,24 +55,20 @@ class UpdateUserAccessRestrictionRequest extends FormRequest
     protected function getValueRulesForType(string $type): array
     {
         return match ($type) {
-            RestrictionType::IP_ADDRESS->value => [
+            AccessRestrictionType::IP_ADDRESS->value => [
                 'allowed_ips' => ['required', 'array'],
                 'allowed_ips.*' => ['required', 'string', new IpOrCidr],
             ],
-            RestrictionType::TIME_WINDOW->value => [
+            AccessRestrictionType::TIME_WINDOW->value => [
                 'days' => ['required', 'array'],
                 'days.*' => ['required', 'integer', 'between:0,6'], // 0=Sunday, 6=Saturday
                 'start_time' => ['required', 'date_format:H:i'],
                 'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
                 'timezone' => ['required', 'string', 'timezone'],
             ],
-            RestrictionType::LOCATION->value => [
+            AccessRestrictionType::COUNTRY->value => [
                 'allowed_countries' => ['required', 'array'],
                 'allowed_countries.*' => ['required', 'string', 'size:2'], // ISO country codes
-            ],
-            RestrictionType::DEVICE->value => [
-                'allowed_devices' => ['required', 'array'],
-                'allowed_devices.*' => ['required', 'string'],
             ],
             default => [],
         };

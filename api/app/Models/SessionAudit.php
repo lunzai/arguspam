@@ -14,15 +14,15 @@ class SessionAudit extends Model
 
     public $timestamps = false;
 
-    // protected $fillable = [
-    //     'org_id',
-    //     'session_id',
-    //     'request_id',
-    //     'asset_id',
-    //     'user_id',
-    //     'query_text',
-    //     'query_timestamp',
-    // ];
+    protected $fillable = [
+        'org_id',
+        'session_id',
+        'request_id',
+        'asset_id',
+        'user_id',
+        'query_text',
+        'query_timestamp',
+    ];
 
     protected $guarded = [];
 

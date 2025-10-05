@@ -29,19 +29,19 @@ class AssetAccessGrantResource extends Resource
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
-                    'asset' => AssetResource::collection(
+                    'asset' => AssetResource::make(
                         $this->whenLoaded('asset')
                     ),
-                    'user' => UserResource::collection(
+                    'user' => UserResource::make(
                         $this->whenLoaded('user')
                     ),
-                    'userGroup' => UserGroupResource::collection(
+                    'userGroup' => UserGroupResource::make(
                         $this->whenLoaded('userGroup')
                     ),
-                    'createdBy' => UserResource::collection(
+                    'createdBy' => UserResource::make(
                         $this->whenLoaded('createdBy')
                     ),
-                    'updatedBy' => UserResource::collection(
+                    'updatedBy' => UserResource::make(
                         $this->whenLoaded('updatedBy')
                     ),
                 ],

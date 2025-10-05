@@ -30,15 +30,19 @@ class UserCreate extends Command
     {
         $roles = Role::all();
         $roleOptions = $roles->pluck('name', 'id')->toArray();
-        $defaultRole = config('auth.default_user_role');
+        $defaultRole = config('pam.rbac.default_user_role');
+
+        $searchResult = array_search($defaultRole, $roleOptions);
+        $defaultRoleIndex = $searchResult === false ? null : $searchResult;
 
         $name = $this->ask('Name');
         $email = $this->ask('Email');
         $password = $this->secret('Password');
+        $defaultTimezone = $this->anticipate('Default Timezone', \DateTimeZone::listIdentifiers());
 
         $selectedRoles = [];
         if (!empty($roleOptions)) {
-            $selectedRoles = $this->choice('Roles', $roleOptions, $defaultRole, null, true);
+            $selectedRoles = $this->choice('Roles (Multiple choice)', $roleOptions, $defaultRoleIndex, null, true);
         } else {
             $this->warn('No roles available. User will be created without roles.');
         }
@@ -51,6 +55,7 @@ class UserCreate extends Command
         $user->name = $name;
         $user->email = $email;
         $user->status = Status::ACTIVE;
+        $user->default_timezone = $defaultTimezone;
         $user->password = $password;
         $user->save();
 
@@ -62,5 +67,6 @@ class UserCreate extends Command
         $this->info('User created successfully');
         $this->info('Name: '.$user->name);
         $this->info('Email: '.$user->email);
+        $this->info('Default Timezone: '.$user->default_timezone);
     }
 }

@@ -45,7 +45,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('userrole:create', [UserRolePolicy::class, 'create']);
         Gate::define('userrole:delete', [UserRolePolicy::class, 'delete']);
         Gate::before(function (User $user, string $ability) {
-            if ($user->isAdmin()) {
+            if ($user->isAdmin() && config('pam.rbac.admin_bypass_gate') && config('app.debug')) {
                 return true;
             }
         });

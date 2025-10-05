@@ -1,8 +1,9 @@
-import { BaseService } from './base.js';
+import { BaseService, type BaseFilterParams } from './base.js';
 import type { BaseModel } from '$models/base-model';
 import type { ApiOrgCollection } from '$resources/org';
 import type { ApiUserResource, UserResource } from '$lib/resources/user.js';
 import type { TwoFactorQrCodeResponse } from '$resources/user';
+import type { ApiAssetCollection } from '$lib/resources/asset.js';
 
 export class UserService extends BaseService<BaseModel> {
 	protected readonly endpoint = '/users';
@@ -12,8 +13,16 @@ export class UserService extends BaseService<BaseModel> {
 		super('/users', token, orgId);
 	}
 
-	async getOrgs(): Promise<ApiOrgCollection> {
-		return await this.api.get<ApiOrgCollection>(`${this.meEndpoint}/orgs`);
+	async getOrgs(params: BaseFilterParams = { perPage: 10000 }): Promise<ApiOrgCollection> {
+		const queryString = this.buildQueryParams(params);
+		return await this.api.get<ApiOrgCollection>(`${this.meEndpoint}/orgs?${queryString}`);
+	}
+
+	async getRequesterAssets(
+		params: BaseFilterParams = { perPage: 10000 }
+	): Promise<ApiAssetCollection> {
+		const queryString = this.buildQueryParams(params);
+		return await this.api.get<ApiAssetCollection>(`${this.meEndpoint}/assets?${queryString}`);
 	}
 
 	async checkOrgAccess(orgId: number): Promise<boolean> {

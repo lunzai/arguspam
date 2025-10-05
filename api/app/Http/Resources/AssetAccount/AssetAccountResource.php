@@ -31,7 +31,7 @@ class AssetAccountResource extends Resource
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
-                    'asset' => AssetResource::collection(
+                    'asset' => AssetResource::make(
                         $this->whenLoaded('asset')
                     ),
                     'requests' => RequestResource::collection(
@@ -40,10 +40,10 @@ class AssetAccountResource extends Resource
                     'sessions' => SessionResource::collection(
                         $this->whenLoaded('sessions')
                     ),
-                    'createdBy' => UserResource::collection(
+                    'createdBy' => UserResource::make(
                         $this->whenLoaded('createdBy')
                     ),
-                    'updatedBy' => UserResource::collection(
+                    'updatedBy' => UserResource::make(
                         $this->whenLoaded('updatedBy')
                     ),
                 ],

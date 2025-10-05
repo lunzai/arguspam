@@ -34,13 +34,13 @@ class ActionAuditResource extends Resource
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
-                    'org' => OrgResource::collection(
+                    'org' => OrgResource::make(
                         $this->whenLoaded('org')
                     ),
-                    'user' => UserResource::collection(
+                    'user' => UserResource::make(
                         $this->whenLoaded('user')
                     ),
-                    'createdBy' => UserResource::collection(
+                    'createdBy' => UserResource::make(
                         $this->whenLoaded('createdBy')
                     ),
                 ],

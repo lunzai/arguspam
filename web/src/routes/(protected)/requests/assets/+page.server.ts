@@ -1,0 +1,50 @@
+import { RequestService } from '$services/request';
+import { UserService } from '$services/user';
+import type { ApiRequestResource } from '$resources/request';
+import type { ApiAssetCollection } from '$lib/resources/asset.js';
+import { superValidate } from 'sveltekit-superforms';
+import { zod } from 'sveltekit-superforms/adapters';
+import { RequesterSchema } from '$lib/validations/request';
+import type { Actions } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
+import { setFormErrors } from '$lib/utils/form';
+
+export const load = async ({ params, locals }) => {
+	const { authToken, currentOrgId } = locals;
+	const userService = new UserService(authToken as string, currentOrgId);
+	const assetCollection = (await userService.getRequesterAssets()) as ApiAssetCollection;
+	const form = await superValidate(zod(RequesterSchema));
+	return {
+		assetCollection,
+		title: `Assets`,
+		form
+	};
+};
+
+export const actions = {
+	default: async ({ request, locals, params }) => {
+		const { id } = params;
+		const { authToken, currentOrgId } = locals;
+		const form = await superValidate(request, zod(RequesterSchema));
+		if (!form.valid) {
+			return fail(422, { form });
+		}
+		const data = form.data;
+		try {
+			const requestService = new RequestService(authToken as string, currentOrgId);
+			const response = await requestService.create(data);
+			return {
+				success: true,
+				message: `Request submitted successfully`,
+				form: form,
+				model: response.data.attributes
+			};
+		} catch (error: any) {
+			if (error.response?.status === 422) {
+				setFormErrors(form, error.response.data);
+				return fail(400, { form });
+			}
+			return fail(400, { form, error: `Failed to submit request` });
+		}
+	}
+} satisfies Actions;

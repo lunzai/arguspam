@@ -1,5 +1,6 @@
 import type { Request } from '$models/request';
 import type {
+	ApiResponse,
 	ApiResourceResponse,
 	ApiCollectionResponse,
 	Resource,
@@ -10,3 +11,9 @@ export interface ApiRequestCollection extends ApiCollectionResponse<Request> {}
 export interface ApiRequestResource extends ApiResourceResponse<Request> {}
 export interface RequestResource extends Resource<Request> {}
 export interface RequestCollection extends Collection<Request> {}
+
+export interface RequestCanApprove {
+	canApprove: boolean;
+	canCancel: boolean;
+}
+export interface RequestCanApproveResource extends ApiResponse<RequestCanApprove> {}

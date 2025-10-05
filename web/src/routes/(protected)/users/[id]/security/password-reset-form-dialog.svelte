@@ -48,7 +48,7 @@
 </script>
 
 <Dialog.Root bind:open={isOpen}>
-	<Dialog.Content interactOutsideBehavior="ignore">
+	<Dialog.Content class="max-h-[90vh] overflow-y-auto" interactOutsideBehavior="ignore">
 		<Loader show={$submitting} />
 		<form class="space-y-6" action="?/resetPassword" method="POST" use:enhance>
 			<Dialog.Header>

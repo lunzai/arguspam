@@ -33,7 +33,8 @@
 {#each data as row, index}
 	{@const rowId = row.id || index}
 	<DataTableRow
-		{row}
+		row={row.attributes}
+		relationships={row.relationships}
 		{columns}
 		{index}
 		{selectable}

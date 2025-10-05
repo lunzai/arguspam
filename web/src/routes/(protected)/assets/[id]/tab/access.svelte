@@ -261,7 +261,7 @@
 
 <Dialog.Root bind:open={addDialogIsOpen}>
 	<Dialog.Content
-		class="sm:max-w-xl"
+		class="max-h-[90vh] sm:max-w-xl"
 		interactOutsideBehavior="ignore"
 		onOpenAutoFocus={(e) => e.preventDefault()}
 	>

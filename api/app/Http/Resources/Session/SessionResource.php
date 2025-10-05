@@ -33,7 +33,7 @@ class SessionResource extends Resource
                 'is_jit' => $this->is_jit,
                 'account_name' => $this->account_name,
                 'jit_vault_path' => $this->jit_vault_path,
-                'session_note' => $this->session_note,
+                'session_note' => e($this->session_note),
                 'is_expired' => $this->is_expired,
                 'is_terminated' => $this->is_terminated,
                 'is_checkin' => $this->is_checkin,
@@ -49,25 +49,25 @@ class SessionResource extends Resource
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
-                    'org' => OrgResource::collection(
+                    'org' => OrgResource::make(
                         $this->whenLoaded('org')
                     ),
-                    'request' => RequestResource::collection(
+                    'request' => RequestResource::make(
                         $this->whenLoaded('request')
                     ),
-                    'asset' => AssetResource::collection(
+                    'asset' => AssetResource::make(
                         $this->whenLoaded('asset')
                     ),
-                    'requester' => UserResource::collection(
+                    'requester' => UserResource::make(
                         $this->whenLoaded('requester')
                     ),
-                    'checkinBy' => UserResource::collection(
+                    'checkinBy' => UserResource::make(
                         $this->whenLoaded('checkinBy')
                     ),
-                    'terminatedBy' => UserResource::collection(
+                    'terminatedBy' => UserResource::make(
                         $this->whenLoaded('terminatedBy')
                     ),
-                    'endedBy' => UserResource::collection(
+                    'endedBy' => UserResource::make(
                         $this->whenLoaded('endedBy')
                     ),
                 ],

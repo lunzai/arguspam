@@ -39,15 +39,15 @@ class NotifySessionEvents implements ShouldQueue
      */
     public function handleSessionEnded(SessionEnded $event): void
     {
-        $event->session->requester->notify(
-            new SessionEndedNotification($event->session)
-        );
+        // $event->session->requester->notify(
+        //     new SessionEndedNotification($event->session)
+        // );
 
-        if ($event->session->approver) {
-            $event->session->approver->notify(
-                new SessionEndedNotification($event->session)
-            );
-        }
+        // if ($event->session->approver) {
+        //     $event->session->approver->notify(
+        //         new SessionEndedNotification($event->session)
+        //     );
+        // }
     }
 
     public function subscribe($events): array

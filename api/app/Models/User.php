@@ -9,6 +9,8 @@ use App\Http\Filters\QueryFilter;
 use App\Traits\HasBlamable;
 use App\Traits\HasRbac;
 use App\Traits\HasStatus;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -29,6 +31,7 @@ class User extends Authenticatable
         'name',
         'email',
         'status',
+        'default_timezone',
     ];
 
     protected $guarded = [
@@ -85,7 +88,35 @@ class User extends Authenticatable
         'status' => 'Status',
         'two_factor_enabled' => 'MFA',
         'last_login_at' => 'Last Login At',
+        'default_timezone' => 'Timezone',
     ];
+
+    public function getTimezone(): DateTimeZone
+    {
+        return new DateTimeZone(
+            $this->default_timezone ?:
+            config('pam.user.default_timezone', 'UTC')
+        );
+    }
+
+    public function timezone(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $tz = $this->getTimezone();
+                $dt = new DateTime('now', $tz);
+                $offset = $dt->format('P');
+                $tzName = $tz->getName();
+                if ($offset === '+00:00') {
+                    return 'UTC';
+                }
+                if (preg_match('/^[+-]/', $tzName)) {
+                    return 'GMT'.$offset;
+                }
+                return 'GMT'.$offset.' '.$tzName;
+            },
+        );
+    }
 
     public function twoFactorQrCode(): Attribute
     {

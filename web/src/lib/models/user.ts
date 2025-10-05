@@ -7,5 +7,6 @@ export interface User extends BaseModel {
 	two_factor_enabled: boolean;
 	two_factor_confirmed_at: Date | null;
 	status: 'active' | 'inactive';
+	default_timezone: string;
 	last_login_at: Date | null;
 }

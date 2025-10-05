@@ -34,6 +34,7 @@ class UpdateUserRequest extends FormRequest
                 Rule::unique('users', 'email')
                     ->ignore($this->route('user')->id),
             ],
+            'default_timezone' => ['sometimes', 'timezone'],
         ];
     }
 

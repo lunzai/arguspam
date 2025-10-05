@@ -27,12 +27,12 @@
 	const modelResource = $derived(data.model as ApiOrgResource);
 	const model = $derived(modelResource.data.attributes as Org);
 	const orgUsers = $derived(
-		modelResource.data.relationships?.users.map((user) => user.attributes) as User[]
+		modelResource.data.relationships?.users.map((user: any) => user.attributes) as User[]
 	);
 	const hasUsers = $derived(orgUsers.length > 0);
 	const searchUsers = $derived(
 		allUsers
-			.filter((user) => !orgUsers.some(({ id: orgUserId }) => orgUserId === user.id))
+			.filter((user: any) => !orgUsers.some(({ id: orgUserId }) => orgUserId === user.id))
 			.map(({ id, name, email }) => ({
 				id,
 				label: `ID#${id} - ${name} (${email})`,

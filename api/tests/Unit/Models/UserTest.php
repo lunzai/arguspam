@@ -285,7 +285,7 @@ class UserTest extends TestCase
         // Create restrictions manually since factory doesn't exist
         $restriction1 = new UserAccessRestriction;
         $restriction1->user_id = $this->user->id;
-        $restriction1->type = \App\Enums\RestrictionType::IP_ADDRESS;
+        $restriction1->type = \App\Enums\AccessRestrictionType::IP_ADDRESS;
         $restriction1->value = ['allowed_ips' => ['192.168.1.0/24']];
         $restriction1->status = \App\Enums\Status::ACTIVE;
         $restriction1->timestamps = false;
@@ -293,7 +293,7 @@ class UserTest extends TestCase
 
         $restriction2 = new UserAccessRestriction;
         $restriction2->user_id = $this->user->id;
-        $restriction2->type = \App\Enums\RestrictionType::TIME_WINDOW;
+        $restriction2->type = \App\Enums\AccessRestrictionType::TIME_WINDOW;
         $restriction2->value = ['days' => [1, 2, 3, 4, 5], 'start_time' => '09:00', 'end_time' => '17:00'];
         $restriction2->status = \App\Enums\Status::ACTIVE;
         $restriction2->timestamps = false;
@@ -302,7 +302,7 @@ class UserTest extends TestCase
         $otherUser = User::factory()->create();
         $restriction3 = new UserAccessRestriction;
         $restriction3->user_id = $otherUser->id;
-        $restriction3->type = \App\Enums\RestrictionType::IP_ADDRESS;
+        $restriction3->type = \App\Enums\AccessRestrictionType::IP_ADDRESS;
         $restriction3->value = ['allowed_ips' => ['10.0.0.0/8']];
         $restriction3->status = \App\Enums\Status::ACTIVE;
         $restriction3->timestamps = false;

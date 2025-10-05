@@ -1,10 +1,10 @@
 <?php
 
+use App\Enums\AccessRestrictionType;
 use App\Enums\AssetAccessRole;
 use App\Enums\Dbms;
 use App\Enums\RequestScope;
 use App\Enums\RequestStatus;
-use App\Enums\RestrictionType;
 use App\Enums\RiskRating;
 use App\Enums\SessionStatus;
 use App\Enums\Status;
@@ -314,7 +314,7 @@ return new class extends Migration
             $table->foreignId('user_id')
                 ->constrained()
                 ->cascadeOnDelete();
-            $table->enum('type', array_column(RestrictionType::cases(), 'value'));
+            $table->enum('type', array_column(AccessRestrictionType::cases(), 'value'));
             $table->json('value');
             $table->enum('status', array_column(Status::cases(), 'value'))
                 ->default(Status::ACTIVE->value);

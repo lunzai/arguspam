@@ -27,7 +27,7 @@ class UserAccessRestrictionResource extends JsonResource
             ],
             $this->mergeWhen(count($this->resource->getRelations()) > 0, [
                 'relationships' => [
-                    'user' => UserResource::collection(
+                    'user' => UserResource::make(
                         $this->whenLoaded('user')
                     ),
                 ],

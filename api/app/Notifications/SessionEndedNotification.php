@@ -54,7 +54,7 @@ class SessionEndedNotification extends Notification implements ShouldQueue
             $mail->line('Query logs: '.$this->terminationResults['audit_log_count'].' queries recorded');
         }
 
-        return $mail->action('View Session Report', url('/sessions/'.$this->session->id.'/report'));
+        return $mail->action('View Session Report', config('pam.app.web_url').'/sessions/'.$this->session->id);
     }
 
     /**

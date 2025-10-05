@@ -15,12 +15,35 @@
 		...restProps
 	}: Props = $props();
 
-	let badgeClass = $derived(
-		cn({
-			'text-green-500 bg-green-50 border-green-200': status === 'active',
-			'text-gray-500 bg-gray-50 border-gray-200': status === 'inactive'
-		})
-	);
+	let badgeClass = $state('');
+
+	$effect(() => {
+		switch (status) {
+			case 'active':
+			case 'approved':
+				badgeClass = 'text-green-500 bg-green-50 border-green-200';
+				break;
+			case 'inactive':
+			case 'expired':
+			case 'cancelled':
+			case 'low':
+				badgeClass = 'text-gray-500 bg-gray-50 border-gray-200';
+				break;
+			case 'rejected':
+			case 'critical':
+				badgeClass = 'text-red-500 bg-red-50 border-red-200';
+				break;
+			case 'high':
+				badgeClass = 'text-orange-500 bg-orange-50 border-orange-200';
+				break;
+			case 'submitted':
+			case 'medium':
+				badgeClass = 'text-blue-500 bg-blue-50 border-blue-200';
+				break;
+			default:
+				break;
+		}
+	});
 </script>
 
 <Badge variant="outline" class={cn('capitalize', badgeClass, className)} {...restProps}>

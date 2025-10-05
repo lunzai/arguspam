@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\RestrictionType;
+use App\Enums\AccessRestrictionType;
 use App\Enums\Status;
 use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,7 +22,7 @@ class UserAccessRestriction extends Model
     ];
 
     protected $casts = [
-        'type' => RestrictionType::class,
+        'type' => AccessRestrictionType::class,
         'value' => 'array',
         'status' => Status::class,
     ];
@@ -48,10 +48,9 @@ class UserAccessRestriction extends Model
         }
 
         return match ($this->type) {
-            RestrictionType::IP_ADDRESS => $this->passesIpRestriction($request),
-            RestrictionType::TIME_WINDOW => $this->passesTimeRestriction(),
-            RestrictionType::LOCATION => $this->passesLocationRestriction($request),
-            RestrictionType::DEVICE => $this->passesDeviceRestriction($request),
+            AccessRestrictionType::IP_ADDRESS => $this->passesIpRestriction($request),
+            AccessRestrictionType::TIME_WINDOW => $this->passesTimeRestriction(),
+            AccessRestrictionType::COUNTRY => $this->passesLocationRestriction($request),
             default => true,
         };
     }

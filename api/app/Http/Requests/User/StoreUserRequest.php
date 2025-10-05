@@ -36,6 +36,7 @@ class StoreUserRequest extends FormRequest
                 'min:'.config('pam.password.min'),
             ],
             'two_factor_enabled' => ['sometimes', 'boolean'],
+            'default_timezone' => ['required', 'timezone'],
         ];
     }
 

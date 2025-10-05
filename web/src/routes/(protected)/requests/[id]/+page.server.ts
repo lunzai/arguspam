@@ -1,15 +1,103 @@
 import { RequestService } from '$services/request';
 import type { ApiRequestResource } from '$resources/request';
+import type { Actions } from '@sveltejs/kit';
+import { fail, superValidate } from 'sveltekit-superforms/client';
+import { ApproveSchema, RejectSchema } from '$lib/validations/request';
+import { zod } from 'sveltekit-superforms/adapters';
+import { setFormErrors } from '$utils/form';
 
-export const load = async ({ params, locals }) => {
+export const load = async ({ params, locals, depends }) => {
+	depends('requests:view');
 	const { id } = params;
 	const { authToken, currentOrgId } = locals;
 	const modelService = new RequestService(authToken as string, currentOrgId);
 	const model = (await modelService.findById(id, {
-		include: ['account', 'accessGrants']
+		include: ['account', 'accessGrants', 'asset', 'requester', 'approver', 'rejecter', 'session']
 	})) as ApiRequestResource;
+	const permissions = await modelService.canApprove(Number(id));
+	const approveForm = await superValidate(
+		{
+			start_datetime: new Date(model.data.attributes.start_datetime),
+			end_datetime: new Date(model.data.attributes.end_datetime),
+			duration: model.data.attributes.duration,
+			scope: model.data.attributes.scope,
+			approver_risk_rating: model.data.attributes.ai_risk_rating,
+			approver_note: model.data.attributes.approver_note
+		},
+		zod(ApproveSchema),
+		{ errors: false }
+	);
+	const rejectForm = await superValidate(zod(RejectSchema));
 	return {
+		approveForm,
+		rejectForm,
 		model,
+		permissions,
 		title: `Request - #${model.data.attributes.id} - ${model.data.attributes.id}`
 	};
 };
+
+export const actions = {
+	approve: async ({ request, locals, params }) => {
+		const { id } = params;
+		const { authToken, currentOrgId } = locals;
+		const form = await superValidate(request, zod(ApproveSchema));
+		if (!form.valid) {
+			return fail(422, { form });
+		}
+		const data = form.data;
+		try {
+			const requestService = new RequestService(authToken as string, currentOrgId);
+			const response = await requestService.approve(Number(id), data);
+			return {
+				success: true,
+				message: `Request approved successfully`,
+				form: form,
+				model: response.data.attributes
+			};
+		} catch (error: any) {
+			if (error.response?.status === 422) {
+				setFormErrors(form, error.response.data);
+				return fail(422, { form });
+			}
+			return fail(400, { form, error: `Failed to approve request` });
+		}
+	},
+	reject: async ({ request, locals, params }) => {
+		const { id } = params;
+		const { authToken, currentOrgId } = locals;
+		const form = await superValidate(request, zod(RejectSchema));
+		if (!form.valid) {
+			return fail(422, { form });
+		}
+		const data = form.data;
+		try {
+			const requestService = new RequestService(authToken as string, currentOrgId);
+			const response = await requestService.reject(Number(id), data);
+			return {
+				success: true,
+				message: `Request rejected successfully`,
+				form: form,
+				model: response.data.attributes
+			};
+		} catch (error: any) {
+			if (error.response?.status === 422) {
+				setFormErrors(form, error.response.data);
+				return fail(422, { form });
+			}
+			return fail(400, { form, error: `Failed to reject request` });
+		}
+	},
+	cancel: async ({ locals, params }) => {
+		try {
+			const { id } = params;
+			const { authToken, currentOrgId } = locals;
+			const requestService = new RequestService(authToken as string, currentOrgId);
+			await requestService.cancel(Number(id));
+		} catch (error) {
+			return fail(400, {
+				message: error instanceof Error ? error.message : 'Unknown error'
+			});
+		}
+	}
+} satisfies Actions;

@@ -31,6 +31,7 @@
 		config,
 		initialData = [],
 		initialInclude = [],
+		initialSort = { column: null, direction: null },
 		initialPagination = {
 			currentPage: 1,
 			from: 0,
@@ -63,14 +64,12 @@
 		return filters;
 	})();
 
-	const initialSort: SortConfig = (() => {
-		const sortParam = initialSearchParams.get('sort');
-		if (!sortParam) return { column: null, direction: null };
-
+	const sortParam = initialSearchParams.get('sort');
+	if (sortParam != null) {
 		const direction = sortParam.startsWith('-') ? 'desc' : 'asc';
 		const column = sortParam.startsWith('-') ? sortParam.slice(1) : sortParam;
-		return { column, direction };
-	})();
+		initialSort = { column, direction };
+	}
 
 	const initialCount: string[] = (() => {
 		const countParam = initialSearchParams.get('count');
@@ -157,7 +156,7 @@
 				count: state.count ? state.count : undefined
 			};
 			const response = await fetchData(params);
-			state.data = response.data.map((item) => item.attributes);
+			state.data = response.data;
 			state.pagination = {
 				currentPage: response.meta.current_page,
 				from: response.meta.from,
@@ -223,7 +222,7 @@
 
 	function handleSelectAll(selected: boolean) {
 		if (selected) {
-			state.selectedRows = new Set(state.data.map((row, index) => row.id || index));
+			state.selectedRows = new Set(state.data.map((row, index) => row.attributes.id || index));
 		} else {
 			state.selectedRows = new Set();
 		}

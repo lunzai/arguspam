@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\CacheKey;
+use App\Enums\RequestStatus;
 use App\Http\Filters\RequestFilter;
 use App\Http\Requests\Request\StoreRequestRequest;
 use App\Http\Requests\Request\UpdateRequestRequest;
@@ -42,7 +43,9 @@ class RequestController extends Controller
     {
         $this->authorize('create', RequestModel::class);
         $validated = $request->validated();
-        $request = RequestModel::create($validated);
+        $request = new RequestModel($validated);
+        $request->status = RequestStatus::PENDING;
+        $request->save();
 
         return new RequestResource($request);
     }
@@ -67,14 +70,14 @@ class RequestController extends Controller
         return new RequestResource($request);
     }
 
-    public function destroy(string $id): Response
-    {
-        $request = RequestModel::findOrFail($id);
-        $this->authorize('delete', $request);
-        $request->deleted_by = Auth::id();
-        $request->save();
-        $request->delete();
+    // public function destroy(string $id): Response
+    // {
+    //     $request = RequestModel::findOrFail($id);
+    //     $this->authorize('delete', $request);
+    //     $request->deleted_by = Auth::id();
+    //     $request->save();
+    //     $request->delete();
 
-        return $this->noContent();
-    }
+    //     return $this->noContent();
+    // }
 }

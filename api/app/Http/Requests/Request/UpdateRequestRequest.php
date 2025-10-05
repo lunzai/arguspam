@@ -16,7 +16,7 @@ class UpdateRequestRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -44,8 +44,8 @@ class UpdateRequestRequest extends FormRequest
             'duration' => [
                 'sometimes',
                 'integer',
-                'min:'.config('pam.request.duration.min'),
-                'max:'.config('pam.request.duration.max'),
+                'min:'.config('pam.access_request.duration.min'),
+                'max:'.config('pam.access_request.duration.max'),
             ],
             'reason' => ['sometimes', 'string', 'max:255'],
             'intended_query' => ['sometimes', 'nullable', 'string'],

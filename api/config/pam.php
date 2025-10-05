@@ -1,6 +1,17 @@
 <?php
 
 return [
+
+    'app' => [
+        'web_url' => env('APP_WEB_URL', 'http://localhost'),
+        'site_url' => 'https://arguspam.com/',
+        'github_url' => 'https://github.com/lunzai/arguspam',
+    ],
+
+    'user' => [
+        'default_timezone' => 'Asia/Singapore',
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Organization
@@ -46,11 +57,24 @@ return [
     */
     'access_request' => [
         'duration' => [
-            'min' => 10,          // 10 minutes minimum
+            'min' => 20,          // 20 minutes minimum
             'max' => 43200,       // 30 days maximum
+            'recommended_min' => 20, // 20 minutes
+            'recommended_max' => 43200, // 30 days
+            'low_threshold' => 240, // 4 hours
+            'medium_threshold' => 1440, // 24 hours
+            'high_threshold' => 10080, // 7 days
         ],
         // 'approval_required' => true,
         // 'max_active_requests' => 5,
+    ],
+
+    'openai' => [
+        'model' => env('OPENAI_MODEL', 'gpt-4.1-mini'),
+        'temperature' => env('OPENAI_TEMPERATURE', 0.2),
+        'max_output_tokens' => env('OPENAI_MAX_OUTPUT_TOKENS', 2048),
+        'top_p' => env('OPENAI_TOP_P', 1),
+        'store' => env('OPENAI_STORE', true),
     ],
 
     /*
@@ -76,5 +100,6 @@ return [
     'rbac' => [
         'default_admin_role' => 'Admin',
         'default_user_role' => 'User',
+        'admin_bypass_gate' => env('RBAC_ADMIN_BYPASS_GATE', false),
     ],
 ];

@@ -20,7 +20,7 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
 		dbms: '',
 		username: '',
 		password: ''
-	} as Asset;
+	} as Partial<Asset>;
 	const form = await superValidate(zod(AssetSchema));
 	return {
 		title: 'Assets',

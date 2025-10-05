@@ -18,7 +18,7 @@
 		<aside class="w-full lg:w-64">
 			<Sidebar {model} {accounts} {editForm} {credentialsForm} />
 		</aside>
-		<Separator orientation="vertical" />
+		<Separator orientation="vertical" class="hidden lg:block" />
 		<div class="min-w-0 flex-1">
 			{@render children()}
 		</div>

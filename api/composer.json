@@ -17,6 +17,7 @@
         "laravel/prompts": "^0.3.5",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
+        "openai-php/laravel": "^0.17.1",
         "pragmarx/google2fa-qrcode": "^3.0",
         "predis/predis": "^3.0",
         "torann/geoip": "^3.0"

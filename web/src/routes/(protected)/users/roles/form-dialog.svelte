@@ -51,7 +51,10 @@
 </script>
 
 <Dialog.Root bind:open={isOpen}>
-	<Dialog.Content class="sm:max-w-2xl" interactOutsideBehavior="ignore">
+	<Dialog.Content
+		class="max-h-[90vh] overflow-y-auto sm:max-w-2xl"
+		interactOutsideBehavior="ignore"
+	>
 		{#if $submitting}
 			<Loader show={$submitting} />
 		{/if}

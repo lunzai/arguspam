@@ -25,8 +25,8 @@ class AssetResource extends Resource
             'attributes' => [
                 'id' => $this->id,
                 'org_id' => $this->org_id,
-                'name' => $this->name,
-                'description' => $this->description,
+                'name' => e($this->name),
+                'description' => e($this->description),
                 'status' => $this->status,
                 'host' => $this->host,
                 'port' => $this->port,
@@ -36,7 +36,7 @@ class AssetResource extends Resource
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
-                    'org' => OrgResource::collection(
+                    'org' => OrgResource::make(
                         $this->whenLoaded('org')
                     ),
                     'accounts' => AssetAccountResource::collection(
@@ -69,10 +69,10 @@ class AssetResource extends Resource
                     'requesterUsers' => UserResource::collection(
                         $this->whenLoaded('requesterUsers')
                     ),
-                    'createdBy' => UserResource::collection(
+                    'createdBy' => UserResource::make(
                         $this->whenLoaded('createdBy')
                     ),
-                    'updatedBy' => UserResource::collection(
+                    'updatedBy' => UserResource::make(
                         $this->whenLoaded('updatedBy')
                     ),
                 ],

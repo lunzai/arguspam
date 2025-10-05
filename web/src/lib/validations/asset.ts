@@ -75,7 +75,10 @@ export const AssetCredentialsSchema = z.object({
 			return isValidIP(host) || isValidHostname(host);
 		}, 'Invalid host format'),
 	port: z.number().int().gte(1, 'Invalid port number').lte(65535, 'Invalid port number'),
-	dbms: z.enum(['mysql', 'postgresql', 'sqlserver', 'oracle', 'mongodb', 'redis', 'mariadb']),
+	dbms: z.preprocess(
+		(val) => (typeof val === 'string' ? val.toLowerCase() : val),
+		z.enum(['mysql', 'postgresql', 'sqlserver', 'oracle', 'mongodb', 'redis', 'mariadb'])
+	),
 	username: z.string().max(100, 'Username must be less than 100 characters').nullish(),
 	password: z.string().max(100, 'Password must be less than 100 characters').nullish()
 });

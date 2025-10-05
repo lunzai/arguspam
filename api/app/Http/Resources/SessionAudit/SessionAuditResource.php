@@ -33,19 +33,19 @@ class SessionAuditResource extends Resource
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
-                    'org' => OrgResource::collection(
+                    'org' => OrgResource::make(
                         $this->whenLoaded('org')
                     ),
-                    'session' => SessionResource::collection(
+                    'session' => SessionResource::make(
                         $this->whenLoaded('session')
                     ),
-                    'request' => RequestResource::collection(
+                    'request' => RequestResource::make(
                         $this->whenLoaded('request')
                     ),
-                    'asset' => AssetResource::collection(
+                    'asset' => AssetResource::make(
                         $this->whenLoaded('asset')
                     ),
-                    'user' => UserResource::collection(
+                    'user' => UserResource::make(
                         $this->whenLoaded('user')
                     ),
                 ],

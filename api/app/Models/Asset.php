@@ -73,6 +73,11 @@ class Asset extends Model
         });
     }
 
+    public function createAccount(Session $session) : AssetAccount
+    {
+        return new AssetAccount();
+    }
+
     public function adminAccount(): HasOne
     {
         return $this->hasOne(AssetAccount::class)->admin();

@@ -1,0 +1,47 @@
+{
+    "format": {
+        "type": "json_schema",
+        "name": "ai_session_review_report",
+        "strict": true,
+        "schema": {
+            "type": "object",
+            "properties": {
+                "ai_note": {
+                    "type": "string",
+                    "description": "Detailed analysis of session activities, comparing actual queries against stated purpose and intended queries. Highlights any policy violations, data misuse, or anomalies detected.",
+                    "minLength": 1
+                },
+                "ai_risk_rating": {
+                    "type": "string",
+                    "description": "AI risk assessment rating based on session activity review.",
+                    "enum": [
+                        "low",
+                        "medium",
+                        "high",
+                        "critical"
+                    ]
+                },
+                "flags": {
+                    "type": "array",
+                    "description": "List of specific violations or concerns identified during the session review.",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "SECURITY VIOLATION",
+                            "COMPLIANCE VIOLATION",
+                            "DATA MISUSE",
+                            "ANOMALOUS BEHAVIOR",
+                            "SYSTEM INTEGRITY RISK"
+                        ]
+                    }
+                }
+            },
+            "required": [
+                "ai_note",
+                "ai_risk_rating",
+                "flags"
+            ],
+            "additionalProperties": false
+        }
+    }
+}

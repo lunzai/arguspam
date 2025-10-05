@@ -2,16 +2,27 @@
 
 namespace App\Models;
 
+use App\Enums\RiskRating;
 use App\Enums\SessionStatus;
+use App\Events\SessionCancelled;
 use App\Events\SessionEnded;
 use App\Events\SessionStarted;
+use App\Events\SessionCreated;
+use App\Events\SessionExpired;
+use App\Events\SessionTerminated;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Carbon\CarbonInterval;
+use App\Services\OpenAI\OpenAiService;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Auth;
 
-class Session extends Model
+class Session extends Model implements ShouldHandleEventsAfterCommit
 {
     /** @use HasFactory<\Database\Factories\SessionFactory> */
     use BelongsToOrganization, HasBlamable, HasFactory;
@@ -25,65 +36,50 @@ class Session extends Model
         'approver_id',
         'start_datetime',
         'end_datetime',
+        'scheduled_start_datetime',
         'scheduled_end_datetime',
         'requested_duration',
         'actual_duration',
-        'is_admin',
+        'is_admin_account',
         'account_name',
+        'ai_risk_rating',
+        'ai_note',
+        'ai_reviewed_at',
         'session_note',
-        'is_expired',
-        'is_terminated',
-        'is_checkin',
         'status',
-        'checkin_by',
-        'checkin_at',
-        'terminated_by',
-        'terminated_at',
+        'account_created_at',
+        'account_revoked_at',
+        'started_by',
+        'started_at',
         'ended_at',
         'ended_by',
+        'cancelled_by',
+        'cancelled_at',
+        'terminated_by',
+        'terminated_at',
+        'expired_at',
     ];
 
     protected $casts = [
         'start_datetime' => 'datetime',
         'end_datetime' => 'datetime',
+        'scheduled_start_datetime' => 'datetime',
         'scheduled_end_datetime' => 'datetime',
-        'is_admin' => 'boolean',
-        'is_expired' => 'boolean',
-        'is_terminated' => 'boolean',
-        'is_checkin' => 'boolean',
+        'requested_duration' => 'integer',
+        'actual_duration' => 'integer',
+        'is_admin_account' => 'boolean',
+        'ai_risk_rating' => RiskRating::class,
+        'ai_reviewed_at' => 'datetime',
+        'status' => SessionStatus::class,
+        'account_created_at' => 'datetime',
+        'account_revoked_at' => 'datetime',
+        'started_at' => 'datetime',
+        'ended_at' => 'datetime',
+        'cancelled_at' => 'datetime',
+        'terminated_at' => 'datetime',
+        'expired_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
-        'checkin_at' => 'datetime',
-        'terminated_at' => 'datetime',
-        'ended_at' => 'datetime',
-        'status' => SessionStatus::class,
-    ];
-
-    public static $attributeLabels = [
-        'org_id' => 'Organization',
-        'request_id' => 'Request',
-        'asset_id' => 'Asset',
-        'asset_account_id' => 'Asset Account',
-        'requester_id' => 'Requester',
-        'start_datetime' => 'Start',
-        'end_datetime' => 'End',
-        'scheduled_end_datetime' => 'Scheduled End',
-        'requested_duration' => 'Requested Duration',
-        'actual_duration' => 'Actual Duration',
-        'is_admin' => 'Is Admin',
-        'account_name' => 'Account',
-        'session_note' => 'Session Note',
-        'is_expired' => 'Is Expired',
-        'is_terminated' => 'Is Terminated',
-        'is_checkin' => 'Is Checkin',
-        'status' => 'Status',
-        'checkin_by' => 'Checkin By',
-        'checkin_at' => 'Checkin At',
-        'terminated_by' => 'Terminated By',
-        'terminated_at' => 'Terminated At',
-        'ended_at' => 'Ended At',
-        'ended_by' => 'Ended By',
     ];
 
     public static $includable = [
@@ -92,52 +88,181 @@ class Session extends Model
         'asset',
         'assetAccount',
         'requester',
-        'checkinBy',
-        'terminatedBy',
+        'approver',
+        'startedBy',
         'endedBy',
+        'cancelledBy',
+        'terminatedBy',
+        'flags',
         'audits',
         'createdBy',
         'updatedBy',
     ];
 
-    protected static function booted()
+    protected $dispatchesEvents = [
+        'created' => SessionCreated::class,
+    ];
+
+    public static function createFromRequest(Request $request): self
     {
-        static::updated(function (Session $session) {
-            if (!$session->isDirty('status')) {
-                return;
-            }
-            if ($session->status == SessionStatus::ACTIVE && $session->getOriginal('status') == SessionStatus::SCHEDULED) {
-                event(new SessionStarted($session, []));
-            } elseif (in_array($session->status, [SessionStatus::TERMINATED, SessionStatus::ENDED]) &&
-                in_array($session->getOriginal('status'), [SessionStatus::ACTIVE, SessionStatus::SCHEDULED])) {
-                event(new SessionEnded($session, []));
-            }
-        });
+        $session = self::create([
+            'org_id' => $request->org_id,
+            'request_id' => $request->id,
+            'asset_id' => $request->asset_id,
+            'asset_account_id' => $request->asset_account_id,
+            'requester_id' => $request->requester_id,
+            'approver_id' => $request->approved_by,
+            'scheduled_start_datetime' => $request->start_datetime,
+            'scheduled_end_datetime' => $request->end_datetime,
+            'requested_duration' => $request->duration,
+            'status' => SessionStatus::SCHEDULED,
+            'is_admin_account' => $request->asset_account_id ? false : true,
+        ]);
+        if ($session) {
+            SessionCreated::dispatch($session);
+        }
+        return $session;
     }
 
-    public function isActive(): bool
+    public function scheduledDurationForHumans(): Attribute
     {
-        return $this->status == SessionStatus::ACTIVE &&
-            now()->between($this->start_datetime, $this->end_datetime);
+        return Attribute::make(
+            get: function () {
+                return CarbonInterval::minutes($this->scheduled_duration)
+                    ->cascade()
+                    ->forHumans();
+            },
+        );
     }
 
-    public function canBeStarted(): bool
+    public function actualDurationForHumans(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return CarbonInterval::minutes($this->actual_duration)
+                    ->cascade()
+                    ->forHumans();
+            },
+        );
+    }
+
+    public function getAiReview(OpenAiService $openAiService): void
+    {
+        $evaluation = $openAiService->reviewSession($this);
+        $this->ai_note = $evaluation['output']['ai_note'];
+        $this->ai_risk_rating = $evaluation['output']['ai_risk_rating'];
+        $this->ai_reviewed_at = now();
+        $this->save();
+    }
+
+    public function canStart() : bool
     {
         return $this->status == SessionStatus::SCHEDULED &&
-            now()->between($this->start_datetime, $this->scheduled_end_datetime);
+            now()->between($this->scheduled_start_datetime, $this->scheduled_end_datetime);
     }
 
-    public function getRemainingDuration(): int
+    public function canCancel() : bool
     {
-        if (!$this->isActive()) {
-            return 0;
+        return $this->status == SessionStatus::SCHEDULED &&
+            $this->isBeforeScheduledEndDatetime();
+    }
+
+    public function canTerminate(): bool
+    {
+        return $this->status == SessionStatus::STARTED;
+    }
+
+    public function canEnd(): bool
+    {
+        return $this->status == SessionStatus::STARTED;
+    }
+
+    public function canExpire(): bool
+    {
+        return $this->status == SessionStatus::SCHEDULED &&
+            $this->isAfterScheduledEndDatetime();
+    }
+
+    public function isAfterScheduledStartDatetime(): bool
+    {
+        return $this->scheduled_start_datetime->isAfter(now());
+    }
+
+    public function isBeforeScheduledEndDatetime(): bool
+    {
+        return $this->scheduled_end_datetime->isBefore(now());
+    }
+
+    public function isAfterScheduledEndDatetime(): bool
+    {
+        return $this->scheduled_end_datetime->isAfter(now());
+    }
+
+    public function start(): void
+    {
+        if (!$this->canStart()) {
+            throw new \Exception('Session is not eligible for starting');
         }
-        return now()->diffInSeconds($this->end_datetime);
+        $this->status = SessionStatus::STARTED;
+        $this->started_at = now();
+        $this->started_by = Auth::id();
+        // $this->save();
+        SessionStarted::dispatchIf($this->save(), $this);
     }
 
-    public function request(): BelongsTo
+    public function end(): void
     {
-        return $this->belongsTo(Request::class);
+        if (!$this->canEnd()) {
+            throw new \Exception('Session is not eligible for ending');
+        }
+        $this->status = SessionStatus::ENDED;
+        $this->ended_at = now();
+        $this->ended_by = Auth::id();
+        SessionEnded::dispatchIf($this->save(), $this);
+    }
+
+    public function cancel(): void
+    {
+        if (!$this->canCancel()) {
+            throw new \Exception('Session is not eligible for cancellation');
+        }
+        $this->status = SessionStatus::CANCELLED;
+        $this->cancelled_at = now();
+        $this->cancelled_by = Auth::id();
+        SessionCancelled::dispatchIf($this->save(), $this);
+    }
+
+    public function terminate(): void
+    {
+        if (!$this->canTerminate()) {
+            throw new \Exception('Session is not eligible for termination');
+        }
+        $this->status = SessionStatus::TERMINATED;
+        $this->terminated_at = now();
+        $this->terminated_by = Auth::id();
+        SessionTerminated::dispatchIf($this->save(), $this);
+    }
+
+    public function expire(): void
+    {
+        if (!$this->canExpire()) {
+            throw new \Exception('Session is not eligible for expiration');
+        }
+        $this->status = SessionStatus::EXPIRED;
+        $this->expired_at = now();
+        SessionExpired::dispatchIf($this->save(), $this);
+    }
+
+
+    
+    public function org(): BelongsTo
+    {
+        return $this->belongsTo(Org::class);
+    }
+
+    public function request(): HasOne
+    {
+        return $this->hasOne(Request::class);
     }
 
     public function asset(): BelongsTo
@@ -145,29 +270,44 @@ class Session extends Model
         return $this->belongsTo(Asset::class);
     }
 
-    public function assetAccount(): BelongsTo
+    public function assetAccount(): HasOne
     {
-        return $this->belongsTo(AssetAccount::class);
+        return $this->hasOne(AssetAccount::class);
     }
 
     public function requester(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'requester_id');
     }
 
-    public function checkinBy(): BelongsTo
+    public function approver(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'approver_id');
     }
 
-    public function terminatedBy(): BelongsTo
+    public function startedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'started_by');
     }
 
     public function endedBy(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'ended_by');
+    }
+
+    public function cancelledBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'cancelled_by');
+    }
+
+    public function terminatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'terminated_by');
+    }
+
+    public function flags(): HasMany
+    {
+        return $this->hasMany(SessionFlag::class);
     }
 
     public function audits(): HasMany

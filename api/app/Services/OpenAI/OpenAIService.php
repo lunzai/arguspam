@@ -19,6 +19,17 @@ class OpenAiService
         $this->config = config('pam.openai');
     }
 
+    public function reviewSession(Session $session): array
+    {
+        $systemPrompt = view('prompts.session-review.system', [
+            'session' => $session,
+        ])->render();
+        $userPrompt = view('prompts.session-review.user', [
+            'session' => $session,
+        ])->render();
+        return [];
+    }
+
     public function evaluateAccessRequest(Request $request): array
     {
         $config = array_merge($this->config, config('pam.access_request.duration'));

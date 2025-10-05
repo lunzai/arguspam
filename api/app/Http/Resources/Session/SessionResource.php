@@ -24,26 +24,33 @@ class SessionResource extends Resource
                 'org_id' => $this->org_id,
                 'request_id' => $this->request_id,
                 'asset_id' => $this->asset_id,
+                'asset_account_id' => $this->asset_account_id,
                 'requester_id' => $this->requester_id,
+                'approver_id' => $this->approver_id,
                 'start_datetime' => $this->start_datetime,
                 'end_datetime' => $this->end_datetime,
+                'scheduled_start_datetime' => $this->scheduled_start_datetime,
                 'scheduled_end_datetime' => $this->scheduled_end_datetime,
                 'requested_duration' => $this->requested_duration,
                 'actual_duration' => $this->actual_duration,
-                'is_jit' => $this->is_jit,
+                'is_admin_account' => $this->is_admin_account,
                 'account_name' => $this->account_name,
-                'jit_vault_path' => $this->jit_vault_path,
+                'ai_risk_rating' => $this->ai_risk_rating,
+                'ai_note' => e($this->ai_note),
+                'ai_reviewed_at' => $this->ai_reviewed_at,
                 'session_note' => e($this->session_note),
-                'is_expired' => $this->is_expired,
-                'is_terminated' => $this->is_terminated,
-                'is_checkin' => $this->is_checkin,
                 'status' => $this->status,
-                'checkin_by' => $this->checkin_by,
-                'checkin_at' => $this->checkin_at,
+                'account_created_at' => $this->account_created_at,
+                'account_revoked_at' => $this->account_revoked_at,
+                'started_by' => $this->started_by,
+                'started_at' => $this->started_at,
+                'ended_by' => $this->ended_by,
+                'ended_at' => $this->ended_at,
+                'cancelled_by' => $this->cancelled_by,
+                'cancelled_at' => $this->cancelled_at,
                 'terminated_by' => $this->terminated_by,
                 'terminated_at' => $this->terminated_at,
-                'ended_at' => $this->ended_at,
-                'ended_by' => $this->ended_by,
+                'expired_at' => $this->expired_at,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,
             ],
@@ -58,17 +65,35 @@ class SessionResource extends Resource
                     'asset' => AssetResource::make(
                         $this->whenLoaded('asset')
                     ),
+                    'assetAccount' => AssetResource::make(
+                        $this->whenLoaded('assetAccount')
+                    ),
                     'requester' => UserResource::make(
                         $this->whenLoaded('requester')
                     ),
-                    'checkinBy' => UserResource::make(
-                        $this->whenLoaded('checkinBy')
+                    'approver' => UserResource::make(
+                        $this->whenLoaded('approver')
+                    ),
+                    'startedBy' => UserResource::make(
+                        $this->whenLoaded('startedBy')
+                    ),
+                    'endedBy' => UserResource::make(
+                        $this->whenLoaded('endedBy')
+                    ),
+                    'cancelledBy' => UserResource::make(
+                        $this->whenLoaded('cancelledBy')
                     ),
                     'terminatedBy' => UserResource::make(
                         $this->whenLoaded('terminatedBy')
                     ),
-                    'endedBy' => UserResource::make(
-                        $this->whenLoaded('endedBy')
+                    'flags' => UserResource::make(
+                        $this->whenLoaded('flags')
+                    ),
+                    'audits' => UserResource::make(
+                        $this->whenLoaded('audits')
+                    ),
+                    'createdBy' => UserResource::make(
+                        $this->whenLoaded('createdBy')
                     ),
                 ],
             ]),

@@ -215,3 +215,19 @@ class MySQLDriver extends AbstractDatabaseDriver
         }
     }
 }
+
+
+// SELECT 
+//     t.processlist_user as user,
+//     t.processlist_host as host,
+//     esh.sql_text,
+//     esh.current_schema as db,
+//     ROUND(esh.timer_wait/1000000000, 2) as duration_ms,
+//     esh.rows_examined,
+//     esh.rows_sent
+// FROM performance_schema.events_statements_history esh
+// JOIN performance_schema.threads t ON esh.thread_id = t.thread_id
+// WHERE esh.sql_text IS NOT NULL
+// AND t.processlist_user = 'root'
+// ORDER BY esh.event_id DESC
+// LIMIT 30;

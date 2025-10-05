@@ -12,14 +12,11 @@ class RequestSubmittedNotifyRequester extends Notification implements ShouldQueu
 {
     use Queueable;
 
-    protected $request;
-
     /**
      * Create a new notification instance.
      */
-    public function __construct(Request $request)
+    public function __construct(protected Request $request)
     {
-        $this->request = $request;
     }
 
     /**

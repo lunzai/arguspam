@@ -11,12 +11,10 @@ class RequestCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $request;
-
     /**
      * Create a new event instance.
      */
-    public function __construct(Request $request)
+    public function __construct(public Request $request)
     {
         $this->request = $request;
     }

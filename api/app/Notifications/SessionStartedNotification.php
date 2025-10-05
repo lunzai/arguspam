@@ -15,9 +15,7 @@ class SessionStartedNotification extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(protected Session $session)
-    {
-    }
+    public function __construct(protected Session $session) {}
 
     /**
      * Get the notification's delivery channels.

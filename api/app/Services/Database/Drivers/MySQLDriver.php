@@ -216,8 +216,7 @@ class MySQLDriver extends AbstractDatabaseDriver
     }
 }
 
-
-// SELECT 
+// SELECT
 //     t.processlist_user as user,
 //     t.processlist_host as host,
 //     esh.sql_text,

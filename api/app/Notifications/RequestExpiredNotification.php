@@ -15,9 +15,7 @@ class RequestExpiredNotification extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(protected Request $request)
-    {
-    }
+    public function __construct(protected Request $request) {}
 
     /**
      * Get the notification's delivery channels.

@@ -75,12 +75,12 @@ return new class extends Migration
             $table->dropForeign(['started_by']);
             $table->dropForeign(['cancelled_by']);
             $table->dropColumn([
-                'scheduled_start_datetime', 
-                'started_by', 'started_at', 
-                'cancelled_by', 'cancelled_at', 
-                'expired_at', 
-                'account_created_at', 'account_revoked_at', 
-                'ai_risk_rating', 'ai_note', 'ai_reviewed_at'
+                'scheduled_start_datetime',
+                'started_by', 'started_at',
+                'cancelled_by', 'cancelled_at',
+                'expired_at',
+                'account_created_at', 'account_revoked_at',
+                'ai_risk_rating', 'ai_note', 'ai_reviewed_at',
             ]);
             $table->renameColumn('is_admin_account', 'is_admin');
             $table->boolean('is_checkin')
@@ -100,6 +100,6 @@ return new class extends Migration
             $table->timestamp('checkin_at')
                 ->nullable()
                 ->after('checkin_by');
-        }); 
+        });
     }
 };

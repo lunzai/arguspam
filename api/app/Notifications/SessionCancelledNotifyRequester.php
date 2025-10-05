@@ -15,9 +15,7 @@ class SessionCancelledNotifyRequester extends Notification implements ShouldQueu
     /**
      * Create a new notification instance.
      */
-    public function __construct(protected Session $session)
-    {
-    }
+    public function __construct(protected Session $session) {}
 
     /**
      * Get the notification's delivery channels.

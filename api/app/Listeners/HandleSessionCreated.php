@@ -3,11 +3,10 @@
 namespace App\Listeners;
 
 use App\Events\SessionCreated;
+use App\Notifications\SessionCreatedNotifyRequester;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use App\Notifications\SessionCreatedNotifyRequester;
-use App\Models\Session;
 
 class HandleSessionCreated implements ShouldBeEncrypted, ShouldQueue
 {
@@ -19,9 +18,7 @@ class HandleSessionCreated implements ShouldBeEncrypted, ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * Handle the event.

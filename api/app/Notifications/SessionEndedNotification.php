@@ -15,9 +15,7 @@ class SessionEndedNotification extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(protected Session $session, protected array $terminationResults)
-    {
-    }
+    public function __construct(protected Session $session, protected array $terminationResults) {}
 
     /**
      * Get the notification's delivery channels.

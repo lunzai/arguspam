@@ -5,20 +5,20 @@ namespace App\Models;
 use App\Enums\RiskRating;
 use App\Enums\SessionStatus;
 use App\Events\SessionCancelled;
-use App\Events\SessionEnded;
-use App\Events\SessionStarted;
 use App\Events\SessionCreated;
+use App\Events\SessionEnded;
 use App\Events\SessionExpired;
+use App\Events\SessionStarted;
 use App\Events\SessionTerminated;
+use App\Services\OpenAI\OpenAiService;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
+use Carbon\CarbonInterval;
+use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Carbon\CarbonInterval;
-use App\Services\OpenAI\OpenAiService;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 
@@ -155,13 +155,13 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         $this->save();
     }
 
-    public function canStart() : bool
+    public function canStart(): bool
     {
         return $this->status == SessionStatus::SCHEDULED &&
             now()->between($this->scheduled_start_datetime, $this->scheduled_end_datetime);
     }
 
-    public function canCancel() : bool
+    public function canCancel(): bool
     {
         return $this->status == SessionStatus::SCHEDULED &&
             $this->isBeforeScheduledEndDatetime();
@@ -253,8 +253,6 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         SessionExpired::dispatchIf($this->save(), $this);
     }
 
-
-    
     public function org(): BelongsTo
     {
         return $this->belongsTo(Org::class);

@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\SessionFlag as SessionFlagEnum;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SessionFlag extends Model
 {

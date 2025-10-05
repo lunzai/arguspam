@@ -73,9 +73,9 @@ class Asset extends Model
         });
     }
 
-    public function createAccount(Session $session) : AssetAccount
+    public function createAccount(Session $session): AssetAccount
     {
-        return new AssetAccount();
+        return new AssetAccount;
     }
 
     public function adminAccount(): HasOne

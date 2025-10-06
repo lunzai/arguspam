@@ -1,0 +1,78 @@
+PROMPT FOR: Audit Trail Feature Image (feature-audit-trail.png)
+
+Style: Modern 3D interface mockup with data visualization
+Aspect Ratio: 4:3 or square
+Color Scheme: Blue (#3B82F6), Green (#10B981), Gray tones, White/light backgrounds
+
+Main Concept:
+Comprehensive audit log interface showing detailed session history, query logs, and compliance reporting capabilities
+
+Main Elements:
+1. Central audit log interface/dashboard
+2. Timeline visualization showing activity history
+3. Detailed session records with user information
+4. Query log entries with timestamps
+5. Compliance badges/certifications
+
+Interface Components:
+- Main data table/list showing audit entries with columns:
+  * Timestamp (with date/time)
+  * User avatar and name
+  * Action/Query performed
+  * Database accessed
+  * Duration
+  * Status (success/warning/error icons)
+- Timeline scrubber showing activity over time (graph/chart)
+- Filter controls (date range picker, user selector, database filter)
+- Search bar with magnifying glass icon
+- Export button with "Download Report" label
+- Compliance badges showing "SOC 2", "GDPR", "HIPAA" compliance
+
+Visual Details:
+- Cryptographic seal/signature icon indicating tamper-proof logs
+- Lock with checkmark showing "Encrypted & Secured"
+- Small clock icons showing precise timestamps
+- Color-coded status indicators (green=success, yellow=warning, red=error)
+- Expandable log entries showing query details
+- Session recording playback controls
+- Activity heat map calendar view
+- User profile images in circular avatars
+
+Data Visualization:
+- Bar chart showing access patterns by time of day
+- Pie chart showing access by user/team
+- Activity timeline with event markers
+- Duration metrics showing average session length
+- Trend lines showing historical patterns
+
+Composition:
+- Main interface screen in center with slight 3D tilt
+- Floating compliance badges in top corner
+- Secondary charts/graphs surrounding main interface
+- Clean, organized data presentation
+- Professional dashboard aesthetic
+- Slight isometric perspective on screen
+
+Visual Style:
+- Clean, modern data dashboard design
+- Professional business intelligence look
+- Clear typography for readability
+- Organized grid layout
+- Subtle shadows and depth
+- Glass morphism on floating elements
+- Minimalist color palette with blue accents
+
+Additional Elements:
+- Small padlock icons indicating secure data
+- Magnifying glass showing detailed inspection
+- Calendar icon for time-based filtering
+- Download/export icon
+- Pagination controls at bottom
+- "Last 30 days" or time range indicator
+
+Mood:
+- Professional and trustworthy
+- Organized and comprehensive
+- Transparency and visibility
+- Compliance-ready
+- Enterprise-grade quality

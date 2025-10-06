@@ -1,0 +1,64 @@
+PROMPT FOR: Zero Standing Privilege Feature Graphic (batch2-feature-zero-privilege-graphic.png)
+
+Style: Same as hero illustration - modern, playful 3D with cute characters
+Aspect Ratio: 4:3 or square (1200x1200px)
+Art Style: Consistent with batch2-hero-illustration (Soleland style)
+
+SIMPLE SCENE:
+A single 3D cartoon character standing next to a large hourglass/timer, watching temporary access credentials expire.
+
+Main Elements (ONLY 3-4 items):
+
+1. Character (Left):
+- Single 3D cartoon character (same style as hero)
+- Standing or sitting casually
+- Looking at the hourglass
+- Relaxed, confident expression
+- Simple clothing (solid colors)
+
+2. Hourglass/Timer (Center):
+- Large 3D hourglass as focal point
+- Sand/particles flowing (soft colors)
+- OR simple circular countdown timer
+- Clean, minimal design
+- Soft glow around it
+
+3. Database Icon (Right):
+- Simple 3D database cylinder
+- With small shield or lock icon
+- Clean, single color (blue or teal)
+
+4. Simple Flow Indicator:
+- ONE curved dotted line connecting elements
+- Small arrow showing direction
+- That's it - no more!
+
+Background:
+- Clean cream/off-white (#FFFEF9)
+- Subtle gradient
+- Maybe 2-3 soft geometric shapes floating (circles or rounded squares)
+- Nothing else!
+
+Color Palette:
+- Character: Colorful clothing (purple, teal, coral - pick ONE)
+- Hourglass: Soft amber/gold (#FFD93D)
+- Database: Blue (#6B9EF5)
+- Background: Cream (#FFFEF9)
+- Accents: Mint green (#7FDBCA)
+
+Visual Style:
+- Same rounded, friendly 3D as hero
+- Soft shadows
+- Minimal details
+- Clean and uncluttered
+- Isometric perspective
+
+Mood: Simple, clear, temporary access concept
+
+Avoid:
+- Multiple arrows
+- Complex flowcharts
+- Too many icons
+- Readable text
+- Clutter
+- More than 4 main elements

@@ -1,0 +1,54 @@
+PROMPT FOR: Comparison Illustration (batch2-comparison-illustration.png)
+
+Style: Same as hero illustration - modern, playful 3D with cute characters
+Aspect Ratio: 16:9 landscape (1400x800px)
+Art Style: Consistent with batch2-hero-illustration (Soleland style)
+
+SIMPLE SCENE:
+Two 3D characters side by side - one struggling with complexity, one happy with simplicity.
+
+LEFT SIDE - Traditional/Complex:
+1. Character looking stressed
+- Surrounded by 2-3 tangled cables/wires
+- OR heavy old server box
+- Confused expression
+- Muted colors (grays, dark blue)
+
+RIGHT SIDE - ArgusPAM/Simple:
+1. Character looking happy
+- Holding clean tablet or phone
+- OR standing next to sleek cloud icon
+- Smiling, confident
+- Bright colors (blues, greens, purple)
+
+Central Element:
+- Simple "VS" badge in middle
+- OR just vertical dividing line
+- That's all!
+
+Background:
+- Left: Slightly darker/gray tone
+- Right: Lighter, colorful tone
+- Clean gradient between sides
+- Minimal shapes
+
+Color Palette:
+- Left: Grays (#6B7280), muted blues
+- Right: Bright blue (#6B9EF5), green (#7FDBCA), purple (#8B7FFF)
+- Background: Gradient from gray to cream
+
+Visual Style:
+- Same rounded 3D as hero
+- Two characters, same style
+- Soft shadows
+- Simple contrast
+- Isometric perspective
+
+Mood: Clear before/after or old vs new contrast
+
+Avoid:
+- Many props and objects
+- Complex backgrounds
+- Too many visual elements
+- Readable text
+- More than 3-4 elements per side

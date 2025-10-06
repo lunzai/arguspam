@@ -1,0 +1,166 @@
+PROMPT FOR: Audit Trail Feature Graphic (batch2-feature-audit-trail-graphic.png)
+
+Style: Clean, organized 3D illustration with document/data theme
+Aspect Ratio: 4:3 or square (1200x1200px)
+Art Style: Professional yet friendly 3D illustration with paper and data elements
+
+Main Concept:
+Comprehensive logging and audit trail visualization showing data being recorded, secured, and organized for compliance.
+
+Central Composition:
+- Stack or cascade of floating document/log sheets in 3D
+- Character reviewing or organizing the documents
+- Secure lock/seal elements showing tamper-proof nature
+- Compliance badges or certification stamps floating around
+
+Key Visual Elements:
+
+1. Document/Log Stack (Center):
+- 5-7 floating paper/document sheets in 3D cascade
+- Each sheet slightly offset and rotated for depth
+- Sheets show visual representations of data:
+  * Timeline graphs (no text, just lines and dots)
+  * Simple bar charts
+  * Bullet point lists (represented by colored dots and lines)
+  * User avatar icons
+  * Timestamp indicators (clock symbols)
+- Soft shadow beneath each sheet
+- Slight transparency on back sheets
+
+2. Character Element (Left or Right):
+- 3D cartoon character holding magnifying glass over documents
+- OR character organizing/filing documents
+- Professional appearance (business casual attire)
+- Focused, confident expression
+- Character could be holding a clipboard or tablet
+
+3. Security/Tamper-Proof Indicators:
+- Cryptographic seal/stamp on documents (wax seal style in 3D)
+- Lock icon with checkmark
+- Shield overlaying some documents
+- Small padlock symbols
+- Chain or secure connection visual between documents
+
+4. Compliance Elements:
+- 3-4 floating badge/certification icons:
+  * Shield with "SOC 2" styling (stylized, minimal text)
+  * GDPR badge (European stars pattern)
+  * HIPAA badge (medical cross pattern)
+  * Checkmark badges
+- Badges in soft colors with subtle gradients
+- Slight rotation and varied heights for visual interest
+
+5. Search/Filter Visual:
+- Magnifying glass examining a specific log entry
+- Highlighted/glowing section on one document
+- Small search/filter icon (funnel shape)
+- Color-coded tags or labels on documents
+
+6. Timeline/Organization:
+- Vertical or horizontal timeline in background
+- Dots or nodes on timeline representing log entries
+- Curved line connecting timeline to documents
+- Calendar icon or date markers
+
+Supporting Elements:
+- Floating UI elements (simplified cards, tags)
+- Small database cylinder icon showing source
+- Export/download arrow icon
+- PDF or report icon
+- Checkmarks indicating completed audits
+- Small clock icons showing timestamps
+- Scattered subtle sparkles suggesting automated logging
+
+Color Palette:
+- Primary Documents: White to light blue gradient (#FFFFFF to #F0F4FF)
+- Accents: Soft blue (#6B9EF5), Mint green (#7FDBCA)
+- Security: Deep blue (#4A5FE6), Purple (#8B7FFF)
+- Compliance: Gold/amber (#FFD93D), Green (#7FDBCA)
+- Warnings: Soft coral (#FF9A8B) for any alert elements
+- Background: Cream/off-white (#FFFEF9)
+
+Background:
+- Light gradient from cream to pale blue
+- Subtle grid or dot pattern (very faint)
+- Abstract geometric shapes in very light colors
+- Clean, organized feel
+- Minimal to emphasize documents
+
+Document Details:
+- Rounded corners on all sheets
+- Soft drop shadows
+- Gentle gradients on paper surfaces
+- Color-coded sections:
+  * Blue bars for queries
+  * Green dots for successful actions
+  * Orange/amber for warnings
+  * Purple for user activities
+- Visual hierarchy through size and positioning
+
+Depth & Composition:
+- Slight isometric or 3/4 view perspective
+- Layered documents showing depth
+- Character in foreground or mid-ground
+- Compliance badges floating at various depths
+- Clear focal point (central documents)
+
+Lighting:
+- Soft, even lighting from top-left
+- Gentle highlights on document edges
+- Subtle glow on security elements (locks, seals)
+- Matte finish on paper
+- Clean, professional lighting
+
+Visual Metaphors:
+- Organization: Stacked, cascading documents
+- Security: Locks, seals, shields
+- Transparency: Readable but abstract data visualizations
+- Compliance: Certification badges and stamps
+- Searchability: Magnifying glass, filters
+- Completeness: Full stack of documents, no gaps
+
+Technical Details:
+- No readable text (use lines, bars, dots to represent data)
+- Abstract representations only
+- Clean, anti-aliased edges
+- Professional quality 3D rendering
+- Balanced, uncluttered composition
+
+Additional Elements:
+- Small "verified" checkmark badge
+- Digital signature indicator (abstract)
+- Timestamp ribbon or banner
+- Small user avatar icons showing who accessed what
+- Activity indicator dots (green = active logs being written)
+
+Technical Specs:
+- High resolution: 2400x2400px minimum
+- PNG with transparency or light background
+- Professional 3D render quality
+- Crisp, clean edges
+- Organized, structured layout
+
+Avoid:
+- Readable text or actual data
+- Messy or disorganized appearance
+- Overly complex charts
+- Dark, serious corporate look
+- Generic office clipart style
+- Intimidating or bureaucratic feel
+
+Mood & Emotion:
+- Organized and systematic
+- Trustworthy and reliable
+- Transparent and clear
+- Professional and compliant
+- Efficient and automated
+- Secure but accessible
+- Confidence in record-keeping
+
+Reference Style:
+- Modern document management illustrations
+- Compliance software marketing graphics
+- SaaS audit/reporting visuals
+- Professional but approachable
+- Clean, minimal aesthetic
+- Similar to Notion, Confluence, or Dropbox Paper illustrations

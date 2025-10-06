@@ -1,0 +1,111 @@
+PROMPT FOR: Zero Standing Privilege Feature Graphic (batch2-feature-zero-privilege-graphic.png)
+
+Style: Clean, modern 3D illustration with playful elements
+Aspect Ratio: 4:3 or square (1200x1200px)
+Art Style: Friendly 3D isometric illustration with pastel colors
+
+Main Concept:
+Visual metaphor for temporary access and credential expiration - showing the lifecycle of time-bound database credentials.
+
+Central Composition:
+- Large hourglass or countdown timer as the focal point (center)
+- 3D character figure on the left reaching toward/requesting access
+- Database icon (cylinder) on the right with protective shield
+- Flowing dotted line path connecting the three elements
+
+Key Visual Elements:
+
+1. User/Requester (Left):
+- Single 3D cartoon character (simplified, rounded style)
+- Character holding or pointing to a credential card/badge
+- Badge/card has a small clock icon on it
+- Character appears hopeful/professional
+
+2. Timer/Lifecycle (Center):
+- Large stylized hourglass OR circular timer
+- Sand/particles flowing (if hourglass) in soft gradient colors
+- OR circular progress indicator showing time countdown
+- Glowing effect around the timer
+- Small floating clock icons or time symbols around it
+
+3. Database/Access (Right):
+- 3D database cylinder in soft blue/teal color
+- Shield overlaying or protecting the database
+- Checkmark on shield indicating secure access
+- Gentle glow or particles emanating from database
+
+4. Access Flow Visualization:
+- Dotted curved line from character → timer → database
+- Small arrows along the path
+- "1. Request" icon/badge near character (simple icon, no text)
+- "2. Time-bound" icon/badge near timer
+- "3. Auto-revoke" icon/badge near database
+- Use color coding: blue (request), amber/orange (active), gray (expired)
+
+Supporting Elements:
+- Floating key icon that appears to be temporary/fading
+- Crossed-out permanent credential card on ground (showing what NOT to use)
+- Small expiration badge with X symbol
+- Floating sparkles or particles suggesting automation
+- Circular orbital lines showing the credential lifecycle
+
+Color Palette:
+- Primary: Soft blue (#6B9EF5), Teal (#4ECDC4)
+- Timer/Active: Warm amber/gold (#FFD93D)
+- Expired/Revoked: Soft gray (#C4C4C4)
+- Accents: Mint green (#A8E6CE), Coral (#FF8B94)
+- Background: Off-white cream (#FFFEF9)
+
+Background:
+- Very light gradient from cream to pale blue
+- Subtle geometric shapes (circles, rounded squares) in background
+- Faint grid pattern or dots for depth
+- Minimal to keep focus on main elements
+
+Depth & Dimension:
+- Isometric perspective (30-degree angle)
+- Soft shadows beneath all objects
+- Layered composition (foreground, middle, background)
+- Slight depth of field blur on background elements
+
+Visual Metaphors:
+- Temporary nature shown through fading/transparent effects
+- Automation shown through sparkles, gears, or magic wand elements
+- Security shown through shields and locks
+- Time constraint shown through hourglass/timer/countdown
+
+Lighting:
+- Soft directional light from top-left
+- Gentle rim lighting on character and database
+- Glow effects on active elements (timer, shield)
+- Matte surfaces with subtle highlights
+
+Technical Specs:
+- High resolution: 2400x2400px minimum
+- PNG with transparency preferred
+- Clean, anti-aliased edges
+- Professional 3D render quality
+- Balanced composition with clear focal point
+
+Avoid:
+- Any readable text or words
+- Overly complex details
+- Realistic textures
+- Dark or aggressive imagery
+- Cluttered composition
+- Generic stock illustration look
+
+Mood & Emotion:
+- Efficient and automated
+- Secure but friendly
+- Time-conscious
+- Professional yet approachable
+- Clear and understandable
+- Modern and innovative
+
+Reference Style:
+- Similar to Soleland, Asana, Slack marketing illustrations
+- 3D isometric workflow diagrams
+- Playful but professional
+- Colorful but not childish
+- Tech-forward design language

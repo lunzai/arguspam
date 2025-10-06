@@ -1,0 +1,53 @@
+BATCH 2 V2 - SIMPLIFIED AI PROMPTS
+===================================
+
+WHAT CHANGED:
+- Removed overcomplicated requirements
+- Simplified to 3-4 main elements per image MAX
+- Made all prompts consistent with hero style
+- Focused on simple, clear scenes
+- Removed visual clutter
+
+NEW FILES (v2):
+1. batch2-feature-zero-privilege-graphic-v2.txt
+   → Character + hourglass + database (3 elements)
+
+2. batch2-feature-ai-detection-graphic-v2.txt
+   → Character + AI brain + database (3 elements)
+
+3. batch2-feature-audit-trail-graphic-v2.txt
+   → Character + document stack + seal (3-4 elements)
+
+4. batch2-comparison-illustration-v2.txt
+   → Two characters + simple props (2-3 elements each side)
+
+5. batch2-architecture-illustration-v2.txt
+   → Character + 4-layer simple stack (simple!)
+
+6. batch2-testimonial-illustration-v2.txt
+   → 3 characters + 2-3 stars/bubbles (simple!)
+
+7. batch2-icons-v2.txt
+   → All 12 icons, simplified to 1-2 elements each
+
+KEY SIMPLIFICATIONS:
+-------------------
+✓ Each image: 3-4 main elements MAX
+✓ No complex flowcharts
+✓ No multiple arrows everywhere
+✓ No dozens of floating icons
+✓ Clean, minimal backgrounds
+✓ Same style as hero (consistent!)
+✓ Simple scenes that tell the story
+
+HERO PROMPT (unchanged):
+- This one was perfect, kept as-is
+- batch2-hero-illustration.txt
+
+USE V2 PROMPTS:
+--------------
+Old prompts (batch2-*-graphic.txt) = Too complex
+New prompts (batch2-*-v2.txt) = Simplified, use these!
+
+READY TO GENERATE!
+The v2 prompts will produce consistent, clean images that match your hero style.

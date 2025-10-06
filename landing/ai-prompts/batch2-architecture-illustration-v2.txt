@@ -1,0 +1,63 @@
+PROMPT FOR: Architecture Illustration (batch2-architecture-illustration.png)
+
+Style: Same as hero illustration - modern, playful 3D with cute characters
+Aspect Ratio: 16:9 landscape (1600x900px)
+Art Style: Consistent with batch2-hero-illustration (Soleland style)
+
+SIMPLE SCENE:
+A 3D cartoon character standing next to a simple 3-4 layer stack of connected boxes.
+
+Main Elements (SIMPLE!):
+
+1. Character (Left):
+- Single 3D cartoon character (same style as hero)
+- Pointing at or presenting the stack
+- Professional, confident
+- Simple clothing
+
+2. Stack of Layers (Center-Right):
+- 4 horizontal layers (boxes/platforms)
+- Each layer has 2-3 simple icons/boxes on it
+- Clean, organized appearance
+- Stacked with slight offset for depth
+- Connected by simple vertical lines
+
+Layer Design (Keep it SIMPLE):
+- Top layer: 2-3 small boxes (web, mobile icons)
+- Middle layers: 2-3 boxes each
+- Bottom layer: 2-3 database cylinders
+- All very simple, clean shapes
+
+3. Simple Connections:
+- Thin lines connecting layers vertically
+- Maybe 1-2 small arrows
+- Nothing complex!
+
+Background:
+- Clean cream/off-white (#FFFEF9)
+- Very minimal
+- Maybe subtle grid pattern
+- 2-3 soft shapes
+
+Color Palette:
+- Boxes: Different colors per layer (blue, purple, green, teal)
+- Character: Colorful clothing
+- Background: Cream (#FFFEF9)
+- Connections: Soft gray or matching colors
+
+Visual Style:
+- Same rounded 3D as hero
+- Soft shadows
+- Clean and organized
+- Isometric perspective
+- Professional but friendly
+
+Mood: Organized, clear structure, simple tech stack
+
+Avoid:
+- Too many boxes per layer
+- Complex arrows everywhere
+- Technical jargon
+- Messy connections
+- More than 10-12 total boxes
+- Readable text

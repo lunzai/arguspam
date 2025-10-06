@@ -1,0 +1,406 @@
+AI PROMPTS FOR ICONS - ArgusPAM Landing Page
+All icons should be: 256x256px, 3D style, isometric or slight perspective, rounded edges, friendly appearance, consistent style across all icons
+
+===============================================
+PROBLEM SECTION ICONS (3 icons)
+===============================================
+
+ICON 1: Standing Privileges Problem
+-----------------------------------
+Style: 3D isometric icon with warning/danger theme
+Size: 256x256px square
+
+Main Element:
+- Open padlock with a permanent/eternal symbol (infinity sign or "always on" indicator)
+- Padlock in 3D, showing it's perpetually unlocked
+- Chains attached but broken or loose
+- Red/orange warning glow around the padlock
+
+Visual Details:
+- Padlock: Metallic gray/silver (#9CA3AF) with red glow
+- Shackle: Open position, showing vulnerability
+- Background: Soft red gradient background (#FEE2E2 to transparent)
+- Accent: Warning triangle or exclamation mark nearby
+- Small danger particles or warning symbols floating around
+- Slight shadow beneath for depth
+
+Mood: Concerning, vulnerable, risky
+Color palette: Grays, reds, oranges (#EF4444, #F97316, #9CA3AF)
+Lighting: Warning glow from padlock, soft ambient light
+Avoid: Text, overly aggressive imagery, realistic lock mechanisms
+
+-----------------------------------
+
+ICON 2: Credential Sprawl Problem
+-----------------------------------
+Style: 3D isometric icon showing chaos and disorganization
+Size: 256x256px square
+
+Main Element:
+- Multiple scattered credential cards/keys spreading outward
+- 5-7 small key icons or credential cards in disarray
+- Messy, chaotic arrangement (explosion-like pattern)
+- File folders or .env file representations scattered
+
+Visual Details:
+- Keys/Cards: Various sizes, scattered at different angles
+- Colors: Mixed colors showing lack of organization (blues, greens, yellows, grays)
+- Central point: Origin of sprawl (representing a database or system)
+- Motion lines suggesting spreading/multiplying
+- Small ".env" file icons mixed in
+- Slight transparency on background items
+- Circular ripple or explosion pattern behind elements
+
+Mood: Chaotic, unmanaged, overwhelming
+Color palette: Mixed pastels showing disorder (#6B7280, #F59E0B, #3B82F6, #10B981)
+Lighting: Even lighting, slight glow on individual items
+Avoid: Text, too many elements (keep to 5-7), realistic key shapes
+
+-----------------------------------
+
+ICON 3: Zero Visibility Problem
+-----------------------------------
+Style: 3D isometric icon with obscured/hidden theme
+Size: 256x256px square
+
+Main Element:
+- Eye with question mark or blindfold
+- OR database cylinder shrouded in fog/mist
+- Magnifying glass showing empty/nothing inside
+- Mystery/unknown indicators
+
+Visual Details:
+- Eye: Partially closed or with blind spot
+- Question marks: 2-3 small question marks floating around
+- Fog/mist: Semi-transparent layers obscuring view (#E5E7EB with transparency)
+- Database: Hidden behind fog or darkness
+- Visibility icon crossed out (eye with slash through it)
+- Dark/gray color scheme with mystery elements
+
+Mood: Uncertain, opaque, concerning lack of information
+Color palette: Grays, dark blues, muted colors (#6B7280, #4B5563, #9CA3AF)
+Lighting: Dim or obscured, representing poor visibility
+Avoid: Too dark/depressing, readable text, complex symbols
+
+===============================================
+FEATURES SECTION ICONS (checkmarks in lists)
+===============================================
+
+ICON 4: Checkmark Icon (for feature lists)
+-----------------------------------
+Style: 3D isometric checkmark in circle
+Size: 64x64px (smaller, for inline use)
+
+Main Element:
+- Bold checkmark symbol inside circular background
+- Slight 3D depth and perspective
+- Clean, simple, instantly recognizable
+
+Visual Details:
+- Checkmark: Thick, rounded stroke in white or light color
+- Circle: Solid background in mint green (#10B981)
+- Slight gradient on circle (lighter at top, darker at bottom)
+- Soft shadow beneath for floating effect
+- Subtle highlight/shine on top edge of circle
+- Smooth, polished appearance
+
+Mood: Confirmed, positive, successful
+Color palette: Mint green (#10B981, #7FDBCA), white (#FFFFFF)
+Lighting: Soft top-down light with highlight
+Avoid: Flat design, sharp corners, dull colors
+
+===============================================
+BENEFITS SECTION ICONS (4 icons)
+===============================================
+
+ICON 5: Reduce Attack Surface (Shield)
+-----------------------------------
+Style: 3D shield icon with security theme
+Size: 256x256px square
+
+Main Element:
+- Strong shield shape in 3D
+- Checkmark or lock symbol on shield face
+- Protective, solid appearance
+- Slight perspective/tilt for dimension
+
+Visual Details:
+- Shield: Blue gradient (#3B82F6 to #2563EB)
+- Surface: Slight metallic sheen or gradient
+- Center emblem: Checkmark or closed lock in white
+- Glow: Soft blue glow around edges
+- Depth: 3D extrusion showing thickness
+- Small sparkles or protection particles around shield
+- Shadow beneath for grounding
+
+Mood: Protected, secure, strong, reliable
+Color palette: Blues (#3B82F6, #2563EB), white accents, subtle glow
+Lighting: Hero lighting from top-left, rim light on edges
+Avoid: Medieval/fantasy shield style, aggressive spikes, military imagery
+
+-----------------------------------
+
+ICON 6: Deploy in Hours (Clock/Speed)
+-----------------------------------
+Style: 3D clock/timer icon showing speed
+Size: 256x256px square
+
+Main Element:
+- Clock face with hands showing quick time
+- Lightning bolt or fast-forward symbol integrated
+- Speedometer-like element
+- Quick/instant indicators
+
+Visual Details:
+- Clock: Circular, 3D with depth
+- Clock face: Light blue/white (#F0F9FF)
+- Hands: Pointing to short time duration (2-3 hours position)
+- Accent: Lightning bolt in orange/yellow (#F59E0B)
+- Motion lines suggesting speed
+- Small sparkles indicating fast action
+- Gradient background from yellow to blue
+- Slight rotation suggesting movement
+
+Mood: Fast, efficient, quick, instant
+Color palette: Blue (#3B82F6), orange/yellow (#F59E0B), white
+Lighting: Dynamic lighting showing energy and speed
+Avoid: Actual readable numbers, complex clock mechanisms, boring static clock
+
+-----------------------------------
+
+ICON 7: Compliance (Certificate/Badge)
+-----------------------------------
+Style: 3D certification badge or ribbon
+Size: 256x256px square
+
+Main Element:
+- Award ribbon or certification badge
+- Checkmark or approval symbol
+- Professional certification aesthetic
+- Star or seal element
+
+Visual Details:
+- Badge: Circular or shield-shaped medal/badge
+- Ribbon: Flowing ribbon beneath badge (optional)
+- Center: Large checkmark or star symbol
+- Color: Blue-purple gradient (#8B5CF6 to #6366F1)
+- Accent: Gold/amber trim or highlights (#F59E0B)
+- Surface: Subtle texture or pattern (like official seal)
+- Shadow: Beneath ribbon/badge
+- Small text placeholder (lines, not readable text) around edge
+
+Mood: Certified, official, compliant, trustworthy
+Color palette: Purple/blue (#8B5CF6, #6366F1), gold accents (#F59E0B)
+Lighting: Slight shine on badge surface, professional lighting
+Avoid: Specific certification logos, readable text, overly ornate design
+
+-----------------------------------
+
+ICON 8: Open Source/Affordable (Dollar/Heart)
+-----------------------------------
+Style: 3D icon showing value and community
+Size: 256x256px square
+
+Main Element:
+- Dollar sign with heart OR
+- Open box with gifts/value coming out OR
+- Piggy bank with coins
+- Open source symbol (abstract)
+
+Visual Details:
+Option A - Dollar with Heart:
+- Dollar sign: 3D, in green (#10B981)
+- Heart: Wrapping around or behind dollar
+- Combined showing "value + love/community"
+
+Option B - Open Box:
+- Box: Open lid, 3D perspective
+- Contents: Stars, sparkles, or value symbols floating out
+- Colors: Mix of greens and purples
+
+Option C - Piggy Bank:
+- Friendly piggy bank, 3D
+- Coins nearby showing affordability
+- Smile on piggy face
+
+Visual Details (All options):
+- Primary color: Green (#10B981, #7FDBCA)
+- Accent: Purple (#8B5CF6) or gold (#F59E0B)
+- Friendly, approachable style
+- Positive energy (sparkles, glow)
+- Shadow beneath for depth
+
+Mood: Affordable, valuable, accessible, community-driven
+Color palette: Greens (#10B981), purples (#8B5CF6), gold accents
+Lighting: Warm, welcoming lighting
+Avoid: Greedy/money-focused imagery, closed/exclusive feeling, corporate coldness
+
+===============================================
+HOW IT WORKS SECTION ICONS (4 step icons)
+===============================================
+
+ICON 9: Step 1 - Request Access
+-----------------------------------
+Style: 3D icon showing request/initiation action
+Size: 256x256px square
+
+Main Element:
+- Hand clicking button OR
+- Person with raised hand requesting OR
+- Request form/ticket icon
+- Communication arrow or signal
+
+Visual Details:
+- Hand: Cartoon-style 3D hand, friendly skin tone
+- Button: Large round button in blue (#3B82F6)
+- OR Request form: Document with hand/person icon
+- Cursor: Large pointer icon if using button
+- Motion: Slight motion lines or ripple effect from click
+- Background: Soft blue gradient (#DBEAFE to transparent)
+- Small communication waves or signals
+
+Mood: Initiating, easy, simple action, user-friendly
+Color palette: Blue (#3B82F6, #60A5FA), neutral skin tones
+Lighting: Soft lighting, slight glow on button
+Avoid: Complex forms, text, confusing multi-step visuals
+
+-----------------------------------
+
+ICON 10: Step 2 - Automated Approval
+-----------------------------------
+Style: 3D icon showing automation and verification
+Size: 256x256px square
+
+Main Element:
+- Gear/cog with checkmark OR
+- Robot/AI head with approval gesture OR
+- Automated stamp/seal appearing
+- Shield with verification badge
+
+Visual Details:
+- Gear: 3D rotating gear in purple/blue (#8B5CF6)
+- Checkmark: Large green checkmark appearing (#10B981)
+- OR Robot: Simple, friendly robot head with happy expression
+- Sparkles/magic effect: Automation indicators
+- Lightning bolt: Showing speed of automation
+- Background: Purple gradient (#F3E8FF to transparent)
+- Small circuit pattern or AI neural nodes
+
+Mood: Automated, intelligent, fast, reliable
+Color palette: Purple (#8B5CF6), green (#10B981), blue accents
+Lighting: Slight glow showing automation/energy
+Avoid: Complex machinery, intimidating robots, manual process imagery
+
+-----------------------------------
+
+ICON 11: Step 3 - Temporary Credentials
+-----------------------------------
+Style: 3D icon showing credential delivery with time limit
+Size: 256x256px square
+
+Main Element:
+- Key with countdown timer OR
+- Credential badge with clock overlay OR
+- Password/key being delivered with timer
+- Hourglass with digital key
+
+Visual Details:
+- Key: 3D key in gold/amber (#F59E0B)
+- Timer: Clock or countdown indicator integrated
+- Delivery arrow: Showing credential being sent
+- Time indicator: Small clock face or countdown numbers (visual, not readable)
+- Expiration badge: Small "temporary" indicator
+- Background: Amber/orange gradient (#FEF3C7 to transparent)
+- Glowing effect suggesting active/live credential
+
+Mood: Time-sensitive, secure delivery, temporary nature
+Color palette: Amber/gold (#F59E0B, #FBBF24), blue accents (#3B82F6)
+Lighting: Warm glow from key, suggesting active credential
+Avoid: Permanent-looking keys, unclear time element, complex clock faces
+
+-----------------------------------
+
+ICON 12: Step 4 - Monitor & Revoke
+-----------------------------------
+Style: 3D icon showing active monitoring and control
+Size: 256x256px square
+
+Main Element:
+- Eye with monitoring waves/signals OR
+- Shield with radar scan OR
+- Lock closing/revoking with AI monitoring
+- Surveillance camera (friendly style) with checkmark
+
+Visual Details:
+- Eye: 3D eye in center with protective shield
+- OR Shield: With scanning radar/sonar waves emanating
+- Monitoring waves: Circular waves or scan lines in green (#10B981)
+- AI element: Small brain or circuit pattern indicating intelligent monitoring
+- Revoke indicator: Lock closing or X badge (can appear/disappear)
+- Background: Green gradient (#D1FAE5 to transparent)
+- Active indicators: Dots or lights showing "always on" monitoring
+- Real-time pulse effect
+
+Mood: Vigilant, protective, smart, always-watching (but friendly)
+Color palette: Green (#10B981, #7FDBCA), blue (#3B82F6), white
+Lighting: Scanning glow, active monitoring light
+Avoid: Creepy surveillance imagery, aggressive watchdog, overly complex monitoring tech
+
+===============================================
+GENERAL SPECIFICATIONS FOR ALL ICONS
+===============================================
+
+Universal Requirements:
+- Size: 256x256px for main icons, 64x64px for checkmarks
+- Format: PNG with transparency
+- Style: Consistent 3D isometric/slight perspective
+- Edges: Rounded, friendly (no sharp corners)
+- Shadows: Soft drop shadows beneath all icons
+- Depth: Slight 3D extrusion, not flat
+- Lighting: Consistent top-left light source
+- Colors: Use ArgusPAM brand palette as base
+- Background: Transparent OR subtle gradient halo
+
+Brand Color Palette:
+- Primary Blue: #3B82F6, #2563EB
+- Secondary Green: #10B981, #7FDBCA
+- Accent Purple: #8B5CF6, #6366F1
+- Warning/Alert: #F59E0B, #FBBF24
+- Danger: #EF4444, #F87171
+- Neutral: #6B7280, #9CA3AF
+- Light: #F3F4F6, #F9FAFB
+
+Consistency Requirements:
+- All icons should feel part of same family
+- Similar level of detail across all icons
+- Consistent shadow and lighting treatment
+- Similar rounded corner radius
+- Balanced visual weight
+- Professional but approachable feel
+
+Avoid Across All Icons:
+- Readable text or numbers
+- Overly realistic rendering
+- Flat 2D design
+- Sharp aggressive corners
+- Cluttered busy designs
+- Inconsistent styles between icons
+- Dark/depressing themes
+- Stock icon appearance
+
+Mood Across All Icons:
+- Professional but friendly
+- Modern and tech-forward
+- Approachable not intimidating
+- Clear and understandable
+- Positive and optimistic
+- Secure but not paranoid
+- Innovative and fresh
+
+Reference Style:
+- Similar to icons from: Notion, Slack, Asana, Shopify
+- 3D icon packs like "3D Icons" by IconScout
+- Playful but professional
+- Rounded 3D aesthetic
+- Colorful but not childish
+- Clean and polished

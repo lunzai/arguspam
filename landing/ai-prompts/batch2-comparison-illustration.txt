@@ -1,0 +1,181 @@
+PROMPT FOR: Comparison Section Supporting Graphic (batch2-comparison-illustration.png)
+
+Style: Clean, modern 3D illustration showing contrast/comparison
+Aspect Ratio: 16:9 landscape (1400x800px) or square
+Art Style: Split-screen friendly 3D illustration with visual contrast
+
+Main Concept:
+Visual representation of modern vs traditional approach, showing ArgusPAM as innovative, simple, and efficient vs. old-school complexity.
+
+Composition - Split Design:
+
+LEFT SIDE - "Traditional PAM" (Negative/Old):
+- Cluttered, heavy, complex visual
+- Large, bulky server/cabinet in dark gray/steel colors
+- Tangled cables and wires
+- Old-school padlock and physical keys
+- Character looking confused or overwhelmed
+- Paper documents scattered around
+- Slow/manual indicators (turtle icon, calendar showing weeks)
+- Complex flowchart with many steps in background
+- Dull colors: grays, dark blues, browns
+
+RIGHT SIDE - "ArgusPAM" (Positive/Modern):
+- Clean, minimal, organized visual
+- Sleek modern cloud/shield element
+- Wireless connection indicators
+- Digital key/smart access visuals
+- Character looking confident and happy
+- Organized digital interface/tablet
+- Fast indicators (lightning bolt, speedometer)
+- Simple 4-step process visual
+- Bright colors: blues, greens, purples (brand colors)
+
+Central Dividing Element:
+- VS badge or separator in center
+- OR simple vertical line with subtle gradient
+- OR contrasting background colors meeting in middle
+- Slight tilt or perspective to add dynamism
+
+Key Visual Contrasts:
+
+1. Complexity vs. Simplicity:
+- Left: Maze, multiple gears, tangled paths
+- Right: Single clear arrow, clean path, minimal elements
+
+2. Speed/Time:
+- Left: Hourglass draining slowly, calendar pages
+- Right: Lightning bolt, instant notification badge
+
+3. Cost:
+- Left: Heavy dollar signs, expensive-looking equipment
+- Right: Light piggy bank, open-source badge, affordable tag
+
+4. Setup/Deployment:
+- Left: Tools, construction cone, long timeline
+- Right: Plug-and-play icon, quick setup indicator
+
+5. Technology:
+- Left: On-premise server rack, physical hardware
+- Right: Cloud element, modern interface, AI brain icon
+
+Character Expressions:
+- Left character: Stressed, papers falling, sweat drop
+- Right character: Relaxed, thumbs up, smiling
+
+Supporting Elements:
+
+Traditional Side (Left):
+- Stack of paperwork/manuals
+- Complex dashboard with too many buttons
+- Warning signs, caution tape
+- Old-school metal safe or vault
+- Slow progress bar barely filled
+- Multiple approval stamps needed
+- Red tape visualization
+- Monochromatic palette
+
+ArgusPAM Side (Right):
+- Single sleek tablet/device
+- Simple, intuitive interface mockup
+- Green checkmarks everywhere
+- Modern shield with AI chip
+- Full/complete progress indicator
+- Single-click approval visual
+- Streamlined process
+- Vibrant, friendly colors
+
+Background Treatment:
+- Left: Slightly darker, more gray
+- Right: Lighter, more colorful
+- Gradient transition in middle
+- Subtle pattern differences:
+  * Left: Grid, rigid structure
+  * Right: Flowing, organic shapes
+
+Color Palette:
+
+Traditional/Left:
+- Grays (#6B7280, #9CA3AF)
+- Dark blues (#1E3A5F)
+- Browns (#8B7355)
+- Muted tones overall
+- Minimal vibrancy
+
+ArgusPAM/Right:
+- Bright blue (#6B9EF5)
+- Mint green (#7FDBCA)
+- Purple (#8B7FFF)
+- Coral accents (#FF9A8B)
+- Vibrant, energetic
+
+Visual Indicators:
+- Checkmarks (right) vs. X marks (left)
+- Up arrows (right) vs. down arrows (left)
+- Smiles (right) vs. frowns (left)
+- Open padlock (right) vs. closed heavy lock (left)
+- Light bulb on (right) vs. off (left)
+
+Depth & Dimension:
+- Slight isometric view
+- Both sides at same perspective for fair comparison
+- Soft shadows beneath objects
+- Layered elements showing depth
+
+Size Contrast:
+- Left: Larger, bulkier elements (heavy feeling)
+- Right: Smaller, sleeker elements (lightweight feeling)
+- Both sides balanced in overall composition
+
+Text Alternatives (Visual Only):
+- Instead of "$$$", show stacks of coins
+- Instead of "Complex", show tangled knot
+- Instead of "Simple", show single straight line
+- Instead of "Slow", show turtle
+- Instead of "Fast", show rocket/lightning
+
+Additional Details:
+- Small badges/icons showing features present (right) vs absent (left)
+- Timeline visual: weeks (left) vs hours (right)
+- Team size: many people needed (left) vs small team (right)
+- Infrastructure: physical (left) vs cloud (right)
+
+Lighting:
+- Left: Dimmer, less vibrant lighting
+- Right: Bright, well-lit, energetic
+- Transition/gradient in lighting across center divide
+
+Technical Specs:
+- High resolution: 2800x1600px minimum
+- PNG format
+- Clean division between sides
+- Professional 3D rendering
+- Balanced composition (neither side overwhelming)
+
+Avoid:
+- Making left side look ridiculous or cartoonishly bad
+- Text labels (use visual symbols only)
+- Being too harsh on competitors
+- Unclear visual metaphors
+- Cluttering either side too much
+- Offensive comparisons
+
+Mood & Emotion:
+- Left: Frustrating, outdated, complicated, expensive
+- Right: Easy, modern, efficient, accessible
+- Overall: Fair comparison, not mockery
+- Professional but clear distinction
+- Empowering choice for the viewer
+
+Alternative Composition Option:
+Instead of side-by-side, could be:
+- Before/After with arrow in middle
+- Two characters: one struggling (left), one succeeding (right)
+- Two pathways: winding maze (left), straight path (right)
+
+Reference Style:
+- Before/After comparison illustrations
+- Product comparison graphics from Apple, Google marketing
+- SaaS competitive analysis visuals
+- Professional but friendly
+- Clear visual storytelling

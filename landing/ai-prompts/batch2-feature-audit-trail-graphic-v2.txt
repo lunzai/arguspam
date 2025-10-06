@@ -1,0 +1,60 @@
+PROMPT FOR: Audit Trail Feature Graphic (batch2-feature-audit-trail-graphic.png)
+
+Style: Same as hero illustration - modern, playful 3D with cute characters
+Aspect Ratio: 4:3 or square (1200x1200px)
+Art Style: Consistent with batch2-hero-illustration (Soleland style)
+
+SIMPLE SCENE:
+A 3D cartoon character organizing or reviewing a stack of floating documents/logs.
+
+Main Elements (ONLY 3-4 items):
+
+1. Character (Left or Bottom):
+- Single 3D cartoon character (same style as hero)
+- Holding clipboard OR pointing at documents
+- Professional, organized look
+- Simple clothing
+
+2. Document Stack (Center-Right):
+- 3-4 floating paper sheets in 3D
+- Slightly offset and cascading
+- Simple lines and dots representing data (no readable text)
+- White/light blue color
+- Soft shadows beneath each
+
+3. Security Seal:
+- ONE large seal/stamp on the documents
+- OR one lock icon
+- Simple design
+- Gold or blue color
+- That's it!
+
+Background:
+- Clean cream/off-white (#FFFEF9)
+- Subtle gradient
+- Maybe 2-3 soft shapes
+- Very minimal!
+
+Color Palette:
+- Documents: White to light blue (#F0F9FF)
+- Character: Colorful clothing (pick ONE color)
+- Seal: Gold (#FFD93D) or Blue (#6B9EF5)
+- Background: Cream (#FFFEF9)
+
+Visual Style:
+- Same rounded 3D as hero
+- Soft shadows
+- Clean and organized
+- Isometric perspective
+- Professional but friendly
+
+Mood: Organized, secure, compliant - simple and clear
+
+Avoid:
+- Many documents flying everywhere
+- Multiple badges
+- Complex charts
+- Magnifying glass
+- Timeline elements
+- Readable text
+- More than 4 main elements

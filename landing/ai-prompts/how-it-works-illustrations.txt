@@ -1,0 +1,113 @@
+PROMPT FOR: How It Works Step Illustrations (4 images)
+
+Style: Consistent minimalist icon set, modern 3D isometric style
+Dimensions: 256x256px each (square icons)
+Color Scheme: Gradient from Blue (#3B82F6) to Green (#10B981), white backgrounds
+File Format: PNG with transparency
+
+---
+
+IMAGE 1: Request Access (step-1-request.png)
+
+Main Element:
+- Hand cursor clicking on a "Request Access" button
+- Or: User icon with speech bubble saying "Need DB access"
+- Laptop/mobile device showing request form
+
+Visual Details:
+- Clean, simple composition
+- Blue gradient on main element
+- Subtle shadow for depth
+- 3D isometric angle
+- Minimalist style
+
+Mood: Easy, accessible, user-initiated
+
+---
+
+IMAGE 2: Automated Approval (step-2-approval.png)
+
+Main Element:
+- Checkmark inside a shield with gear/cog icon
+- Or: AI robot reviewing document with magnifying glass
+- Automated workflow with connecting nodes
+
+Visual Details:
+- Green checkmark prominent
+- Shield or security badge
+- Automation indicators (gears, AI chip)
+- Flow arrows suggesting process
+- 3D isometric perspective
+
+Mood: Automated, intelligent, secure
+
+---
+
+IMAGE 3: Temporary Credentials (step-3-credentials.png)
+
+Main Element:
+- Key icon with countdown timer overlay
+- Or: Credential card with expiration badge
+- Certificate/badge with clock showing limited time
+
+Visual Details:
+- Key or credential icon central
+- Clock/timer element showing temporary nature
+- Blue-to-green gradient
+- "Expires: 2:00:00" text on timer
+- Download/delivery arrow
+- Isometric 3D style
+
+Mood: Temporary, time-limited, secure delivery
+
+---
+
+IMAGE 4: Monitor & Revoke (step-4-monitor.png)
+
+Main Element:
+- Eye icon monitoring a database
+- Or: Shield with real-time activity waveform
+- Lock that can instantly close/revoke
+
+Visual Details:
+- Monitoring eye or security camera icon
+- Live waveform/heartbeat line
+- Shield with AI elements
+- Auto-revoke symbol (X or lock closing)
+- Red accent for alert capability
+- Green for normal monitoring
+- Isometric 3D perspective
+
+Mood: Active monitoring, protective, responsive
+
+---
+
+GENERAL GUIDELINES FOR ALL 4 ICONS:
+
+Consistency Requirements:
+- All same size (256x256px)
+- All same perspective (isometric 3D)
+- Same gradient color treatment
+- Same shadow/lighting style
+- Same level of detail
+- Transparent or white background
+
+Style Notes:
+- Modern, tech-forward aesthetic
+- Simple enough to read at small sizes
+- Professional SaaS product feel
+- Not too literal - slightly abstract
+- Use shadows for depth
+- Avoid excessive detail
+
+Color Distribution:
+- Step 1: More blue (beginning)
+- Step 2: Blue-purple (processing)
+- Step 3: Blue-green (delivery)
+- Step 4: Green with monitoring elements (completion/ongoing)
+
+Technical:
+- PNG format with transparency
+- At least 256x256px (can be larger, will scale down)
+- Crisp edges for web display
+- Works on both light and dark backgrounds

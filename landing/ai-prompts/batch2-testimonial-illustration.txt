@@ -1,0 +1,199 @@
+PROMPT FOR: Testimonial Section Supporting Graphic (batch2-testimonial-illustration.png)
+
+Style: Friendly, conversational 3D illustration
+Aspect Ratio: Square or 4:3 (1200x1200px)
+Art Style: Playful 3D characters with speech elements
+
+Main Concept:
+Diverse group of professional characters sharing positive feedback and experiences, conveying trust and satisfaction.
+
+Central Composition:
+- 3-4 diverse 3D cartoon characters positioned in a friendly cluster
+- Characters facing slightly toward center or viewer
+- Speech bubbles or quote symbols floating around them
+- Positive visual indicators (stars, hearts, checkmarks)
+
+Character Details:
+
+Character 1 (Front-left):
+- Professional woman
+- South Asian or Latina appearance
+- Business casual attire (blouse, professional top)
+- Holding tablet or phone
+- Smiling, confident expression
+- Hair in professional style (bun, ponytail, or shoulder-length)
+
+Character 2 (Front-right):
+- Professional man
+- African or African-American appearance
+- Wearing glasses
+- Button-up shirt or polo
+- Arms crossed confidently OR holding laptop
+- Friendly, approachable smile
+
+Character 3 (Back-center):
+- Professional person (any gender)
+- East Asian or Middle Eastern appearance
+- Casual professional attire
+- Giving thumbs up gesture
+- Enthusiastic, positive expression
+
+Character 4 (Optional - back corner):
+- Additional diverse character
+- European or Mixed ethnicity
+- Developer/tech look (hoodie, casual)
+- Nodding or pointing approvingly
+
+Visual Elements Around Characters:
+
+1. Speech/Quote Indicators:
+- Large floating quotation marks (3D, soft colors)
+- Rounded speech bubbles (empty, just shapes)
+- Thought clouds
+- Chat bubble icons
+- Colors: soft blue, purple, pink, mint green
+
+2. Positive Feedback Symbols:
+- 5-star rating displays (colorful stars)
+- Checkmarks in circles
+- Thumbs up icons
+- Heart symbols (floating, various sizes)
+- Trophy or award badges
+- Celebration sparkles/confetti
+
+3. Trust Indicators:
+- Shield with checkmark
+- Verified badge (checkmark in circle)
+- Professional certification symbols
+- Company logo placeholders (abstract geometric shapes, not real logos)
+
+4. Engagement Elements:
+- Small laptop showing positive metrics (graphs going up)
+- Mobile phone with notification badges
+- Circular profile avatars (abstract, not specific people)
+- Rating meter showing high scores
+
+Background Elements:
+- Soft pastel gradient (cream to light blue)
+- Floating abstract shapes (circles, rounded rectangles)
+- Subtle dotted pattern
+- Light geometric shapes
+- Professional but warm atmosphere
+
+Character Positioning:
+- Arranged in conversational cluster
+- Not in a rigid line
+- Varied heights and positions for visual interest
+- Some overlap for depth
+- All clearly visible
+
+Character Styling:
+- Rounded, friendly 3D style (like Soleland reference)
+- Simple facial features (minimal but expressive)
+- Diverse skin tones (various browns, beiges, tans)
+- Varied body types (not all same shape/size)
+- Professional but approachable clothing
+- Modern, contemporary style
+
+Color Palette:
+- Character clothing: Varied (blues, purples, corals, teals, grays)
+- Skin tones: Realistic diversity
+- Speech bubbles: Pastel colors (light purple, blue, pink, mint)
+- Stars: Gold/yellow (#FFD93D)
+- Hearts: Coral/pink (#FF9A8B)
+- Checkmarks: Green (#7FDBCA)
+- Background: Cream to light blue gradient (#FFFEF9 to #F0F8FF)
+
+Floating Elements:
+- Stars of varying sizes (3D, with depth)
+- Quote marks (large, semi-transparent)
+- Small sparkles/twinkles
+- Circular badges with icons
+- Geometric shapes in background
+
+Depth & Composition:
+- Characters in foreground and mid-ground
+- Floating elements at various depths
+- Soft shadows beneath characters
+- Layered composition
+- Clear focal point (character cluster)
+
+Lighting:
+- Soft, diffused lighting from above
+- Gentle highlights on characters
+- Warm, welcoming atmosphere
+- No harsh shadows
+- Even, professional lighting
+
+Expression & Body Language:
+- All characters showing positive emotions
+- Genuine smiles (not forced)
+- Open, welcoming postures
+- Professional confidence
+- Friendly and approachable
+- Engaged and enthusiastic
+
+Additional Details:
+- Small UI elements suggesting feedback forms
+- Rating slider maxed out
+- Notification badges with hearts/stars
+- Success indicators
+- Growth charts trending up
+- Satisfaction meter at full
+
+Props & Accessories:
+- Some characters wearing glasses
+- Watches or tech accessories
+- Tablets or phones
+- Laptop showing positive data
+- Coffee cup (casual professional touch)
+- Badge/ID on lanyard (some characters)
+
+Professional Context Hints:
+- Tech startup vibe
+- Modern workplace
+- Collaborative atmosphere
+- Success and satisfaction
+- Trust and reliability
+
+Technical Specs:
+- High resolution: 2400x2400px minimum
+- PNG with transparency or light background
+- Professional 3D character rendering
+- Clean, polished finish
+- Balanced composition
+
+Avoid:
+- Readable text in speech bubbles
+- Specific company logos
+- Actual photographs/realistic faces
+- Stereotypical representations
+- Negative or neutral expressions
+- Cluttered background
+- Too many competing elements
+
+Mood & Emotion:
+- Satisfied and happy clients
+- Trust and credibility
+- Diverse user base
+- Professional success
+- Positive experiences
+- Genuine recommendations
+- Community and collaboration
+- Confidence in the product
+
+Visual Storytelling:
+- Shows variety of users (not just one type)
+- Professional environments represented
+- Success and positive outcomes
+- Human connection and trust
+- Real people (not corporate sterile)
+- Approachable expertise
+
+Reference Style:
+- Modern SaaS testimonial graphics
+- Diverse character illustrations (Slack, Shopify, Mailchimp style)
+- Friendly professional illustrations
+- Customer success visuals
+- Community-focused graphics
+- Human-centric design

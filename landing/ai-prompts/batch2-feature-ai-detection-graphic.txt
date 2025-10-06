@@ -1,0 +1,143 @@
+PROMPT FOR: AI Detection Feature Graphic (batch2-feature-ai-detection-graphic.png)
+
+Style: Futuristic yet friendly 3D illustration with tech elements
+Aspect Ratio: 4:3 or square (1200x1200px)
+Art Style: Modern 3D illustration with glowing elements and soft colors
+
+Main Concept:
+AI-powered monitoring system analyzing database queries and detecting threats in real-time, visualized through friendly, approachable graphics.
+
+Central Composition:
+- Central AI "brain" or neural network node as focal point
+- Multiple database cylinders arranged in a circle around the AI core
+- 3D character monitoring the system on a screen/tablet
+- Data streams flowing from databases to AI brain
+
+Key Visual Elements:
+
+1. AI Brain/Core (Center):
+- Stylized 3D brain OR network of connected nodes (neural network)
+- Glowing soft purple/blue gradient
+- Pulsing animation feel (capture mid-pulse in static image)
+- Geometric neural connections (lines between nodes)
+- Surrounded by a soft circular glow/aura
+- Small circuit pattern details on brain surface
+
+2. Database Elements (Surrounding):
+- 3-4 database cylinder icons in 3D
+- Arranged in circular/arc pattern around AI brain
+- Different colors: blue (normal), red (threat detected), green (secure)
+- Varied sizes to show depth
+- Gentle glow effects matching their status
+
+3. Data Flow Visualization:
+- Flowing particle streams from databases to AI brain
+- Streams appear as glowing dots/particles moving along curved paths
+- Color-coded streams:
+  * Blue/teal: normal queries
+  * Red/orange: suspicious activity
+  * Green: verified safe
+- Dotted or dashed lines showing connection paths
+
+4. Character Element:
+- Single 3D cartoon character in foreground (left or right side)
+- Holding tablet or looking at floating transparent screen
+- Character appears focused and professional
+- Screen shows simplified dashboard with colorful indicators
+- Character has calm, confident expression
+
+5. Alert/Detection Indicators:
+- Floating alert badge/notification near red database (shield with exclamation)
+- Risk score indicator (circular gauge, no text, just visual meter)
+- Checkmark badges near green/secure databases
+- Small magnifying glass icon examining data stream
+- Warning triangle in soft red/orange near threat
+
+Supporting Elements:
+- Floating UI cards showing "analysis in progress" (visual only, no text)
+- Small shield icons with AI chip/circuit pattern
+- Scattered sparkles or light particles suggesting active scanning
+- Circular radar/scan wave emanating from AI brain
+- Tiny floating binary patterns (0s and 1s in very subtle background)
+
+Color Palette:
+- AI Brain: Purple to blue gradient (#8B7FFF to #6B9EFF)
+- Threat Alert: Soft red/coral (#FF6B6B, #FF8B94)
+- Secure/Safe: Mint green (#7FDBCA, #A8E6CE)
+- Normal: Soft blue/teal (#4ECDC4, #6B9EF5)
+- Background: Dark navy to light gradient (#1A1F36 to #F8F9FE) OR keep light cream
+- Accents: Lavender (#C4B5FD), Cyan (#67E8F9)
+
+Background Options:
+
+Option A (Light):
+- Cream/off-white background (#FFFEF9)
+- Subtle tech pattern (circuit lines, dots)
+- Very faint grid
+- Soft shadows
+
+Option B (Dark accent):
+- Light background with dark gradient panel behind AI brain
+- Creates depth and makes glowing elements pop
+- Semi-transparent dark overlay
+
+Depth & Effects:
+- Isometric or slight 3D perspective
+- Layered composition (databases in back, AI middle, character front)
+- Soft shadows beneath all 3D objects
+- Glow effects on active elements (AI brain, alerts, data streams)
+- Slight motion blur on data particles
+- Depth of field (background slightly softer focus)
+
+Tech Elements:
+- Subtle circuit board patterns
+- Hexagonal shapes in background
+- Small floating code snippets (visual only, abstract symbols)
+- Radar/sonar scan rings
+- Network connection nodes
+
+Lighting:
+- Multiple light sources:
+  * Glow from AI brain (purple/blue)
+  * Ambient soft lighting from top
+  * Rim lights on character and databases
+- Dramatic but not dark
+- Sci-fi feel but approachable
+
+Visual Metaphors:
+- AI intelligence: Brain/neural network
+- Real-time monitoring: Flowing data particles
+- Threat detection: Red alerts and warning indicators
+- Protection: Shields and checkmarks
+- Analysis: Magnifying glass, scanning waves
+
+Technical Specs:
+- High resolution: 2400x2400px minimum
+- PNG with transparency
+- Professional 3D render
+- Balanced composition
+- Clear focal hierarchy
+
+Avoid:
+- Readable text or code
+- Overly technical/intimidating appearance
+- Too dark or "hacker" aesthetic
+- Cluttered with too many elements
+- Generic AI stock imagery
+- Aggressive or scary visuals
+
+Mood & Emotion:
+- Intelligent and sophisticated
+- Protective and watchful
+- Cutting-edge technology
+- Trustworthy and reliable
+- Proactive security
+- Approachable not intimidating
+- Professional confidence
+
+Reference Style:
+- Tech company AI illustrations (Salesforce, Microsoft AI marketing)
+- Playful cybersecurity graphics
+- Modern SaaS product illustrations
+- 3D isometric tech diagrams with personality
+- Blend of technical and friendly

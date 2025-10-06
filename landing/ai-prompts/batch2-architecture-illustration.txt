@@ -1,0 +1,229 @@
+PROMPT FOR: Technical Architecture Illustration (batch2-architecture-illustration.png)
+
+Style: Clean technical diagram with friendly 3D elements
+Aspect Ratio: 16:9 landscape (1600x900px)
+Art Style: Isometric 3D technical diagram with colorful, approachable styling
+
+Main Concept:
+4-layer technical stack visualization showing how ArgusPAM components connect and work together, presented in an accessible, visual way.
+
+Overall Composition:
+- 4 horizontal layers/tiers from top to bottom
+- Each layer contains 3-4 connected component boxes
+- Vertical connections between layers showing data flow
+- Isometric 3D perspective
+- Clean, organized layout
+
+LAYER 1 - Frontend & Interfaces (Top):
+Components (4 boxes):
+1. Web Dashboard:
+   - Monitor/screen icon with dashboard elements
+   - Colorful charts visible on screen
+   - Light blue color (#6B9EF5)
+
+2. CLI Tool:
+   - Terminal/command window icon
+   - Cursor blinking element
+   - Dark gray with green accent (#2D3748 with #7FDBCA)
+
+3. Slack Bot:
+   - Chat bubble or robot icon
+   - Slack-style colors (purple accent)
+   - Communication waves
+
+4. REST API:
+   - Interconnected nodes/endpoints
+   - API symbol (brackets </>)
+   - Orange/amber accent (#FFB84D)
+
+LAYER 2 - Core Services (Middle-top):
+Components (4 boxes):
+1. Auth Service:
+   - User profile icon with shield
+   - Fingerprint or key symbol
+   - Purple gradient (#8B7FFF)
+
+2. Access Manager:
+   - Key/door icon with timer
+   - Control panel visual
+   - Blue-green (#4ECDC4)
+
+3. AI Engine:
+   - Brain or neural network icon
+   - Glowing purple/pink (#B99EFF)
+   - Sparkle/magic effects
+
+4. Audit Logger:
+   - Document/clipboard with checkmarks
+   - Pen writing visual
+   - Teal (#5FB5BF)
+
+LAYER 3 - Infrastructure (Middle-bottom):
+Components (3 boxes):
+1. Redis (Queue):
+   - Queue/stack icon
+   - Fast-forward arrows
+   - Red accent (#DC2626)
+
+2. PostgreSQL (Metadata):
+   - Elephant logo shape OR database cylinder
+   - Blue (#336791)
+   - Data tables visual
+
+3. S3 (Audit Logs):
+   - Cloud storage icon
+   - Folder/bucket symbol
+   - Orange (#FF9900)
+
+LAYER 4 - Target Databases (Bottom):
+Components (4 boxes):
+1. PostgreSQL:
+   - Database cylinder
+   - Elephant silhouette
+   - Blue (#336791)
+
+2. MySQL:
+   - Database cylinder
+   - Dolphin silhouette
+   - Blue-orange (#00758F)
+
+3. MongoDB:
+   - Database cylinder
+   - Leaf symbol
+   - Green (#47A248)
+
+4. Redis:
+   - Database cylinder
+   - Redis logo shape
+   - Red (#DC382D)
+
+Connection Elements:
+- Flowing arrows/lines between layers
+- Data packet icons moving along connections
+- Glowing dots traveling along paths
+- Bidirectional arrows where appropriate
+- Color-coded data flows:
+  * Blue: User requests
+  * Green: Successful operations
+  * Purple: AI analysis
+  * Orange: Audit data
+
+Visual Details for Component Boxes:
+- 3D card/box appearance
+- Rounded corners
+- Soft drop shadows
+- Subtle gradient backgrounds
+- Icon centered or top-left
+- Clean, minimal design
+- Consistent sizing within each layer
+
+Supporting Elements:
+- Small gear icons showing processing
+- Lock symbols for security layers
+- Lightning bolts for fast operations
+- Shield icons for protected data
+- Circular badges with checkmarks
+- Flowing particles along connection lines
+
+Background:
+- Clean white or very light gradient (#FFFFFF to #F8FAFC)
+- Subtle grid pattern (very faint)
+- Optional: Light geometric shapes in background
+- Minimal to keep focus on architecture
+
+Layer Labels:
+- Small visual tags/badges indicating layer type
+- Color-coded layer backgrounds (very subtle):
+  * Layer 1: Light purple tint
+  * Layer 2: Light blue tint
+  * Layer 3: Light gray tint
+  * Layer 4: Light green tint
+- OR colored left border bar for each layer
+
+Depth & Dimension:
+- Isometric perspective (30-degree angle)
+- Stacked layers with vertical spacing
+- Shadow beneath each layer
+- Components within layers slightly raised
+- 3D box styling for all components
+
+Color Palette:
+- Component colors: Match actual tech logos where possible
+- Accents: Blue (#6B9EF5), Purple (#8B7FFF), Green (#7FDBCA)
+- Neutral: Grays for boxes (#F3F4F6, #E5E7EB)
+- Connections: Gradient flows (blue to green, purple to orange)
+- Background: White to light gray gradient
+
+Data Flow Visualization:
+- Animated-looking (but static) data packets
+- Dots or small icons flowing along paths
+- Different packet colors for different data types:
+  * User requests (blue)
+  * Credentials (amber)
+  * Logs (teal)
+  * AI analysis (purple)
+
+Icon Styling:
+- Consistent line weight
+- Rounded, friendly style
+- Not overly detailed
+- Recognizable at small size
+- Monochromatic or simple color per icon
+
+Technical Elements:
+- All components properly aligned
+- Even spacing between elements
+- Consistent shadows and lighting
+- Professional diagram quality
+- Clear visual hierarchy
+
+Additional Details:
+- Small status indicators (green dots for active)
+- Version or tech badges (subtle)
+- Performance indicators (speed lines)
+- Security badges on protected components
+- Redundancy/HA indicators for critical components
+
+Side Elements (Optional):
+- Character viewing/pointing to architecture
+- Magnifying glass highlighting a specific layer
+- Small annotation callouts (visual only, no text)
+
+Lighting:
+- Soft lighting from top-left
+- Gentle highlights on component boxes
+- Glow effects on active connections
+- Matte surfaces
+- Professional, clean lighting
+
+Technical Specs:
+- High resolution: 3200x1800px minimum
+- PNG with transparency or white background
+- Clean, vector-style rendering
+- Professional technical diagram quality
+- Exportable for documentation
+
+Avoid:
+- Text labels (use icons only)
+- Overly complex connections (spaghetti diagram)
+- Too many arrows crossing each other
+- Cluttered appearance
+- Stock diagram clipart look
+- Intimidating technical jargon visuals
+
+Mood & Emotion:
+- Clear and understandable
+- Professional yet approachable
+- Well-organized and structured
+- Modern and sophisticated
+- Transparent about architecture
+- Confidence-inspiring
+- Technical but not overwhelming
+
+Reference Style:
+- Modern cloud architecture diagrams
+- AWS/Azure/GCP architecture illustrations
+- Tech company engineering blog diagrams
+- Isometric service diagrams
+- Clean, colorful technical visuals
+- Similar to Vercel, Stripe, or GitHub architecture graphics

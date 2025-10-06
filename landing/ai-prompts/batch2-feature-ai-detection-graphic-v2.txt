@@ -1,0 +1,55 @@
+PROMPT FOR: AI Detection Feature Graphic (batch2-feature-ai-detection-graphic.png)
+
+Style: Same as hero illustration - modern, playful 3D with cute characters
+Aspect Ratio: 4:3 or square (1200x1200px)
+Art Style: Consistent with batch2-hero-illustration (Soleland style)
+
+SIMPLE SCENE:
+A 3D cartoon character looking at a floating AI brain
+
+Main Elements (ONLY 3-4 items):
+
+1. Character (Left or Bottom):
+- Single 3D cartoon character (same style as hero)
+- Holding tablet OR just observing
+- Calm, professional look
+- Simple clothing
+- Full body
+
+2. AI Brain (Center):
+- Stylized 3D brain OR simple neural network (3-4 connected nodes only)
+- Glowing soft purple/blue (#8B7FFF)
+- Clean, simple design
+- Pulsing glow effect
+
+4. Simple Scan Effect:
+- ONE or TWO curved lines from brain to database
+- Small flowing particles along the line
+- Nothing more!
+
+Background:
+- Transparent background
+- Keep it minimal!
+
+Color Palette:
+- AI Brain: Purple-blue gradient (#8B7FFF to #6B9EF5)
+- Database: Blue (#6B9EF5)
+- Character: Colorful clothing (pick ONE color)
+- Background: Light cream (#FFFEF9)
+
+Visual Style:
+- Same rounded 3D as hero
+- Soft shadows
+- Clean and simple
+- Isometric perspective
+- Friendly, not technical
+
+Mood: AI watching and protecting, simple and clear
+
+Avoid:
+- Multiple databases
+- Complex neural networks
+- Too many connection lines
+- Alert badges everywhere
+- Readable text
+- More than 4 main elements

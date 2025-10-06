@@ -1,0 +1,63 @@
+PROMPT FOR: Testimonial Illustration (batch2-testimonial-illustration.png)
+
+Style: Same as hero illustration - modern, playful 3D with cute characters
+Aspect Ratio: Square (1200x1200px)
+Art Style: Consistent with batch2-hero-illustration (Soleland style)
+
+SIMPLE SCENE:
+3 diverse 3D cartoon characters in a friendly group, all looking happy and satisfied.
+
+Main Elements (ONLY 3-4 items):
+
+1. Three Characters:
+- Character 1: Professional woman (left)
+- Character 2: Professional man (center)
+- Character 3: Professional person (right)
+- All same rounded 3D style as hero
+- Different skin tones (diverse)
+- Simple, professional clothing
+- Smiling, friendly expressions
+- Casual standing poses
+
+2. Simple Positive Indicators:
+- 2-3 floating stars above them (gold color)
+- OR 2-3 simple speech bubble shapes (empty, just shapes)
+- OR thumbs up gesture from one character
+- Pick ONE type only!
+
+3. Optional Simple Element:
+- One character holding phone/tablet (optional)
+- OR simple checkmark floating nearby
+- Keep it minimal!
+
+Background:
+- Clean cream/off-white (#FFFEF9)
+- Soft pastel gradient
+- 3-4 soft floating circles or shapes
+- Very minimal!
+
+Color Palette:
+- Characters: Varied clothing colors (blue, purple, coral, teal)
+- Diverse skin tones
+- Stars: Gold (#FFD93D)
+- Speech bubbles: Soft pastel colors
+- Background: Cream (#FFFEF9)
+
+Visual Style:
+- Same rounded 3D as hero
+- Soft shadows beneath characters
+- Friendly, approachable
+- Simple composition
+- Isometric perspective
+
+Mood: Happy, satisfied customers, diverse team
+
+Avoid:
+- Too many props
+- Complex elements
+- Quote marks everywhere
+- Rating stars floating all around
+- Hearts and badges everywhere
+- Readable text
+- More than 3 characters
+- Cluttered background

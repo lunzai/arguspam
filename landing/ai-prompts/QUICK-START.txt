@@ -1,0 +1,66 @@
+BATCH 2 AI PROMPTS - QUICK START GUIDE
+======================================
+
+WHAT YOU HAVE:
+- 8 comprehensive AI image prompt files
+- 19 total images needed (7 illustrations + 12 icons)
+- Style: Friendly 3D isometric (like Soleland)
+- All prompts avoid text, use brand colors
+
+FILES:
+------
+ILLUSTRATIONS (7):
+1. batch2-hero-illustration.txt → Hero section main visual
+2. batch2-feature-zero-privilege-graphic.txt → Feature 1
+3. batch2-feature-ai-detection-graphic.txt → Feature 2
+4. batch2-feature-audit-trail-graphic.txt → Feature 3
+5. batch2-comparison-illustration.txt → Comparison section
+6. batch2-architecture-illustration.txt → Tech stack diagram
+7. batch2-testimonial-illustration.txt → Customer section
+
+ICONS (1 file with 12 icons):
+8. batch2-icons.txt → All 12 icons (Problem, Benefits, Steps)
+
+QUICK STEPS:
+-----------
+1. Open prompt file (e.g., batch2-hero-illustration.txt)
+2. Copy ENTIRE content
+3. Paste into AI tool:
+   - Midjourney: /imagine [paste]
+   - DALL-E 3: Paste in ChatGPT
+   - Leonardo.AI: Paste in prompt box
+   - Stable Diffusion: Use as base prompt
+
+4. Generate & select best variation
+5. Download high-res version
+6. Save as: batch2-[name].png
+7. Place in /images/ folder
+8. Update index3.html image src paths
+
+NAMING CONVENTION:
+-----------------
+Illustrations: batch2-[section]-[type].png
+Icons: batch2-icon-[name].png
+
+Examples:
+- batch2-hero-illustration.png
+- batch2-feature-zero-privilege-graphic.png
+- batch2-icon-shield.png
+- batch2-icon-step1-request.png
+
+PRIORITY ORDER:
+--------------
+1. Hero illustration (most important!)
+2. 3 Feature graphics
+3. 12 Icons
+4. Comparison illustration
+5. Architecture illustration
+6. Testimonial illustration
+
+NEED HELP?
+----------
+See BATCH2-README.txt for full details
+See BATCH2-SUMMARY.md for overview
+See individual .txt files for specific prompts
+
+READY TO GENERATE!

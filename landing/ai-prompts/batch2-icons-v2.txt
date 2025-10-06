@@ -1,0 +1,169 @@
+SIMPLIFIED ICONS - ArgusPAM Landing Page
+All icons: 256x256px, 3D style matching hero illustration, SIMPLE design, rounded edges
+
+===============================================
+PROBLEM SECTION ICONS (3 icons)
+===============================================
+
+ICON 1: Standing Privileges Problem
+Style: Simple 3D icon
+Main Element: Open padlock (unlocked position)
+Color: Gray metal (#9CA3AF) with soft red glow
+Background: Light background with red tint
+Details: Just the padlock, nothing else!
+Mood: Vulnerable, concerning
+
+---
+
+ICON 2: Credential Sprawl Problem
+Style: Simple 3D icon
+Main Element: 4-5 scattered keys spreading outward from center
+Color: Mixed colors (blue, green, yellow keys)
+Background: Light background
+Details: Just scattered keys in disarray, that's it!
+Mood: Chaotic, disorganized
+
+---
+
+ICON 3: Zero Visibility Problem
+Style: Simple 3D icon
+Main Element: Eye with question mark OR database shrouded in fog
+Color: Gray (#6B7280) with mist effect
+Background: Light background
+Details: Just eye + question mark OR just database in fog
+Mood: Uncertain, unclear
+
+===============================================
+BENEFITS SECTION ICONS (4 icons)
+===============================================
+
+ICON 5: Reduce Attack Surface (Shield)
+Style: Simple 3D shield
+Main Element: Clean shield shape with checkmark
+Color: Blue gradient (#3B82F6)
+Background: Light background
+Details: Just shield + checkmark, nothing else!
+Mood: Protected, secure
+
+---
+
+ICON 6: Deploy in Hours (Clock)
+Style: Simple 3D clock
+Main Element: Clock face with lightning bolt
+Color: Blue (#3B82F6) and amber (#F59E0B)
+Background: Light background
+Details: Just clock + lightning, that's all!
+Mood: Fast, efficient
+
+---
+
+ICON 7: Compliance (Badge)
+Style: Simple 3D badge
+Main Element: Circular badge/medal with checkmark
+Color: Purple-blue (#8B5CF6) with gold trim
+Background: Light background
+Details: Just badge + checkmark, nothing more!
+Mood: Certified, official
+
+---
+
+ICON 8: Open Source (Heart or Box)
+Style: Simple 3D icon
+Main Element: Open box with heart OR piggy bank
+Color: Green (#10B981) and purple accents
+Background: Light background
+Details: Just ONE main element, keep simple!
+Mood: Affordable, accessible
+
+===============================================
+HOW IT WORKS ICONS (4 icons)
+===============================================
+
+ICON 9: Step 1 - Request Access
+Style: Simple 3D icon
+Main Element: Hand clicking a button OR raised hand
+Color: Blue (#3B82F6)
+Background: Light background
+Details: Just hand + button, nothing else!
+Mood: Simple action, requesting
+
+---
+
+ICON 10: Step 2 - Automated Approval
+Style: Simple 3D icon
+Main Element: Gear with checkmark
+Color: Purple (#8B5CF6) and green checkmark
+Background: Light background
+Details: Just gear + checkmark, that's it!
+Mood: Automated, approved
+
+---
+
+ICON 11: Step 3 - Temporary Credentials
+Style: Simple 3D icon
+Main Element: Key with small clock/timer
+Color: Gold/amber (#F59E0B)
+Background: Light background
+Details: Just key + timer indicator, nothing more!
+Mood: Time-limited, temporary
+
+---
+
+ICON 12: Step 4 - Monitor & Revoke
+Style: Simple 3D icon
+Main Element: Eye with shield OR scanning waves
+Color: Green (#10B981) and blue
+Background: Light background
+Details: Just eye + shield OR scan waves, keep simple!
+Mood: Watching, protecting
+
+===============================================
+CHECKMARK ICON
+===============================================
+
+ICON 4: Checkmark (for feature lists)
+Style: Simple 3D checkmark in circle
+Size: 64x64px
+Main Element: Bold checkmark in circle
+Color: Mint green circle (#10B981), white checkmark
+Background: Transparent
+Details: Just checkmark in circle, nothing else!
+Clean and simple!
+
+===============================================
+UNIVERSAL RULES FOR ALL ICONS
+===============================================
+
+Keep It Simple:
+- ONE main element per icon
+- Maximum 2 elements if absolutely needed
+- No complex details
+- No readable text
+- Soft shadows only
+- Clean backgrounds
+
+Style Consistency:
+- Same rounded 3D style as hero
+- Same lighting (soft, from top-left)
+- Same shadow style
+- Same color palette family
+- Professional but friendly
+
+Colors (ArgusPAM Brand):
+- Blue: #3B82F6, #2563EB
+- Green: #10B981, #7FDBCA
+- Purple: #8B5CF6
+- Orange: #F59E0B
+- Red: #EF4444
+- Gray: #6B7280
+
+Avoid:
+- Multiple objects
+- Complex compositions
+- Readable text
+- Too many colors
+- Cluttered designs
+- Sharp edges
+- Flat 2D style
+
+Each icon should be instantly recognizable at small sizes!

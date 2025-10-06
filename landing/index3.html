@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GTM_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'GTM_ID');
+
+        // Analytics event tracking
+        function trackEvent(category, action, label) {
+            gtag('event', action, {
+                'event_category': category,
+                'event_label': label
+            });
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArgusPAM - AI-Powered Database Security with Zero Standing Privilege</title>
+    <meta name="description" content="Enterprise-grade database security made simple. ArgusPAM delivers zero standing privilege access, AI-powered threat detection, and comprehensive audit trails for PostgreSQL, MySQL, MongoDB and more. Launching Q1 2026.">
+    <meta property="og:title" content="ArgusPAM - AI-Powered Database Security with Zero Standing Privilege">
+    <meta property="og:description" content="Enterprise-grade database security made simple. Zero standing privilege access, AI-powered threat detection, and comprehensive audit trails for databases.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="ArgusPAM - AI-Powered Database Security">
+    <meta name="twitter:description" content="Enterprise-grade database security made simple. Zero standing privilege access, AI-powered threat detection, and comprehensive audit trails.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%233B82F6'/><path d='M50 75s30-15 30-37V20L50 10 20 20v18c0 22 30 37 30 37z' fill='white'/></svg>">
+    <style>
+        :root {
+            --primary: #0F172A;
+            --primary-light: #1E293B;
+            --accent: #3B82F6;
+            --accent-hover: #2563EB;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --warning: #F59E0B;
+            --text-dark: #0F172A;
+            --text-gray: #64748B;
+            --text-light: #94A3B8;
+            --bg-light: #F8FAFC;
+            --bg-white: #FFFFFF;
+            --border: #E2E8F0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-white);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .container-wide {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Accessibility */
+        *:focus-visible {
+            outline: 3px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Scroll animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.3s ease;
+        }
+
+        header.scrolled {
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo:focus-visible {
+            outline-color: var(--accent);
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--secondary), #059669);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 0 6rem;
+            background: linear-gradient(180deg, var(--bg-light) 0%, var(--bg-white) 100%);
+            margin-top: 70px;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        .hero-text h1 .highlight {
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-text p {
+            font-size: 1.25rem;
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        .tech-stack {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .tech-label {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+            font-weight: 600;
+        }
+
+        .tech-icons {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .tech-icon {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .tech-icon:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .stat-item {
+            text-align: left;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-gray);
+            margin-top: 0.5rem;
+        }
+
+        .hero-image {
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn:focus-visible {
+            outline-color: var(--accent);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-dark);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* Problem Section */
+        .problem-section {
+            padding: 6rem 0;
+            background: var(--bg-white);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+        }
+
+        .section-label {
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h2 {
+            font-size: 2.75rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        .section-header p {
+            font-size: 1.125rem;
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .problem-card {
+            background: var(--bg-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .problem-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            border-color: var(--danger);
+        }
+
+        .problem-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--danger);
+            margin-bottom: 1.5rem;
+        }
+
+        .problem-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .problem-card p {
+            color: var(--text-gray);
+            line-height: 1.7;
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 6rem 0;
+            background: linear-gradient(180deg, var(--bg-white) 0%, var(--bg-light) 100%);
+        }
+
+        .feature-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+            margin-bottom: 6rem;
+        }
+
+        .feature-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .feature-row.reverse {
+            direction: rtl;
+        }
+
+        .feature-row.reverse > * {
+            direction: ltr;
+        }
+
+        .feature-content h3 {
+            font-size: 2.25rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        .feature-content p {
+            font-size: 1.125rem;
+            color: var(--text-gray);
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            color: var(--text-gray);
+        }
+
+        .feature-list li svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 0.75rem;
+            margin-top: 0.25rem;
+            color: var(--secondary);
+            flex-shrink: 0;
+        }
+
+        .feature-image {
+            position: relative;
+        }
+
+        .feature-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Comparison Section */
+        .comparison-section {
+            padding: 6rem 0;
+            background: var(--bg-white);
+        }
+
+        .comparison-table {
+            max-width: 900px;
+            margin: 3rem auto 0;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .comparison-header {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            background: var(--bg-light);
+            font-weight: 700;
+            padding: 1.5rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            align-items: center;
+        }
+
+        .comparison-row:last-child {
+            border-bottom: none;
+        }
+
+        .comparison-row:hover {
+            background: var(--bg-light);
+        }
+
+        .comparison-feature {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .check-yes {
+            color: var(--secondary);
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .check-no {
+            color: var(--danger);
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        .check-partial {
+            color: var(--warning);
+            font-size: 1.5rem;
+            text-align: center;
+        }
+
+        /* Technical Architecture */
+        .architecture-section {
+            padding: 6rem 0;
+            background: linear-gradient(180deg, var(--bg-light) 0%, var(--bg-white) 100%);
+        }
+
+        .architecture-diagram {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 3rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .arch-layer {
+            margin-bottom: 2rem;
+        }
+
+        .arch-layer-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 1rem;
+        }
+
+        .arch-boxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .arch-box {
+            background: var(--bg-light);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .arch-box:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        /* Benefits Section */
+        .benefits-section {
+            padding: 6rem 0;
+            background: var(--bg-white);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .benefit-card {
+            background: var(--bg-light);
+            border-radius: 16px;
+            padding: 3rem;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        .benefit-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .benefit-card h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-dark);
+        }
+
+        .benefit-card p {
+            color: var(--text-gray);
+            line-height: 1.8;
+            font-size: 1.0625rem;
+        }
+
+        /* How It Works */
+        .how-section {
+            padding: 6rem 0;
+            background: linear-gradient(180deg, var(--bg-white) 0%, var(--bg-light) 100%);
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .step-card {
+            text-align: center;
+            position: relative;
+        }
+
+        .step-number {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step-card h3 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--text-dark);
+        }
+
+        .step-card p {
+            color: var(--text-gray);
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 6rem 0;
+            background: var(--bg-white);
+        }
+
+        .faq-container {
+            max-width: 800px;
+            margin: 3rem auto 0;
+        }
+
+        .faq-item {
+            margin-bottom: 1.5rem;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .faq-question {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            padding: 1.5rem 2rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background: var(--bg-light);
+        }
+
+        .faq-icon {
+            transition: transform 0.3s ease;
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-answer-content {
+            padding: 0 2rem 1.5rem;
+            color: var(--text-gray);
+            line-height: 1.8;
+        }
+
+        /* Waitlist Form */
+        .waitlist-section {
+            padding: 6rem 0;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+
+        .waitlist-content {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .waitlist-content h2 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        .waitlist-content p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .waitlist-form {
+            display: flex;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .waitlist-input {
+            flex: 1;
+            padding: 0.875rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+        }
+
+        .waitlist-input:focus-visible {
+            outline: 3px solid white;
+            outline-offset: 2px;
+        }
+
+        .waitlist-button {
+            background: var(--secondary);
+            color: white;
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .waitlist-button:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .form-message {
+            margin-top: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .form-message.success {
+            background: rgba(16, 185, 129, 0.2);
+            color: white;
+            display: block;
+        }
+
+        .form-message.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: white;
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 3rem 0 2rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-brand h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand p {
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        .footer-links h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-light);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-content,
+            .feature-row,
+            .benefits-grid,
+            .comparison-header,
+            .comparison-row {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .feature-row.reverse {
+                direction: ltr;
+            }
+
+            .steps-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .problem-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 6rem 0 4rem;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero-text p {
+                font-size: 1.125rem;
+            }
+
+            .hero-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .feature-content h3 {
+                font-size: 1.75rem;
+            }
+
+            .steps-container {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .btn-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+
+            .waitlist-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="#" class="logo" aria-label="ArgusPAM Home">
+                    <div class="logo-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <span>ArgusPAM</span>
+                </a>
+                <span class="badge" aria-label="Launch date">Coming Q1 2026</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content fade-in">
+                <div class="hero-text">
+                    <h1>Database Security Doesn't Have to Be <span class="highlight">Complex</span></h1>
+                    <p>Stop worrying about database breaches. ArgusPAM delivers enterprise-grade privileged access management that's powerful yet simple to deploy.</p>
+                    <div class="btn-group">
+                        <a href="https://github.com/lunzai/arguspam" class="btn btn-primary" onclick="trackEvent('CTA', 'click', 'hero-github')" aria-label="View ArgusPAM on GitHub">View on GitHub</a>
+                        <a href="#how-it-works" class="btn btn-secondary" aria-label="Learn how ArgusPAM works">See How It Works</a>
+                    </div>
+                    <div class="tech-stack">
+                        <span class="tech-label">Supports:</span>
+                        <div class="tech-icons">
+                            <span class="tech-icon">PostgreSQL</span>
+                            <span class="tech-icon">MySQL</span>
+                            <span class="tech-icon">MongoDB</span>
+                            <span class="tech-icon">Redis</span>
+                        </div>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <div class="stat-number" aria-label="100 percent">100%</div>
+                            <div class="stat-label">Zero Standing Privilege</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" aria-label="Less than 2 minutes">&lt;2min</div>
+                            <div class="stat-label">Average Access Grant</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number" aria-label="24 hours 7 days">24/7</div>
+                            <div class="stat-label">AI Threat Monitoring</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="./images/hero-dashboard.png" alt="ArgusPAM Dashboard showing real-time access monitoring and threat detection" loading="eager">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">The Problem</div>
+                <h2>Database Breaches Are Getting Worse</h2>
+                <p>Traditional database security relies on permanent credentials and manual oversight—a recipe for disaster in today's threat landscape.</p>
+            </div>
+            <div class="problem-grid">
+                <div class="problem-card fade-in">
+                    <div class="problem-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                    </div>
+                    <h3>Standing Privileges</h3>
+                    <p>Developers hold permanent database credentials that remain active even when not in use, creating persistent security vulnerabilities.</p>
+                </div>
+                <div class="problem-card fade-in">
+                    <div class="problem-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    <h3>Credential Sprawl</h3>
+                    <p>Database passwords scattered across .env files, config files, and developer machines—impossible to track and rotate effectively.</p>
+                </div>
+                <div class="problem-card fade-in">
+                    <div class="problem-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </div>
+                    <h3>Zero Visibility</h3>
+                    <p>No clear audit trail of who accessed what database, when they did it, or what queries they executed during their session.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">The Solution</div>
+                <h2>Security Built for Modern Development</h2>
+                <p>ArgusPAM eliminates standing privileges while maintaining developer productivity through intelligent automation and AI-powered monitoring.</p>
+            </div>
+
+            <!-- Feature 1 -->
+            <div class="feature-row fade-in">
+                <div class="feature-content">
+                    <h3>Zero Standing Privilege Access</h3>
+                    <p>Eliminate permanent database credentials entirely. Every access request creates temporary, time-bound credentials that automatically expire.</p>
+                    <ul class="feature-list">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Just-in-time credential generation
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Automated credential rotation and expiry
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Role-based access control (RBAC)
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Multi-factor authentication (MFA) enforcement
+                        </li>
+                    </ul>
+                </div>
+                <div class="feature-image">
+                    <img src="./images/feature-zero-privilege.png" alt="Zero standing privilege workflow showing temporary credential lifecycle" loading="lazy">
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-row reverse fade-in">
+                <div class="feature-content">
+                    <h3>AI-Powered Threat Detection</h3>
+                    <p>Real-time monitoring and analysis of all database activities. Our AI engine learns normal patterns and instantly flags suspicious behavior.</p>
+                    <ul class="feature-list">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Behavioral anomaly detection
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Query pattern analysis and risk scoring
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Automated threat response workflows
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Real-time alerts via Slack, email, or webhooks
+                        </li>
+                    </ul>
+                </div>
+                <div class="feature-image">
+                    <img src="./images/feature-ai-detection.png" alt="AI threat detection dashboard with real-time alerts and anomaly scoring" loading="lazy">
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-row fade-in">
+                <div class="feature-content">
+                    <h3>Complete Audit Trail</h3>
+                    <p>Every database interaction is logged, analyzed, and stored securely. Perfect for compliance, security reviews, and incident investigation.</p>
+                    <ul class="feature-list">
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Full session recording and query logging
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Tamper-proof audit logs with cryptographic signing
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Compliance-ready reports (SOC 2, GDPR, HIPAA)
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Advanced search and filtering capabilities
+                        </li>
+                    </ul>
+                </div>
+                <div class="feature-image">
+                    <img src="./images/feature-audit-trail.png" alt="Comprehensive audit trail interface showing session history and query logs" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section class="comparison-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">Comparison</div>
+                <h2>ArgusPAM vs Traditional PAM Solutions</h2>
+                <p>See how ArgusPAM delivers enterprise security without the enterprise complexity and cost.</p>
+            </div>
+            <div class="comparison-table fade-in">
+                <div class="comparison-header">
+                    <div>Feature</div>
+                    <div style="text-align: center;">ArgusPAM</div>
+                    <div style="text-align: center;">Traditional PAM</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Zero Standing Privileges</div>
+                    <div class="check-yes" aria-label="Yes">✓</div>
+                    <div class="check-partial" aria-label="Partial">~</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">AI-Powered Threat Detection</div>
+                    <div class="check-yes" aria-label="Yes">✓</div>
+                    <div class="check-no" aria-label="No">✗</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Deploy in Hours</div>
+                    <div class="check-yes" aria-label="Yes">✓</div>
+                    <div class="check-no" aria-label="No">✗</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Database-Focused</div>
+                    <div class="check-yes" aria-label="Yes">✓</div>
+                    <div class="check-no" aria-label="No">✗</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Affordable for Startups</div>
+                    <div class="check-yes" aria-label="Yes">✓</div>
+                    <div class="check-no" aria-label="No">✗</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Open Source Foundation</div>
+                    <div class="check-yes" aria-label="Yes">✓</div>
+                    <div class="check-no" aria-label="No">✗</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">MFA & RBAC Built-in</div>
+                    <div class="check-yes" aria-label="Yes">✓</div>
+                    <div class="check-yes" aria-label="Yes">✓</div>
+                </div>
+                <div class="comparison-row">
+                    <div class="comparison-feature">Compliance Reports</div>
+                    <div class="check-yes" aria-label="Yes">✓</div>
+                    <div class="check-yes" aria-label="Yes">✓</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technical Architecture -->
+    <section class="architecture-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">Technical Architecture</div>
+                <h2>Built on Modern, Battle-Tested Stack</h2>
+                <p>ArgusPAM is built using proven technologies for reliability, security, and performance.</p>
+            </div>
+            <div class="architecture-diagram fade-in">
+                <div class="arch-layer">
+                    <div class="arch-layer-title">Frontend & Interfaces</div>
+                    <div class="arch-boxes">
+                        <div class="arch-box">Web Dashboard</div>
+                        <div class="arch-box">CLI Tool</div>
+                        <div class="arch-box">Slack Bot</div>
+                        <div class="arch-box">REST API</div>
+                    </div>
+                </div>
+                <div class="arch-layer">
+                    <div class="arch-layer-title">Core Services (Laravel/PHP)</div>
+                    <div class="arch-boxes">
+                        <div class="arch-box">Auth Service</div>
+                        <div class="arch-box">Access Manager</div>
+                        <div class="arch-box">AI Engine</div>
+                        <div class="arch-box">Audit Logger</div>
+                    </div>
+                </div>
+                <div class="arch-layer">
+                    <div class="arch-layer-title">Infrastructure</div>
+                    <div class="arch-boxes">
+                        <div class="arch-box">Redis (Queue)</div>
+                        <div class="arch-box">PostgreSQL (Metadata)</div>
+                        <div class="arch-box">S3 (Audit Logs)</div>
+                    </div>
+                </div>
+                <div class="arch-layer">
+                    <div class="arch-layer-title">Target Databases</div>
+                    <div class="arch-boxes">
+                        <div class="arch-box">PostgreSQL</div>
+                        <div class="arch-box">MySQL</div>
+                        <div class="arch-box">MongoDB</div>
+                        <div class="arch-box">Redis</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">Benefits</div>
+                <h2>Why Teams Choose ArgusPAM</h2>
+                <p>Secure your databases without sacrificing developer productivity or breaking the bank.</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card fade-in">
+                    <div class="benefit-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <h3>Reduce Attack Surface by 90%</h3>
+                    <p>Eliminate persistent credentials and dramatically shrink your attack surface. With zero standing privileges, there are no credentials for attackers to steal or exploit.</p>
+                </div>
+                <div class="benefit-card fade-in">
+                    <div class="benefit-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <h3>Deploy in Hours, Not Weeks</h3>
+                    <p>No complex infrastructure changes required. ArgusPAM integrates seamlessly with your existing databases, identity providers, and workflows.</p>
+                </div>
+                <div class="benefit-card fade-in">
+                    <div class="benefit-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                    </div>
+                    <h3>Pass Compliance Audits with Ease</h3>
+                    <p>Built-in compliance features for SOC 2, GDPR, HIPAA, and PCI-DSS. Generate audit-ready reports in seconds instead of scrambling during reviews.</p>
+                </div>
+                <div class="benefit-card fade-in">
+                    <div class="benefit-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                    </div>
+                    <h3>Open Source Foundation</h3>
+                    <p>Get the same security controls used by Fortune 500 companies without the enterprise price tag. Open-source core with affordable managed cloud options.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-section" id="how-it-works">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">How It Works</div>
+                <h2>Secure Access in Four Simple Steps</h2>
+                <p>From access request to automatic cleanup—ArgusPAM handles the entire security lifecycle.</p>
+            </div>
+            <div class="steps-container">
+                <div class="step-card fade-in">
+                    <div class="step-number" aria-label="Step 1">1</div>
+                    <h3>Request Access</h3>
+                    <p>Developer requests database access via CLI, web portal, or Slack with justification and duration.</p>
+                </div>
+                <div class="step-card fade-in">
+                    <div class="step-number" aria-label="Step 2">2</div>
+                    <h3>Automated Approval</h3>
+                    <p>System validates request against policies, triggers MFA if required, and routes for approval if needed.</p>
+                </div>
+                <div class="step-card fade-in">
+                    <div class="step-number" aria-label="Step 3">3</div>
+                    <h3>Temporary Credentials</h3>
+                    <p>Time-bound credentials are generated with appropriate permissions and securely delivered to the requester.</p>
+                </div>
+                <div class="step-card fade-in">
+                    <div class="step-number" aria-label="Step 4">4</div>
+                    <h3>Monitor & Revoke</h3>
+                    <p>AI monitors all activities in real-time. Credentials auto-expire or can be revoked instantly if threats detected.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <div class="section-label">FAQ</div>
+                <h2>Frequently Asked Questions</h2>
+                <p>Common security and implementation questions answered.</p>
+            </div>
+            <div class="faq-container">
+                <div class="faq-item fade-in">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>How does ArgusPAM prevent credential theft?</span>
+                        <span class="faq-icon" aria-hidden="true">↓</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            ArgusPAM eliminates standing privileges entirely. Instead of permanent credentials, it generates temporary, time-bound credentials that automatically expire. Even if credentials are compromised, they're only valid for a limited time (typically 15 minutes to 8 hours) and are automatically revoked after use.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item fade-in">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>What databases are supported?</span>
+                        <span class="faq-icon" aria-hidden="true">↓</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            ArgusPAM currently supports PostgreSQL, MySQL, MongoDB, and Redis with built-in connectors. We're actively adding support for Microsoft SQL Server, Oracle, and Cassandra. All database systems that support dynamic user creation can be integrated via our plugin system.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item fade-in">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>How does the AI threat detection work?</span>
+                        <span class="faq-icon" aria-hidden="true">↓</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Our AI engine analyzes query patterns, access frequency, data volume, and user behavior to establish baselines. It uses machine learning to detect anomalies like unusual queries, off-hours access, bulk data extraction, or suspicious permission changes. When threats are detected, it can automatically revoke access and alert security teams.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item fade-in">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Is ArgusPAM compliant with SOC 2, GDPR, and HIPAA?</span>
+                        <span class="faq-icon" aria-hidden="true">↓</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Yes. ArgusPAM is designed with compliance in mind. It provides comprehensive audit trails, tamper-proof logs with cryptographic signing, automated compliance reporting, and role-based access controls. Our audit logs meet the requirements for SOC 2, GDPR, HIPAA, and PCI-DSS compliance.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item fade-in">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>Can I self-host ArgusPAM?</span>
+                        <span class="faq-icon" aria-hidden="true">↓</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            Absolutely. ArgusPAM has an open-source foundation and can be self-hosted on your own infrastructure. We provide Docker containers, Kubernetes helm charts, and detailed deployment guides. For teams that prefer managed solutions, we also offer a cloud-hosted version with enterprise support.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item fade-in">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>What happens if ArgusPAM goes down?</span>
+                        <span class="faq-icon" aria-hidden="true">↓</span>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            ArgusPAM is designed with high availability in mind and supports active-active clustering. However, you can configure emergency break-glass access procedures that allow direct database access via pre-configured emergency credentials stored in your secure vault. All break-glass access is logged and triggers immediate alerts.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Waitlist Section -->
+    <section class="waitlist-section">
+        <div class="container">
+            <div class="waitlist-content fade-in">
+                <h2>Be First to Know When We Launch</h2>
+                <p>Join the waitlist for early access to ArgusPAM in Q1 2026. Get notified about beta testing opportunities and launch updates.</p>
+                <form class="waitlist-form" id="waitlistForm" aria-label="Waitlist signup form">
+                    <input
+                        type="email"
+                        class="waitlist-input"
+                        placeholder="Enter your email"
+                        required
+                        aria-label="Email address"
+                        id="emailInput"
+                    >
+                    <button type="submit" class="waitlist-button" aria-label="Join waitlist">Join Waitlist</button>
+                </form>
+                <div class="form-message" id="formMessage" role="alert"></div>
+                <p style="margin-top: 1.5rem; font-size: 0.875rem; opacity: 0.8;">Or <a href="https://github.com/lunzai/arguspam" style="color: white; text-decoration: underline;" onclick="trackEvent('CTA', 'click', 'waitlist-github')">star us on GitHub</a> to follow development</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>ArgusPAM</h3>
+                    <p>AI-powered privileged access management for databases. Enterprise-grade security made simple for modern development teams.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="https://github.com/lunzai/arguspam">GitHub</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="https://github.com/lunzai/arguspam#readme">Documentation</a></li>
+                        <li><a href="https://github.com/lunzai/arguspam/issues">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ArgusPAM. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="https://github.com/lunzai/arguspam" class="social-link" aria-label="Visit ArgusPAM on GitHub" onclick="trackEvent('Social', 'click', 'footer-github')">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // FAQ accordion
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const faqItem = button.parentElement;
+                const isActive = faqItem.classList.contains('active');
+
+                // Close all FAQ items
+                document.querySelectorAll('.faq-item').forEach(item => {
+                    item.classList.remove('active');
+                    item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+                });
+
+                // Open clicked item if it wasn't active
+                if (!isActive) {
+                    faqItem.classList.add('active');
+                    button.setAttribute('aria-expanded', 'true');
+                }
+            });
+        });
+
+        // Waitlist form submission
+        document.getElementById('waitlistForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('emailInput').value;
+            const formMessage = document.getElementById('formMessage');
+            const submitButton = e.target.querySelector('button');
+
+            submitButton.disabled = true;
+            submitButton.textContent = 'Joining...';
+
+            // Track form submission
+            trackEvent('Waitlist', 'submit', email);
+
+            // Simulate API call (replace with actual API endpoint)
+            setTimeout(() => {
+                formMessage.className = 'form-message success';
+                formMessage.textContent = '🎉 Success! You\'re on the waitlist. Check your email for confirmation.';
+
+                submitButton.disabled = false;
+                submitButton.textContent = 'Join Waitlist';
+                document.getElementById('emailInput').value = '';
+
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    formMessage.className = 'form-message';
+                }, 5000);
+            }, 1000);
+
+            // For production, replace setTimeout with actual API call:
+            /*
+            try {
+                const response = await fetch('/api/waitlist', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                if (response.ok) {
+                    formMessage.className = 'form-message success';
+                    formMessage.textContent = '🎉 Success! You\'re on the waitlist.';
+                } else {
+                    throw new Error('Failed to join waitlist');
+                }
+            } catch (error) {
+                formMessage.className = 'form-message error';
+                formMessage.textContent = '❌ Oops! Something went wrong. Please try again.';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'Join Waitlist';
+            }
+            */
+        });
+    </script>
+</body>
+</html>

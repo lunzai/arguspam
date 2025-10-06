@@ -1,0 +1,51 @@
+PROMPT FOR: Zero Standing Privilege Feature Image (feature-zero-privilege.png)
+
+Style: Modern 3D isometric illustration
+Aspect Ratio: 4:3 or square
+Color Scheme: Blue (#3B82F6), Green (#10B981), Red (#EF4444), Dark slate (#0F172A), Light gray backgrounds
+
+Main Concept:
+Visual representation of temporary credential lifecycle showing the flow from request to automatic expiry
+
+Main Elements:
+1. Left side: User icon/avatar with "Request Access" label
+2. Center: Automated system (represented by AI/robot icon or server)
+3. Right side: Database icon (cylinder shape) with rotating shield
+
+Flow visualization:
+- Arrow from user to system labeled "1. Request"
+- Arrow from system to database labeled "2. Temporary Creds"
+- Countdown timer displaying "Expires in: 15:00"
+- Curved arrow back showing "3. Auto-Revoke"
+- Small calendar/clock icon showing time-bound access
+- Crossed-out traditional key icon showing "No Permanent Credentials"
+
+Visual Elements:
+- Dotted lines connecting workflow steps
+- Green checkmarks for approved steps
+- Temporary credential card/badge floating in center (showing expiry time)
+- Lock icon that opens temporarily then closes
+- Particle effects showing credential "dissolving" after expiry
+- Small MFA shield icon near user
+- Role badge showing "Database Admin (Temporary)"
+
+Composition:
+- Circular or left-to-right workflow
+- Clean isometric perspective
+- Floating elements with soft shadows
+- Minimal background with geometric shapes
+- Professional color-coded system (green=active, gray=expired, blue=in-progress)
+
+Visual Style:
+- Clean, modern SaaS illustration
+- Isometric 3D objects
+- Smooth gradients
+- Professional iconography
+- Glass morphism on UI cards
+- Conveys automation and security
+
+Mood:
+- Trustworthy and professional
+- High-tech but approachable
+- Emphasizes temporary nature and automation
+- Shows security through controlled access

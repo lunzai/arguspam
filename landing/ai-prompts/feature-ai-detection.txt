@@ -1,0 +1,62 @@
+PROMPT FOR: AI Threat Detection Feature Image (feature-ai-detection.png)
+
+Style: Modern 3D illustration with AI/cybersecurity theme
+Aspect Ratio: 4:3 or square
+Color Scheme: Blue (#3B82F6), Purple/Violet (#8B5CF6), Red (#EF4444), Green (#10B981), Dark backgrounds
+
+Main Concept:
+AI-powered security monitoring system analyzing database queries and detecting anomalies in real-time
+
+Main Elements:
+1. Center: Glowing AI brain or neural network visualization
+2. Multiple database cylinders surrounding the AI core
+3. Data streams flowing from databases to AI (represented by animated dots/particles)
+4. Threat detection alerts appearing as notifications
+
+Key Visual Components:
+- AI neural network with glowing nodes and connections (purple/blue)
+- Floating query snippets being analyzed (shown as code blocks)
+- Risk scoring dashboard showing "Threat Level: LOW" with green indicator
+- Alert notification showing "Anomaly Detected!" with red warning icon
+- Pattern recognition visualization (graphs showing normal vs. abnormal behavior)
+- Shield with AI chip/circuit pattern in center
+- Small magnifying glass icon examining queries
+- Real-time activity monitoring graph with waveforms
+- Multiple user icons showing different access patterns
+
+Threat Indicators:
+- Red warning badge on suspicious query
+- Green checkmarks on normal queries
+- Yellow caution icon on moderate risk items
+- Numerical risk scores (0-100)
+- Timestamp indicators showing "real-time"
+
+Composition:
+- Central AI core with radiating connections
+- Circular layout with databases around perimeter
+- Floating notification cards in foreground
+- Depth created through layering and glow effects
+- Dark background to make glowing elements pop
+- Isometric or slight 3D perspective
+
+Visual Style:
+- High-tech cybersecurity aesthetic
+- Glowing neon accents (blue, purple, cyan)
+- Particle effects and data streams
+- Glass morphism on notification cards
+- Professional yet futuristic
+- Circuit board patterns as subtle background elements
+
+Effects:
+- Soft glow around AI core
+- Motion blur on data streams
+- Pulsing animation feel (static image but suggests movement)
+- Depth through shadows and layering
+- Gradient backgrounds (dark to darker)
+
+Mood:
+- Intelligent and sophisticated
+- Proactive security monitoring
+- Real-time protection
+- AI-powered confidence
+- Professional cybersecurity

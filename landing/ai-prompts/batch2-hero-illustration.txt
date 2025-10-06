@@ -1,0 +1,89 @@
+PROMPT FOR: Hero Section Illustration (batch2-hero-illustration.png)
+
+Style Reference: Modern, playful 3D illustration similar to Soleland landing page
+Aspect Ratio: 16:9 landscape (approximately 1400x900px)
+Art Style: Cute, rounded 3D characters with soft pastel colors and isometric perspective
+
+Main Composition:
+A vibrant, friendly scene showing database security and access management in action with cartoon-style 3D characters.
+
+Central Elements:
+- Large floating computer monitor/dashboard in isometric view (center-right)
+- Dashboard displays colorful security metrics, graphs, and charts (no readable text, just visual elements)
+- 3-4 diverse 3D cartoon characters (different skin tones, genders) positioned around the screen
+- Characters should have simple, friendly faces with minimal features
+- Rounded, soft geometric shapes for bodies and limbs
+
+Character Activities:
+- One character pointing at or interacting with the floating dashboard
+- Another character holding a large shield icon or key symbol
+- One character sitting with a laptop
+- Characters appear collaborative and engaged
+
+Security/Database Visual Elements:
+- Floating database cylinder icons (3D, with slight transparency)
+- Shield icons with checkmarks
+- Lock symbols in soft colors
+- Circular orbital lines or connection nodes around the central screen
+- Small floating UI elements (cards, badges, checkmarks) in soft colors
+- Gentle glow effects around security elements
+
+Color Palette:
+- Primary: Soft blues (#6B9EF5, #4A90E2)
+- Accents: Mint green (#7FDBCA), coral pink (#FF9A8B)
+- Supporting: Lavender (#B99EFF), peach (#FFCB9A)
+- Characters: Varied pastel skin tones, colorful clothing (yellow, purple, teal, coral)
+- Background: Very light cream/off-white (#FFF9F5) with subtle gradient
+
+Background Elements:
+- Abstract geometric shapes (circles, rounded rectangles) in very light pastel colors
+- Subtle dotted patterns or small floating orbs
+- Soft shadows beneath characters and objects
+- Clean, minimal background to keep focus on characters and central dashboard
+
+Lighting & Effects:
+- Soft, diffused lighting from top-left
+- Gentle shadows for depth
+- Slight glow/luminescence on dashboard screen
+- Matte finish on characters (not glossy)
+- Subtle gradients on larger surfaces
+
+Character Design Details:
+- Proportions: Slightly oversized heads (cute style)
+- Limbs: Simplified, rounded
+- Clothing: Modern, casual (t-shirts, pants, simple dresses)
+- Hair: Simple, stylized shapes
+- Expressions: Friendly, focused, collaborative
+- No facial details like eyes/mouth (keep very minimal and abstract) OR simple dot eyes and curved line smile
+
+Technical Specifications:
+- High resolution (at least 2800x1800px for retina displays)
+- PNG format with transparency OR white/cream background
+- Clean edges, no artifacts
+- Professional quality 3D rendering
+- Blender/Cinema4D aesthetic
+
+Avoid:
+- Any readable text on screens or UI elements
+- Overly complex details
+- Realistic human features
+- Dark or aggressive colors
+- Cluttered composition
+- Stock photo appearance
+
+Mood:
+- Friendly and approachable
+- Professional but playful
+- Innovative and modern
+- Collaborative and team-oriented
+- Secure but not intimidating
+- Optimistic and positive
+
+Reference Keywords:
+- 3D illustration like Soleland, Pitch, Notion marketing pages
+- Isometric cute characters
+- Pastel color palette
+- Soft shadows and rounded shapes
+- Modern SaaS product illustration
+- Playful security concept
+- Friendly tech illustration

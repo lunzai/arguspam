@@ -1,0 +1,43 @@
+PROMPT FOR: Hero Section Dashboard Image (hero-dashboard.png)
+
+Style: Modern, clean 3D illustration with isometric perspective
+Aspect Ratio: 16:9 landscape
+Color Scheme: Blue (#3B82F6), Green (#10B981), Dark slate (#0F172A), White backgrounds
+
+Main Subject:
+A sophisticated database security dashboard displayed on a modern laptop or floating screen interface showing:
+- Real-time monitoring graphs with upward trending security metrics
+- Active session list with user avatars and green "active" status indicators
+- Circular progress indicators showing 100% security compliance
+- Database icons (PostgreSQL, MySQL, MongoDB) with green checkmarks
+- Live activity feed with recent access requests
+- Small notification badges showing "0 threats detected"
+- Clock/timer elements showing "Access expires in: 1h 45m"
+
+Composition:
+- Main dashboard screen prominently in center, slightly tilted (15-20 degrees)
+- Floating UI elements and cards around the main screen
+- Subtle glow effects behind the screen
+- Small shield icons and lock symbols floating in background
+- Geometric shapes (hexagons, circles) as decorative elements
+- Depth and shadow for 3D effect
+
+Visual Style:
+- Clean, professional SaaS product aesthetic
+- Soft shadows and gradients
+- Glass morphism effects on UI elements
+- Minimalist iconography
+- High contrast between elements
+- Professional tech/cybersecurity feel
+
+Lighting:
+- Soft ambient lighting
+- Subtle blue glow from screen
+- Clean white background with slight gradient
+
+Technical Notes:
+- PNG format with transparent or white background
+- High resolution suitable for web (2400x1350px minimum)
+- Ensure text is readable if included
+- Professional, trustworthy appearance
+- Conveys security, monitoring, and control

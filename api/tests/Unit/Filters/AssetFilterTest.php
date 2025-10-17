@@ -69,6 +69,7 @@ class AssetFilterTest extends TestCase
     public function test_org_id_multiple_values(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->orgId('123,456,789');
 
         $sql = $result->toSql();
@@ -84,6 +85,7 @@ class AssetFilterTest extends TestCase
     public function test_name_uses_like_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->name('Database');
 
         $sql = $result->toSql();
@@ -97,6 +99,7 @@ class AssetFilterTest extends TestCase
     public function test_description_uses_like_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->description('production database');
 
         $sql = $result->toSql();
@@ -110,6 +113,7 @@ class AssetFilterTest extends TestCase
     public function test_status_single_value(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->status('active');
 
         $sql = $result->toSql();
@@ -123,6 +127,7 @@ class AssetFilterTest extends TestCase
     public function test_status_multiple_values(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->status('active,inactive,maintenance');
 
         $sql = $result->toSql();
@@ -138,6 +143,7 @@ class AssetFilterTest extends TestCase
     public function test_host_uses_like_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->host('localhost');
 
         $sql = $result->toSql();
@@ -151,6 +157,7 @@ class AssetFilterTest extends TestCase
     public function test_port_uses_equal_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->port('5432');
 
         $sql = $result->toSql();
@@ -164,6 +171,7 @@ class AssetFilterTest extends TestCase
     public function test_dbms_single_value(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->dbms('postgresql');
 
         $sql = $result->toSql();
@@ -177,6 +185,7 @@ class AssetFilterTest extends TestCase
     public function test_dbms_multiple_values(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->dbms('postgresql,mysql,oracle');
 
         $sql = $result->toSql();
@@ -192,6 +201,7 @@ class AssetFilterTest extends TestCase
     public function test_created_at_range(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->createdAt('2023-01-01,2023-12-31');
 
         $sql = $result->toSql();
@@ -206,6 +216,7 @@ class AssetFilterTest extends TestCase
     public function test_updated_at_greater_than(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->updatedAt('2023-06-01');
 
         $sql = $result->toSql();
@@ -261,6 +272,7 @@ class AssetFilterTest extends TestCase
     public function test_methods_return_builder_instance(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
 
         $this->assertInstanceOf(Builder::class, $filter->orgId('123'));
         $this->assertInstanceOf(Builder::class, $filter->name('Database'));
@@ -286,14 +298,15 @@ class AssetFilterTest extends TestCase
         $result = $filter->apply($this->builder);
 
         $sql = strtolower($result->toSql());
-        $this->assertStringContainsString('order by "name" asc', $sql);
-        $this->assertStringContainsString('"status" desc', $sql);
-        $this->assertStringContainsString('"created_at" asc', $sql);
+        $this->assertStringContainsString('order by `name` asc', $sql);
+        $this->assertStringContainsString('`status` desc', $sql);
+        $this->assertStringContainsString('`created_at` asc', $sql);
     }
 
     public function test_port_with_different_values(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
 
         // Test common database ports
         $commonPorts = ['3306', '5432', '1521', '1433'];
@@ -308,6 +321,7 @@ class AssetFilterTest extends TestCase
     public function test_host_with_ip_addresses(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->host('192.168.1.100');
 
         $sql = $result->toSql();
@@ -321,6 +335,7 @@ class AssetFilterTest extends TestCase
     public function test_dbms_case_insensitive(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->dbms('PostgreSQL,MySQL,Oracle');
 
         $sql = $result->toSql();

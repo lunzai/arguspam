@@ -31,6 +31,7 @@ class RequestFilterTest extends TestCase
     public function test_sortable_fields_are_defined(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
 
         $reflection = new \ReflectionClass($filter);
         $property = $reflection->getProperty('sortable');
@@ -65,6 +66,7 @@ class RequestFilterTest extends TestCase
     public function test_org_id_single_value(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->orgId('123');
 
         $sql = $result->toSql();
@@ -78,6 +80,7 @@ class RequestFilterTest extends TestCase
     public function test_asset_id_multiple_values(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->assetId('123,456,789');
 
         $sql = $result->toSql();
@@ -93,6 +96,7 @@ class RequestFilterTest extends TestCase
     public function test_asset_account_id_single_value(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->assetAccountId('456');
 
         $sql = $result->toSql();
@@ -106,6 +110,7 @@ class RequestFilterTest extends TestCase
     public function test_requester_id_multiple_values(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->requesterId('100,200,300');
 
         $sql = $result->toSql();
@@ -121,6 +126,7 @@ class RequestFilterTest extends TestCase
     public function test_start_datetime_range(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->startDatetime('2023-01-01,2023-12-31');
 
         $sql = $result->toSql();
@@ -135,6 +141,7 @@ class RequestFilterTest extends TestCase
     public function test_duration_greater_than(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->duration('60');
 
         $sql = $result->toSql();
@@ -148,6 +155,7 @@ class RequestFilterTest extends TestCase
     public function test_reason_uses_like_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->reason('emergency access');
 
         $sql = $result->toSql();
@@ -161,6 +169,7 @@ class RequestFilterTest extends TestCase
     public function test_intended_query_uses_like_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->intendedQuery('SELECT * FROM users');
 
         $sql = $result->toSql();
@@ -174,6 +183,7 @@ class RequestFilterTest extends TestCase
     public function test_scope_single_value(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->scope('read');
 
         $sql = $result->toSql();
@@ -187,6 +197,7 @@ class RequestFilterTest extends TestCase
     public function test_scope_multiple_values(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->scope('read,write,admin');
 
         $sql = $result->toSql();
@@ -202,6 +213,7 @@ class RequestFilterTest extends TestCase
     public function test_is_access_sensitive_data_true(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->isAccessSensitiveData('1');
 
         $sql = $result->toSql();
@@ -215,6 +227,7 @@ class RequestFilterTest extends TestCase
     public function test_sensitive_data_note_uses_like_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->sensitiveDataNote('customer PII');
 
         $sql = $result->toSql();
@@ -228,6 +241,7 @@ class RequestFilterTest extends TestCase
     public function test_approver_note_uses_like_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->approverNote('approved for emergency');
 
         $sql = $result->toSql();
@@ -241,6 +255,7 @@ class RequestFilterTest extends TestCase
     public function test_approver_risk_rating_multiple_values(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->approverRiskRating('low,medium,high');
 
         $sql = $result->toSql();
@@ -256,6 +271,7 @@ class RequestFilterTest extends TestCase
     public function test_status_multiple_values(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->status('pending,approved,rejected');
 
         $sql = $result->toSql();
@@ -271,6 +287,7 @@ class RequestFilterTest extends TestCase
     public function test_approved_at_range(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->approvedAt('2023-01-01,2023-12-31');
 
         $sql = $result->toSql();
@@ -285,6 +302,7 @@ class RequestFilterTest extends TestCase
     public function test_rejected_at_less_than(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->rejectedAt('-2023-12-31');
 
         $sql = $result->toSql();
@@ -337,6 +355,7 @@ class RequestFilterTest extends TestCase
     public function test_methods_return_builder_instance(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
 
         $this->assertInstanceOf(Builder::class, $filter->orgId('123'));
         $this->assertInstanceOf(Builder::class, $filter->assetId('456'));
@@ -361,6 +380,7 @@ class RequestFilterTest extends TestCase
     public function test_inheritance_from_query_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
 
         $this->assertInstanceOf(\App\Http\Filters\QueryFilter::class, $filter);
     }
@@ -371,8 +391,8 @@ class RequestFilterTest extends TestCase
         $result = $filter->apply($this->builder);
 
         $sql = strtolower($result->toSql());
-        $this->assertStringContainsString('order by "status" asc', $sql);
-        $this->assertStringContainsString('"created_at" desc', $sql);
-        $this->assertStringContainsString('"requester_id" asc', $sql);
+        $this->assertStringContainsString('order by `status` asc', $sql);
+        $this->assertStringContainsString('`created_at` desc', $sql);
+        $this->assertStringContainsString('`requester_id` asc', $sql);
     }
 }

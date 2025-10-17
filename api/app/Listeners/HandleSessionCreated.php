@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\SessionCreated;
+use App\Notifications\SessionCreatedNotifyApprover;
 use App\Notifications\SessionCreatedNotifyRequester;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -26,9 +27,13 @@ class HandleSessionCreated implements ShouldBeEncrypted, ShouldQueue
     public function handle(SessionCreated $event): void
     {
         $session = $event->session;
-        $session->requester->notify(new SessionCreatedNotifyRequester($session));
-        // if ($session->approver) {
-        //     $session->approver->notify(new SessionCreatedNotifyApprover($session));
-        // }
+        $session
+            ->requester
+            ->notify(new SessionCreatedNotifyRequester($session));
+        if ($session->approver_id !== $session->requester_id) {
+            $session
+                ->approver
+                ->notify(new SessionCreatedNotifyApprover($session));
+        }
     }
 }

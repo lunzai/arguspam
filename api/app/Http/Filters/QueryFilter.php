@@ -31,6 +31,7 @@ abstract class QueryFilter
     public function count(string $value): Builder
     {
         $value = explode(',', $value);
+        $value = array_filter($value, fn ($v) => $v !== '');
         return $this->builder->withCount($value);
     }
 

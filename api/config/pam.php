@@ -70,7 +70,7 @@ return [
     ],
 
     'openai' => [
-        'model' => env('OPENAI_MODEL', 'gpt-4.1-mini'),
+        'model' => env('OPENAI_MODEL', 'gpt-4.1-nano'),
         'temperature' => env('OPENAI_TEMPERATURE', 0.2),
         'max_output_tokens' => env('OPENAI_MAX_OUTPUT_TOKENS', 2048),
         'top_p' => env('OPENAI_TOP_P', 1),
@@ -101,5 +101,20 @@ return [
         'default_admin_role' => 'Admin',
         'default_user_role' => 'User',
         'admin_bypass_gate' => env('RBAC_ADMIN_BYPASS_GATE', false),
+    ],
+
+    'notification' => [
+        'email' => [
+            'support' => env('EMAIL_SUPPORT', 'support@arguspam.com'),
+        ],
+        'slack' => [
+            'enabled' => env('SLACK_NOTIFICATION', false),
+            'horizon_webhook' => env('SLACK_HORIZON_WEBHOOK'),
+            'channel' => [
+                'alerts' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
+                'requests' => env('SLACK_BOT_USER_REQUEST_CHANNEL'),
+                'sessions' => env('SLACK_BOT_USER_SESSION_CHANNEL'),
+            ],
+        ],
     ],
 ];

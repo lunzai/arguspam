@@ -12,6 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('sessions', function (Blueprint $table) {
+            $table->timestamp('start_datetime')
+                ->nullable()
+                ->change();
             $table->timestamp('scheduled_start_datetime')
                 ->nullable()
                 ->after('end_datetime');

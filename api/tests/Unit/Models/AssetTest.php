@@ -67,8 +67,16 @@ class AssetTest extends TestCase
 
     public function test_asset_has_many_accounts(): void
     {
-        $account1 = AssetAccount::factory()->create(['asset_id' => $this->asset->id]);
-        $account2 = AssetAccount::factory()->create(['asset_id' => $this->asset->id]);
+        // Create accounts with different types to avoid unique constraint violation
+        // (only one admin account per asset is allowed)
+        $account1 = AssetAccount::factory()->create([
+            'asset_id' => $this->asset->id,
+            'type' => \App\Enums\AssetAccountType::ADMIN,
+        ]);
+        $account2 = AssetAccount::factory()->create([
+            'asset_id' => $this->asset->id,
+            'type' => \App\Enums\AssetAccountType::JIT,
+        ]);
         AssetAccount::factory()->create(); // Different asset
 
         $accounts = $this->asset->accounts;
@@ -311,6 +319,7 @@ class AssetTest extends TestCase
     {
         $expectedIncludable = [
             'org',
+            'adminAccount',
             'accounts',
             'accessGrants',
             'requests',

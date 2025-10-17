@@ -14,9 +14,5 @@ class SessionEnded
     /**
      * Create a new event instance.
      */
-    public function __construct(public Session $session, public array $terminationResults)
-    {
-        $this->session = $session;
-        $this->terminationResults = $terminationResults;
-    }
+    public function __construct(public Session $session, public array $terminationResults) {}
 }

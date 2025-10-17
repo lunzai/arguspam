@@ -45,9 +45,10 @@ class UserTest extends TestCase
 
     public function test_all_requester_assets_returns_assets_with_requester_role(): void
     {
-        $asset1 = Asset::factory()->create();
-        $asset2 = Asset::factory()->create();
-        $asset3 = Asset::factory()->create();
+        // Use existing org for assets to avoid creating new orgs
+        $asset1 = Asset::factory()->create(['org_id' => $this->org->id]);
+        $asset2 = Asset::factory()->create(['org_id' => $this->org->id]);
+        $asset3 = Asset::factory()->create(['org_id' => $this->org->id]);
 
         // Direct user access
         $asset1->accessGrants()->create([
@@ -62,7 +63,7 @@ class UserTest extends TestCase
         ]);
 
         // Group access
-        $userGroup = UserGroup::factory()->create();
+        $userGroup = UserGroup::factory()->create(['org_id' => $this->org->id]);
         $this->user->userGroups()->attach($userGroup);
 
         $asset3->accessGrants()->create([
@@ -80,9 +81,10 @@ class UserTest extends TestCase
 
     public function test_all_approver_assets_returns_assets_with_approver_role(): void
     {
-        $asset1 = Asset::factory()->create();
-        $asset2 = Asset::factory()->create();
-        $asset3 = Asset::factory()->create();
+        // Use existing org for assets to avoid creating new orgs
+        $asset1 = Asset::factory()->create(['org_id' => $this->org->id]);
+        $asset2 = Asset::factory()->create(['org_id' => $this->org->id]);
+        $asset3 = Asset::factory()->create(['org_id' => $this->org->id]);
 
         // Direct user access
         $asset1->accessGrants()->create([
@@ -97,7 +99,7 @@ class UserTest extends TestCase
         ]);
 
         // Group access
-        $userGroup = UserGroup::factory()->create();
+        $userGroup = UserGroup::factory()->create(['org_id' => $this->org->id]);
         $this->user->userGroups()->attach($userGroup);
 
         $asset3->accessGrants()->create([
@@ -115,10 +117,11 @@ class UserTest extends TestCase
 
     public function test_all_assets_returns_all_accessible_assets(): void
     {
-        $asset1 = Asset::factory()->create();
-        $asset2 = Asset::factory()->create();
-        $asset3 = Asset::factory()->create();
-        $asset4 = Asset::factory()->create();
+        // Use existing org for assets to avoid creating new orgs
+        $asset1 = Asset::factory()->create(['org_id' => $this->org->id]);
+        $asset2 = Asset::factory()->create(['org_id' => $this->org->id]);
+        $asset3 = Asset::factory()->create(['org_id' => $this->org->id]);
+        $asset4 = Asset::factory()->create(['org_id' => $this->org->id]);
 
         // Direct user access - requester
         $asset1->accessGrants()->create([
@@ -133,7 +136,7 @@ class UserTest extends TestCase
         ]);
 
         // Group access
-        $userGroup = UserGroup::factory()->create();
+        $userGroup = UserGroup::factory()->create(['org_id' => $this->org->id]);
         $this->user->userGroups()->attach($userGroup);
 
         $asset3->accessGrants()->create([
@@ -158,6 +161,7 @@ class UserTest extends TestCase
             'name',
             'email',
             'status',
+            'default_timezone',
         ];
 
         $this->assertEquals($expectedFillable, $this->user->getFillable());
@@ -308,7 +312,7 @@ class UserTest extends TestCase
         $restriction3->timestamps = false;
         $restriction3->save();
 
-        $userRestrictions = $this->user->accessRestrictions;
+        $userRestrictions = $this->user->restrictions;
 
         $this->assertCount(2, $userRestrictions);
         $this->assertTrue($userRestrictions->contains($restriction1));
@@ -381,7 +385,7 @@ class UserTest extends TestCase
             'requesterAssetAccessGrants',
             'requests',
             'sessions',
-            'accessRestrictions',
+            'restrictions',
             'roles',
             'permissions',
         ];
@@ -396,6 +400,7 @@ class UserTest extends TestCase
             'email' => 'Email',
             'password' => 'Password',
             'status' => 'Status',
+            'default_timezone' => 'Timezone',
             'two_factor_enabled' => 'MFA',
             'last_login_at' => 'Last Login At',
         ];

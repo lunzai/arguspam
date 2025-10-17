@@ -3,9 +3,11 @@
 namespace App\Notifications;
 
 use App\Models\Request;
+use App\Services\SlackBlockKitBuilder;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Notification;
 
 class RequestSubmittedNotifyApprover extends Notification implements ShouldQueue
@@ -24,7 +26,13 @@ class RequestSubmittedNotifyApprover extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        $channels = ['mail'];
+
+        // if (config('pam.notification.slack.enabled', false)) {
+        //     $channels[] = 'slack';
+        // }
+
+        return $channels;
     }
 
     /**
@@ -44,6 +52,21 @@ class RequestSubmittedNotifyApprover extends Notification implements ShouldQueue
                 'url' => config('pam.app.web_url').'/requests/'.$this->request->id,
             ]);
     }
+
+    // public function toSlack(object $notifiable): SlackMessage
+    // {
+    //     $blocks = SlackBlockKitBuilder::buildRequestNotificationBlocks(
+    //         $this->request,
+    //         'You have a new request awaiting approval'
+    //     );
+
+    //     $template = json_encode(['blocks' => $blocks]);
+
+    //     return (new SlackMessage)
+    //         ->from('Argus PAM')
+    //         ->to(config('pam.notification.slack.channel.requests'))
+    //         ->usingBlockKitTemplate($template);
+    // }
 
     /**
      * Get the array representation of the notification.

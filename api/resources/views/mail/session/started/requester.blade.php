@@ -9,6 +9,7 @@ Your session for **{{ $session->asset->name }}** has been started successfully.
 - **Asset:** {{ $session->asset->name }}
 - **Started at:** {{ $session->started_at->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
 - **Scheduled End:** {{ $session->scheduled_end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
+- **Requested Duration:** {{ $session->requestedDurationForHumans }}
 - **Account Name:** {{ $session->account_name }}
 - **Status:** {{ ucwords($session->status->value) }}
 

@@ -126,7 +126,7 @@ class EnforceUserAccessRestrictionsTest extends TestCase
 
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Access denied due to access restrictions', $responseData['message']);
-        $this->assertEquals('ip_address', $responseData['restriction_type']);
+        $this->assertEquals('ip address', $responseData['restriction_type']);
     }
 
     public function test_handle_allows_user_when_time_restriction_passes(): void
@@ -193,7 +193,7 @@ class EnforceUserAccessRestrictionsTest extends TestCase
 
         $responseData = json_decode($response->getContent(), true);
         $this->assertEquals('Access denied due to access restrictions', $responseData['message']);
-        $this->assertEquals('time_window', $responseData['restriction_type']);
+        $this->assertEquals('time window', $responseData['restriction_type']);
     }
 
     public function test_handle_allows_user_when_location_restriction_passes(): void

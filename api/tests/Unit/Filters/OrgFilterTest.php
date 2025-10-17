@@ -51,6 +51,7 @@ class OrgFilterTest extends TestCase
     public function test_name_uses_like_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->name('Acme Corp');
 
         $sql = $result->toSql();
@@ -64,6 +65,7 @@ class OrgFilterTest extends TestCase
     public function test_description_uses_like_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->description('technology company');
 
         $sql = $result->toSql();
@@ -77,6 +79,7 @@ class OrgFilterTest extends TestCase
     public function test_status_single_value(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->status('active');
 
         $sql = $result->toSql();
@@ -90,6 +93,7 @@ class OrgFilterTest extends TestCase
     public function test_status_multiple_values(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->status('active,inactive,suspended');
 
         $sql = $result->toSql();
@@ -105,6 +109,7 @@ class OrgFilterTest extends TestCase
     public function test_created_at_range(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->createdAt('2023-01-01,2023-12-31');
 
         $sql = $result->toSql();
@@ -119,6 +124,7 @@ class OrgFilterTest extends TestCase
     public function test_updated_at_greater_than(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $result = $filter->updatedAt('2023-06-01');
 
         $sql = $result->toSql();
@@ -161,6 +167,7 @@ class OrgFilterTest extends TestCase
     public function test_methods_return_builder_instance(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
 
         $this->assertInstanceOf(Builder::class, $filter->name('Acme'));
         $this->assertInstanceOf(Builder::class, $filter->description('Technology'));
@@ -182,8 +189,8 @@ class OrgFilterTest extends TestCase
         $result = $filter->apply($this->builder);
 
         $sql = strtolower($result->toSql());
-        $this->assertStringContainsString('order by "name" asc', $sql);
-        $this->assertStringContainsString('"status" desc', $sql);
-        $this->assertStringContainsString('"created_at" asc', $sql);
+        $this->assertStringContainsString('order by `name` asc', $sql);
+        $this->assertStringContainsString('`status` desc', $sql);
+        $this->assertStringContainsString('`created_at` asc', $sql);
     }
 }

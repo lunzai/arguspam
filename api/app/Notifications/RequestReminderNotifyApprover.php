@@ -6,6 +6,7 @@ use App\Models\Request;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Notification;
 
 class RequestReminderNotifyApprover extends Notification implements ShouldQueue
@@ -24,7 +25,13 @@ class RequestReminderNotifyApprover extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        $channels = ['mail'];
+
+        if (config('pam.notification.slack.enabled', false)) {
+            $channels[] = 'slack';
+        }
+
+        return $channels;
     }
 
     /**
@@ -44,6 +51,20 @@ class RequestReminderNotifyApprover extends Notification implements ShouldQueue
                 'url' => config('pam.app.web_url').'/requests/'.$this->request->id,
             ]);
     }
+
+    // public function toSlack(object $notifiable): SlackMessage
+    // {
+    //     return (new SlackMessage)
+    //         ->from('Argus PAM')
+    //         ->to(config('pam.notification.slack.channel.requests'))
+    //         ->content('⚠️ URGENT: Request Expiring Soon - '.$this->request->asset->name)
+    //         ->attachment(function ($attachment) {
+    //             $attachment->title('Request Expiring Soon', config('pam.app.web_url').'/requests/'.$this->request->id)
+    //                 ->content('URGENT: Request for *'.$this->request->asset->name.'* is expiring soon and requires immediate attention.')
+    //                 ->color('danger')
+    //                 ->markdown();
+    //         });
+    // }
 
     /**
      * Get the array representation of the notification.

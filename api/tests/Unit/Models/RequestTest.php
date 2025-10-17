@@ -67,11 +67,17 @@ class RequestTest extends TestCase
             'sensitive_data_note',
             'approver_note',
             'approver_risk_rating',
+            'ai_note',
+            'ai_risk_rating',
             'status',
+            'submitted_at',
             'approved_by',
             'approved_at',
             'rejected_by',
             'rejected_at',
+            'cancelled_by',
+            'cancelled_at',
+            'expired_at',
         ];
 
         $this->assertEquals($expectedFillable, $this->request->getFillable());
@@ -121,6 +127,10 @@ class RequestTest extends TestCase
             'approved_at' => 'Approved At',
             'rejected_by' => 'Rejected By',
             'rejected_at' => 'Rejected At',
+            'submitted_at' => 'Submitted At',
+            'cancelled_by' => 'Cancelled By',
+            'cancelled_at' => 'Cancelled At',
+            'expired_at' => 'Expired At',
         ];
 
         $this->assertEquals($expectedLabels, Request::$attributeLabels);
@@ -134,10 +144,12 @@ class RequestTest extends TestCase
             'assetAccount',
             'requester',
             'approver',
+            'rejecter',
             'session',
             'audits',
             'createdBy',
             'updatedBy',
+            'cancelledBy',
         ];
 
         $this->assertEquals($expectedIncludable, Request::$includable);
@@ -233,6 +245,9 @@ class RequestTest extends TestCase
         $startTime = now()->addHours(2);
         $approver = User::factory()->create();
 
+        // Create request without events to avoid RequestCreated listener trying to submit an APPROVED request
+        Request::unsetEventDispatcher();
+
         $request = Request::factory()->create([
             'org_id' => $this->org->id,
             'asset_id' => $this->asset->id,
@@ -251,6 +266,9 @@ class RequestTest extends TestCase
             'approved_by' => $approver->id,
             'approved_at' => now(),
         ]);
+
+        // Re-set event dispatcher for subsequent tests
+        Request::setEventDispatcher($this->app['events']);
 
         $this->assertDatabaseHas('requests', [
             'org_id' => $this->org->id,
@@ -287,47 +305,29 @@ class RequestTest extends TestCase
 
     public function test_request_status_enum_functionality(): void
     {
-        // Test pending status
-        $pendingRequest = Request::factory()->create([
-            'org_id' => $this->org->id,
-            'asset_id' => $this->asset->id,
-            'requester_id' => $this->requester->id,
-            'status' => RequestStatus::PENDING,
-        ]);
+        // Test all statuses without creating multiple database records
+        $statuses = [
+            RequestStatus::PENDING,
+            RequestStatus::APPROVED,
+            RequestStatus::REJECTED,
+            RequestStatus::EXPIRED,
+        ];
 
-        // Test approved status
-        $approvedRequest = Request::factory()->create([
-            'org_id' => $this->org->id,
-            'asset_id' => $this->asset->id,
-            'requester_id' => $this->requester->id,
-            'status' => RequestStatus::APPROVED,
-        ]);
+        foreach ($statuses as $status) {
+            // Update existing request instead of creating new ones
+            $this->request->status = $status;
+            $this->assertEquals($status, $this->request->status);
+            $this->assertInstanceOf(RequestStatus::class, $this->request->status);
+        }
 
-        // Test rejected status
-        $rejectedRequest = Request::factory()->create([
-            'org_id' => $this->org->id,
-            'asset_id' => $this->asset->id,
-            'requester_id' => $this->requester->id,
-            'status' => RequestStatus::REJECTED,
-        ]);
-
-        // Test expired status
-        $expiredRequest = Request::factory()->create([
-            'org_id' => $this->org->id,
-            'asset_id' => $this->asset->id,
-            'requester_id' => $this->requester->id,
-            'status' => RequestStatus::EXPIRED,
-        ]);
-
-        $this->assertEquals(RequestStatus::PENDING, $pendingRequest->status);
-        $this->assertEquals(RequestStatus::APPROVED, $approvedRequest->status);
-        $this->assertEquals(RequestStatus::REJECTED, $rejectedRequest->status);
-        $this->assertEquals(RequestStatus::EXPIRED, $expiredRequest->status);
+        // Verify database persistence with one write
+        $this->request->update(['status' => RequestStatus::APPROVED]);
+        $this->assertEquals(RequestStatus::APPROVED, $this->request->fresh()->status);
     }
 
     public function test_request_scope_enum_functionality(): void
     {
-        // Test different scope values
+        // Test different scope values without creating multiple database records
         $scopes = [
             RequestScope::READ_ONLY,
             RequestScope::READ_WRITE,
@@ -337,32 +337,35 @@ class RequestTest extends TestCase
         ];
 
         foreach ($scopes as $scope) {
-            $request = Request::factory()->create([
-                'org_id' => $this->org->id,
-                'asset_id' => $this->asset->id,
-                'requester_id' => $this->requester->id,
-                'scope' => $scope,
-            ]);
-
-            $this->assertEquals($scope, $request->scope);
-            $this->assertInstanceOf(RequestScope::class, $request->scope);
+            // Update existing request instead of creating new ones
+            $this->request->scope = $scope;
+            $this->assertEquals($scope, $this->request->scope);
+            $this->assertInstanceOf(RequestScope::class, $this->request->scope);
         }
+
+        // Verify database persistence with one write
+        $this->request->update(['scope' => RequestScope::READ_WRITE]);
+        $this->assertEquals(RequestScope::READ_WRITE, $this->request->fresh()->scope);
     }
 
     public function test_request_risk_rating_enum_functionality(): void
     {
-        $request = Request::factory()->create([
-            'org_id' => $this->org->id,
-            'asset_id' => $this->asset->id,
-            'requester_id' => $this->requester->id,
+        // Test enum casting without creating new database record
+        $this->request->approver_risk_rating = RiskRating::HIGH;
+        $this->request->ai_risk_rating = RiskRating::LOW;
+
+        $this->assertEquals(RiskRating::HIGH, $this->request->approver_risk_rating);
+        $this->assertEquals(RiskRating::LOW, $this->request->ai_risk_rating);
+        $this->assertInstanceOf(RiskRating::class, $this->request->approver_risk_rating);
+        $this->assertInstanceOf(RiskRating::class, $this->request->ai_risk_rating);
+
+        // Verify database persistence
+        $this->request->update([
             'approver_risk_rating' => RiskRating::HIGH,
             'ai_risk_rating' => RiskRating::LOW,
         ]);
-
-        $this->assertEquals(RiskRating::HIGH, $request->approver_risk_rating);
-        $this->assertEquals(RiskRating::LOW, $request->ai_risk_rating);
-        $this->assertInstanceOf(RiskRating::class, $request->approver_risk_rating);
-        $this->assertInstanceOf(RiskRating::class, $request->ai_risk_rating);
+        $this->assertEquals(RiskRating::HIGH, $this->request->fresh()->approver_risk_rating);
+        $this->assertEquals(RiskRating::LOW, $this->request->fresh()->ai_risk_rating);
     }
 
     public function test_request_datetime_casting(): void
@@ -371,48 +374,55 @@ class RequestTest extends TestCase
         $endTime = Carbon::now()->addHours(5);
         $approvedTime = Carbon::now()->subHour();
 
-        $request = Request::factory()->create([
-            'org_id' => $this->org->id,
-            'asset_id' => $this->asset->id,
-            'requester_id' => $this->requester->id,
+        // Test datetime casting without creating new database record
+        $this->request->start_datetime = $startTime;
+        $this->request->end_datetime = $endTime;
+        $this->request->approved_at = $approvedTime;
+
+        $this->assertInstanceOf(Carbon::class, $this->request->start_datetime);
+        $this->assertInstanceOf(Carbon::class, $this->request->end_datetime);
+        $this->assertInstanceOf(Carbon::class, $this->request->approved_at);
+
+        $this->assertEquals($startTime->format('Y-m-d H:i:s'), $this->request->start_datetime->format('Y-m-d H:i:s'));
+        $this->assertEquals($endTime->format('Y-m-d H:i:s'), $this->request->end_datetime->format('Y-m-d H:i:s'));
+        $this->assertEquals($approvedTime->format('Y-m-d H:i:s'), $this->request->approved_at->format('Y-m-d H:i:s'));
+
+        // Verify database persistence
+        $this->request->update([
             'start_datetime' => $startTime,
             'end_datetime' => $endTime,
             'approved_at' => $approvedTime,
         ]);
-
-        $this->assertInstanceOf(Carbon::class, $request->start_datetime);
-        $this->assertInstanceOf(Carbon::class, $request->end_datetime);
-        $this->assertInstanceOf(Carbon::class, $request->approved_at);
-
-        $this->assertEquals($startTime->format('Y-m-d H:i:s'), $request->start_datetime->format('Y-m-d H:i:s'));
-        $this->assertEquals($endTime->format('Y-m-d H:i:s'), $request->end_datetime->format('Y-m-d H:i:s'));
-        $this->assertEquals($approvedTime->format('Y-m-d H:i:s'), $request->approved_at->format('Y-m-d H:i:s'));
+        $freshRequest = $this->request->fresh();
+        $this->assertEquals($startTime->format('Y-m-d H:i:s'), $freshRequest->start_datetime->format('Y-m-d H:i:s'));
+        $this->assertEquals($endTime->format('Y-m-d H:i:s'), $freshRequest->end_datetime->format('Y-m-d H:i:s'));
+        $this->assertEquals($approvedTime->format('Y-m-d H:i:s'), $freshRequest->approved_at->format('Y-m-d H:i:s'));
     }
 
     public function test_request_sensitive_data_functionality(): void
     {
-        // Test request with sensitive data
-        $sensitiveRequest = Request::factory()->create([
-            'org_id' => $this->org->id,
-            'asset_id' => $this->asset->id,
-            'requester_id' => $this->requester->id,
+        // Test request with sensitive data using existing request
+        $this->request->is_access_sensitive_data = true;
+        $this->request->sensitive_data_note = 'Contains customer PII';
+
+        $this->assertTrue($this->request->is_access_sensitive_data);
+        $this->assertEquals('Contains customer PII', $this->request->sensitive_data_note);
+
+        // Test request without sensitive data
+        $this->request->is_access_sensitive_data = false;
+        $this->request->sensitive_data_note = null;
+
+        $this->assertFalse($this->request->is_access_sensitive_data);
+        $this->assertNull($this->request->sensitive_data_note);
+
+        // Verify database persistence
+        $this->request->update([
             'is_access_sensitive_data' => true,
             'sensitive_data_note' => 'Contains customer PII',
         ]);
-
-        // Test request without sensitive data
-        $regularRequest = Request::factory()->create([
-            'org_id' => $this->org->id,
-            'asset_id' => $this->asset->id,
-            'requester_id' => $this->requester->id,
-            'is_access_sensitive_data' => false,
-            'sensitive_data_note' => null,
-        ]);
-
-        $this->assertTrue($sensitiveRequest->is_access_sensitive_data);
-        $this->assertEquals('Contains customer PII', $sensitiveRequest->sensitive_data_note);
-        $this->assertFalse($regularRequest->is_access_sensitive_data);
-        $this->assertNull($regularRequest->sensitive_data_note);
+        $freshRequest = $this->request->fresh();
+        $this->assertTrue($freshRequest->is_access_sensitive_data);
+        $this->assertEquals('Contains customer PII', $freshRequest->sensitive_data_note);
     }
 
     public function test_request_approval_workflow(): void

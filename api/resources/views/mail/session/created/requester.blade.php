@@ -10,7 +10,7 @@ Your session for **{{ $session->asset->name }}** has been created and is ready t
 - **Asset:** {{ $session->asset->name }}
 - **Scheduled Start:** {{ $session->scheduled_start_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
 - **Scheduled End:** {{ $session->scheduled_end_datetime->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
-- **Duration:** {{ $session->scheduledDurationForHumans }}
+- **Requested Duration:** {{ $session->requestedDurationForHumans }}
 - **Status:** {{ ucwords($session->status->value) }}
 
 ## How to Start Your Session

@@ -6,6 +6,12 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Validation rule to ensure unique combination of user/user_group, asset, and role.
+ *
+ * This rule validates that a specific user or user group doesn't already have
+ * the same role assigned to the same asset, ensuring no duplicate access grants.
+ */
 class AssetAccessCompositeUnique implements ValidationRule
 {
     protected $table;
@@ -23,6 +29,13 @@ class AssetAccessCompositeUnique implements ValidationRule
         $this->ignoreId = $ignoreId;
     }
 
+    /**
+     * Validate the given attribute value.
+     *
+     * @param  string  $attribute  The attribute name being validated
+     * @param  mixed  $value  The value being validated
+     * @param  Closure  $fail  The failure callback
+     */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (!$this->role || !$this->assetId) {

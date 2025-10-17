@@ -31,8 +31,13 @@ class HandleRequestRejected implements ShouldBeEncrypted, ShouldQueue
     public function handle(RequestRejected $event): void
     {
         $request = $event->request;
-        $request->requester->notify(new RequestRejectedNotifyRequester($request));
-        $approvers = $request->asset->getApprovers();
+        $request
+            ->requester
+            ->notify(new RequestRejectedNotifyRequester($request));
+        $approvers = $request
+            ->asset
+            ->getApprovers()
+            ->except($request->requester_id);
         Notification::send($approvers, new RequestRejectedNotifyApprover($request));
     }
 

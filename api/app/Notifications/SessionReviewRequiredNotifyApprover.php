@@ -33,9 +33,16 @@ class SessionReviewRequiredNotifyApprover extends Notification implements Should
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+            ->metadata('org', $this->session->org_id)
+            ->metadata('asset', $this->session->asset_id)
+            ->tag('session')
+            ->tag('session-review-required')
+            ->subject('Manual Review Required: '.$this->session->asset->name.' - '.$this->session->requester->name)
+            ->markdown('mail.session.review-required.approver', [
+                'session' => $this->session,
+                'notifiable' => $notifiable,
+                'url' => config('pam.app.web_url').'/sessions/'.$this->session->id,
+            ]);
     }
 
     /**

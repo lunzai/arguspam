@@ -36,6 +36,11 @@ class SettingPolicy
         return $user->hasAnyPermission('setting:updateany');
     }
 
+    public function update(User $user, Setting $setting): bool
+    {
+        return $user->hasAnyPermission('setting:update');
+    }
+
     /**
      * Determine whether the user can delete the model.
      */

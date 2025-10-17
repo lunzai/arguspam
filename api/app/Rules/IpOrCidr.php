@@ -5,10 +5,20 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 
+/**
+ * Validation rule for IP addresses and CIDR notation.
+ *
+ * This rule validates that the given value is either a valid IP address
+ * (IPv4 or IPv6) or a valid CIDR notation (e.g., 192.168.1.0/24).
+ */
 class IpOrCidr implements ValidationRule
 {
     /**
-     * Run the validation rule.
+     * Validate the given attribute value.
+     *
+     * @param  string  $attribute  The attribute name being validated
+     * @param  mixed  $value  The value being validated
+     * @param  Closure  $fail  The failure callback
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {

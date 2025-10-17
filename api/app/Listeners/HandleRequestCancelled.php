@@ -31,8 +31,12 @@ class HandleRequestCancelled implements ShouldBeEncrypted, ShouldQueue
     public function handle(RequestCancelled $event): void
     {
         $request = $event->request;
-        $request->requester->notify(new RequestCancelledNotifyRequester($request));
-        $approvers = $request->asset->getApprovers();
+        $request->requester
+            ->notify(new RequestCancelledNotifyRequester($request));
+        $approvers = $request
+            ->asset
+            ->getApprovers()
+            ->except($request->requester_id);
         Notification::send($approvers, new RequestCancelledNotifyApprover($request));
     }
 

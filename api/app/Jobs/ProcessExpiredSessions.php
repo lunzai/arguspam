@@ -26,7 +26,7 @@ class ProcessExpiredSessions implements ShouldQueue
     public function handle(SecretsManager $secretsManager): void
     {
         // Find expired active sessions
-        $expiredSessions = Session::where('status', 'active')
+        $expiredSessions = Session::where('status', 'started')
             ->where('scheduled_end_datetime', '<', now())
             ->get();
 
@@ -38,7 +38,6 @@ class ProcessExpiredSessions implements ShouldQueue
                 // Update session
                 $session->update([
                     'status' => 'expired',
-                    'is_expired' => true,
                     'end_datetime' => $session->scheduled_end_datetime,
                     'actual_duration' => $session->scheduled_end_datetime->diffInMinutes($session->start_datetime),
                 ]);

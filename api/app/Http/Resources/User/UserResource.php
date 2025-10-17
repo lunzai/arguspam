@@ -4,6 +4,7 @@ namespace App\Http\Resources\User;
 
 use App\Http\Resources\AssetAccessGrant\AssetAccessGrantResource;
 use App\Http\Resources\Org\OrgResource;
+use App\Http\Resources\Permission\PermissionResource;
 use App\Http\Resources\Request\RequestResource;
 use App\Http\Resources\Resource;
 use App\Http\Resources\Role\RoleResource;
@@ -37,6 +38,31 @@ class UserResource extends Resource
                     'created_at' => $this->created_at,
                     'updated_at' => $this->updated_at,
                 ]),
+                'restrictions' => UserAccessRestrictionResource::collection(
+                    $this->whenLoaded('restrictions')
+                ),
+                // 'roles' => $this->whenLoaded('roles')->select(['id', 'name', 'description', 'is_default']),
+                $this->mergeWhen($this->relationLoaded('roles'), [
+                    'roles' => $this->roles->map(function ($role) {
+                        return [
+                            'id' => $role->id,
+                            'name' => e($role->name),
+                            'description' => e($role->description),
+                            'is_default' => $role->is_default,
+                        ];
+                    }),
+                ]),
+                $this->mergeWhen($this->relationLoaded('permissions'), [
+                    'permissions' => $this->permissions->map(function ($permission) {
+                        return [
+                            'id' => $permission->id,
+                            'name' => e($permission->name),
+                            'description' => e($permission->description),
+                        ];
+                    }),
+                ]),
+                'scheduled_sessions_count' => $this->whenCounted('scheduledSessions'),
+                'submitted_requests_count' => $this->whenCounted('submittedRequests'),
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [
@@ -61,12 +87,15 @@ class UserResource extends Resource
                     'sessions' => SessionResource::collection(
                         $this->whenLoaded('sessions')
                     ),
-                    'accessRestrictions' => UserAccessRestrictionResource::collection(
-                        $this->whenLoaded('accessRestrictions')
-                    ),
-                    'roles' => RoleResource::collection(
-                        $this->whenLoaded('roles')
-                    ),
+                    // 'accessRestrictions' => UserAccessRestrictionResource::collection(
+                    //     $this->whenLoaded('accessRestrictions')
+                    // ),
+                    // 'roles' => RoleResource::collection(
+                    //     $this->whenLoaded('roles')
+                    // ),
+                    // 'permissions' => PermissionResource::collection(
+                    //     $this->whenLoaded('permissions')
+                    // ),
                 ],
             ]),
         ];

@@ -31,3 +31,7 @@ yarn-error.log
 /storage/app/*.mmdb
 
 _ide_helper.php
+__pycache__
+.claude
+.editorconfig
+.user.ini

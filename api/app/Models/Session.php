@@ -10,17 +10,21 @@ use App\Events\SessionEnded;
 use App\Events\SessionExpired;
 use App\Events\SessionStarted;
 use App\Events\SessionTerminated;
+use App\Events\SessionAiAudited;
 use App\Services\OpenAI\OpenAiService;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
 use Carbon\CarbonInterval;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class Session extends Model implements ShouldHandleEventsAfterCommit
 {
@@ -117,18 +121,16 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
             'requested_duration' => $request->duration,
             'status' => SessionStatus::SCHEDULED,
             'is_admin_account' => $request->asset_account_id ? false : true,
+            'created_by' => $request->approved_by,
         ]);
-        if ($session) {
-            SessionCreated::dispatch($session);
-        }
         return $session;
     }
 
-    public function scheduledDurationForHumans(): Attribute
+    public function requestedDurationForHumans(): Attribute
     {
         return Attribute::make(
             get: function () {
-                return CarbonInterval::minutes($this->scheduled_duration)
+                return CarbonInterval::minutes($this->requested_duration)
                     ->cascade()
                     ->forHumans();
             },
@@ -146,13 +148,13 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         );
     }
 
-    public function getAiReview(OpenAiService $openAiService): void
+    public function getAiAudit(OpenAiService $openAiService): void
     {
         $evaluation = $openAiService->reviewSession($this);
         $this->ai_note = $evaluation['output']['ai_note'];
         $this->ai_risk_rating = $evaluation['output']['ai_risk_rating'];
         $this->ai_reviewed_at = now();
-        $this->save();
+        SessionAiAudited::dispatchIf($this->save(), $this);
     }
 
     public function canStart(): bool
@@ -183,6 +185,16 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
             $this->isAfterScheduledEndDatetime();
     }
 
+    public function isActive(): bool
+    {
+        return $this->status == SessionStatus::STARTED;
+    }
+
+    public function canBeStarted(): bool
+    {
+        return $this->canStart();
+    }
+
     public function isAfterScheduledStartDatetime(): bool
     {
         return $this->scheduled_start_datetime->isAfter(now());
@@ -190,12 +202,21 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
 
     public function isBeforeScheduledEndDatetime(): bool
     {
-        return $this->scheduled_end_datetime->isBefore(now());
+        return now()->isBefore($this->scheduled_end_datetime);
     }
 
     public function isAfterScheduledEndDatetime(): bool
     {
-        return $this->scheduled_end_datetime->isAfter(now());
+        return now()->isAfter($this->scheduled_end_datetime);
+    }
+
+    public function isRequiredManualReview(): bool
+    {
+        if (!$this->ai_risk_rating) {
+            return false;
+        }
+        return $this->ai_risk_rating == RiskRating::HIGH ||
+            $this->ai_risk_rating == RiskRating::CRITICAL;
     }
 
     public function start(): void
@@ -253,14 +274,26 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         SessionExpired::dispatchIf($this->save(), $this);
     }
 
+    #[Scope]
+    protected function scheduled(Builder $query): Builder
+    {
+        return $query->where('status', SessionStatus::SCHEDULED->value);
+    }
+
+    #[Scope]
+    protected function scheduledEndDateNowOrPast(Builder $query): Builder
+    {
+        return $query->where('scheduled_end_datetime', '<=', now());
+    }
+
     public function org(): BelongsTo
     {
         return $this->belongsTo(Org::class);
     }
 
-    public function request(): HasOne
+    public function request(): belongsTo
     {
-        return $this->hasOne(Request::class);
+        return $this->belongsTo(Request::class);
     }
 
     public function asset(): BelongsTo

@@ -36,6 +36,8 @@ class HasBlamableTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => 'active',
+            'dbms' => 'mysql',
         ]);
 
         $this->assertEquals($this->user->id, $asset->created_by);
@@ -51,6 +53,8 @@ class HasBlamableTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => 'active',
+            'dbms' => 'mysql',
         ]);
 
         Auth::login($this->anotherUser);
@@ -70,6 +74,8 @@ class HasBlamableTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => 'active',
+            'dbms' => 'mysql',
         ]);
 
         $this->assertNull($asset->created_by);
@@ -85,6 +91,8 @@ class HasBlamableTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => 'active',
+            'dbms' => 'mysql',
         ]);
 
         $this->assertInstanceOf(User::class, $asset->createdBy);
@@ -101,6 +109,8 @@ class HasBlamableTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => 'active',
+            'dbms' => 'mysql',
         ]);
 
         Auth::login($this->anotherUser);
@@ -121,6 +131,8 @@ class HasBlamableTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => 'active',
+            'dbms' => 'mysql',
         ]);
 
         $this->assertNull($asset->createdBy);
@@ -183,6 +195,8 @@ class HasBlamableTest extends TestCase
         $asset->name = 'Test Asset';
         $asset->host = '192.168.1.1';
         $asset->port = 3306;
+        $asset->status = 'active';
+        $asset->dbms = 'mysql';
 
         $this->assertNull($asset->created_by);
         $this->assertNull($asset->updated_by);
@@ -202,6 +216,8 @@ class HasBlamableTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => 'active',
+            'dbms' => 'mysql',
             'created_by' => $this->anotherUser->id,
             'updated_by' => $this->anotherUser->id,
         ]);
@@ -219,6 +235,8 @@ class HasBlamableTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => 'active',
+            'dbms' => 'mysql',
         ]);
 
         $originalCreatedBy = $asset->created_by;

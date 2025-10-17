@@ -42,11 +42,13 @@ class UserCreateCommandTest extends TestCase
             ->expectsQuestion('Name', 'John Doe')
             ->expectsQuestion('Email', 'john@example.com')
             ->expectsQuestion('Password', 'password123')
-            ->expectsChoice('Roles', ['admin_test1'], [$adminRole->id => 'admin_test1', $userRole->id => 'user_test1'])
+            ->expectsQuestion('Default Timezone', 'UTC')
+            ->expectsChoice('Roles (Multiple choice)', ['admin_test1'], [$adminRole->id => 'admin_test1', $userRole->id => 'user_test1'])
             ->expectsConfirmation('Are you sure you want to create user?', 'yes')
             ->expectsOutput('User created successfully')
             ->expectsOutput('Name: John Doe')
             ->expectsOutput('Email: john@example.com')
+            ->expectsOutput('Default Timezone: UTC')
             ->assertExitCode(0);
 
         $this->assertDatabaseHas('users', [
@@ -54,6 +56,7 @@ class UserCreateCommandTest extends TestCase
             'email' => 'john@example.com',
             'status' => Status::ACTIVE,
             'password' => 'hashed_password123',
+            'default_timezone' => 'UTC',
         ]);
 
         $user = User::where('email', 'john@example.com')->first();
@@ -71,7 +74,8 @@ class UserCreateCommandTest extends TestCase
             ->expectsQuestion('Name', 'Jane Doe')
             ->expectsQuestion('Email', 'jane@example.com')
             ->expectsQuestion('Password', 'password123')
-            ->expectsChoice('Roles', ['admin_test2', 'auditor_test2'], [$adminRole->id => 'admin_test2', $userRole->id => 'user_test2', $auditorRole->id => 'auditor_test2'])
+            ->expectsQuestion('Default Timezone', 'America/New_York')
+            ->expectsChoice('Roles (Multiple choice)', ['admin_test2', 'auditor_test2'], [$adminRole->id => 'admin_test2', $userRole->id => 'user_test2', $auditorRole->id => 'auditor_test2'])
             ->expectsConfirmation('Are you sure you want to create user?', 'yes')
             ->expectsOutput('User created successfully')
             ->assertExitCode(0);
@@ -94,7 +98,8 @@ class UserCreateCommandTest extends TestCase
             ->expectsQuestion('Name', 'Test User')
             ->expectsQuestion('Email', 'test@example.com')
             ->expectsQuestion('Password', 'password123')
-            ->expectsChoice('Roles', ['user_test3'], [$adminRole->id => 'admin_test3', $userRole->id => 'user_test3'])
+            ->expectsQuestion('Default Timezone', 'UTC')
+            ->expectsChoice('Roles (Multiple choice)', ['user_test3'], [$adminRole->id => 'admin_test3', $userRole->id => 'user_test3'])
             ->expectsConfirmation('Are you sure you want to create user?', 'yes')
             ->assertExitCode(0);
 
@@ -123,7 +128,8 @@ class UserCreateCommandTest extends TestCase
             ->expectsQuestion('Name', 'Active User')
             ->expectsQuestion('Email', 'active@example.com')
             ->expectsQuestion('Password', 'password123')
-            ->expectsChoice('Roles', ['user_test4'], [$role->id => 'user_test4'])
+            ->expectsQuestion('Default Timezone', 'UTC')
+            ->expectsChoice('Roles (Multiple choice)', ['user_test4'], [$role->id => 'user_test4'])
             ->expectsConfirmation('Are you sure you want to create user?', 'yes')
             ->assertExitCode(0);
 
@@ -142,7 +148,8 @@ class UserCreateCommandTest extends TestCase
             ->expectsQuestion('Name', 'Hash Test')
             ->expectsQuestion('Email', 'hash@example.com')
             ->expectsQuestion('Password', 'plaintext_password')
-            ->expectsChoice('Roles', ['user_test5'], [$role->id => 'user_test5'])
+            ->expectsQuestion('Default Timezone', 'UTC')
+            ->expectsChoice('Roles (Multiple choice)', ['user_test5'], [$role->id => 'user_test5'])
             ->expectsConfirmation('Are you sure you want to create user?', 'yes')
             ->assertExitCode(0);
 
@@ -159,7 +166,8 @@ class UserCreateCommandTest extends TestCase
             ->expectsQuestion('Name', 'Cancelled User')
             ->expectsQuestion('Email', 'cancelled@example.com')
             ->expectsQuestion('Password', 'password123')
-            ->expectsChoice('Roles', ['user_test6'], [$role->id => 'user_test6'])
+            ->expectsQuestion('Default Timezone', 'UTC')
+            ->expectsChoice('Roles (Multiple choice)', ['user_test6'], [$role->id => 'user_test6'])
             ->expectsConfirmation('Are you sure you want to create user?', 'no')
             ->assertExitCode(0);
 
@@ -176,6 +184,7 @@ class UserCreateCommandTest extends TestCase
             ->expectsQuestion('Name', 'No Roles User')
             ->expectsQuestion('Email', 'noroles@example.com')
             ->expectsQuestion('Password', 'password123')
+            ->expectsQuestion('Default Timezone', 'UTC')
             ->expectsOutput('No roles available. User will be created without roles.')
             ->expectsConfirmation('Are you sure you want to create user?', 'yes')
             ->expectsOutput('User created successfully')
@@ -203,7 +212,8 @@ class UserCreateCommandTest extends TestCase
             ->expectsQuestion('Name', 'Duplicate User')
             ->expectsQuestion('Email', 'duplicate@example.com')
             ->expectsQuestion('Password', 'password123')
-            ->expectsChoice('Roles', ['user_test7'], [$role->id => 'user_test7'])
+            ->expectsQuestion('Default Timezone', 'UTC')
+            ->expectsChoice('Roles (Multiple choice)', ['user_test7'], [$role->id => 'user_test7'])
             ->expectsConfirmation('Are you sure you want to create user?', 'yes');
     }
 }

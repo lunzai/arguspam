@@ -9,7 +9,8 @@
 		LucideClipboardCheck,
 		X,
 		SquareTerminal,
-		Bot
+		Bot,
+		ArrowRightToLine
 	} from '@lucide/svelte';
 	import * as DL from '$components/description-list';
 	import { shortDateTime, shortDateTimeRange, relativeDateTime } from '$utils/date';
@@ -231,9 +232,19 @@
 				{/if}
 			</DL.Root>
 		</Card.Content>
-		{#if permissions.canApprove || permissions.canCancel}
+		{#if permissions.canApprove || permissions.canCancel || model.status == 'approved'}
 			<Separator />
 			<Card.Footer class="flex-col gap-2">
+				{#if session}
+					<Button
+						variant="outline"
+						class="flex w-full justify-between transition-all duration-200 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
+						href="/sessions/{session.id}"
+					>
+						<div class="ml-4 flex-1 text-center">Go To Session</div>
+						<ArrowRightToLine class="h-4 w-4" />
+					</Button>
+				{/if}
 				{#if permissions.canApprove}
 					<Button
 						variant="outline"

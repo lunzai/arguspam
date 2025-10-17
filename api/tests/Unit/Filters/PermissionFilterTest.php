@@ -31,6 +31,7 @@ class PermissionFilterTest extends TestCase
     public function test_sortable_fields_are_defined(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
 
         $reflection = new \ReflectionClass($filter);
         $property = $reflection->getProperty('sortable');
@@ -50,6 +51,7 @@ class PermissionFilterTest extends TestCase
     public function test_name_uses_like_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->name('user:create');
 
@@ -64,6 +66,7 @@ class PermissionFilterTest extends TestCase
     public function test_name_with_permission_patterns(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->name('asset:view');
 
@@ -78,6 +81,7 @@ class PermissionFilterTest extends TestCase
     public function test_name_partial_search(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->name('create');
 
@@ -92,6 +96,7 @@ class PermissionFilterTest extends TestCase
     public function test_name_case_insensitive_search(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->name('USER:CREATE');
 
@@ -106,6 +111,7 @@ class PermissionFilterTest extends TestCase
     public function test_description_uses_like_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->description('create user accounts');
 
@@ -120,6 +126,7 @@ class PermissionFilterTest extends TestCase
     public function test_description_partial_search(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->description('permission');
 
@@ -134,6 +141,7 @@ class PermissionFilterTest extends TestCase
     public function test_created_at_range(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->createdAt('2023-01-01,2023-12-31');
 
@@ -149,6 +157,7 @@ class PermissionFilterTest extends TestCase
     public function test_created_at_greater_than(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->createdAt('2023-06-01');
 
@@ -163,6 +172,7 @@ class PermissionFilterTest extends TestCase
     public function test_created_at_less_than(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->createdAt('-2023-12-31');
 
@@ -177,6 +187,7 @@ class PermissionFilterTest extends TestCase
     public function test_updated_at_range(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->updatedAt('2023-06-01,2023-06-30');
 
@@ -192,6 +203,7 @@ class PermissionFilterTest extends TestCase
     public function test_updated_at_greater_than(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->updatedAt('2023-11-01');
 
@@ -234,6 +246,7 @@ class PermissionFilterTest extends TestCase
     public function test_methods_return_builder_instance(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
 
         $this->assertInstanceOf(Builder::class, $filter->name('user:create'));
@@ -245,6 +258,7 @@ class PermissionFilterTest extends TestCase
     public function test_inheritance_from_query_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
 
         $this->assertInstanceOf(\App\Http\Filters\QueryFilter::class, $filter);
     }
@@ -353,6 +367,7 @@ class PermissionFilterTest extends TestCase
     public function test_timestamp_filters_with_datetime_strings(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
 
         $result = $filter->createdAt('2023-01-01 00:00:00,2023-12-31 23:59:59');
@@ -369,6 +384,7 @@ class PermissionFilterTest extends TestCase
     public function test_chaining_filter_methods(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
 
         $result = $filter->apply($this->builder)
             ->where('id', '>', 0);
@@ -383,6 +399,7 @@ class PermissionFilterTest extends TestCase
     public function test_permission_name_patterns(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
 
         // Test various permission naming patterns
@@ -405,6 +422,7 @@ class PermissionFilterTest extends TestCase
     public function test_description_with_special_characters(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->description("Create & manage user's permissions");
 
@@ -419,6 +437,7 @@ class PermissionFilterTest extends TestCase
     public function test_search_functionality_case_sensitivity(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
 
         // Test various case combinations for permission names
@@ -468,6 +487,7 @@ class PermissionFilterTest extends TestCase
     public function test_permission_name_with_wildcards(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->name('*:create');
 
@@ -484,6 +504,7 @@ class PermissionFilterTest extends TestCase
         $longDescription = 'This permission allows users to create new user accounts in the system with all necessary validations and security checks including email verification and password requirements';
 
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->description($longDescription);
 
@@ -498,6 +519,7 @@ class PermissionFilterTest extends TestCase
     public function test_resource_based_permission_filtering(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
 
         // Test filtering by different resource types
@@ -513,6 +535,7 @@ class PermissionFilterTest extends TestCase
     public function test_action_based_permission_filtering(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
 
         // Test filtering by different actions

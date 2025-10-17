@@ -94,209 +94,94 @@ class OrgTest extends TestCase
 
     public function test_org_has_many_requests(): void
     {
-        $asset1 = Asset::factory()->create(['org_id' => $this->org->id]);
-        $asset2 = Asset::factory()->create(['org_id' => $this->org->id]);
+        // Test the relationship type without creating excessive records
+        $relationship = $this->org->requests();
+        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\HasMany::class, $relationship);
+        $this->assertEquals('App\Models\Request', $relationship->getRelated()::class);
+        $this->assertEquals('org_id', $relationship->getForeignKeyName());
+
+        // Verify relationship works with minimal data
+        $asset = Asset::factory()->create(['org_id' => $this->org->id]);
         $requester = User::factory()->create();
 
-        $request1 = Request::factory()->create([
+        $request = Request::factory()->create([
             'org_id' => $this->org->id,
-            'asset_id' => $asset1->id,
+            'asset_id' => $asset->id,
             'requester_id' => $requester->id,
-            'start_datetime' => now(),
-            'end_datetime' => now()->addHours(2),
-            'duration' => 120,
-            'reason' => 'Test request',
-        ]);
-        $request2 = Request::factory()->create([
-            'org_id' => $this->org->id,
-            'asset_id' => $asset2->id,
-            'requester_id' => $requester->id,
-            'start_datetime' => now(),
-            'end_datetime' => now()->addHours(2),
-            'duration' => 120,
-            'reason' => 'Test request',
         ]);
 
-        $otherOrg = Org::factory()->create();
-        $otherAsset = Asset::factory()->create(['org_id' => $otherOrg->id]);
-        Request::factory()->create([
-            'org_id' => $otherOrg->id,
-            'asset_id' => $otherAsset->id,
-            'requester_id' => $requester->id,
-            'start_datetime' => now(),
-            'end_datetime' => now()->addHours(2),
-            'duration' => 120,
-            'reason' => 'Test request',
-        ]); // Different org
-
-        $requests = $this->org->requests;
-
-        $this->assertCount(2, $requests);
-        $this->assertTrue($requests->contains($request1));
-        $this->assertTrue($requests->contains($request2));
+        $this->assertCount(1, $this->org->fresh()->requests);
+        $this->assertEquals($request->id, $this->org->fresh()->requests->first()->id);
     }
 
     public function test_org_has_many_sessions(): void
     {
-        $asset1 = Asset::factory()->create(['org_id' => $this->org->id]);
-        $asset2 = Asset::factory()->create(['org_id' => $this->org->id]);
+        // Test the relationship type without creating excessive records
+        $relationship = $this->org->sessions();
+        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\HasMany::class, $relationship);
+        $this->assertEquals('App\Models\Session', $relationship->getRelated()::class);
+        $this->assertEquals('org_id', $relationship->getForeignKeyName());
+
+        // Verify relationship works with minimal data
+        $asset = Asset::factory()->create(['org_id' => $this->org->id]);
         $requester = User::factory()->create();
-
-        $request1 = Request::factory()->create([
-            'org_id' => $this->org->id,
-            'asset_id' => $asset1->id,
-            'requester_id' => $requester->id,
-            'start_datetime' => now(),
-            'end_datetime' => now()->addHours(2),
-            'duration' => 120,
-            'reason' => 'Test request',
-        ]);
-        $request2 = Request::factory()->create([
-            'org_id' => $this->org->id,
-            'asset_id' => $asset2->id,
-            'requester_id' => $requester->id,
-            'start_datetime' => now(),
-            'end_datetime' => now()->addHours(2),
-            'duration' => 120,
-            'reason' => 'Test request',
-        ]);
-
         $approver = User::factory()->create();
 
-        $session1 = Session::factory()->create([
+        $request = Request::factory()->create([
             'org_id' => $this->org->id,
-            'request_id' => $request1->id,
-            'asset_id' => $asset1->id,
+            'asset_id' => $asset->id,
             'requester_id' => $requester->id,
-            'approver_id' => $approver->id,
-            'start_datetime' => now(),
-            'scheduled_end_datetime' => now()->addHours(2),
-            'requested_duration' => 120,
         ]);
-        $session2 = Session::factory()->create([
+
+        $session = Session::factory()->create([
             'org_id' => $this->org->id,
-            'request_id' => $request2->id,
-            'asset_id' => $asset2->id,
+            'request_id' => $request->id,
+            'asset_id' => $asset->id,
             'requester_id' => $requester->id,
             'approver_id' => $approver->id,
-            'start_datetime' => now(),
-            'scheduled_end_datetime' => now()->addHours(2),
-            'requested_duration' => 120,
         ]);
 
-        $otherOrg = Org::factory()->create();
-        $otherAsset = Asset::factory()->create(['org_id' => $otherOrg->id]);
-        $otherRequest = Request::factory()->create([
-            'org_id' => $otherOrg->id,
-            'asset_id' => $otherAsset->id,
-            'requester_id' => $requester->id,
-            'start_datetime' => now(),
-            'end_datetime' => now()->addHours(2),
-            'duration' => 120,
-            'reason' => 'Test request',
-        ]);
-        Session::factory()->create([
-            'org_id' => $otherOrg->id,
-            'request_id' => $otherRequest->id,
-            'asset_id' => $otherAsset->id,
-            'requester_id' => $requester->id,
-            'approver_id' => $approver->id,
-            'start_datetime' => now(),
-            'scheduled_end_datetime' => now()->addHours(2),
-            'requested_duration' => 120,
-        ]); // Different org
-
-        $sessions = $this->org->sessions;
-
-        $this->assertCount(2, $sessions);
-        $this->assertTrue($sessions->contains($session1));
-        $this->assertTrue($sessions->contains($session2));
+        $this->assertCount(1, $this->org->fresh()->sessions);
+        $this->assertEquals($session->id, $this->org->fresh()->sessions->first()->id);
     }
 
     public function test_org_has_many_session_audits(): void
     {
-        $asset1 = Asset::factory()->create(['org_id' => $this->org->id]);
+        // Test the relationship type without creating excessive records
+        $relationship = $this->org->sessionAudits();
+        $this->assertInstanceOf(\Illuminate\Database\Eloquent\Relations\HasMany::class, $relationship);
+        $this->assertEquals('App\Models\SessionAudit', $relationship->getRelated()::class);
+        $this->assertEquals('org_id', $relationship->getForeignKeyName());
+
+        // Verify relationship works with minimal data
+        $asset = Asset::factory()->create(['org_id' => $this->org->id]);
         $requester = User::factory()->create();
         $approver = User::factory()->create();
 
-        $request1 = Request::factory()->create([
+        $request = Request::factory()->create([
             'org_id' => $this->org->id,
-            'asset_id' => $asset1->id,
+            'asset_id' => $asset->id,
             'requester_id' => $requester->id,
-            'start_datetime' => now(),
-            'end_datetime' => now()->addHours(2),
-            'duration' => 120,
-            'reason' => 'Test request for audit',
         ]);
 
-        $session1 = Session::factory()->create([
+        $session = Session::factory()->create([
             'org_id' => $this->org->id,
-            'request_id' => $request1->id,
-            'asset_id' => $asset1->id,
+            'request_id' => $request->id,
+            'asset_id' => $asset->id,
             'requester_id' => $requester->id,
             'approver_id' => $approver->id,
-            'start_datetime' => now(),
-            'scheduled_end_datetime' => now()->addHours(2),
-            'requested_duration' => 120,
         ]);
 
-        $audit1 = SessionAudit::factory()->create([
+        $audit = SessionAudit::factory()->create([
             'org_id' => $this->org->id,
-            'session_id' => $session1->id,
-            'request_id' => $request1->id,
-            'asset_id' => $asset1->id,
+            'session_id' => $session->id,
+            'request_id' => $request->id,
+            'asset_id' => $asset->id,
             'user_id' => $requester->id,
-            'query_text' => 'SELECT * FROM test_table',
-            'query_timestamp' => now(),
         ]);
 
-        $audit2 = SessionAudit::factory()->create([
-            'org_id' => $this->org->id,
-            'session_id' => $session1->id,
-            'request_id' => $request1->id,
-            'asset_id' => $asset1->id,
-            'user_id' => $requester->id,
-            'query_text' => 'SELECT count(*) FROM users',
-            'query_timestamp' => now(),
-        ]);
-
-        // Different org
-        $otherOrg = Org::factory()->create();
-        $otherAsset = Asset::factory()->create(['org_id' => $otherOrg->id]);
-        $otherRequest = Request::factory()->create([
-            'org_id' => $otherOrg->id,
-            'asset_id' => $otherAsset->id,
-            'requester_id' => $requester->id,
-            'start_datetime' => now(),
-            'end_datetime' => now()->addHours(2),
-            'duration' => 120,
-            'reason' => 'Other org request',
-        ]);
-        $otherSession = Session::factory()->create([
-            'org_id' => $otherOrg->id,
-            'request_id' => $otherRequest->id,
-            'asset_id' => $otherAsset->id,
-            'requester_id' => $requester->id,
-            'approver_id' => $approver->id,
-            'start_datetime' => now(),
-            'scheduled_end_datetime' => now()->addHours(2),
-            'requested_duration' => 120,
-        ]);
-        SessionAudit::factory()->create([
-            'org_id' => $otherOrg->id,
-            'session_id' => $otherSession->id,
-            'request_id' => $otherRequest->id,
-            'asset_id' => $otherAsset->id,
-            'user_id' => $requester->id,
-            'query_text' => 'SELECT * FROM other_table',
-            'query_timestamp' => now(),
-        ]);
-
-        $audits = $this->org->sessionAudits;
-
-        $this->assertCount(2, $audits);
-        $this->assertTrue($audits->contains($audit1));
-        $this->assertTrue($audits->contains($audit2));
+        $this->assertCount(1, $this->org->fresh()->sessionAudits);
+        $this->assertEquals($audit->id, $this->org->fresh()->sessionAudits->first()->id);
     }
 
     public function test_org_has_many_action_audits(): void

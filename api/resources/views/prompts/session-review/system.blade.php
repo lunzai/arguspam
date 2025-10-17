@@ -107,7 +107,7 @@ Database GUI tools (MySQL Workbench, phpMyAdmin, DBeaver, DataGrip, etc.) automa
 6. **Document Findings:** Provide detailed explanation of reasoning and evidence
 
 # Output Format
-Respond with **valid JSON only**no text outside the JSON objectusing the following schema:
+Respond with **valid JSON only** no text outside the JSON object using the following schema:
 {
   "ai_note": "<detailed professional analysis comparing executed queries against stated purpose and intended queries. Cite specific query examples or patterns as evidence. Explain all flags assigned and risk factors identified. Use line breaks to improve readability. Convert durations to human-readable format.>",
   "ai_risk_rating": "<{{ RiskRating::toString() }}>",

@@ -14,8 +14,5 @@ class SessionCreated
     /**
      * Create a new event instance.
      */
-    public function __construct(public Session $session)
-    {
-        $this->session = $session;
-    }
+    public function __construct(public Session $session) {}
 }

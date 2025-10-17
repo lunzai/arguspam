@@ -31,6 +31,7 @@ class RoleFilterTest extends TestCase
     public function test_sortable_fields_are_defined(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
 
         $reflection = new \ReflectionClass($filter);
         $property = $reflection->getProperty('sortable');
@@ -50,6 +51,7 @@ class RoleFilterTest extends TestCase
     public function test_name_uses_like_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->name('Admin');
 
@@ -64,6 +66,7 @@ class RoleFilterTest extends TestCase
     public function test_name_with_special_characters(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->name("Super-Admin & User's Role");
 
@@ -78,6 +81,7 @@ class RoleFilterTest extends TestCase
     public function test_name_case_insensitive_search(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->name('ADMINISTRATOR');
 
@@ -92,6 +96,7 @@ class RoleFilterTest extends TestCase
     public function test_description_uses_like_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->description('system administrator');
 
@@ -106,6 +111,7 @@ class RoleFilterTest extends TestCase
     public function test_description_partial_search(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->description('full access');
 
@@ -120,6 +126,7 @@ class RoleFilterTest extends TestCase
     public function test_created_at_range(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->createdAt('2023-01-01,2023-12-31');
 
@@ -135,6 +142,7 @@ class RoleFilterTest extends TestCase
     public function test_created_at_greater_than(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->createdAt('2023-06-01');
 
@@ -149,6 +157,7 @@ class RoleFilterTest extends TestCase
     public function test_created_at_less_than(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->createdAt('-2023-12-31');
 
@@ -163,6 +172,7 @@ class RoleFilterTest extends TestCase
     public function test_updated_at_range(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->updatedAt('2023-06-01,2023-06-30');
 
@@ -178,6 +188,7 @@ class RoleFilterTest extends TestCase
     public function test_updated_at_greater_than(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->updatedAt('2023-11-01');
 
@@ -220,6 +231,7 @@ class RoleFilterTest extends TestCase
     public function test_methods_return_builder_instance(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
 
         $this->assertInstanceOf(Builder::class, $filter->name('Admin'));
@@ -231,6 +243,7 @@ class RoleFilterTest extends TestCase
     public function test_inheritance_from_query_filter(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
 
         $this->assertInstanceOf(\App\Http\Filters\QueryFilter::class, $filter);
     }
@@ -340,6 +353,7 @@ class RoleFilterTest extends TestCase
     public function test_timestamp_filters_with_datetime_strings(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
 
         $result = $filter->createdAt('2023-01-01 00:00:00,2023-12-31 23:59:59');
@@ -356,6 +370,7 @@ class RoleFilterTest extends TestCase
     public function test_chaining_filter_methods(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
 
         $result = $filter->apply($this->builder)
             ->where('id', '>', 0);
@@ -370,6 +385,7 @@ class RoleFilterTest extends TestCase
     public function test_name_search_with_unicode_characters(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->name('Administrador');
 
@@ -386,6 +402,7 @@ class RoleFilterTest extends TestCase
         $longDescription = 'This is a very long description that contains many words and explains the role in great detail including all the permissions and responsibilities that come with this particular role in the system';
 
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
         $result = $filter->description($longDescription);
 
@@ -400,6 +417,7 @@ class RoleFilterTest extends TestCase
     public function test_search_functionality_case_sensitivity(): void
     {
         $filter = $this->createFilter();
+        $filter->apply($this->builder); // Initialize builder
         $filter->apply($this->builder);
 
         // Test various case combinations

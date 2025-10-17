@@ -32,10 +32,18 @@ class HandleRequestSubmitted implements ShouldBeEncrypted, ShouldQueue
     {
         $request = $event->request;
 
-        $request->requester->notify(new RequestSubmittedNotifyRequester($request));
-
-        $approvers = $request->asset->getApprovers();
+        $request
+            ->requester
+            ->notify(new RequestSubmittedNotifyRequester($request));
+        $approvers = $request
+            ->asset
+            ->getApprovers()
+            ->except($request->requester_id);
         Notification::send($approvers, new RequestSubmittedNotifyApprover($request));
+        // Notification::route('email', config('pam.notification.email.support'))
+        //     ->notify(new RequestSubmittedNotifyApprover($request));
+        // Notification::route('slack', config('pam.notification.slack.channel.requests'))
+        //     ->notify(new RequestSubmittedNotifyApprover($request));
     }
 
     public function failed(RequestSubmitted $event, \Throwable $exception): void

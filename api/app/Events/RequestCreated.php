@@ -14,10 +14,7 @@ class RequestCreated
     /**
      * Create a new event instance.
      */
-    public function __construct(public Request $request)
-    {
-        $this->request = $request;
-    }
+    public function __construct(public Request $request) {}
 
     /**
      * Get the channels the event should broadcast on.

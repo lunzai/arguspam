@@ -33,8 +33,13 @@ class HandleRequestApproved implements ShouldBeEncrypted, ShouldQueue
     {
         $request = $event->request;
         Session::createFromRequest($request);
-        $request->requester->notify(new RequestApprovedNotifyRequester($request));
-        $approvers = $request->asset->getApprovers();
+        $request
+            ->requester
+            ->notify(new RequestApprovedNotifyRequester($request));
+        $approvers = $request
+            ->asset
+            ->getApprovers()
+            ->except($request->requester_id);
         Notification::send($approvers, new RequestApprovedNotifyApprover($request));
     }
 

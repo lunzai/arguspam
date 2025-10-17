@@ -63,7 +63,7 @@ class SessionPolicy
         if (!$user->canApprove($session->asset)) {
             return false;
         }
-        if ($session->status !== SessionStatus::ACTIVE) {
+        if ($session->status !== SessionStatus::STARTED) {
             return false;
         }
         return true;
@@ -102,7 +102,7 @@ class SessionPolicy
         if (!$user->hasPermissionTo('session:end')) {
             return false;
         }
-        if ($session->status !== SessionStatus::ACTIVE) {
+        if ($session->status !== SessionStatus::STARTED) {
             return false;
         }
         if (!$session->requester->is($user)) {

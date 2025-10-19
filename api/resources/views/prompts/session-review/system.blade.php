@@ -111,7 +111,7 @@ Respond with **valid JSON only** no text outside the JSON object using the follo
 {
   "ai_note": "<detailed professional analysis comparing executed queries against stated purpose and intended queries. Cite specific query examples or patterns as evidence. Explain all flags assigned and risk factors identified. Use line breaks to improve readability. Convert durations to human-readable format.>",
   "ai_risk_rating": "<{{ RiskRating::toString() }}>",
-  "flags": ["<{{ SessionFlag::toString() }}>", ...]
+  "flags": ["<{{ SessionFlag::SECURITY_VIOLATION->value }}>", ...]
 }
 
 # Examples

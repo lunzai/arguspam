@@ -30,47 +30,47 @@ class SessionAuditPolicyTest extends TestCase
     private Session $session;
     private SessionAudit $sessionAudit;
 
-    // protected function setUp(): void
-    // {
-    //     parent::setUp();
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-    //     $this->policy = new SessionAuditPolicy();
-    //     $this->user = User::factory()->create();
-    //     $this->approver = User::factory()->create();
-    //     $this->org = Org::factory()->create();
-    //     $this->asset = Asset::factory()->create();
-    //     $this->request = RequestModel::factory()->create();
-    //     $this->session = Session::factory()->create([
-    //         'org_id' => $this->org->id,
-    //         'asset_id' => $this->asset->id,
-    //         'request_id' => $this->request->id,
-    //         'requester_id' => $this->user->id,
-    //         'approver_id' => $this->approver->id,
-    //         'start_datetime' => now(),
-    //         'end_datetime' => now()->addHour(),
-    //         'scheduled_end_datetime' => now()->addHour(),
-    //         'requested_duration' => 60,
-    //         'actual_duration' => 60,
-    //     ]);
-    //     $this->sessionAudit = SessionAudit::factory()->create([
-    //         'org_id' => $this->org->id,
-    //         'session_id' => $this->session->id,
-    //         'request_id' => $this->request->id,
-    //         'asset_id' => $this->asset->id,
-    //     ]);
-    // }
+        $this->policy = new SessionAuditPolicy();
+        $this->user = User::factory()->create();
+        $this->approver = User::factory()->create();
+        $this->org = Org::factory()->create();
+        $this->asset = Asset::factory()->create();
+        $this->request = RequestModel::factory()->create();
+        $this->session = Session::factory()->create([
+            'org_id' => $this->org->id,
+            'asset_id' => $this->asset->id,
+            'request_id' => $this->request->id,
+            'requester_id' => $this->user->id,
+            'approver_id' => $this->approver->id,
+            'start_datetime' => now(),
+            'end_datetime' => now()->addHour(),
+            'scheduled_end_datetime' => now()->addHour(),
+            'requested_duration' => 60,
+            'actual_duration' => 60,
+        ]);
+        $this->sessionAudit = SessionAudit::factory()->create([
+            'org_id' => $this->org->id,
+            'session_id' => $this->session->id,
+            'request_id' => $this->request->id,
+            'asset_id' => $this->asset->id,
+        ]);
+    }
 
-    // public function test_viewAny_returns_true_when_user_has_permission(): void
-    // {
-    //     $this->giveUserPermission($this->user, 'sessionaudit:viewany');
+    public function test_viewAny_returns_true_when_user_has_permission(): void
+    {
+        $this->giveUserPermission($this->user, 'sessionaudit:viewany');
 
-    //     $this->assertTrue($this->policy->viewAny($this->user));
-    // }
+        $this->assertTrue($this->policy->viewAny($this->user));
+    }
 
-    // public function test_viewAny_returns_false_when_user_lacks_permission(): void
-    // {
-    //     $this->assertFalse($this->policy->viewAny($this->user));
-    // }
+    public function test_viewAny_returns_false_when_user_lacks_permission(): void
+    {
+        $this->assertFalse($this->policy->viewAny($this->user));
+    }
 
     // public function test_view_returns_true_when_user_has_viewany_permission(): void
     // {
@@ -274,24 +274,24 @@ class SessionAuditPolicyTest extends TestCase
     //     $this->assertFalse($this->policy->view($this->user, $otherSessionAudit));
     // }
 
-    // private function giveUserPermission(User $user, string $permissionName): void
-    // {
-    //     $permission = Permission::firstOrCreate(
-    //         ['name' => $permissionName],
-    //         ['description' => ucfirst(str_replace(':', ' ', $permissionName))]
-    //     );
-    //     $role = Role::factory()->create();
-    //     $role->permissions()->attach($permission);
-    //     $user->roles()->attach($role);
-    //     $user->clearUserRolePermissionCache();
-    // }
+    private function giveUserPermission(User $user, string $permissionName): void
+    {
+        $permission = Permission::firstOrCreate(
+            ['name' => $permissionName],
+            ['description' => ucfirst(str_replace(':', ' ', $permissionName))]
+        );
+        $role = Role::factory()->create();
+        $role->permissions()->attach($permission);
+        $user->roles()->attach($role);
+        $user->clearUserRolePermissionCache();
+    }
 
-    // private function giveUserAssetAccess(User $user, Asset $asset): void
-    // {
-    //     AssetAccessGrant::factory()->create([
-    //         'asset_id' => $asset->id,
-    //         'user_id' => $user->id,
-    //         'role' => AssetAccessRole::REQUESTER,
-    //     ]);
-    // }
+    private function giveUserAssetAccess(User $user, Asset $asset): void
+    {
+        AssetAccessGrant::factory()->create([
+            'asset_id' => $asset->id,
+            'user_id' => $user->id,
+            'role' => AssetAccessRole::REQUESTER,
+        ]);
+    }
 }

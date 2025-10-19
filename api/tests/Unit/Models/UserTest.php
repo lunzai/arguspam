@@ -388,6 +388,8 @@ class UserTest extends TestCase
             'restrictions',
             'roles',
             'permissions',
+            'scheduledSessions',
+            'submittedRequests',
         ];
 
         $this->assertEquals($expectedIncludable, User::$includable);

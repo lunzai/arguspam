@@ -63,7 +63,7 @@ class SessionPolicy
         if (!$user->canApprove($session->asset)) {
             return false;
         }
-        if ($session->status !== SessionStatus::STARTED) {
+        if (!$session->canTerminate()) {
             return false;
         }
         return true;
@@ -88,10 +88,10 @@ class SessionPolicy
         if (!$user->hasPermissionTo('session:start')) {
             return false;
         }
-        if (!$session->requester->is($user)) {
+        if (!$session->canStart()) {
             return false;
         }
-        if (!$session->canBeStarted()) {
+        if (!$session->requester->is($user)) {
             return false;
         }
         return true;
@@ -102,7 +102,21 @@ class SessionPolicy
         if (!$user->hasPermissionTo('session:end')) {
             return false;
         }
-        if ($session->status !== SessionStatus::STARTED) {
+        if (!$session->canEnd()) {
+            return false;
+        }
+        if (!$session->requester->is($user)) {
+            return false;
+        }
+        return true;
+    }
+
+    public function cancel(User $user, Session $session): bool
+    {
+        if (!$user->hasPermissionTo('session:cancel')) {
+            return false;
+        }
+        if (!$session->canCancel()) {
             return false;
         }
         if (!$session->requester->is($user)) {

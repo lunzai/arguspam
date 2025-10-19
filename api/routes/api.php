@@ -21,6 +21,9 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\SessionAuditController;
 use App\Http\Controllers\SessionController;
+use App\Http\Controllers\SessionApproverController;
+use App\Http\Controllers\SessionRequesterController;
+use App\Http\Controllers\SessionSecretController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SettingGroupController;
 use App\Http\Controllers\TimezoneController;
@@ -57,24 +60,34 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware(EnsureOrganizationIdIsValid::class)->group(function () {
         Route::apiResources([
             'assets' => AssetController::class,
-            'requests' => RequestController::class,
-            'sessions' => SessionController::class,
             'user-groups' => UserGroupController::class,
         ]);
 
-        Route::apiResources([
-            'requests' => RequestController::class,
-        ]);
         Route::apiResource('requests', RequestController::class)
             ->except(['destroy']);
-        Route::get('/requests/{requestModel}/can-approve', [RequestApproverController::class, 'show'])
-            ->name('requests.approval.show');
+        Route::get('/requests/{requestModel}/permissions', [RequestApproverController::class, 'show'])
+            ->name('requests.approver.show');
         Route::post('/requests/{requestModel}/approve', [RequestApproverController::class, 'store'])
-            ->name('requests.approval.store');
+            ->name('requests.approver.store');
         Route::put('/requests/{requestModel}/reject', [RequestApproverController::class, 'update'])
-            ->name('requests.approval.update');
+            ->name('requests.approver.update');
         Route::delete('/requests/{requestModel}/cancel', [RequestApproverController::class, 'delete'])
-            ->name('requests.approval.delete');
+            ->name('requests.approver.delete');
+
+        Route::apiResource('sessions', SessionController::class)
+            ->only(['index', 'show']);
+        Route::get('/sessions/{session}/permissions', [SessionRequesterController::class, 'show'])
+            ->name('sessions.requester.show');
+        Route::post('/sessions/{session}/start', [SessionRequesterController::class, 'store'])
+            ->name('sessions.requester.store');
+        Route::put('/sessions/{session}/end', [SessionRequesterController::class, 'update'])
+            ->name('sessions.requester.update');
+        Route::delete('/sessions/{session}/cancel', [SessionRequesterController::class, 'delete'])
+            ->name('sessions.requester.delete');
+        Route::get('/sessions/{session}/secret', [SessionSecretController::class, 'show'])
+            ->name('sessions.secret.show');
+        Route::delete('/sessions/{session}/terminate', [SessionApproverController::class, 'delete'])
+            ->name('sessions.approver.delete');
 
         Route::apiResource('user-groups.users', UserGroupUserController::class)
             ->only(['store']);

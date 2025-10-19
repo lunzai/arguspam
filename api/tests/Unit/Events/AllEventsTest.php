@@ -8,7 +8,7 @@ use App\Events\RequestCreated;
 use App\Events\RequestExpired;
 use App\Events\RequestRejected;
 use App\Events\RequestSubmitted;
-use App\Events\SessionAiReviewed;
+use App\Events\SessionAiAudited;
 use App\Events\SessionCancelled;
 use App\Events\SessionCreated;
 use App\Events\SessionEnded;
@@ -38,7 +38,7 @@ class AllEventsTest extends TestCase
             SessionCancelled::class,
             SessionExpired::class,
             SessionTerminated::class,
-            SessionAiReviewed::class,
+            SessionAiAudited::class,
             UserLoggedIn::class,
         ];
 
@@ -65,7 +65,7 @@ class AllEventsTest extends TestCase
             SessionCancelled::class,
             SessionExpired::class,
             SessionTerminated::class,
-            SessionAiReviewed::class,
+            SessionAiAudited::class,
             UserLoggedIn::class,
         ];
 
@@ -112,7 +112,7 @@ class AllEventsTest extends TestCase
             SessionCancelled::class,
             SessionExpired::class,
             SessionTerminated::class,
-            SessionAiReviewed::class,
+            SessionAiAudited::class,
         ];
 
         foreach ($simpleSessionEvents as $eventClass) {
@@ -166,7 +166,7 @@ class AllEventsTest extends TestCase
             SessionCancelled::class,
             SessionExpired::class,
             SessionTerminated::class,
-            SessionAiReviewed::class,
+            SessionAiAudited::class,
         ];
 
         foreach ($eventsWithSockets as $eventClass) {

@@ -36,7 +36,7 @@ Total Queries: {{ $session->audits->count() }}
 Query Volume: {{ $session->actual_duration > 0 ? round($session->audits->count() / ($session->actual_duration / 60), 2) : 'N/A' }} queries/minute
 
 @foreach($session->audits as $index => $audit)
-{{ $index + 1 }}. [{{ $audit->query_timestamp->format('Y-m-d H:i:s') }}] {{ $audit->query_text }}
+{{ $index + 1 }}. [{{ $audit->query_timestamp ? $audit->query_timestamp->format('Y-m-d H:i:s') : 'N/A' }}] {{ $audit->query_text }}
 @endforeach
 @else
 ⚠️ No queries were logged during this session.

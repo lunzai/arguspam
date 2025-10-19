@@ -3,9 +3,12 @@
 namespace App\Http\Resources\Session;
 
 use App\Http\Resources\Asset\AssetResource;
+use App\Http\Resources\AssetAccount\AssetAccountResource;
 use App\Http\Resources\Org\OrgResource;
 use App\Http\Resources\Request\RequestResource;
 use App\Http\Resources\Resource;
+use App\Http\Resources\SessionAudit\SessionAuditResource;
+use App\Http\Resources\SessionFlag\SessionFlagResource;
 use App\Http\Resources\User\UserResource;
 use Illuminate\Http\Request;
 
@@ -65,7 +68,7 @@ class SessionResource extends Resource
                     'asset' => AssetResource::make(
                         $this->whenLoaded('asset')
                     ),
-                    'assetAccount' => AssetResource::make(
+                    'assetAccount' => AssetAccountResource::make(
                         $this->whenLoaded('assetAccount')
                     ),
                     'requester' => UserResource::make(
@@ -86,10 +89,10 @@ class SessionResource extends Resource
                     'terminatedBy' => UserResource::make(
                         $this->whenLoaded('terminatedBy')
                     ),
-                    'flags' => UserResource::make(
+                    'flags' => SessionFlagResource::collection(
                         $this->whenLoaded('flags')
                     ),
-                    'audits' => UserResource::make(
+                    'audits' => SessionAuditResource::collection(
                         $this->whenLoaded('audits')
                     ),
                     'createdBy' => UserResource::make(

@@ -157,6 +157,11 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         SessionAiAudited::dispatchIf($this->save(), $this);
     }
 
+    public function canRetrieveSecret(): bool
+    {
+        return $this->status == SessionStatus::STARTED;
+    }
+
     public function canStart(): bool
     {
         return $this->status == SessionStatus::SCHEDULED &&
@@ -188,11 +193,6 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
     public function isActive(): bool
     {
         return $this->status == SessionStatus::STARTED;
-    }
-
-    public function canBeStarted(): bool
-    {
-        return $this->canStart();
     }
 
     public function isAfterScheduledStartDatetime(): bool

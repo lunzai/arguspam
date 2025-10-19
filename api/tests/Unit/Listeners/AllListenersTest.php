@@ -135,7 +135,7 @@ class AllListenersTest extends TestCase
             HandleRequestExpired::class => 'App\Events\RequestExpired',
             HandleRequestRejected::class => 'App\Events\RequestRejected',
             HandleRequestSubmitted::class => 'App\Events\RequestSubmitted',
-            HandleSessionAiReviewed::class => 'App\Events\SessionAiReviewed',
+            HandleSessionAiReviewed::class => 'App\Events\SessionAiAudited',
             HandleSessionCancelled::class => 'App\Events\SessionCancelled',
             HandleSessionCreated::class => 'App\Events\SessionCreated',
             HandleSessionEnded::class => 'App\Events\SessionEnded',

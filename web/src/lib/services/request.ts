@@ -2,8 +2,8 @@ import { BaseService } from './base.js';
 import type { Request } from '$models/request';
 import type {
 	ApiRequestResource,
-	RequestCanApprove,
-	RequestCanApproveResource
+	RequestPermission,
+	RequestPermissionResource
 } from '$lib/resources/request';
 
 export class RequestService extends BaseService<Request> {
@@ -13,10 +13,10 @@ export class RequestService extends BaseService<Request> {
 		super('/requests', token, orgId);
 	}
 
-	async canApprove(id: number): Promise<RequestCanApprove> {
+	async permission(id: number): Promise<RequestPermission> {
 		try {
-			const response = await this.api.get<RequestCanApproveResource>(
-				`${this.endpoint}/${id}/can-approve`
+			const response = await this.api.get<RequestPermissionResource>(
+				`${this.endpoint}/${id}/permissions`
 			);
 			return response.data;
 		} catch (error) {

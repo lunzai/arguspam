@@ -12,8 +12,8 @@ export interface ApiRequestResource extends ApiResourceResponse<Request> {}
 export interface RequestResource extends Resource<Request> {}
 export interface RequestCollection extends Collection<Request> {}
 
-export interface RequestCanApprove {
+export interface RequestPermission {
 	canApprove: boolean;
 	canCancel: boolean;
 }
-export interface RequestCanApproveResource extends ApiResponse<RequestCanApprove> {}
+export interface RequestPermissionResource extends ApiResponse<RequestPermission> {}

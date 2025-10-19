@@ -226,7 +226,7 @@
 					<DL.Row orientation="vertical">
 						<DL.Label>Cancelled At</DL.Label>
 						<DL.Content>
-							{shortDateTime(model.updated_at as Date)}
+							{shortDateTime(model.cancelled_at as Date)}
 						</DL.Content>
 					</DL.Row>
 				{/if}
@@ -238,7 +238,7 @@
 				{#if session}
 					<Button
 						variant="outline"
-						class="flex w-full justify-between transition-all duration-200 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
+						class="flex w-full justify-between transition-all duration-200 hover:cursor-pointer hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
 						href="/sessions/{session.id}"
 					>
 						<div class="ml-4 flex-1 text-center">Go To Session</div>

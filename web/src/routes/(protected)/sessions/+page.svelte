@@ -12,10 +12,10 @@
 	import { page } from '$app/state';
 	import { Pencil, NotebookText } from '@lucide/svelte';
 	import type { Asset } from '$models/asset';
-    import { formatDistanceStrict } from 'date-fns';
-    import type { CellBadge } from '$components/data-table/types';
-    import { capitalizeWords } from '$lib/utils/string';
-    import type { User } from '$models/user';
+	import { formatDistanceStrict } from 'date-fns';
+	import type { CellBadge } from '$components/data-table/types';
+	import { capitalizeWords } from '$lib/utils/string';
+	import type { User } from '$models/user';
 
 	let initialSearchParams = page.url.searchParams;
 	const modelName = 'sessions';
@@ -26,7 +26,7 @@
 			title: 'ID',
 			sortable: true
 		},
-        {
+		{
 			key: 'asset_id',
 			title: 'Asset',
 			sortable: true,
@@ -38,7 +38,7 @@
                 `;
 			}
 		},
-        {
+		{
 			key: 'scheduled_start_datetime',
 			title: 'Start/End',
 			sortable: true,
@@ -52,7 +52,7 @@
                 `;
 			}
 		},
-        {
+		{
 			key: 'status',
 			title: 'Status',
 			sortable: true,
@@ -78,7 +78,7 @@
 						variant = 'destructive';
 						break;
 					case 'cancelled':
-                    case 'expired':
+					case 'expired':
 						variant = 'outline';
 						break;
 				}
@@ -92,7 +92,7 @@
 				return { values, className: wrapperClassName };
 			}
 		},
-        {
+		{
 			key: 'requester_id',
 			title: 'Requester',
 			sortable: false,
@@ -177,7 +177,8 @@
 	model={{} as Session}
 	{config}
 	{initialSearchParams}
-    initialInclude={['asset', 'requester', 'approver', 'request']}
+	initialInclude={['asset', 'requester', 'approver', 'request']}
+	initialSort={{ column: 'created_at', direction: 'desc' }}
 	onDataChange={handleDataChange}
 	onPaginationChange={handlePaginationChange}
 	onFilterChange={handleFilterChange}

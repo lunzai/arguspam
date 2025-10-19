@@ -35,3 +35,4 @@ __pycache__
 .claude
 .editorconfig
 .user.ini
+80--test-coverage-plan.plan.md

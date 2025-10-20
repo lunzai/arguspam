@@ -20,7 +20,7 @@
 	import type { User } from '$models/user';
 	import ApproveFormDialog from './approve-form-dialog.svelte';
 	import RejectFormDialog from './reject-form-dialog.svelte';
-	import { invalidate } from '$app/navigation';
+	import { invalidate, invalidateAll } from '$app/navigation';
 	import PageContent from './page-content.svelte';
 	import { Separator } from '$ui/separator';
 	import { StatusBadge } from '$components/badge';
@@ -59,7 +59,7 @@
 	bind:isOpen={approveDialogIsOpen}
 	data={data.approveForm}
 	onSuccess={async (data: Request) => {
-		await invalidate('requests:view');
+        invalidateAll();
 		approveDialogIsOpen = false;
 	}}
 />
@@ -68,7 +68,7 @@
 	bind:isOpen={rejectDialogIsOpen}
 	data={data.rejectForm}
 	onSuccess={async (data: Request) => {
-		await invalidate('requests:view');
+        invalidateAll();
 		rejectDialogIsOpen = false;
 	}}
 />
@@ -87,7 +87,7 @@
 					return async ({ result, update }) => {
 						if (result.type === 'success') {
 							toast.success('Request cancelled successfully');
-							invalidate('requests:view');
+							invalidateAll();
 							cancel();
 						} else {
 							toast.error('Failed to cancel request');

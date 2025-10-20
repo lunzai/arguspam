@@ -2,6 +2,7 @@
 
 namespace App\Services\Database\Drivers;
 
+use App\Enums\RequestScope;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -40,60 +41,77 @@ class MySQLDriver extends AbstractDatabaseDriver
         );
     }
 
-    public function createUser(string $username, string $password, string $database, string $scope, Carbon $expiresAt): bool
+    public function createUser(string $username, string $password, string|array|null $databases, RequestScope $scope, Carbon $expiresAt): bool
     {
-        $this->logOperation('createUser', ['username' => $username, 'database' => $database, 'scope' => $scope]);
+        $normalizedDatabases = $this->normalizeDatabases($databases);
+        $this->logOperation('createUser', [
+            'username' => $username, 
+            'databases' => $normalizedDatabases, 
+            'scope' => $scope,
+            'all_databases' => $this->hasAllDatabaseAccess($databases)
+        ]);
 
         try {
-            $this->connection->beginTransaction();
+            // Ensure we have a fresh connection
+            if (!isset($this->connection) || $this->connection === null) {
+                $this->connect($this->config['db']);
+            }
 
-            // Create user with password expiration
-            $sql = "CREATE USER :username@'%' IDENTIFIED BY :password 
-                    PASSWORD EXPIRE INTERVAL :days DAY";
-
-            $daysUntilExpiry = now()->diffInDays($expiresAt);
+            // Create user (without password expiration for now)
+            $sql = "CREATE USER :username@'%' IDENTIFIED BY :password";
 
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([
                 ':username' => $username,
                 ':password' => $password,
-                ':days' => $daysUntilExpiry,
             ]);
 
-            // Grant permissions based on scope
-            $this->grantPermissions($username, $database, $scope);
+            // Grant permissions based on scope and databases
+            $this->grantPermissions($username, $databases, $scope);
 
             // Flush privileges
             $this->connection->exec('FLUSH PRIVILEGES');
 
-            $this->connection->commit();
             $this->logOperation('createUser.success', ['username' => $username]);
             return true;
 
         } catch (Exception $e) {
-            $this->connection->rollBack();
             $this->handleError('createUser', $e, ['username' => $username]);
             return false;
         }
     }
 
-    private function grantPermissions(string $username, string $database, string $scope): void
+    private function grantPermissions(string $username, string|array|null $databases, RequestScope $scope): void
     {
         $userHost = "'{$username}'@'%'";
+        $normalizedDatabases = $this->normalizeDatabases($databases);
+        $hasAllAccess = $this->hasAllDatabaseAccess($databases);
 
-        switch ($scope) {
-            case 'read_only':
-                $this->connection->exec("GRANT SELECT ON `{$database}`.* TO {$userHost}");
-                break;
+        // Get the appropriate privileges for the scope
+        $privileges = $this->getPrivilegesForScope($scope);
 
-            case 'read_write':
-                $this->connection->exec("GRANT SELECT, INSERT, UPDATE, DELETE ON `{$database}`.* TO {$userHost}");
-                break;
-
-            case 'admin':
-                $this->connection->exec("GRANT ALL PRIVILEGES ON `{$database}`.* TO {$userHost} WITH GRANT OPTION");
-                break;
+        if ($hasAllAccess) {
+            // Grant access to all databases
+            $this->connection->exec("GRANT {$privileges} ON *.* TO {$userHost}");
+        } else {
+            // Grant access to specific databases
+            foreach ($normalizedDatabases as $database) {
+                $this->connection->exec("GRANT {$privileges} ON `{$database}`.* TO {$userHost}");
+            }
         }
+    }
+
+    /**
+     * Get the appropriate privileges string for the given scope
+     */
+    private function getPrivilegesForScope(RequestScope $scope): string
+    {
+        return match ($scope) {
+            RequestScope::READ_ONLY => 'SELECT',
+            RequestScope::READ_WRITE, RequestScope::DML => 'SELECT, INSERT, UPDATE, DELETE',
+            RequestScope::DDL => 'SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX',
+            RequestScope::ALL => 'ALL PRIVILEGES',
+        };
     }
 
     public function terminateUser(string $username, string $database): bool
@@ -101,7 +119,10 @@ class MySQLDriver extends AbstractDatabaseDriver
         $this->logOperation('terminateUser', ['username' => $username, 'database' => $database]);
 
         try {
-            $this->connection->beginTransaction();
+            // Ensure we have a fresh connection
+            if (!isset($this->connection) || $this->connection === null) {
+                $this->connect($this->config['db']);
+            }
 
             // Kill active connections
             $sql = "SELECT CONCAT('KILL ', id, ';') AS kill_command 
@@ -130,12 +151,10 @@ class MySQLDriver extends AbstractDatabaseDriver
             // Flush privileges
             $this->connection->exec('FLUSH PRIVILEGES');
 
-            $this->connection->commit();
             $this->logOperation('terminateUser.success', ['username' => $username]);
             return true;
 
         } catch (Exception $e) {
-            $this->connection->rollBack();
             $this->handleError('terminateUser', $e, ['username' => $username]);
             return false;
         }

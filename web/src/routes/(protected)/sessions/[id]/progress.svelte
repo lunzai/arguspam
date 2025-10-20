@@ -105,11 +105,19 @@
 					/>
 				{/if}
 
+                <Progress.Row
+					icon={Bot}
+					title={model.end_datetime ? 'Ended' : 'To End'}
+					description={model.end_datetime ? relativeDateTime(model.end_datetime, false) : '-'}
+					color={model.start_datetime ? 'blue' : 'gray'}
+					disabled={isExpiredOrCancelled}
+				/>
+
 				<Progress.Row
 					icon={Bot}
 					title={model.ai_reviewed_at ? 'AI Audited' : 'AI Audit'}
-					description={isExpiredOrCancelled ? '-' : relativeDateTime(model.created_at, false)}
-					color={isExpiredOrCancelled ? 'gray' : 'green'}
+					description={isExpiredOrCancelled ? '-' : relativeDateTime(model.ai_reviewed_at, false)}
+					color={model.ai_reviewed_at ? 'green' : 'gray'}
 					disabled={isExpiredOrCancelled}
 				/>
 			</Progress.Root>

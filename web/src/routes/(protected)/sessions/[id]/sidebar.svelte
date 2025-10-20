@@ -13,6 +13,11 @@
 	import type { Asset } from '$models/asset';
 	import type { Request } from '$models/request';
 	import { slide } from 'svelte/transition';
+    import * as AlertDialog from '$ui/alert-dialog';
+    import { enhance } from '$app/forms';
+    import { toast } from 'svelte-sonner';
+    import Loader from '$components/loader.svelte';
+    import { invalidate } from '$app/navigation';
 
 	interface Props {
 		model: Session;
@@ -21,14 +26,15 @@
 		asset: Asset;
 		request: Request;
 		approver: User;
+        user: User;
 	}
 
-	let { model, permissions, requester, asset, request, approver }: Props = $props();
+	let { model, permissions, requester, asset, request, approver, user }: Props = $props();
 
 	const canStart = $derived(permissions.canStart && model.status == 'scheduled');
 	const canCancel = $derived(permissions.canCancel && model.status == 'scheduled');
 	const canEnd = $derived(permissions.canEnd && model.status == 'started');
-	const canTerminate = $derived(permissions.canTerminate && model.status == 'started');
+	const canTerminate = $derived(permissions.canTerminate && model.status == 'started' && user.id != model.requester_id);
 	const showActions = $derived(canStart || canCancel || canEnd || canTerminate);
 
 	// const canStart = true;
@@ -38,11 +44,168 @@
 	// const showActions = $derived(canStart || canCancel || canEnd || canTerminate);
 
 	let startDialogIsOpen = $state(false);
+    let startDialogIsLoading = $state(false);
 	let cancelDialogIsOpen = $state(false);
+	let cancelDialogIsLoading = $state(false);
 	let endDialogIsOpen = $state(false);
+	let endDialogIsLoading = $state(false);
 	let terminateDialogIsOpen = $state(false);
+	let terminateDialogIsLoading = $state(false);
 	let showMore = $state(false);
 </script>
+
+<AlertDialog.Root bind:open={cancelDialogIsOpen}>
+	<AlertDialog.Content>
+		<AlertDialog.Header>
+			<AlertDialog.Title>Are you sure?</AlertDialog.Title>
+		</AlertDialog.Header>
+        <AlertDialog.Description>
+            <p>This action cannot be undone. Cancelling this session will prevent access to the asset and no JIT credentials will be created.</p>
+            <p class="mt-3 mb-3">You'll need to submit a new request if you need access again.</p>
+          </AlertDialog.Description>
+		<AlertDialog.Footer>
+			<form
+				method="POST"
+				action="?/cancel"
+				use:enhance={({ cancel }) => {
+					cancelDialogIsLoading = true;
+					return async ({ result, update }) => {
+						if (result.type === 'success') {
+							toast.success('Session cancelled successfully');
+							invalidate('sessions:view');
+							cancel();
+						} else {
+							toast.error('Failed to cancel session');
+						}
+						cancelDialogIsLoading = false;
+						cancelDialogIsOpen = false;
+					};
+				}}
+			>
+				<AlertDialog.Cancel disabled={cancelDialogIsLoading} type="reset">Back</AlertDialog.Cancel>
+				<AlertDialog.Action disabled={cancelDialogIsLoading} type="submit"
+					>Confirm</AlertDialog.Action
+				>
+			</form>
+		</AlertDialog.Footer>
+		<Loader show={cancelDialogIsLoading} />
+	</AlertDialog.Content>
+</AlertDialog.Root>
+
+<AlertDialog.Root bind:open={terminateDialogIsOpen}>
+	<AlertDialog.Content>
+		<AlertDialog.Header>
+			<AlertDialog.Title>Terminate Session</AlertDialog.Title>
+		</AlertDialog.Header>
+        <AlertDialog.Description>
+            <p>This action will immediately revoke access to <strong>{asset.name}</strong> and terminate the active session.</p>
+            <p class="mt-3 mb-3">The requester's JIT credentials will be revoked and all session activities will be recorded for audit review.</p>
+          </AlertDialog.Description>
+		<AlertDialog.Footer>
+			<form
+				method="POST"
+				action="?/terminate"
+				use:enhance={({ cancel }) => {
+					terminateDialogIsLoading = true;
+					return async ({ result, update }) => {
+						if (result.type === 'success') {
+							toast.success('Session terminated successfully');
+							invalidate('sessions:view');
+							cancel();
+						} else {
+							toast.error('Failed to terminate session');
+						}
+						terminateDialogIsLoading = false;
+						terminateDialogIsOpen = false;
+					};
+				}}
+			>
+				<AlertDialog.Cancel disabled={terminateDialogIsLoading} type="reset">Back</AlertDialog.Cancel>
+				<AlertDialog.Action disabled={terminateDialogIsLoading} type="submit"
+					>Terminate Session</AlertDialog.Action
+				>
+			</form>
+		</AlertDialog.Footer>
+		<Loader show={terminateDialogIsLoading} />
+	</AlertDialog.Content>
+</AlertDialog.Root>
+
+<AlertDialog.Root bind:open={endDialogIsOpen}>
+	<AlertDialog.Content>
+		<AlertDialog.Header>
+			<AlertDialog.Title>End Session</AlertDialog.Title>
+		</AlertDialog.Header>
+        <AlertDialog.Description>
+            <p>This action will end your active session for <strong>{asset.name}</strong> and revoke your JIT credentials.</p>
+            <p class="mt-3 mb-3">Your session activities will be automatically reviewed and you'll be notified of the results once the AI analysis is complete.</p>
+          </AlertDialog.Description>
+		<AlertDialog.Footer>
+			<form
+				method="POST"
+				action="?/end"
+				use:enhance={({ cancel }) => {
+					endDialogIsLoading = true;
+					return async ({ result, update }) => {
+						if (result.type === 'success') {
+							toast.success('Session ended successfully');
+							invalidate('sessions:view');
+							cancel();
+						} else {
+							toast.error('Failed to end session');
+						}
+						endDialogIsLoading = false;
+						endDialogIsOpen = false;
+					};
+				}}
+			>
+				<AlertDialog.Cancel disabled={endDialogIsLoading} type="reset">Back</AlertDialog.Cancel>
+				<AlertDialog.Action disabled={endDialogIsLoading} type="submit"
+					>End Session</AlertDialog.Action
+				>
+			</form>
+		</AlertDialog.Footer>
+		<Loader show={endDialogIsLoading} />
+	</AlertDialog.Content>
+</AlertDialog.Root>
+
+<AlertDialog.Root bind:open={startDialogIsOpen}>
+	<AlertDialog.Content>
+		<AlertDialog.Header>
+			<AlertDialog.Title>Start Session</AlertDialog.Title>
+		</AlertDialog.Header>
+        <AlertDialog.Description>
+            <p>This action will start your session for <strong>{asset.name}</strong>. JIT credentials will be automatically created for you.</p>
+            <p class="mt-3">During your session, follow all security policies, only access data necessary for your stated purpose, and complete your work within the approved timeframe.</p>
+            <p class="mt-3 mb-3">🔴 <strong>IMPORTANT:</strong> End your session as soon as you're done. All activities are recorded and audited for compliance.</p>
+          </AlertDialog.Description>
+		<AlertDialog.Footer>
+			<form
+				method="POST"
+				action="?/start"
+				use:enhance={({ cancel }) => {
+					startDialogIsLoading = true;
+					return async ({ result, update }) => {
+						if (result.type === 'success') {
+							toast.success('Session started successfully');
+							invalidate('sessions:view');
+							cancel();
+						} else {
+							toast.error('Failed to start session');
+						}
+						startDialogIsLoading = false;
+						startDialogIsOpen = false;
+					};
+				}}
+			>
+				<AlertDialog.Cancel disabled={startDialogIsLoading} type="reset">Back</AlertDialog.Cancel>
+				<AlertDialog.Action disabled={startDialogIsLoading} type="submit"
+					>Start Session</AlertDialog.Action
+				>
+			</form>
+		</AlertDialog.Footer>
+		<Loader show={startDialogIsLoading} />
+	</AlertDialog.Content>
+</AlertDialog.Root>
 
 <Card.Root class="w-full">
 	<!-- <Card.Header>

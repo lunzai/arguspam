@@ -22,9 +22,9 @@ Your session for **{{ $session->asset->name }}** has been created and is ready t
 - JIT credentials will be automatically created for you
 
 ### Step 2: During Your Session
-✅ **Follow all security policies and procedures**
-✅ **Only access data necessary for your stated purpose**
-✅ **Complete your work within the approved timeframe**
+- ✅ Follow all security policies and procedures
+- ✅ Only access data necessary for your stated purpose
+- ✅ Complete your work within the approved timeframe
 
 ### Step 3: End Your Session
 🔴 **IMPORTANT: End your session as soon as you're done**

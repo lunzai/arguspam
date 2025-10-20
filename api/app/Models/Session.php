@@ -301,9 +301,9 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         return $this->belongsTo(Asset::class);
     }
 
-    public function assetAccount(): HasOne
+    public function assetAccount(): BelongsTo
     {
-        return $this->hasOne(AssetAccount::class);
+        return $this->belongsTo(AssetAccount::class, 'asset_account_id');
     }
 
     public function requester(): BelongsTo

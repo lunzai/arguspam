@@ -2,6 +2,7 @@
 
 namespace App\Services\Database\Drivers;
 
+use App\Enums\RequestScope;
 use App\Services\Database\Contracts\DatabaseDriverInterface;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -12,7 +13,31 @@ abstract class AbstractDatabaseDriver implements DatabaseDriverInterface
 {
     protected PDO $connection;
     protected array $config;
-    protected array $supportedScopes = ['read', 'write', 'admin'];
+    protected array $supportedScopes = [RequestScope::READ_ONLY, RequestScope::READ_WRITE, RequestScope::DDL, RequestScope::DML, RequestScope::ALL];
+
+    /**
+     * Normalize database parameter to array format
+     */
+    protected function normalizeDatabases(string|array|null $databases): array
+    {
+        if ($databases === null) {
+            return []; // Empty array means all databases
+        }
+        
+        if (is_string($databases)) {
+            return [$databases];
+        }
+        
+        return $databases;
+    }
+
+    /**
+     * Check if user should have access to all databases
+     */
+    protected function hasAllDatabaseAccess(string|array|null $databases): bool
+    {
+        return $databases === null || (is_array($databases) && empty($databases));
+    }
 
     public function __construct(array $config)
     {
@@ -51,7 +76,7 @@ abstract class AbstractDatabaseDriver implements DatabaseDriverInterface
         return Str::password($length, $letters, $numbers, $symbols, $spaces);
     }
 
-    public function validateScope(string $scope): bool
+    public function validateScope(RequestScope $scope): bool
     {
         return in_array($scope, $this->supportedScopes);
     }
@@ -60,6 +85,7 @@ abstract class AbstractDatabaseDriver implements DatabaseDriverInterface
     {
         try {
             $this->connect($adminCredentials);
+            // Keep the connection alive for subsequent operations
             return true;
         } catch (Exception $e) {
             Log::error('Failed to test admin connection', [

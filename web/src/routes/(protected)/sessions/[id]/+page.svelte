@@ -28,6 +28,7 @@
 	const approver = $derived(modelResource.data.relationships?.approver?.attributes as User);
 	const audits = $derived(modelResource.data.relationships?.audits?.data as SessionAuditCollection);
 	const flags = $derived(modelResource.data.relationships?.flags?.data as SessionFlagCollection);
+	const user = $derived(data.user as User);
 	const modelName = 'sessions';
 	const modelTitle = 'Session';
 </script>
@@ -42,7 +43,7 @@
 	<Separator />
 	<div class="mt-2 flex flex-col gap-6 lg:flex-row">
 		<aside class="flex w-full flex-col gap-6 lg:w-64">
-			<Sidebar {model} {asset} {requester} {permissions} {request} {approver} />
+			<Sidebar {model} {asset} {requester} {permissions} {request} {approver} {user} />
 			<Progress {model} />
 		</aside>
 		<Separator orientation="vertical" class="hidden lg:block" />

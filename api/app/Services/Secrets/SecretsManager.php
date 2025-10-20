@@ -3,6 +3,7 @@
 namespace App\Services\Secrets;
 
 use App\Enums\AssetAccountType;
+use App\Enums\RequestScope;
 use App\Models\Asset;
 use App\Models\AssetAccount;
 use App\Models\Session;
@@ -34,7 +35,6 @@ class SecretsManager
         try {
             return DB::transaction(function () use ($session) {
                 // Get admin credentials
-                throw new Exception('SecretManager::createAccount');
                 $adminCreds = $this->getAdminCredentials($session->asset);
 
                 // Get database driver
@@ -43,15 +43,15 @@ class SecretsManager
                 // Generate JIT credentials
                 $jitCreds = $driver->generateSecureCredentials();
 
-                // Determine database name from admin creds or use default
-                $database = $adminCreds['database'] ?? $session->asset->name;
+                // Determine database access - can be single, multiple, or all databases
+                $databases = $this->determineDatabaseAccess($session, $adminCreds);
 
                 // Create user in database
                 $success = $driver->createUser(
                     $jitCreds['username'],
                     $jitCreds['password'],
-                    $database,
-                    $session->request->scope->value,
+                    $databases,
+                    $session->request->scope,
                     $session->scheduled_end_datetime
                 );
 
@@ -120,10 +120,9 @@ class SecretsManager
                 return $results;
             }
 
-            throw new Exception('SecretManager::terminateAccount');
             // Get admin credentials
-            // $adminCreds = $this->getAdminCredentials($session->asset);
-            $driver = $this->getDatabaseDriver($session->asset);
+            $adminCreds = $this->getAdminCredentials($session->asset);
+            $driver = $this->getDatabaseDriver($session->asset, $adminCreds);
 
             // Retrieve query logs before termination
             try {
@@ -186,6 +185,48 @@ class SecretsManager
     }
 
     /**
+     * Determine database access for JIT account creation
+     * 
+     * @param Session $session The session requesting access
+     * @param array $adminCreds Admin credentials
+     * @return string|array|null Database name(s) or null for all databases
+     */
+    private function determineDatabaseAccess(Session $session, array $adminCreds): string|array|null
+    {
+        // Check if admin credentials specify databases
+        if (isset($adminCreds['databases'])) {
+            return $adminCreds['databases'];
+        }
+
+        // Check if admin credentials specify a single database
+        if (isset($adminCreds['database'])) {
+            return $adminCreds['database'];
+        }
+
+        // Check if session has specific database requirements
+        if (isset($session->request->databases)) {
+            return $session->request->databases;
+        }
+
+        // Check if session has a single database requirement
+        if (isset($session->request->database)) {
+            return $session->request->database;
+        }
+
+        // Check if asset has specific database configuration
+        if (isset($session->asset->databases)) {
+            return $session->asset->databases;
+        }
+
+        if (isset($session->asset->database)) {
+            return $session->asset->database;
+        }
+
+        // Default: grant access to all databases
+        return null;
+    }
+
+    /**
      * Get decrypted admin credentials for an asset
      */
     public function getAdminCredentials(Asset $asset): array
@@ -224,15 +265,18 @@ class SecretsManager
      */
     public function getDatabaseDriver(Asset $asset, ?array $credentials = null): DatabaseDriverInterface
     {
-        $credentials = [
+        $adminCreds = $credentials ?? $this->getAdminCredentials($asset);
+        $fullCredentials = [
             'host' => $asset->host,
             'port' => $asset->port,
-            'dbms' => $asset->dbms,
-            ...($credentials ?? $this->getAdminCredentials($asset)),
+            'database' => $adminCreds['database'] ?? 'arguspam',
+            'username' => $adminCreds['username'],
+            'password' => $adminCreds['password'],
         ];
-        $driver = DatabaseDriverFactory::create($asset, $credentials, $this->config);
-        // Test connection
-        if (!$driver->testAdminConnection($credentials)) {
+        
+        $driver = DatabaseDriverFactory::create($asset, $fullCredentials, $this->config);
+        // Test connection (this will establish the connection)
+        if (!$driver->testAdminConnection($fullCredentials)) {
             throw new Exception('Failed to connect to database with admin credentials');
         }
 
@@ -250,7 +294,7 @@ class SecretsManager
 
         return $driver->retrieveUserQueryLogs(
             $account->username,
-            $session->start_datetime,
+            $session->start_datetime ?? $session->created_at,
             $session->end_datetime ?? now()
         );
     }
@@ -287,7 +331,7 @@ class SecretsManager
     /**
      * Validate if a scope is supported for the asset's DBMS
      */
-    public function validateScope(Asset $asset, string $scope): bool
+    public function validateScope(Asset $asset, RequestScope $scope): bool
     {
         try {
             $driver = $this->getDatabaseDriver($asset);
@@ -295,7 +339,7 @@ class SecretsManager
         } catch (Exception $e) {
             Log::error('Failed to validate scope', [
                 'asset_id' => $asset->id,
-                'scope' => $scope,
+                'scope' => $scope->value,
                 'error' => $e->getMessage(),
             ]);
             return false;
@@ -317,9 +361,9 @@ class SecretsManager
 
         foreach ($expiredAccounts as $account) {
             try {
-                $driver = $this->getDatabaseDriver($account->asset);
-                throw new Exception('SecretManager::cleanupExpiredAccounts');
-                $database = $account->asset->database;
+                $adminCreds = $this->getAdminCredentials($account->asset);
+                $driver = $this->getDatabaseDriver($account->asset, $adminCreds);
+                $database = $adminCreds['database'] ?? $account->asset->name;
                 $driver->terminateUser($account->username, $database);
 
                 $account->update(['is_active' => false]);

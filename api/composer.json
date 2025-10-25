@@ -50,6 +50,7 @@
         }
     },
     "scripts": {
+        "locust": "locust -H https://api.argus.pam",
         "test-safe": "php verify-test-safety.php && php artisan test",
         "test-stop": "php -d memory_limit=1G artisan test --testsuite=Unit --stop-on-failure",
         "test-profile": "php -d memory_limit=1G artisan test --profile",

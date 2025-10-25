@@ -12,8 +12,17 @@ Your session for **{{ $session->asset->name }}** has been reviewed and some mino
 - **Status:** {{ ucwords($session->status->value) }}
 
 ## AI Review Results
-@if($session->ai_risk_rating)
-- **AI Risk Rating:** {{ ucwords($session->ai_risk_rating->value) }}
+@if($session->session_activity_risk)
+- **Session Activity Risk:** {{ ucwords($session->session_activity_risk->value) }}
+@endif
+@if($session->deviation_risk)
+- **Deviation Risk:** {{ ucwords($session->deviation_risk->value) }}
+@endif
+@if($session->overall_risk)
+- **Overall Risk:** {{ ucwords($session->overall_risk->value) }}
+@endif
+@if($session->human_audit_confidence)
+- **Human Audit Confidence:** {{ $session->human_audit_confidence }}/100
 @endif
 @if($session->ai_note)
 - **AI Note:** {!! nl2br($session->ai_note) !!}
@@ -27,9 +36,10 @@ Your session for **{{ $session->asset->name }}** has been reviewed and some mino
 @endif
 
 ## What This Means
-- AI has detected minor anomalies or medium-risk activities
+- AI has detected minor anomalies, medium-risk activities, or activities that deviate from your stated purpose
 - The approver has been notified and may optionally review your session
 - While not critical, these flags indicate areas for improvement
+- Medium human audit confidence suggests the AI recommends optional human review
 
 ## Recommendations
 - Review the flagged activities to understand what triggered the alert

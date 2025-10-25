@@ -5,7 +5,7 @@ namespace App\Http\Requests\Asset;
 use App\Enums\Dbms;
 use App\Models\Asset;
 use App\Models\AssetAccount;
-use App\Services\Secrets\SecretsManager;
+use App\Services\Jit\Secrets\SecretsManager;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;

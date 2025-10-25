@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Session;
-use App\Services\Secrets\SecretsManager;
+use App\Services\Jit\Secrets\SecretsManager;
 use Illuminate\Console\Command;
 
 class TestDatabaseAccess extends Command
@@ -18,19 +18,19 @@ class TestDatabaseAccess extends Command
 
         try {
             $session = Session::with(['asset', 'request'])->findOrFail($sessionId);
-            
+
             $this->info("Testing database access for Session ID: {$sessionId}");
             $this->info("Asset: {$session->asset->name} ({$session->asset->host}:{$session->asset->port})");
             $this->info("DBMS: {$session->asset->dbms->value}");
             $this->info("Scope: {$session->request->scope->value}");
-            
+
             // Test different database access scenarios
             $this->testDatabaseAccessScenarios($secretsManager, $session);
-            
+
             return self::SUCCESS;
-            
+
         } catch (\Exception $e) {
-            $this->error('❌ Failed to test database access: ' . $e->getMessage());
+            $this->error('❌ Failed to test database access: '.$e->getMessage());
             return self::FAILURE;
         }
     }

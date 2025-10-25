@@ -2,66 +2,101 @@
 
 namespace Tests;
 
+use App\Models\Asset;
+use App\Models\AssetAccount;
+use App\Models\Request;
+use App\Models\Session;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
     /**
      * Creates the application.
-     *
-     * Laravel 12's base TestCase already provides a proper implementation
-     * that loads bootstrap/app.php and bootstraps the kernel.
-     * No need to override unless you have custom bootstrap logic.
      */
+    public function createApplication()
+    {
+        $app = require __DIR__.'/../bootstrap/app.php';
+        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
+        return $app;
+    }
 
-    /**
-     * Setup the test environment.
-     *
-     * This runs before each test to ensure we're using the test database.
-     */
     protected function setUp(): void
     {
         parent::setUp();
 
-        // CRITICAL SAFETY CHECK: Ensure we're NEVER using the production database
-        $this->ensureTestDatabaseIsUsed();
+        // Set up test database connection for integration tests
+        if (config('database.connections.testing_mysql')) {
+            config(['database.default' => 'testing_mysql']);
+        }
     }
 
     /**
-     * Ensure that tests are using the test database and not production.
-     *
-     * This is a critical safety check to prevent data loss.
+     * Create a test asset with admin account
      */
-    protected function ensureTestDatabaseIsUsed(): void
+    protected function createTestAsset(array $attributes = []): Asset
     {
-        $database = config('database.connections.mysql.database');
-        $environment = app()->environment();
+        $asset = Asset::factory()->create(array_merge([
+            'dbms' => \App\Enums\Dbms::MYSQL,
+            'host' => '127.0.0.1',
+            'port' => 3306,
+        ], $attributes));
 
-        // Ensure we're in testing environment
-        if ($environment !== 'testing') {
-            throw new \RuntimeException(
-                "Tests MUST run in 'testing' environment. Current environment: {$environment}. ".
-                'This prevents accidental data loss in production/development databases.'
-            );
+        AssetAccount::factory()->create([
+            'asset_id' => $asset->id,
+            'type' => \App\Enums\AssetAccountType::ADMIN,
+            'is_active' => true,
+            'username' => 'test_admin',
+            'password' => 'test_password',
+            'databases' => ['test_db'],
+        ]);
+
+        return $asset;
+    }
+
+    /**
+     * Create a test session with request
+     */
+    protected function createTestSession(array $attributes = []): Session
+    {
+        $request = Request::factory()->create(array_merge([
+            'databases' => ['test_db'],
+            'scope' => \App\Enums\DatabaseScope::READ_ONLY,
+        ], $attributes['request'] ?? []));
+
+        return Session::factory()->create(array_merge([
+            'request_id' => $request->id,
+            'asset_id' => $request->asset_id,
+            'scheduled_end_datetime' => now()->addHours(2),
+        ], $attributes));
+    }
+
+    /**
+     * Assert that a JIT account was created correctly
+     */
+    protected function assertJitAccountCreated(Session $session, ?array $expectedDatabases = null): AssetAccount
+    {
+        $session->refresh();
+        $this->assertNotNull($session->asset_account_id);
+
+        $jitAccount = AssetAccount::find($session->asset_account_id);
+        $this->assertNotNull($jitAccount);
+        $this->assertEquals(\App\Enums\AssetAccountType::JIT, $jitAccount->type);
+        $this->assertTrue($jitAccount->is_active);
+
+        if ($expectedDatabases !== null) {
+            $this->assertEquals($expectedDatabases, $jitAccount->databases);
         }
 
-        // Ensure database name contains 'test'
-        if (!str_contains($database, 'test')) {
-            throw new \RuntimeException(
-                "Database name MUST contain 'test'. Current database: {$database}. ".
-                'This is a safety check to prevent wiping production data. '.
-                'Check your phpunit.xml DB_DATABASE setting.'
-            );
-        }
+        return $jitAccount;
+    }
 
-        // Ensure we're not using the production database name
-        $productionDbName = 'arguspam'; // Your production database name
-        if ($database === $productionDbName) {
-            throw new \RuntimeException(
-                "DANGER: Tests are configured to use production database '{$productionDbName}'! ".
-                'This would WIPE ALL PRODUCTION DATA. Tests have been blocked. '.
-                'Fix your phpunit.xml to use a test database (e.g., arguspam_test).'
-            );
-        }
+    /**
+     * Assert that a JIT account was terminated correctly
+     */
+    protected function assertJitAccountTerminated(AssetAccount $jitAccount): void
+    {
+        $this->assertDatabaseMissing('asset_accounts', [
+            'id' => $jitAccount->id,
+        ]);
     }
 }

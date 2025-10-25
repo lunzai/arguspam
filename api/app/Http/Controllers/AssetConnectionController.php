@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
-use App\Services\Secrets\SecretsManager;
+use App\Services\Jit\Secrets\SecretsManager;
 use Illuminate\Http\Response;
 
 class AssetConnectionController extends Controller

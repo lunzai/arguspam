@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Requests\Request;
 
-use App\Enums\RequestScope;
+use App\Enums\DatabaseScope;
 use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
 use App\Http\Requests\Request\UpdateRequestRequest;
@@ -213,7 +213,7 @@ class UpdateRequestRequestTest extends TestCase
     {
         // Arrange
         $data = [
-            'scope' => RequestScope::ALL->value,
+            'scope' => DatabaseScope::ALL->value,
         ];
 
         $request = new UpdateRequestRequest;
@@ -461,7 +461,7 @@ class UpdateRequestRequestTest extends TestCase
         // Arrange
         $data = [
             'reason' => 'Updated access request',
-            'scope' => RequestScope::READ_WRITE->value,
+            'scope' => DatabaseScope::READ_WRITE->value,
             'status' => RequestStatus::PENDING->value,
             'duration' => 240,
             'ai_note' => 'AI review completed',

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\Secrets\SecretsManager;
+use App\Services\Jit\Secrets\SecretsManager;
 use Illuminate\Console\Command;
 
 class CleanupExpiredJitAccounts extends Command

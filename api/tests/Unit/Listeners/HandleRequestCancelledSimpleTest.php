@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Listeners;
 
-use App\Events\RequestCancelled;
 use App\Listeners\HandleRequestCancelled;
 use Tests\TestCase;
 
@@ -13,7 +12,7 @@ class HandleRequestCancelledSimpleTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->listener = new HandleRequestCancelled();
+        $this->listener = new HandleRequestCancelled;
     }
 
     public function test_listener_implements_should_queue(): void

@@ -11,9 +11,29 @@
                     "description": "Detailed analysis of session activities, comparing actual queries against stated purpose and intended queries. Highlights any policy violations, data misuse, or anomalies detected.",
                     "minLength": 1
                 },
-                "ai_risk_rating": {
+                "session_activity_risk": {
                     "type": "string",
-                    "description": "AI risk assessment rating based on session activity review.",
+                    "description": "Risk rating based on the actual queries executed during the session, focusing on policy violations and security concerns.",
+                    "enum": [
+                        "low",
+                        "medium",
+                        "high",
+                        "critical"
+                    ]
+                },
+                "deviation_risk": {
+                    "type": "string",
+                    "description": "Risk rating based on how well the executed queries align with the original request's stated purpose and intended queries.",
+                    "enum": [
+                        "low",
+                        "medium",
+                        "high",
+                        "critical"
+                    ]
+                },
+                "overall_risk": {
+                    "type": "string",
+                    "description": "Overall risk rating combining session activity risk and deviation risk.",
                     "enum": [
                         "low",
                         "medium",
@@ -34,12 +54,26 @@
                             "SYSTEM INTEGRITY RISK"
                         ]
                     }
+                },
+                "human_audit_confidence": {
+                    "type": "integer",
+                    "description": "Human audit confidence score (0-100) indicating how much human review is needed. Higher scores = more human audit needed. Scores ≥ 70 trigger human audit.",
+                    "minimum": 0,
+                    "maximum": 100
+                },
+                "human_audit_required": {
+                    "type": "boolean",
+                    "description": "Whether this session requires human audit based on confidence score and risk factors."
                 }
             },
             "required": [
                 "ai_note",
-                "ai_risk_rating",
-                "flags"
+                "session_activity_risk",
+                "deviation_risk",
+                "overall_risk",
+                "flags",
+                "human_audit_confidence",
+                "human_audit_required"
             ],
             "additionalProperties": false
         }

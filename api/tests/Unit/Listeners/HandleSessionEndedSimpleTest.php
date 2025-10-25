@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Listeners;
 
-use App\Events\SessionEnded;
 use App\Listeners\HandleSessionEnded;
 use Tests\TestCase;
 
@@ -13,7 +12,7 @@ class HandleSessionEndedSimpleTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->listener = new HandleSessionEnded();
+        $this->listener = new HandleSessionEnded;
     }
 
     public function test_listener_implements_should_queue(): void

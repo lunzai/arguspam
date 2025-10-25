@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Models;
 
-use App\Enums\RequestScope;
+use App\Enums\DatabaseScope;
 use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
 use App\Models\Asset;
@@ -44,7 +44,7 @@ class RequestTest extends TestCase
             'duration' => 60,
             'reason' => 'Testing database access',
             'intended_query' => 'SELECT * FROM test_table',
-            'scope' => RequestScope::READ_ONLY,
+            'scope' => DatabaseScope::READ_ONLY,
             'is_access_sensitive_data' => false,
             'status' => RequestStatus::PENDING,
         ]);
@@ -56,6 +56,7 @@ class RequestTest extends TestCase
             'org_id',
             'asset_id',
             'asset_account_id',
+            'databases',
             'requester_id',
             'start_datetime',
             'end_datetime',
@@ -100,7 +101,7 @@ class RequestTest extends TestCase
         $this->assertArrayHasKey('ai_risk_rating', $casts);
         $this->assertEquals(RiskRating::class, $casts['ai_risk_rating']);
         $this->assertArrayHasKey('scope', $casts);
-        $this->assertEquals(RequestScope::class, $casts['scope']);
+        $this->assertEquals(DatabaseScope::class, $casts['scope']);
     }
 
     public function test_request_attribute_labels_are_defined(): void
@@ -257,7 +258,7 @@ class RequestTest extends TestCase
             'duration' => 120,
             'reason' => 'Complex database analysis',
             'intended_query' => 'SELECT COUNT(*) FROM sensitive_table WHERE date > ?',
-            'scope' => RequestScope::READ_WRITE,
+            'scope' => DatabaseScope::READ_WRITE,
             'is_access_sensitive_data' => true,
             'sensitive_data_note' => 'Contains PII data',
             'approver_note' => 'Approved with conditions',
@@ -277,18 +278,18 @@ class RequestTest extends TestCase
             'requester_id' => $this->requester->id,
             'duration' => 120,
             'reason' => 'Complex database analysis',
-            'scope' => RequestScope::READ_WRITE->value,
+            'scope' => DatabaseScope::READ_WRITE->value,
             'is_access_sensitive_data' => true,
             'status' => RequestStatus::APPROVED->value,
             'approved_by' => $approver->id,
         ]);
 
         // Test that enums and booleans are cast correctly
-        $this->assertEquals(RequestScope::READ_WRITE, $request->scope);
+        $this->assertEquals(DatabaseScope::READ_WRITE, $request->scope);
         $this->assertEquals(RequestStatus::APPROVED, $request->status);
         $this->assertEquals(RiskRating::MEDIUM, $request->approver_risk_rating);
         $this->assertTrue($request->is_access_sensitive_data);
-        $this->assertInstanceOf(RequestScope::class, $request->scope);
+        $this->assertInstanceOf(DatabaseScope::class, $request->scope);
         $this->assertInstanceOf(RequestStatus::class, $request->status);
         $this->assertInstanceOf(RiskRating::class, $request->approver_risk_rating);
     }
@@ -329,23 +330,23 @@ class RequestTest extends TestCase
     {
         // Test different scope values without creating multiple database records
         $scopes = [
-            RequestScope::READ_ONLY,
-            RequestScope::READ_WRITE,
-            RequestScope::DDL,
-            RequestScope::DML,
-            RequestScope::ALL,
+            DatabaseScope::READ_ONLY,
+            DatabaseScope::READ_WRITE,
+            DatabaseScope::DDL,
+            DatabaseScope::DML,
+            DatabaseScope::ALL,
         ];
 
         foreach ($scopes as $scope) {
             // Update existing request instead of creating new ones
             $this->request->scope = $scope;
             $this->assertEquals($scope, $this->request->scope);
-            $this->assertInstanceOf(RequestScope::class, $this->request->scope);
+            $this->assertInstanceOf(DatabaseScope::class, $this->request->scope);
         }
 
         // Verify database persistence with one write
-        $this->request->update(['scope' => RequestScope::READ_WRITE]);
-        $this->assertEquals(RequestScope::READ_WRITE, $this->request->fresh()->scope);
+        $this->request->update(['scope' => DatabaseScope::READ_WRITE]);
+        $this->assertEquals(DatabaseScope::READ_WRITE, $this->request->fresh()->scope);
     }
 
     public function test_request_risk_rating_enum_functionality(): void

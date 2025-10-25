@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Services;
 
-use App\Services\Database\Drivers\PostgreSQLDriver;
+use App\Services\Jit\Database\Drivers\PostgreSQLDriver;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -146,7 +146,7 @@ class PostgreSQLDriverTest extends TestCase
             'test_user',
             'test_pass',
             'test_db',
-            'read',
+            \App\Enums\DatabaseScope::READ_ONLY,
             Carbon::now()->addHour()
         );
 
@@ -185,7 +185,7 @@ class PostgreSQLDriverTest extends TestCase
             'write_user',
             'write_pass',
             'test_db',
-            'write',
+            \App\Enums\DatabaseScope::READ_WRITE,
             Carbon::now()->addHour()
         );
 
@@ -224,7 +224,7 @@ class PostgreSQLDriverTest extends TestCase
             'admin_user',
             'admin_pass',
             'test_db',
-            'admin',
+            \App\Enums\DatabaseScope::ALL,
             Carbon::now()->addHour()
         );
 
@@ -261,7 +261,7 @@ class PostgreSQLDriverTest extends TestCase
             'test_user',
             'test_pass',
             'test_db',
-            'read',
+            \App\Enums\DatabaseScope::READ_ONLY,
             Carbon::now()->addHour()
         );
     }
@@ -541,6 +541,6 @@ class PostgreSQLDriverTest extends TestCase
         $driver = $this->createDriver();
 
         // Assert
-        $this->assertInstanceOf(\App\Services\Database\Drivers\AbstractDatabaseDriver::class, $driver);
+        $this->assertInstanceOf(\App\Services\Jit\Database\Drivers\AbstractDatabaseDriver::class, $driver);
     }
 }

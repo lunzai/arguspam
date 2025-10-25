@@ -3,7 +3,7 @@
 namespace Tests\Unit\Jobs;
 
 use App\Jobs\ProcessExpiredSessions;
-use App\Services\Secrets\SecretsManager;
+use App\Services\Jit\Secrets\SecretsManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\TestCase;

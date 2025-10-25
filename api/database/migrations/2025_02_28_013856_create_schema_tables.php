@@ -2,8 +2,8 @@
 
 use App\Enums\AccessRestrictionType;
 use App\Enums\AssetAccessRole;
+use App\Enums\DatabaseScope;
 use App\Enums\Dbms;
-use App\Enums\RequestScope;
 use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
 use App\Enums\SessionStatus;
@@ -193,8 +193,8 @@ return new class extends Migration
             $table->text('reason');
             $table->text('intended_query')
                 ->nullable();
-            $table->enum('scope', array_column(RequestScope::cases(), 'value'))
-                ->default(RequestScope::READ_ONLY->value);
+            $table->enum('scope', array_column(DatabaseScope::cases(), 'value'))
+                ->default(DatabaseScope::READ_ONLY->value);
             $table->boolean('is_access_sensitive_data')
                 ->default(false);
             $table->text('sensitive_data_note')

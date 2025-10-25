@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Controllers;
 
+use App\Enums\SessionStatus;
 use App\Http\Controllers\SessionApproverController;
 use App\Http\Resources\Session\SessionResource;
+use App\Models\Asset;
+use App\Models\Org;
+use App\Models\Request as RequestModel;
 use App\Models\Session;
 use App\Models\User;
-use App\Models\Org;
-use App\Models\Asset;
-use App\Models\Request as RequestModel;
-use App\Enums\SessionStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -29,7 +29,7 @@ class SessionApproverControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->controller = new SessionApproverController();
+        $this->controller = new SessionApproverController;
         $this->org = Org::factory()->create();
         $this->user = User::factory()->create();
         $this->approver = User::factory()->create();

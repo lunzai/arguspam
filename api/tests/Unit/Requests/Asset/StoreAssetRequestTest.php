@@ -6,7 +6,7 @@ use App\Enums\Dbms;
 use App\Enums\Status;
 use App\Http\Requests\Asset\StoreAssetRequest;
 use App\Models\Org;
-use App\Services\Secrets\SecretsManager;
+use App\Services\Jit\Secrets\SecretsManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
 use Mockery;

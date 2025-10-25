@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services\Database\Drivers;
+namespace App\Services\Jit\Databases\Drivers;
 
-use App\Enums\RequestScope;
-use Carbon\Carbon;
+use App\Enums\DatabaseScope;
+use DateTime;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use PDO;
@@ -41,16 +41,16 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
         );
     }
 
-    public function createUser(string $username, string $password, string|array|null $databases, RequestScope $scope, Carbon $expiresAt): bool
+    public function getAllDatabases(): array
+    {
+        return $this->connection
+            ->query('SELECT datname FROM pg_database')
+            ->fetchAll(PDO::FETCH_COLUMN) ?? [];
+    }
+
+    public function createUser(string $username, string $password, string|array|null $databases, DatabaseScope $scope, DateTime $expiresAt): bool
     {
         $normalizedDatabases = $this->normalizeDatabases($databases);
-        $this->logOperation('createUser', [
-            'username' => $username, 
-            'databases' => $normalizedDatabases, 
-            'scope' => $scope,
-            'all_databases' => $this->hasAllDatabaseAccess($databases)
-        ]);
-
         try {
             $this->connection->beginTransaction();
 
@@ -60,14 +60,13 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
             $stmt->execute([
                 ':username' => $username,
                 ':password' => $password,
-                ':expires' => $expiresAt->toDateTimeString(),
+                ':expires' => $expiresAt->format('Y-m-d H:i:s'),
             ]);
 
             // Grant permissions based on scope and databases
             $this->grantPermissions($username, $databases, $scope);
 
             $this->connection->commit();
-            $this->logOperation('createUser.success', ['username' => $username]);
             return true;
 
         } catch (Exception $e) {
@@ -77,7 +76,7 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
         }
     }
 
-    private function grantPermissions(string $username, string|array|null $databases, RequestScope $scope): void
+    private function grantPermissions(string $username, string|array $databases, DatabaseScope $scope): void
     {
         $normalizedDatabases = $this->normalizeDatabases($databases);
         $hasAllAccess = $this->hasAllDatabaseAccess($databases);
@@ -96,31 +95,31 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
     /**
      * Grant access to all databases
      */
-    private function grantAllDatabaseAccess(string $username, RequestScope $scope): void
+    private function grantAllDatabaseAccess(string $username, DatabaseScope $scope): void
     {
         switch ($scope) {
-            case RequestScope::READ_ONLY:
+            case DatabaseScope::READ_ONLY:
                 $this->connection->exec("GRANT CONNECT ON ALL DATABASES TO {$username}");
                 $this->connection->exec("GRANT USAGE ON ALL SCHEMAS TO {$username}");
                 $this->connection->exec("GRANT SELECT ON ALL TABLES IN ALL SCHEMAS TO {$username}");
                 break;
 
-            case RequestScope::READ_WRITE:
-            case RequestScope::DML:
+            case DatabaseScope::READ_WRITE:
+            case DatabaseScope::DML:
                 $this->connection->exec("GRANT CONNECT ON ALL DATABASES TO {$username}");
                 $this->connection->exec("GRANT USAGE ON ALL SCHEMAS TO {$username}");
                 $this->connection->exec("GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN ALL SCHEMAS TO {$username}");
                 $this->connection->exec("GRANT USAGE, SELECT ON ALL SEQUENCES IN ALL SCHEMAS TO {$username}");
                 break;
 
-            case RequestScope::DDL:
+            case DatabaseScope::DDL:
                 $this->connection->exec("GRANT CONNECT ON ALL DATABASES TO {$username}");
                 $this->connection->exec("GRANT USAGE ON ALL SCHEMAS TO {$username}");
                 $this->connection->exec("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER ON ALL TABLES IN ALL SCHEMAS TO {$username}");
                 $this->connection->exec("GRANT USAGE, SELECT ON ALL SEQUENCES IN ALL SCHEMAS TO {$username}");
                 break;
 
-            case RequestScope::ALL:
+            case DatabaseScope::ALL:
                 $this->connection->exec("GRANT ALL PRIVILEGES ON ALL DATABASES TO {$username}");
                 $this->connection->exec("GRANT ALL PRIVILEGES ON ALL SCHEMAS TO {$username}");
                 $this->connection->exec("GRANT ALL PRIVILEGES ON ALL TABLES IN ALL SCHEMAS TO {$username}");
@@ -132,20 +131,20 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
     /**
      * Grant access to a specific database
      */
-    private function grantDatabaseAccess(string $username, string $database, RequestScope $scope): void
+    private function grantDatabaseAccess(string $username, string $database, DatabaseScope $scope): void
     {
         // Grant connection to database
         $this->connection->exec("GRANT CONNECT ON DATABASE {$database} TO {$username}");
 
         switch ($scope) {
-            case RequestScope::READ_ONLY:
+            case DatabaseScope::READ_ONLY:
                 $this->connection->exec("GRANT USAGE ON SCHEMA public TO {$username}");
                 $this->connection->exec("GRANT SELECT ON ALL TABLES IN SCHEMA public TO {$username}");
                 $this->connection->exec("ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO {$username}");
                 break;
 
-            case RequestScope::READ_WRITE:
-            case RequestScope::DML:
+            case DatabaseScope::READ_WRITE:
+            case DatabaseScope::DML:
                 $this->connection->exec("GRANT USAGE ON SCHEMA public TO {$username}");
                 $this->connection->exec("GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO {$username}");
                 $this->connection->exec("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {$username}");
@@ -153,7 +152,7 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
                 $this->connection->exec("ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO {$username}");
                 break;
 
-            case RequestScope::DDL:
+            case DatabaseScope::DDL:
                 $this->connection->exec("GRANT USAGE ON SCHEMA public TO {$username}");
                 $this->connection->exec("GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER ON ALL TABLES IN SCHEMA public TO {$username}");
                 $this->connection->exec("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {$username}");
@@ -161,7 +160,7 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
                 $this->connection->exec("ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT ON SEQUENCES TO {$username}");
                 break;
 
-            case RequestScope::ALL:
+            case DatabaseScope::ALL:
                 $this->connection->exec("GRANT ALL PRIVILEGES ON DATABASE {$database} TO {$username}");
                 $this->connection->exec("GRANT ALL PRIVILEGES ON SCHEMA public TO {$username}");
                 $this->connection->exec("GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {$username}");
@@ -172,8 +171,6 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
 
     public function terminateUser(string $username, string $database): bool
     {
-        $this->logOperation('terminateUser', ['username' => $username, 'database' => $database]);
-
         try {
             $this->connection->beginTransaction();
 
@@ -193,7 +190,6 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
             $this->connection->exec("DROP USER IF EXISTS {$username}");
 
             $this->connection->commit();
-            $this->logOperation('terminateUser.success', ['username' => $username]);
             return true;
 
         } catch (Exception $e) {
@@ -203,10 +199,8 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
         }
     }
 
-    public function retrieveUserQueryLogs(string $username, Carbon $fromTime, Carbon $toTime): array
+    public function retrieveUserQueryLogs(string $username, DateTime $fromTime, DateTime $toTime): array
     {
-        $this->logOperation('retrieveUserQueryLogs', ['username' => $username]);
-
         try {
             $sql = "SELECT 
                         query_start as timestamp,
@@ -224,8 +218,8 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([
                 ':username' => $username,
-                ':from_time' => $fromTime->toDateTimeString(),
-                ':to_time' => $toTime->toDateTimeString(),
+                ':from_time' => $fromTime->format('Y-m-d H:i:s'),
+                ':to_time' => $toTime->format('Y-m-d H:i:s'),
             ]);
 
             $logs = $stmt->fetchAll();
@@ -252,7 +246,7 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
                     $statements = $statStmt->fetchAll();
                     foreach ($statements as $statement) {
                         $logs[] = [
-                            'timestamp' => $fromTime->toDateTimeString(),
+                            'timestamp' => $fromTime->format('Y-m-d H:i:s'),
                             'query_text' => $statement['query'],
                             'execution_count' => $statement['calls'],
                             'avg_execution_time' => $statement['mean_exec_time'],
@@ -263,10 +257,7 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
                 // pg_stat_statements might not be available
                 Log::debug('pg_stat_statements not available', ['error' => $e->getMessage()]);
             }
-
-            $this->logOperation('retrieveUserQueryLogs.success', ['count' => count($logs)]);
             return $logs;
-
         } catch (Exception $e) {
             $this->handleError('retrieveUserQueryLogs', $e, ['username' => $username]);
             return [];

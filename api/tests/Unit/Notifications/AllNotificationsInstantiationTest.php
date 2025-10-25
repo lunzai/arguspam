@@ -2,11 +2,11 @@
 
 namespace Tests\Unit\Notifications;
 
-use App\Models\Session;
-use App\Models\Request as RequestModel;
-use App\Models\User;
-use App\Models\Org;
 use App\Models\Asset;
+use App\Models\Org;
+use App\Models\Request as RequestModel;
+use App\Models\Session;
+use App\Models\User;
 use App\Notifications\RequestApprovedNotifyApprover;
 use App\Notifications\RequestApprovedNotifyRequester;
 use App\Notifications\RequestCancelledNotifyApprover;

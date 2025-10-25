@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\RequestScope;
+use App\Enums\DatabaseScope;
 use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
 use App\Models\Asset;
@@ -39,7 +39,7 @@ class RequestFactory extends Factory
                     AND pr.end_date >= NOW()
                     AND pc.status = 'active';
                 ",
-                'scope' => RequestScope::READ_WRITE,
+                'scope' => DatabaseScope::READ_WRITE,
                 'is_access_sensitive_data' => false,
                 'sensitive_data_note' => null,
             ],
@@ -56,7 +56,7 @@ class RequestFactory extends Factory
                     GROUP BY u.username
                     ORDER BY failed_attempts DESC;
                 ",
-                'scope' => RequestScope::READ_ONLY,
+                'scope' => DatabaseScope::READ_ONLY,
                 'is_access_sensitive_data' => true,
                 'sensitive_data_note' => 'Includes usernames and timestamps linked to privileged accounts; potential exposure of admin account activity patterns.',
             ],
@@ -69,7 +69,7 @@ class RequestFactory extends Factory
                     REFERENCES customers(id) ON DELETE CASCADE,
                     ADD CONSTRAINT chk_currency CHECK (currency_code IN ('USD', 'EUR', 'MYR', 'SGD'));
                 ",
-                'scope' => RequestScope::DDL,
+                'scope' => DatabaseScope::DDL,
                 'is_access_sensitive_data' => true,
                 'sensitive_data_note' => 'Structural modification involves financial transaction tables containing customer-linked identifiers and monetary values.',
             ],
@@ -88,7 +88,7 @@ class RequestFactory extends Factory
                     HAVING total_spent > 0
                     LIMIT 5000;
                 ",
-                'scope' => RequestScope::READ_ONLY,
+                'scope' => DatabaseScope::READ_ONLY,
                 'is_access_sensitive_data' => true,
                 'sensitive_data_note' => 'Contains customer IDs, transaction summaries, and engagement timestamps; may reveal financial behavior and personal identifiers.',
             ],
@@ -101,7 +101,7 @@ class RequestFactory extends Factory
                     AND l.reconciled = 0
                     AND l.transaction_date BETWEEN '2025-09-01' AND '2025-09-30';
                 ",
-                'scope' => RequestScope::READ_WRITE,
+                'scope' => DatabaseScope::READ_WRITE,
                 'is_access_sensitive_data' => true,
                 'sensitive_data_note' => 'Involves financial account balances, transaction IDs, and amounts; potential exposure of sensitive monetary records.',
             ],
@@ -115,7 +115,7 @@ class RequestFactory extends Factory
                     ORDER BY table_rows DESC
                     LIMIT 10;
                 ",
-                'scope' => RequestScope::ALL,
+                'scope' => DatabaseScope::ALL,
                 'is_access_sensitive_data' => false,
                 'sensitive_data_note' => null,
             ],

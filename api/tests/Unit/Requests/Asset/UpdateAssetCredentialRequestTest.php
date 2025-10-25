@@ -6,7 +6,7 @@ use App\Enums\Dbms;
 use App\Http\Requests\Asset\UpdateAssetCredentialRequest;
 use App\Models\Asset;
 use App\Models\AssetAccount;
-use App\Services\Secrets\SecretsManager;
+use App\Services\Jit\Secrets\SecretsManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
 use Mockery;

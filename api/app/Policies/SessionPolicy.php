@@ -2,7 +2,6 @@
 
 namespace App\Policies;
 
-use App\Enums\SessionStatus;
 use App\Models\Session;
 use App\Models\User;
 

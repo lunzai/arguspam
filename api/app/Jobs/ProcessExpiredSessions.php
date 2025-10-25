@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Session;
-use App\Services\Secrets\SecretsManager;
+use App\Services\Jit\Secrets\SecretsManager;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -33,7 +33,7 @@ class ProcessExpiredSessions implements ShouldQueue
         foreach ($expiredSessions as $session) {
             try {
                 // Terminate JIT account
-                $terminationResults = $secretsManager->terminateAccount($session);
+                $secretsManager->terminateAccount($session);
 
                 // Update session
                 $session->update([
@@ -44,7 +44,6 @@ class ProcessExpiredSessions implements ShouldQueue
 
                 Log::info('Processed expired session', [
                     'session_id' => $session->id,
-                    'termination_results' => $terminationResults,
                 ]);
 
             } catch (\Exception $e) {

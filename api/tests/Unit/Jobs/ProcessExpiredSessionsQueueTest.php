@@ -205,6 +205,6 @@ class ProcessExpiredSessionsQueueTest extends TestCase
 
         $this->assertCount(1, $parameters);
         $this->assertEquals('secretsManager', $parameters[0]->getName());
-        $this->assertEquals('App\Services\Secrets\SecretsManager', $parameters[0]->getType()->getName());
+        $this->assertEquals('App\Services\Jit\Secrets\SecretsManager', $parameters[0]->getType()->getName());
     }
 }

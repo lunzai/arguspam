@@ -4,11 +4,11 @@ namespace Tests\Unit\Listeners;
 
 use App\Events\RequestApproved;
 use App\Listeners\HandleRequestApproved;
+use App\Models\Asset;
+use App\Models\Org;
+use App\Models\Request as RequestModel;
 use App\Models\Session;
 use App\Models\User;
-use App\Models\Org;
-use App\Models\Asset;
-use App\Models\Request as RequestModel;
 use App\Notifications\RequestApprovedNotifyApprover;
 use App\Notifications\RequestApprovedNotifyRequester;
 use Illuminate\Support\Facades\Notification;
@@ -16,7 +16,6 @@ use Tests\TestCase;
 
 class HandleRequestApprovedTest extends TestCase
 {
-
     private HandleRequestApproved $listener;
     private User $requester;
     private User $approver;
@@ -28,7 +27,7 @@ class HandleRequestApprovedTest extends TestCase
     {
         parent::setUp();
 
-        $this->listener = new HandleRequestApproved();
+        $this->listener = new HandleRequestApproved;
         $this->requester = \Mockery::mock(User::class);
         $this->approver = \Mockery::mock(User::class);
         $this->asset = \Mockery::mock(Asset::class);
@@ -128,7 +127,7 @@ class HandleRequestApprovedTest extends TestCase
     public function test_handle_creates_session_from_request(): void
     {
         $event = new RequestApproved($this->request);
-        
+
         // Mock the Session::createFromRequest static method
         $this->partialMock(Session::class, function ($mock) {
             $mock->shouldReceive('createFromRequest')
@@ -144,7 +143,7 @@ class HandleRequestApprovedTest extends TestCase
         Notification::fake();
 
         $event = new RequestApproved($this->request);
-        
+
         // Mock the Session::createFromRequest static method
         $this->partialMock(Session::class, function ($mock) {
             $mock->shouldReceive('createFromRequest')
@@ -165,7 +164,7 @@ class HandleRequestApprovedTest extends TestCase
         Notification::fake();
 
         $event = new RequestApproved($this->request);
-        
+
         // Mock the Session::createFromRequest static method
         $this->partialMock(Session::class, function ($mock) {
             $mock->shouldReceive('createFromRequest')
@@ -190,7 +189,7 @@ class HandleRequestApprovedTest extends TestCase
         Notification::fake();
 
         $event = new RequestApproved($this->request);
-        
+
         // Mock the Session::createFromRequest static method
         $this->partialMock(Session::class, function ($mock) {
             $mock->shouldReceive('createFromRequest')
@@ -209,7 +208,7 @@ class HandleRequestApprovedTest extends TestCase
             $this->requester,
             RequestApprovedNotifyApprover::class
         );
-        
+
         // Should send notification to other approvers
         Notification::assertSentTo(
             $this->approver,

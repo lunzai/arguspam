@@ -13,8 +13,20 @@ A session has been flagged with minor anomalies. Manual review is optional.
 - **Status:** {{ ucwords($session->status->value) }}
 
 ## AI Review Results
-@if($session->ai_risk_rating)
-- **AI Risk Rating:** {{ ucwords($session->ai_risk_rating->value) }}
+@if($session->session_activity_risk)
+- **Session Activity Risk:** {{ ucwords($session->session_activity_risk->value) }}
+@endif
+@if($session->deviation_risk)
+- **Deviation Risk:** {{ ucwords($session->deviation_risk->value) }}
+@endif
+@if($session->overall_risk)
+- **Overall Risk:** {{ ucwords($session->overall_risk->value) }}
+@endif
+@if($session->human_audit_confidence)
+- **Human Audit Confidence:** {{ $session->human_audit_confidence }}/100
+@endif
+@if($session->human_audit_required)
+- **Human Audit Required:** {{ $session->human_audit_required ? 'Yes' : 'No' }}
 @endif
 @if($session->ai_reviewed_at)
 - **Reviewed at:** {{ $session->ai_reviewed_at->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
@@ -37,7 +49,10 @@ A session has been flagged with minor anomalies. Manual review is optional.
 
 ## Review Recommendation
 This session has been flagged with:
-- Medium risk rating OR
+- Medium overall risk rating OR
+- Medium session activity risk OR
+- Medium deviation risk OR
+- Medium human audit confidence (30-69) OR
 - Minor policy anomalies OR
 - Activities that slightly deviate from stated purpose
 
@@ -45,6 +60,7 @@ While not critical, you may want to review this session to:
 - Ensure compliance with organizational policies
 - Provide guidance to the requester
 - Identify patterns that may need attention
+- Verify that deviations from stated purpose are acceptable
 
 ## Your Options
 ✅ **Review Now:** Click the button below to examine the session details and SQL queries

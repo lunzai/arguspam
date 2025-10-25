@@ -4,6 +4,8 @@ namespace App\Services\OpenAI;
 
 use App\Models\Request;
 use App\Models\Session;
+use App\Services\OpenAI\Responses\RequestEvaluation;
+use App\Services\OpenAI\Responses\SessionAudit;
 use Exception;
 use File;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +21,7 @@ class OpenAiService
         $this->config = config('pam.openai');
     }
 
-    public function reviewSession(Session $session): array
+    public function auditSession(Session $session): array
     {
         $systemPrompt = view('prompts.session-review.system', [
             'session' => $session,
@@ -27,7 +29,17 @@ class OpenAiService
         $userPrompt = view('prompts.session-review.user', [
             'session' => $session,
         ])->render();
-        return [];
+        $format = $this->getFormat('prompts/return-formats/session-review.json');
+        try {
+            $response = $this->getResponse($systemPrompt, $userPrompt, $format);
+            return $this->prepareResponse($response, SessionAudit::class);
+        } catch (Exception $e) {
+            Log::error('Session review failed', [
+                'session_id' => $session->id,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
     }
 
     public function evaluateAccessRequest(Request $request): array
@@ -44,7 +56,7 @@ class OpenAiService
         $format = $this->getFormat('prompts/return-formats/request-evaluation.json');
         try {
             $response = $this->getResponse($systemPrompt, $userPrompt, $format);
-            return $this->prepareResponse($response);
+            return $this->prepareResponse($response, RequestEvaluation::class);
         } catch (Exception $e) {
             Log::error('Access request evaluation failed', [
                 'request_id' => $request->id,
@@ -54,20 +66,17 @@ class OpenAiService
         }
     }
 
-    public function auditSession(Session $session): array
+    private function prepareResponse(CreateResponse $response, string $responseClassName): array
     {
-        // TODO: Implement session audit
-        return [];
-    }
-
-    private function prepareResponse(CreateResponse $response, bool $outputJson = true): array
-    {
+        $outputJson = json_decode($response->outputText, true);
+        $outputObject = $responseClassName::fromJson($response->outputText);
         return [
             'id' => $response->id,
             'created_at' => $response->createdAt,
             'error' => $response->error,
             'model' => $response->model,
-            'output' => $outputJson ? json_decode($response->outputText, true) : $response->outputText,
+            'output_json' => $outputJson,
+            'output_object' => $outputObject,
             'reasoning' => $response->reasoning,
             'store' => $response->store,
             'temperature' => $response->temperature,

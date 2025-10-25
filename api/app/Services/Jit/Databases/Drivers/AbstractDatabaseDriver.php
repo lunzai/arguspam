@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Services\Database\Drivers;
+namespace App\Services\Jit\Databases\Drivers;
 
-use App\Enums\RequestScope;
-use App\Services\Database\Contracts\DatabaseDriverInterface;
+use App\Enums\DatabaseScope;
+use App\Services\Jit\Databases\Contracts\DatabaseDriverInterface;
 use Exception;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -11,32 +11,41 @@ use PDO;
 
 abstract class AbstractDatabaseDriver implements DatabaseDriverInterface
 {
+    // Class constants for default configuration values
+    private const DEFAULT_USERNAME_PREFIX = 'argus';
+    private const DEFAULT_USERNAME_LENGTH = 3;
+    private const DEFAULT_RANDOM_LENGTH = 5;
+    private const DEFAULT_USERNAME_FORMAT = '{prefix}{number}_{random}';
+    private const DEFAULT_PASSWORD_LENGTH = 16;
+    private const DEFAULT_PASSWORD_LETTERS = true;
+    private const DEFAULT_PASSWORD_NUMBERS = true;
+    private const DEFAULT_PASSWORD_SYMBOLS = true;
+    private const DEFAULT_PASSWORD_SPACES = false;
+
     protected PDO $connection;
     protected array $config;
-    protected array $supportedScopes = [RequestScope::READ_ONLY, RequestScope::READ_WRITE, RequestScope::DDL, RequestScope::DML, RequestScope::ALL];
+    protected array $supportedScopes = [
+        DatabaseScope::READ_ONLY,
+        DatabaseScope::READ_WRITE,
+        DatabaseScope::DDL,
+        DatabaseScope::DML,
+        DatabaseScope::ALL,
+    ];
 
     /**
      * Normalize database parameter to array format
      */
-    protected function normalizeDatabases(string|array|null $databases): array
+    protected function normalizeDatabases(string|array $databases): array
     {
-        if ($databases === null) {
-            return []; // Empty array means all databases
-        }
-        
-        if (is_string($databases)) {
-            return [$databases];
-        }
-        
-        return $databases;
+        return is_array($databases) ? $databases : [$databases];
     }
 
     /**
      * Check if user should have access to all databases
      */
-    protected function hasAllDatabaseAccess(string|array|null $databases): bool
+    protected function hasAllDatabaseAccess(string|array $databases): bool
     {
-        return $databases === null || (is_array($databases) && empty($databases));
+        return empty($this->normalizeDatabases($databases));
     }
 
     public function __construct(array $config)
@@ -44,39 +53,29 @@ abstract class AbstractDatabaseDriver implements DatabaseDriverInterface
         $this->config = $config;
     }
 
-    public function generateSecureCredentials(): array
-    {
-        $username = $this->generateUsername();
-        $password = $this->generatePassword();
-        return [
-            'username' => $username,
-            'password' => $password,
-        ];
-    }
-
     public function generateUsername(): string
     {
-        $numLength = $this->config['jit']['num_length'] ?? 3;
-        $randomLength = $this->config['jit']['random_length'] ?? 5;
+        $numLength = config('pam.jit.username_length', self::DEFAULT_USERNAME_LENGTH);
+        $randomLength = config('pam.jit.random_length', self::DEFAULT_RANDOM_LENGTH);
         $number = random_int(10 ** ($numLength - 1), (10 ** $numLength) - 1);
         $random = strtolower(Str::random($randomLength));
-        $prefix = $this->config['jit']['prefix'] ?? 'argus';
-        $usernameFormat = $this->config['jit']['username_format'] ?? '{prefix}{number}_{random}';
+        $prefix = config('pam.jit.username_prefix', self::DEFAULT_USERNAME_PREFIX);
+        $usernameFormat = config('pam.jit.username_format', self::DEFAULT_USERNAME_FORMAT);
         $username = str_replace(['{prefix}', '{number}', '{random}'], [$prefix, $number, $random], $usernameFormat);
         return $username;
     }
 
     public function generatePassword(): string
     {
-        $length = $this->config['jit']['password_length'] ?? 16;
-        $letters = $this->config['jit']['password_letters'] ?? true;
-        $numbers = $this->config['jit']['password_numbers'] ?? true;
-        $symbols = $this->config['jit']['password_symbols'] ?? true;
-        $spaces = $this->config['jit']['password_spaces'] ?? false;
+        $length = config('pam.jit.password_length', self::DEFAULT_PASSWORD_LENGTH);
+        $letters = config('pam.jit.password_letters', self::DEFAULT_PASSWORD_LETTERS);
+        $numbers = config('pam.jit.password_numbers', self::DEFAULT_PASSWORD_NUMBERS);
+        $symbols = config('pam.jit.password_symbols', self::DEFAULT_PASSWORD_SYMBOLS);
+        $spaces = config('pam.jit.password_spaces', self::DEFAULT_PASSWORD_SPACES);
         return Str::password($length, $letters, $numbers, $symbols, $spaces);
     }
 
-    public function validateScope(RequestScope $scope): bool
+    public function validateScope(DatabaseScope $scope): bool
     {
         return in_array($scope, $this->supportedScopes);
     }
@@ -101,14 +100,6 @@ abstract class AbstractDatabaseDriver implements DatabaseDriverInterface
 
     abstract protected function getDsn(array $credentials): string;
 
-    protected function logOperation(string $operation, array $context = []): void
-    {
-        Log::info("Database operation: {$operation}", array_merge([
-            'driver' => class_basename($this),
-            'host' => $this->config['host'] ?? 'unknown',
-        ], $context));
-    }
-
     protected function handleError(string $operation, Exception $e, array $context = []): void
     {
         Log::error("Database operation failed: {$operation}", array_merge([
@@ -124,4 +115,15 @@ abstract class AbstractDatabaseDriver implements DatabaseDriverInterface
         );
     }
 
+    public function disconnect(): void
+    {
+        if (isset($this->connection)) {
+            unset($this->connection);
+        }
+    }
+
+    public function __destruct()
+    {
+        $this->disconnect();
+    }
 }

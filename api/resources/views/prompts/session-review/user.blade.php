@@ -24,7 +24,7 @@ Review the following database access session and compare the executed queries ag
 - **Session ID:** {{ $session->id }}
 - **Scheduled Start:** {{ $session->scheduled_start_datetime->format('Y-m-d H:i:s') }}
 - **Scheduled End:** {{ $session->scheduled_end_datetime->format('Y-m-d H:i:s') }}
-- **Actual Start:** {{ $session->started_at->format('Y-m-d H:i:s') }}
+- **Actual Start:** {{ $session->started_at ? $session->started_at->format('Y-m-d H:i:s') : 'N/A' }}
 - **Actual End:** {{ $session->ended_at ? $session->ended_at->format('Y-m-d H:i:s') : ($session->terminated_at ? $session->terminated_at->format('Y-m-d H:i:s') : 'N/A') }}
 - **Actual Duration:** {{ $session->actualDurationForHumans ?? 'N/A' }}
 - **Account Name:** {{ $session->account_name }}
@@ -32,11 +32,12 @@ Review the following database access session and compare the executed queries ag
 
 **Executed SQL Queries:**
 @if($session->audits && $session->audits->count() > 0)
-Total Queries: {{ $session->audits->count() }}
-Query Volume: {{ $session->actual_duration > 0 ? round($session->audits->count() / ($session->actual_duration / 60), 2) : 'N/A' }} queries/minute
+Total Unique Queries: {{ $session->audits->count() }}
+Total Executions: {{ $session->audits->sum('count') }}
+Query Volume: {{ $session->actual_duration > 0 ? round($session->audits->sum('count') / ($session->actual_duration / 60), 2) : 'N/A' }} executions/minute
 
 @foreach($session->audits as $index => $audit)
-{{ $index + 1 }}. [{{ $audit->query_timestamp ? $audit->query_timestamp->format('Y-m-d H:i:s') : 'N/A' }}] {{ $audit->query_text }}
+{{ $index + 1 }}. {{ $audit->query }} (count: {{ $audit->count }}, first: {{ $audit->first_timestamp ? $audit->first_timestamp->format('Y-m-d H:i:s') : 'N/A' }}, last: {{ $audit->last_timestamp ? $audit->last_timestamp->format('Y-m-d H:i:s') : 'N/A' }})
 @endforeach
 @else
 ⚠️ No queries were logged during this session.
@@ -49,17 +50,22 @@ Session Duration: {{ $session->actualDurationForHumans ?? 'N/A' }}
 3. **Evaluate data access patterns:** Check for excessive data extraction, unauthorized table access, or sensitive data exposure
 4. **Detect policy violations:** Identify DDL/DML operations not justified by request, system table access, audit tampering attempts
 5. **Assess query patterns:** Look for bulk operations, SELECT * without filters, suspicious timing patterns, or automated access indicators
-6. **Calculate business query volume:** Report both total queries and business queries separately (e.g., "50 total: 35 tool metadata, 15 business")
+6. **Calculate business query volume:** Report both unique queries and total executions separately (e.g., "50 unique queries: 35 tool metadata, 15 business with 120 total executions")
 7. **Assign appropriate flags:** Use the flag categories defined in the system prompt for any violations detected
-8. **Determine risk rating:** Provide a cumulative risk rating ({{ RiskRating::toString(', ') }}) based on all findings
+8. **Determine risk ratings:** Provide separate risk ratings for session activities and deviations, plus overall risk rating
+9. **Assess human audit confidence:** Evaluate how much human audit is needed (0-100) based on risk factors and violations
 
 **Output Format (MANDATORY):**
 - Respond with **valid JSON only** no text outside the JSON object
 - Use this schema exactly:
 {
   "ai_note": "<detailed analysis comparing executed queries against request purpose and intended queries. Cite specific query numbers as evidence. Explain all flags and risk factors. Use line breaks (\n) to improve readability. Convert durations to human-readable format.>",
-  "ai_risk_rating": "<{{ RiskRating::toString('|') }}>",
-  "flags": ["<{{ SessionFlag::toString('|') }}>"]
+  "session_activity_risk": "<{{ RiskRating::toString('|') }}>",
+  "deviation_risk": "<{{ RiskRating::toString('|') }}>",
+  "overall_risk": "<{{ RiskRating::toString('|') }}>",
+  "flags": ["<{{ SessionFlag::toString('|') }}>"],
+  "human_audit_confidence": <0-100>,
+  "human_audit_required": <true|false>
 }
 
 **Important Notes:**
@@ -68,6 +74,8 @@ Session Duration: {{ $session->actualDurationForHumans ?? 'N/A' }}
 - Provide specific evidence by referencing query numbers (e.g., "Query 3 accessed...")
 - If no queries were logged, evaluate based on session duration: <1 min likely legitimate, >5 min suspicious
 - Consider the original request's AI risk rating when evaluating - high-risk requests need stricter review
-- Calculate and analyze query volume (queries per minute) - flag if excessive without justification
-- Always reason step-by-step before assigning the final risk rating
+- Calculate and analyze query volume (executions per minute) - flag if excessive without justification
+- Always reason step-by-step before assigning risk ratings and confidence score
 - When uncertain, err on the side of caution and assign higher risk rating
+- Human audit confidence ≥ 70 should trigger human audit requirement
+- Session activity risk focuses on what was done, deviation risk focuses on alignment with request

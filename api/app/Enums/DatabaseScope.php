@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum RequestScope: string
+enum DatabaseScope: string
 {
     case READ_ONLY = 'ReadOnly';
     case READ_WRITE = 'ReadWrite';

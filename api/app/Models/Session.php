@@ -4,17 +4,21 @@ namespace App\Models;
 
 use App\Enums\RiskRating;
 use App\Enums\SessionStatus;
+use App\Events\SessionAiAudited;
 use App\Events\SessionCancelled;
 use App\Events\SessionCreated;
 use App\Events\SessionEnded;
 use App\Events\SessionExpired;
+use App\Events\SessionJitCreated;
+use App\Events\SessionJitTerminated;
 use App\Events\SessionStarted;
 use App\Events\SessionTerminated;
-use App\Events\SessionAiAudited;
+use App\Services\Jit\Secrets\SecretsManager;
 use App\Services\OpenAI\OpenAiService;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
 use Carbon\CarbonInterval;
+use DB;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,9 +26,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class Session extends Model implements ShouldHandleEventsAfterCommit
 {
@@ -46,8 +49,12 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         'actual_duration',
         'is_admin_account',
         'account_name',
-        'ai_risk_rating',
         'ai_note',
+        'session_activity_risk',
+        'deviation_risk',
+        'overall_risk',
+        'human_audit_confidence',
+        'human_audit_required',
         'ai_reviewed_at',
         'session_note',
         'status',
@@ -72,7 +79,11 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         'requested_duration' => 'integer',
         'actual_duration' => 'integer',
         'is_admin_account' => 'boolean',
-        'ai_risk_rating' => RiskRating::class,
+        'session_activity_risk' => RiskRating::class,
+        'deviation_risk' => RiskRating::class,
+        'overall_risk' => RiskRating::class,
+        'human_audit_confidence' => 'integer',
+        'human_audit_required' => 'boolean',
         'ai_reviewed_at' => 'datetime',
         'status' => SessionStatus::class,
         'account_created_at' => 'datetime',
@@ -150,10 +161,21 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
 
     public function getAiAudit(OpenAiService $openAiService): void
     {
-        $evaluation = $openAiService->reviewSession($this);
-        $this->ai_note = $evaluation['output']['ai_note'];
-        $this->ai_risk_rating = $evaluation['output']['ai_risk_rating'];
+        $evaluation = $openAiService->auditSession($this);
+        $result = $evaluation['output_object'];
+        $this->ai_note = $result->aiNote;
+        $this->session_activity_risk = $result->sessionActivityRisk;
+        $this->deviation_risk = $result->deviationRisk;
+        $this->overall_risk = $result->overallRisk;
+        $this->human_audit_confidence = $result->humanAuditConfidence;
+        $this->human_audit_required = $result->humanAuditRequired;
         $this->ai_reviewed_at = now();
+        $this->flags()->createMany(
+            array_map(fn ($flag) => [
+                'session_id' => $this->id,
+                'flag' => $flag->value,
+            ], $result->flags),
+        );
         SessionAiAudited::dispatchIf($this->save(), $this);
     }
 
@@ -212,11 +234,7 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
 
     public function isRequiredManualReview(): bool
     {
-        if (!$this->ai_risk_rating) {
-            return false;
-        }
-        return $this->ai_risk_rating == RiskRating::HIGH ||
-            $this->ai_risk_rating == RiskRating::CRITICAL;
+        return $this->human_audit_required;
     }
 
     public function start(): void
@@ -227,8 +245,18 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         $this->status = SessionStatus::STARTED;
         $this->started_at = now();
         $this->started_by = Auth::id();
-        // $this->save();
-        SessionStarted::dispatchIf($this->save(), $this);
+        DB::beginTransaction();
+        try {
+            $secretManager = App::make(SecretsManager::class);
+            $assetAccount = $secretManager->createAccount($this);
+            $this->asset_account_id = $assetAccount->id;
+            SessionStarted::dispatchIf($this->save(), $this);
+            SessionJitCreated::dispatchIf($assetAccount->isJit(), $assetAccount);
+            DB::commit();
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     public function end(): void
@@ -239,7 +267,10 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         $this->status = SessionStatus::ENDED;
         $this->ended_at = now();
         $this->ended_by = Auth::id();
-        SessionEnded::dispatchIf($this->save(), $this);
+        $this->actual_duration = now()->diffInMinutes($this->started_at);
+        $this->assetAccount->end();
+        // Moved actual account termination to listener because it's time consuming
+        SessionEnded::dispatchIf($this->save(), $this, []);
     }
 
     public function cancel(): void
@@ -261,7 +292,21 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         $this->status = SessionStatus::TERMINATED;
         $this->terminated_at = now();
         $this->terminated_by = Auth::id();
+        $this->actual_duration = now()->diffInMinutes($this->started_at);
+        $this->assetAccount->end();
+        // Moved actual account termination to listener because it's time consuming
         SessionTerminated::dispatchIf($this->save(), $this);
+    }
+
+    public function terminateJitAccount(): void
+    {
+        $this->assetAccount->end();
+        $secretManager = App::make(SecretsManager::class);
+        $isTerminated = $secretManager->terminateAccount($this);
+        if (!$isTerminated) {
+            throw new \Exception('Failed to terminate JIT account');
+        }
+        SessionJitTerminated::dispatch($this);
     }
 
     public function expire(): void
@@ -303,7 +348,7 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
 
     public function assetAccount(): BelongsTo
     {
-        return $this->belongsTo(AssetAccount::class, 'asset_account_id');
+        return $this->belongsTo(AssetAccount::class, 'asset_account_id', 'id');
     }
 
     public function requester(): BelongsTo

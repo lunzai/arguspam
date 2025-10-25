@@ -4,11 +4,11 @@ namespace Tests\Unit\Listeners;
 
 use App\Events\SessionAiAudited;
 use App\Listeners\HandleSessionAiReviewed;
+use App\Models\Asset;
+use App\Models\Org;
+use App\Models\Request as RequestModel;
 use App\Models\Session;
 use App\Models\User;
-use App\Models\Org;
-use App\Models\Asset;
-use App\Models\Request as RequestModel;
 use App\Notifications\SessionReviewOptionalNotifyApprover;
 use App\Notifications\SessionReviewOptionalNotifyRequester;
 use App\Notifications\SessionReviewRequiredNotifyApprover;
@@ -18,7 +18,6 @@ use Tests\TestCase;
 
 class HandleSessionAiReviewedTest extends TestCase
 {
-
     private HandleSessionAiReviewed $listener;
     private User $requester;
     private User $approver;
@@ -31,7 +30,7 @@ class HandleSessionAiReviewedTest extends TestCase
     {
         parent::setUp();
 
-        $this->listener = new HandleSessionAiReviewed();
+        $this->listener = new HandleSessionAiReviewed;
         $this->requester = \Mockery::mock(User::class);
         $this->approver = \Mockery::mock(User::class);
         $this->session = \Mockery::mock(Session::class);

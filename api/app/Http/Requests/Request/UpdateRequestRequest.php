@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Request;
 
-use App\Enums\RequestScope;
+use App\Enums\DatabaseScope;
 use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
 use App\Models\Request;
@@ -49,7 +49,7 @@ class UpdateRequestRequest extends FormRequest
             ],
             'reason' => ['sometimes', 'string', 'max:255'],
             'intended_query' => ['sometimes', 'nullable', 'string'],
-            'scope' => ['sometimes', new Enum(RequestScope::class)],
+            'scope' => ['sometimes', new Enum(DatabaseScope::class)],
             'is_access_sensitive_data' => ['sometimes', 'boolean'],
             'sensitive_data_note' => [
                 'sometimes',

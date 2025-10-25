@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Services;
 
-use App\Services\Database\Drivers\MySQLDriver;
+use App\Services\Jit\Database\Drivers\MySQLDriver;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Log;
@@ -126,7 +126,7 @@ class MySQLDriverTest extends TestCase
             'test_user',
             'test_pass',
             'test_db',
-            'read_only',
+            \App\Enums\DatabaseScope::READ_ONLY,
             Carbon::now()->addDays(7)
         );
 
@@ -165,7 +165,7 @@ class MySQLDriverTest extends TestCase
             'write_user',
             'write_pass',
             'test_db',
-            'read_write',
+            \App\Enums\DatabaseScope::READ_WRITE,
             Carbon::now()->addDays(7)
         );
 
@@ -204,7 +204,7 @@ class MySQLDriverTest extends TestCase
             'admin_user',
             'admin_pass',
             'test_db',
-            'admin',
+            \App\Enums\DatabaseScope::ALL,
             Carbon::now()->addDays(30)
         );
 
@@ -244,7 +244,7 @@ class MySQLDriverTest extends TestCase
         Log::shouldReceive('info')->twice();
 
         // Act
-        $result = $driver->createUser('test_user', 'pass', 'db', 'read_only', $expiresAt);
+        $result = $driver->createUser('test_user', 'pass', 'db', \App\Enums\DatabaseScope::READ_ONLY, $expiresAt);
 
         // Assert
         $this->assertTrue($result);
@@ -275,7 +275,7 @@ class MySQLDriverTest extends TestCase
         $this->expectException(RuntimeException::class);
 
         // Act
-        $driver->createUser('test_user', 'pass', 'db', 'read_only', Carbon::now()->addDays(7));
+        $driver->createUser('test_user', 'pass', 'db', \App\Enums\DatabaseScope::READ_ONLY, Carbon::now()->addDays(7));
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -574,6 +574,6 @@ class MySQLDriverTest extends TestCase
         $driver = $this->createDriver();
 
         // Assert
-        $this->assertInstanceOf(\App\Services\Database\Drivers\AbstractDatabaseDriver::class, $driver);
+        $this->assertInstanceOf(\App\Services\Jit\Database\Drivers\AbstractDatabaseDriver::class, $driver);
     }
 }

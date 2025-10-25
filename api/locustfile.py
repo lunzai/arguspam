@@ -24,9 +24,9 @@ class StagesShape(LoadTestShape):
     - Ramp down to 0 over 1 minute
     """
     stages = [
-        {"duration": 30, "users": 50, "spawn_rate": 5},
-        {"duration": 120, "users": 50, "spawn_rate": 5},
-        {"duration": 150, "users": 0, "spawn_rate": 5},
+        {"duration": 60, "users": 250, "spawn_rate": 5},
+        {"duration": 120, "users": 250, "spawn_rate": 15},
+        {"duration": 180, "users": 0, "spawn_rate": 5},
     ]
 
     def tick(self):
@@ -58,6 +58,7 @@ class ArgusPAMAPIUser(HttpUser):
         self.temp_key = None
         self.authenticated = False
         self.asset_ids = []  # Cache valid asset IDs
+        self.requires_2fa = True
 
     def on_start(self):
         """
@@ -74,11 +75,12 @@ class ArgusPAMAPIUser(HttpUser):
             self.environment.runner.quit()
             return
 
-        # Step 2: 2FA Verification
-        if not self._verify_2fa():
-            logger.error("Authentication failed at step 2: 2FA Verification")
-            self.environment.runner.quit()
-            return
+        # Step 2: 2FA Verification (only if token not provided by login)
+        if self.token is None:
+            if not self._verify_2fa():
+                logger.error("Authentication failed at step 2: 2FA Verification")
+                self.environment.runner.quit()
+                return
 
         # Step 3: Fetch Organization ID
         if not self._fetch_org_id():
@@ -108,6 +110,16 @@ class ArgusPAMAPIUser(HttpUser):
 
             try:
                 data = response.json().get("data", {})
+
+                # Handle case where 2FA is not required and token is already issued
+                self.requires_2fa = data.get("requires_2fa", True)
+                token = data.get("token")
+                if self.requires_2fa is False and token:
+                    self.token = token
+                    response.success()
+                    return True
+
+                # Otherwise expect a temp_key for the 2FA step
                 self.temp_key = data.get("temp_key")
 
                 if not self.temp_key:
@@ -367,17 +379,17 @@ class ArgusPAMAPIUser(HttpUser):
             name="14. GET /permissions"
         )
 
-    @task(1)
-    def list_sessions(self):
-        """Get list of sessions"""
-        if not self._check_auth():
-            return
+    # @task(1)
+    # def list_sessions(self):
+    #     """Get list of sessions"""
+    #     if not self._check_auth():
+    #         return
 
-        self.client.get(
-            "/sessions?page=1&sort=-created_at",
-            headers=self._get_auth_headers(),
-            name="15. GET /sessions"
-        )
+    #     self.client.get(
+    #         "/sessions?page=1&sort=-created_at",
+    #         headers=self._get_auth_headers(),
+    #         name="15. GET /sessions"
+    #     )
 
     @task(1)
     def get_settings(self):

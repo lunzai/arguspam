@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Requests\Request;
 
-use App\Enums\RequestScope;
+use App\Enums\DatabaseScope;
 use App\Http\Requests\Request\StoreRequestRequest;
 use App\Models\Asset;
 use App\Models\AssetAccount;
@@ -65,7 +65,7 @@ class StoreRequestRequestTest extends TestCase
             'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
             'duration' => 60,
             'reason' => 'Need access for maintenance',
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'is_access_sensitive_data' => false,
         ];
 
@@ -90,7 +90,7 @@ class StoreRequestRequestTest extends TestCase
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
             'reason' => 'Test',
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'is_access_sensitive_data' => false,
         ];
 
@@ -113,7 +113,7 @@ class StoreRequestRequestTest extends TestCase
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
             'reason' => 'Test',
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'is_access_sensitive_data' => false,
         ];
 
@@ -136,7 +136,7 @@ class StoreRequestRequestTest extends TestCase
             'start_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHour()->toDateTimeString(), // Before start
             'reason' => 'Test',
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'is_access_sensitive_data' => false,
         ];
 
@@ -159,7 +159,7 @@ class StoreRequestRequestTest extends TestCase
             'start_datetime' => Carbon::now()->subHours(2)->toDateTimeString(),
             'end_datetime' => Carbon::now()->subHour()->toDateTimeString(), // In the past
             'reason' => 'Test',
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'is_access_sensitive_data' => false,
         ];
 
@@ -183,7 +183,7 @@ class StoreRequestRequestTest extends TestCase
             'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
             'duration' => 60, // Within 10-480 range
             'reason' => 'Test',
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'is_access_sensitive_data' => false,
         ];
 
@@ -206,7 +206,7 @@ class StoreRequestRequestTest extends TestCase
             'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
             'duration' => 5, // Below min of 10
             'reason' => 'Test',
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'is_access_sensitive_data' => false,
         ];
 
@@ -230,7 +230,7 @@ class StoreRequestRequestTest extends TestCase
             'end_datetime' => Carbon::now()->addHours(10)->toDateTimeString(),
             'duration' => 600, // Above max of 480
             'reason' => 'Test',
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'is_access_sensitive_data' => false,
         ];
 
@@ -253,7 +253,7 @@ class StoreRequestRequestTest extends TestCase
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
             'reason' => 'Test',
-            'scope' => RequestScope::READ_WRITE->value,
+            'scope' => DatabaseScope::READ_WRITE->value,
             'is_access_sensitive_data' => false,
         ];
 
@@ -298,7 +298,7 @@ class StoreRequestRequestTest extends TestCase
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
             'reason' => 'Test',
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'is_access_sensitive_data' => true,
             // Missing 'sensitive_data_note'
         ];
@@ -322,7 +322,7 @@ class StoreRequestRequestTest extends TestCase
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
             'reason' => 'Test',
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'is_access_sensitive_data' => false,
             // No 'sensitive_data_note' - should be fine
         ];
@@ -350,7 +350,7 @@ class StoreRequestRequestTest extends TestCase
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
             'reason' => 'Test',
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'is_access_sensitive_data' => false,
         ];
 
@@ -373,7 +373,7 @@ class StoreRequestRequestTest extends TestCase
             'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
             'reason' => 'Test',
             'intended_query' => 'SELECT * FROM users WHERE id = 1',
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'is_access_sensitive_data' => false,
         ];
 

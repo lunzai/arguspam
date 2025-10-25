@@ -4,12 +4,12 @@ namespace App\Listeners;
 
 use App\Events\SessionEnded;
 use App\Events\SessionTerminated;
-use App\Services\OpenAI\OpenAiService;
+use App\Services\Jit\Secrets\SecretsManager;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class HandleSessionPendingAiAudit implements ShouldBeEncrypted, ShouldQueue
+class HandleSessionEndedOrTerminated implements ShouldBeEncrypted, ShouldQueue
 {
     use InteractsWithQueue;
 
@@ -19,8 +19,9 @@ class HandleSessionPendingAiAudit implements ShouldBeEncrypted, ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct(private OpenAiService $openAiService)
+    public function __construct(private SecretsManager $secretsManager)
     {
+        //
     }
 
     /**
@@ -29,6 +30,6 @@ class HandleSessionPendingAiAudit implements ShouldBeEncrypted, ShouldQueue
     public function handle(SessionEnded|SessionTerminated $event): void
     {
         $session = $event->session;
-        $session->getAiAudit($this->openAiService);
+        $session->terminateJitAccount();
     }
 }

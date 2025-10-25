@@ -2,7 +2,7 @@
 
 namespace Tests\Unit\Requests\Request;
 
-use App\Enums\RequestScope;
+use App\Enums\DatabaseScope;
 use App\Enums\RiskRating;
 use App\Http\Requests\Request\ApproveRequestRequest;
 use Carbon\Carbon;
@@ -43,7 +43,7 @@ class ApproveRequestRequestTest extends TestCase
         $data = [
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHours(3)->toDateTimeString(),
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'approver_note' => 'Approved for maintenance window',
             'approver_risk_rating' => RiskRating::LOW->value,
         ];
@@ -62,7 +62,7 @@ class ApproveRequestRequestTest extends TestCase
         $data = [
             // 'start_datetime' => missing
             'end_datetime' => Carbon::now()->addHours(3)->toDateTimeString(),
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'approver_note' => 'Test',
             'approver_risk_rating' => RiskRating::LOW->value,
         ];
@@ -82,7 +82,7 @@ class ApproveRequestRequestTest extends TestCase
         $data = [
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             // 'end_datetime' => missing
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'approver_note' => 'Test',
             'approver_risk_rating' => RiskRating::LOW->value,
         ];
@@ -122,7 +122,7 @@ class ApproveRequestRequestTest extends TestCase
         $data = [
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHours(3)->toDateTimeString(),
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             // 'approver_note' => missing
             'approver_risk_rating' => RiskRating::LOW->value,
         ];
@@ -142,7 +142,7 @@ class ApproveRequestRequestTest extends TestCase
         $data = [
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHours(3)->toDateTimeString(),
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'approver_note' => 'Test',
             // 'approver_risk_rating' => missing
         ];
@@ -162,7 +162,7 @@ class ApproveRequestRequestTest extends TestCase
         $data = [
             'start_datetime' => Carbon::now()->addHours(3)->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHour()->toDateTimeString(), // Before start
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'approver_note' => 'Test',
             'approver_risk_rating' => RiskRating::LOW->value,
         ];
@@ -182,7 +182,7 @@ class ApproveRequestRequestTest extends TestCase
         $data = [
             'start_datetime' => Carbon::now()->subHours(2)->toDateTimeString(),
             'end_datetime' => Carbon::now()->subHour()->toDateTimeString(), // Past
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'approver_note' => 'Test',
             'approver_risk_rating' => RiskRating::LOW->value,
         ];
@@ -203,7 +203,7 @@ class ApproveRequestRequestTest extends TestCase
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
             'duration' => 60, // Within range
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'approver_note' => 'Test',
             'approver_risk_rating' => RiskRating::LOW->value,
         ];
@@ -223,7 +223,7 @@ class ApproveRequestRequestTest extends TestCase
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
             'duration' => 5, // Below min
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'approver_note' => 'Test',
             'approver_risk_rating' => RiskRating::LOW->value,
         ];
@@ -244,7 +244,7 @@ class ApproveRequestRequestTest extends TestCase
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHours(10)->toDateTimeString(),
             'duration' => 600, // Above max
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'approver_note' => 'Test',
             'approver_risk_rating' => RiskRating::LOW->value,
         ];
@@ -262,9 +262,9 @@ class ApproveRequestRequestTest extends TestCase
     {
         // Arrange
         $scopes = [
-            RequestScope::READ_ONLY,
-            RequestScope::READ_WRITE,
-            RequestScope::ALL,
+            DatabaseScope::READ_ONLY,
+            DatabaseScope::READ_WRITE,
+            DatabaseScope::ALL,
         ];
 
         foreach ($scopes as $scope) {
@@ -319,7 +319,7 @@ class ApproveRequestRequestTest extends TestCase
             $data = [
                 'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
                 'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
-                'scope' => RequestScope::READ_ONLY->value,
+                'scope' => DatabaseScope::READ_ONLY->value,
                 'approver_note' => 'Test',
                 'approver_risk_rating' => $rating->value,
             ];
@@ -339,7 +339,7 @@ class ApproveRequestRequestTest extends TestCase
         $data = [
             'start_datetime' => Carbon::now()->addHour()->toDateTimeString(),
             'end_datetime' => Carbon::now()->addHours(2)->toDateTimeString(),
-            'scope' => RequestScope::READ_ONLY->value,
+            'scope' => DatabaseScope::READ_ONLY->value,
             'approver_note' => 'Test',
             'approver_risk_rating' => 'super_critical',
         ];

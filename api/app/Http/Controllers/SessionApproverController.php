@@ -13,7 +13,7 @@ class SessionApproverController extends Controller
     public function delete(Session $session): SessionResource
     {
         $this->authorize('terminate', $session);
-        
+
         if ($session->canTerminate()) {
             $session->terminate();
         }

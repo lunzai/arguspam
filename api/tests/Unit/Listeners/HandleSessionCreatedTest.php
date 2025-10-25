@@ -4,11 +4,11 @@ namespace Tests\Unit\Listeners;
 
 use App\Events\SessionCreated;
 use App\Listeners\HandleSessionCreated;
+use App\Models\Asset;
+use App\Models\Org;
+use App\Models\Request as RequestModel;
 use App\Models\Session;
 use App\Models\User;
-use App\Models\Org;
-use App\Models\Asset;
-use App\Models\Request as RequestModel;
 use App\Notifications\SessionCreatedNotifyApprover;
 use App\Notifications\SessionCreatedNotifyRequester;
 use Illuminate\Support\Facades\Notification;
@@ -16,7 +16,6 @@ use Tests\TestCase;
 
 class HandleSessionCreatedTest extends TestCase
 {
-
     private HandleSessionCreated $listener;
     private User $requester;
     private User $approver;
@@ -29,7 +28,7 @@ class HandleSessionCreatedTest extends TestCase
     {
         parent::setUp();
 
-        $this->listener = new HandleSessionCreated();
+        $this->listener = new HandleSessionCreated;
         $this->requester = \Mockery::mock(User::class);
         $this->approver = \Mockery::mock(User::class);
         $this->session = \Mockery::mock(Session::class);

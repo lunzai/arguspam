@@ -80,7 +80,9 @@ class Asset extends Model
 
     public function adminAccount(): HasOne
     {
-        return $this->hasOne(AssetAccount::class)->admin();
+        return $this->hasOne(AssetAccount::class)
+            ->active()
+            ->admin();
     }
 
     public function jitAccount(): HasMany

@@ -2,16 +2,15 @@
 
 namespace Tests\Unit\Controllers;
 
+use App\Enums\SessionStatus;
 use App\Http\Controllers\SessionRequesterController;
 use App\Http\Resources\Session\SessionResource;
+use App\Models\Asset;
+use App\Models\Org;
+use App\Models\Request as RequestModel;
 use App\Models\Session;
 use App\Models\User;
-use App\Models\Org;
-use App\Models\Asset;
-use App\Models\Request as RequestModel;
-use App\Enums\SessionStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
@@ -30,7 +29,7 @@ class SessionRequesterControllerTest extends TestCase
     {
         parent::setUp();
 
-        $this->controller = new SessionRequesterController();
+        $this->controller = new SessionRequesterController;
         $this->org = Org::factory()->create();
         $this->user = User::factory()->create();
         $this->asset = Asset::factory()->create(['org_id' => $this->org->id]);
@@ -81,7 +80,7 @@ class SessionRequesterControllerTest extends TestCase
         $this->assertArrayHasKey('canEnd', $response['data']);
         $this->assertArrayHasKey('canStart', $response['data']);
         $this->assertArrayHasKey('canCancel', $response['data']);
-        
+
         // Since session is scheduled and within time window, should be able to start
         $this->assertTrue($response['data']['canStart']);
         $this->assertFalse($response['data']['canEnd']); // Not started yet
@@ -112,7 +111,7 @@ class SessionRequesterControllerTest extends TestCase
     public function test_store_starts_session_and_returns_resource(): void
     {
         Auth::login($this->user);
-        
+
         // Mock the authorize method to return true
         $this->controller = $this->createPartialMock(SessionRequesterController::class, ['authorize']);
         $this->controller->expects($this->once())
@@ -131,7 +130,7 @@ class SessionRequesterControllerTest extends TestCase
         // First start the session
         $this->session->update(['status' => SessionStatus::STARTED]);
         Auth::login($this->user);
-        
+
         // Mock the authorize method to return true
         $this->controller = $this->createPartialMock(SessionRequesterController::class, ['authorize']);
         $this->controller->expects($this->once())
@@ -148,7 +147,7 @@ class SessionRequesterControllerTest extends TestCase
     public function test_delete_cancels_session_and_returns_resource(): void
     {
         Auth::login($this->user);
-        
+
         // Mock the authorize method to return true
         $this->controller = $this->createPartialMock(SessionRequesterController::class, ['authorize']);
         $this->controller->expects($this->once())
@@ -185,7 +184,7 @@ class SessionRequesterControllerTest extends TestCase
             ->willReturn(true);
 
         $response = $this->controller->show($startedSession);
-        
+
         $this->assertTrue($response['data']['canEnd']);
         $this->assertFalse($response['data']['canStart']);
         $this->assertFalse($response['data']['canCancel']);
@@ -214,7 +213,7 @@ class SessionRequesterControllerTest extends TestCase
             ->willReturn(true);
 
         $response = $this->controller->show($expiredSession);
-        
+
         $this->assertFalse($response['data']['canEnd']);
         $this->assertFalse($response['data']['canStart']);
         $this->assertFalse($response['data']['canCancel']);

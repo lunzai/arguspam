@@ -34,7 +34,7 @@ class SessionAuditPolicyTest extends TestCase
     {
         parent::setUp();
 
-        $this->policy = new SessionAuditPolicy();
+        $this->policy = new SessionAuditPolicy;
         $this->user = User::factory()->create();
         $this->approver = User::factory()->create();
         $this->org = Org::factory()->create();
@@ -60,14 +60,14 @@ class SessionAuditPolicyTest extends TestCase
         ]);
     }
 
-    public function test_viewAny_returns_true_when_user_has_permission(): void
+    public function test_view_any_returns_true_when_user_has_permission(): void
     {
         $this->giveUserPermission($this->user, 'sessionaudit:viewany');
 
         $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_viewAny_returns_false_when_user_lacks_permission(): void
+    public function test_view_any_returns_false_when_user_lacks_permission(): void
     {
         $this->assertFalse($this->policy->viewAny($this->user));
     }

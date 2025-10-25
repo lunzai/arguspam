@@ -29,11 +29,11 @@ class HandleSessionAiReviewed implements ShouldBeEncrypted, ShouldQueue
     public function handle(SessionAiAudited $event): void
     {
         $session = $event->session;
-        $requesterNotification = $session->isRequiredManualReview() ? 
-            new SessionReviewRequiredNotifyRequester($session) : 
+        $requesterNotification = $session->isRequiredManualReview() ?
+            new SessionReviewRequiredNotifyRequester($session) :
             new SessionReviewOptionalNotifyRequester($session);
-        $approverNotification = $session->isRequiredManualReview() ? 
-            new SessionReviewRequiredNotifyApprover($session) : 
+        $approverNotification = $session->isRequiredManualReview() ?
+            new SessionReviewRequiredNotifyApprover($session) :
             new SessionReviewOptionalNotifyApprover($session);
         $session
             ->requester

@@ -2,7 +2,6 @@
 
 namespace Tests\Unit\Listeners;
 
-use App\Events\SessionAiAudited;
 use App\Listeners\HandleSessionAiReviewed;
 use Tests\TestCase;
 
@@ -13,7 +12,7 @@ class HandleSessionAiReviewedSimpleTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->listener = new HandleSessionAiReviewed();
+        $this->listener = new HandleSessionAiReviewed;
     }
 
     public function test_listener_implements_should_queue(): void

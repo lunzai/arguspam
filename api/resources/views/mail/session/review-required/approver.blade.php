@@ -13,8 +13,20 @@ A session requires your immediate attention for manual audit.
 - **Status:** {{ ucwords($session->status->value) }}
 
 ## AI Review Results
-@if($session->ai_risk_rating)
-- **AI Risk Rating:** {{ ucwords($session->ai_risk_rating->value) }}
+@if($session->session_activity_risk)
+- **Session Activity Risk:** {{ ucwords($session->session_activity_risk->value) }}
+@endif
+@if($session->deviation_risk)
+- **Deviation Risk:** {{ ucwords($session->deviation_risk->value) }}
+@endif
+@if($session->overall_risk)
+- **Overall Risk:** {{ ucwords($session->overall_risk->value) }}
+@endif
+@if($session->human_audit_confidence)
+- **Human Audit Confidence:** {{ $session->human_audit_confidence }}/100
+@endif
+@if($session->human_audit_required)
+- **Human Audit Required:** {{ $session->human_audit_required ? 'Yes' : 'No' }}
 @endif
 @if($session->ai_reviewed_at)
 - **Reviewed at:** {{ $session->ai_reviewed_at->setTimezone($notifiable->getTimezone())->format('M d, Y H:i') }} ({{ $notifiable->timezone }})
@@ -38,7 +50,10 @@ The AI has identified the following issues:
 
 ## Why Manual Review Is Required
 Sessions are flagged for manual review when:
-- **High risk rating** assigned by AI
+- **High/Critical overall risk** assigned by AI
+- **High deviation risk** - activities don't match stated purpose
+- **High session activity risk** - policy violations or security concerns
+- **High human audit confidence** (≥70) - AI recommends human review
 - **Security policy violations** detected
 - **Suspicious query patterns** identified
 - **Unauthorized data access** suspected

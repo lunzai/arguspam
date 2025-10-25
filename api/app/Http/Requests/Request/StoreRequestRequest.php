@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Request;
 
-use App\Enums\RequestScope;
+use App\Enums\DatabaseScope;
 use App\Enums\RiskRating;
 use App\Models\Asset;
 use App\Models\Request;
@@ -65,7 +65,7 @@ class StoreRequestRequest extends FormRequest
             ],
             'reason' => ['required', 'string'],
             'intended_query' => ['nullable', 'string'],
-            'scope' => ['required', new Enum(RequestScope::class)],
+            'scope' => ['required', new Enum(DatabaseScope::class)],
             'is_access_sensitive_data' => ['required', 'boolean'],
             'sensitive_data_note' => [
                 'nullable',

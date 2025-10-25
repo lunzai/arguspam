@@ -28,8 +28,10 @@ Your session for **{{ $session->asset->name }}** has been ended successfully.
 
 ### Possible Outcomes
 - **Low risk, no flags:** Session review complete, no further action needed
-- **Medium risk or flags detected:** Approver may be notified for optional manual review
-- **High risk or serious violations:** Approver will be notified to conduct mandatory audit
+- **Medium risk or minor flags:** Approver may be notified for optional manual review
+- **High/Critical risk or serious violations:** Approver will be notified to conduct mandatory audit
+- **High deviation risk:** Activities don't match stated purpose - may require review
+- **High human audit confidence:** AI recommends human review for this session
 
 You will be notified of the review results once the AI analysis is complete.
 

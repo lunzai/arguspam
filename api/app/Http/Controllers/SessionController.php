@@ -8,7 +8,7 @@ use App\Http\Requests\Session\UpdateSessionRequest;
 use App\Http\Resources\Session\SessionCollection;
 use App\Http\Resources\Session\SessionResource;
 use App\Models\Session;
-use App\Services\Secrets\SecretsManager;
+use App\Services\Jit\Secrets\SecretsManager;
 use App\Traits\IncludeRelationships;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

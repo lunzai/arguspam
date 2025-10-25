@@ -12,8 +12,17 @@ Your session for **{{ $session->asset->name }}** has been flagged and requires m
 - **Status:** {{ ucwords($session->status->value) }}
 
 ## AI Review Results
-@if($session->ai_risk_rating)
-- **AI Risk Rating:** {{ ucwords($session->ai_risk_rating->value) }}
+@if($session->session_activity_risk)
+- **Session Activity Risk:** {{ ucwords($session->session_activity_risk->value) }}
+@endif
+@if($session->deviation_risk)
+- **Deviation Risk:** {{ ucwords($session->deviation_risk->value) }}
+@endif
+@if($session->overall_risk)
+- **Overall Risk:** {{ ucwords($session->overall_risk->value) }}
+@endif
+@if($session->human_audit_confidence)
+- **Human Audit Confidence:** {{ $session->human_audit_confidence }}/100
 @endif
 @if($session->ai_note)
 - **AI Note:** {!! nl2br($session->ai_note) !!}
@@ -28,9 +37,10 @@ The following issues were identified during the AI review:
 @endif
 
 ## What This Means
-- AI has detected potential policy violations or high-risk activities
+- AI has detected high-risk activities, significant deviations from stated purpose, or policy violations
 - Your session activities are being reviewed by {{ $session->approver->name }}
 - The approver will conduct a manual audit of your session
+- High human audit confidence indicates the AI strongly recommends human review
 
 ## What Happens Next
 1. **Approver Review:** The approver will examine your session activities, SQL queries, and the AI analysis

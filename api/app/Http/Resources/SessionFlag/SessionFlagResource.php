@@ -2,8 +2,8 @@
 
 namespace App\Http\Resources\SessionFlag;
 
-use App\Http\Resources\Session\SessionResource;
 use App\Http\Resources\Resource;
+use App\Http\Resources\Session\SessionResource;
 use Illuminate\Http\Request;
 
 class SessionFlagResource extends Resource

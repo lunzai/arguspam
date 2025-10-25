@@ -3,8 +3,8 @@
 use App\Enums\AccessRestrictionType;
 use App\Enums\AssetAccessRole;
 use App\Enums\AssetAccountType;
+use App\Enums\DatabaseScope;
 use App\Enums\Dbms;
-use App\Enums\RequestScope;
 use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
 use App\Enums\SessionStatus;
@@ -115,7 +115,7 @@ return new class extends Migration
 
         // Revert requests enum columns
         Schema::table('requests', function (Blueprint $table) {
-            $table->enum('scope', array_column(RequestScope::cases(), 'value'))->default(RequestScope::READ_ONLY->value)->change();
+            $table->enum('scope', array_column(DatabaseScope::cases(), 'value'))->default(DatabaseScope::READ_ONLY->value)->change();
             $table->enum('approver_risk_rating', array_column(RiskRating::cases(), 'value'))->nullable()->change();
             $table->enum('ai_risk_rating', array_column(RiskRating::cases(), 'value'))->nullable()->change();
             $table->enum('status', array_column(RequestStatus::cases(), 'value'))->default(RequestStatus::PENDING->value)->change();

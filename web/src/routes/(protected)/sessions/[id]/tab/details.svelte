@@ -12,11 +12,15 @@
 	import { ChevronDown, ClipboardCopy, ClipboardCheck } from '@lucide/svelte';
 	import { slide } from 'svelte/transition';
 	import { StatusBadge } from '$components/badge';
+	import Badge from '$lib/components/ui/badge/badge.svelte';
 
-	let { model, asset, requester, request, approver } = $props();
+	let { model, asset, requester, request, approver, flags } = $props();
 
 	let showDetails = $state(true);
 	let showRequest = $state(true);
+	let showAudit = $state(true);
+
+	const isAuditsAvailable = $derived(model.ai_reviewed_at !== null);
 </script>
 
 <div class="flex flex-col gap-6">
@@ -61,11 +65,12 @@
 							</DL.Content>
 						</DL.Row>
 						<DL.Row>
-							<DL.Label>Duration</DL.Label>
-							<DL.Content
-								>{formatDistance(model.scheduled_start_datetime, model.scheduled_end_datetime)}
-								{model.end_datetime ? '' : '(scheduled)'}</DL.Content
-							>
+							<DL.Label>{model.end_datetime ? 'Actual Duration' : 'Requested Duration'}</DL.Label>
+							<DL.Content>
+								{model.end_datetime
+									? formatDistance(model.start_datetime, model.end_datetime)
+									: formatDistance(model.scheduled_start_datetime, model.scheduled_end_datetime)}
+							</DL.Content>
 						</DL.Row>
 						<DL.Row>
 							<DL.Label>
@@ -81,6 +86,98 @@
 			</div>
 		{/if}
 	</Card.Root>
+
+	{#if isAuditsAvailable}
+		<Card.Root class="w-full">
+			<Card.Header
+				onclick={() => (showAudit = !showAudit)}
+				class="transition-all duration-200 hover:cursor-pointer"
+			>
+				<Card.Title class="text-lg">AI Session Audit</Card.Title>
+				<!-- <Card.Description>Session's AI audit details.</Card.Description> -->
+				<Card.Action>
+					<Button
+						variant="outline"
+						class="transition-all duration-200 hover:cursor-pointer hover:bg-blue-50 hover:text-blue-500"
+					>
+						<ChevronDown
+							class="h-4 w-4 {showAudit ? 'rotate-180' : ''} transition-all duration-200"
+						/>
+					</Button>
+				</Card.Action>
+			</Card.Header>
+			{#if showAudit}
+				<div transition:slide={{ duration: 200 }}>
+					<Card.Content class="space-y-4">
+						<DL.Root divider={null}>
+							<DL.Row>
+								<DL.Label>Reviewed At</DL.Label>
+								<DL.Content>
+									{relativeDateTime(model.ai_reviewed_at)}
+								</DL.Content>
+							</DL.Row>
+							{#if model.session_activity_risk}
+								<DL.Row>
+									<DL.Label>Session Activities Risk</DL.Label>
+									<DL.Content>
+										<StatusBadge status={model.session_activity_risk} class="text-sm" />
+									</DL.Content>
+								</DL.Row>
+							{/if}
+							{#if model.deviation_risk}
+								<DL.Row>
+									<DL.Label>Deviation Risk</DL.Label>
+									<DL.Content>
+										<StatusBadge status={model.deviation_risk} class="text-sm" />
+									</DL.Content>
+								</DL.Row>
+							{/if}
+							{#if model.overall_risk}
+								<DL.Row>
+									<DL.Label>Overall Risk</DL.Label>
+									<DL.Content>
+										<StatusBadge status={model.overall_risk} class="text-sm" />
+									</DL.Content>
+								</DL.Row>
+							{/if}
+							{#if model.human_audit_required !== null}
+								<DL.Row>
+									<DL.Label>Human Audit</DL.Label>
+									<DL.Content>
+										<StatusBadge
+											status={model.human_audit_required ? 'required' : 'not required'}
+											class="text-sm"
+										/>
+										(Confidence: {model.human_audit_confidence})
+									</DL.Content>
+								</DL.Row>
+							{/if}
+							{#if flags?.length > 0}
+								<DL.Row>
+									<DL.Label>Flags</DL.Label>
+									<DL.Content>
+										<div class="flex gap-2">
+											{#each flags as flag, i}
+												<Badge variant="destructive" class="text-sm capitalize">
+													{flag.attributes.flag}
+												</Badge>
+											{/each}
+										</div>
+									</DL.Content>
+								</DL.Row>
+							{/if}
+							<DL.Row>
+								<DL.Label>AI Note</DL.Label>
+								<DL.Content>
+									{@html nl2br(model.ai_note)}
+								</DL.Content>
+							</DL.Row>
+						</DL.Root>
+					</Card.Content>
+				</div>
+			{/if}
+		</Card.Root>
+	{/if}
 
 	<Card.Root class="w-full">
 		<Card.Header
@@ -142,7 +239,7 @@
 							<DL.Row>
 								<DL.Label>AI Risk Rating</DL.Label>
 								<DL.Content>
-									<StatusBadge bind:status={request.ai_risk_rating} class="text-sm" />
+									<StatusBadge status={request.ai_risk_rating} class="text-sm" />
 								</DL.Content>
 							</DL.Row>
 						{/if}

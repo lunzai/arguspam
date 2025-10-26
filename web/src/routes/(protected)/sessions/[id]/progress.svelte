@@ -60,23 +60,33 @@
 					/>
 				{/if}
 
-				{#if hasStart && !hasEnded}
+				<Progress.Row
+					icon={Bot}
+					title={model.end_datetime ? 'Ended' : 'To End'}
+					description={model.end_datetime
+						? relativeDateTime(model.end_datetime, false)
+						: relativeDateTime(model.scheduled_end_datetime, false) + ' remaining'}
+					color={model.end_datetime ? 'green' : model.start_datetime ? 'blue' : 'gray'}
+					disabled={isExpiredOrCancelled}
+				/>
+
+				<!-- {#if hasStart && !hasEnded}
 					<Progress.Row
 						icon={MonitorX}
 						title="To End"
 						description={relativeDateTime(model.scheduled_end_datetime, false)}
 						color="blue"
 					/>
-				{/if}
+				{/if} -->
 
-				{#if isEnded}
+				<!-- {#if isEnded}
 					<Progress.Row
 						icon={MonitorX}
 						title="Ended"
 						description={relativeDateTime(model.ended_at, false)}
 						color="green"
 					/>
-				{/if}
+				{/if} -->
 
 				{#if isTerminated}
 					<Progress.Row
@@ -104,14 +114,6 @@
 						color="gray"
 					/>
 				{/if}
-
-                <Progress.Row
-					icon={Bot}
-					title={model.end_datetime ? 'Ended' : 'To End'}
-					description={model.end_datetime ? relativeDateTime(model.end_datetime, false) : '-'}
-					color={model.start_datetime ? 'blue' : 'gray'}
-					disabled={isExpiredOrCancelled}
-				/>
 
 				<Progress.Row
 					icon={Bot}

@@ -59,7 +59,7 @@
 	bind:isOpen={approveDialogIsOpen}
 	data={data.approveForm}
 	onSuccess={async (data: Request) => {
-        invalidateAll();
+		invalidateAll();
 		approveDialogIsOpen = false;
 	}}
 />
@@ -68,7 +68,7 @@
 	bind:isOpen={rejectDialogIsOpen}
 	data={data.rejectForm}
 	onSuccess={async (data: Request) => {
-        invalidateAll();
+		invalidateAll();
 		rejectDialogIsOpen = false;
 	}}
 />

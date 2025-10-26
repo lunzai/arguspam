@@ -1,9 +1,5 @@
 <script lang="ts">
-	import * as Card from '$ui/card';
-	import { Button } from '$ui/button';
-	import { Pencil, Trash2 } from '@lucide/svelte';
-	import * as DL from '$components/description-list';
-	import { relativeDateTime, shortDateTimeRange } from '$utils/date';
+	import { shortDateTimeRange } from '$utils/date';
 	import type { ApiSessionResource } from '$resources/session';
 	import type { Session } from '$models/session';
 	import type { Asset } from '$models/asset';
@@ -26,11 +22,9 @@
 	const requester = $derived(modelResource.data.relationships?.requester?.attributes as User);
 	const request = $derived(modelResource.data.relationships?.request?.attributes as Request);
 	const approver = $derived(modelResource.data.relationships?.approver?.attributes as User);
-	const audits = $derived(modelResource.data.relationships?.audits?.data as SessionAuditCollection);
-	const flags = $derived(modelResource.data.relationships?.flags?.data as SessionFlagCollection);
+	const audits = $derived(modelResource.data.relationships?.audits as SessionAuditCollection);
+	const flags = $derived(modelResource.data.relationships?.flags as SessionFlagCollection);
 	const user = $derived(data.user as User);
-	const modelName = 'sessions';
-	const modelTitle = 'Session';
 </script>
 
 <div class="flex flex-col space-y-4">
@@ -53,7 +47,7 @@
 					<Tabs.List>
 						<Tabs.Trigger value="details" class="cursor-pointer px-5 py-1.5">Details</Tabs.Trigger>
 						<Tabs.Trigger
-							disabled
+							disabled={audits?.length === 0}
 							value="audits"
 							class="px-5 py-1.5 {audits?.length > 0
 								? 'cursor-pointer'
@@ -61,7 +55,7 @@
 						>
 					</Tabs.List>
 					<Tabs.Content value="details">
-						<TabDetails {model} {asset} {requester} {request} {approver} />
+						<TabDetails {model} {asset} {requester} {request} {approver} {flags} />
 					</Tabs.Content>
 					<Tabs.Content value="audits">
 						<TabAudits {model} {audits} />

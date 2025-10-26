@@ -21,6 +21,7 @@
 		switch (status) {
 			case 'active':
 			case 'approved':
+			case 'started':
 				badgeClass = 'text-green-500 bg-green-50 border-green-200';
 				break;
 			case 'inactive':
@@ -34,10 +35,12 @@
 				badgeClass = 'text-red-500 bg-red-50 border-red-200';
 				break;
 			case 'high':
+			case 'terminated':
 				badgeClass = 'text-orange-500 bg-orange-50 border-orange-200';
 				break;
 			case 'submitted':
 			case 'medium':
+			case 'ended':
 				badgeClass = 'text-blue-500 bg-blue-50 border-blue-200';
 				break;
 			default:

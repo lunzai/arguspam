@@ -1,13 +1,14 @@
 import { SessionService } from '$services/session';
 import type { ApiSessionResource } from '$resources/session';
 import type { Actions } from '@sveltejs/kit';
+import { json } from '@sveltejs/kit';
 import { fail } from 'sveltekit-superforms/client';
 
 export const load = async ({ params, locals, depends }) => {
 	depends('sessions:view');
 	const { id } = params;
 	const { authToken, currentOrgId, user } = locals;
-    const modelService = new SessionService(authToken as string, currentOrgId);
+	const modelService = new SessionService(authToken as string, currentOrgId);
 	const model = (await modelService.findById(id, {
 		include: [
 			'request',
@@ -24,7 +25,7 @@ export const load = async ({ params, locals, depends }) => {
 	return {
 		model,
 		permissions,
-        user,
+		user,
 		title: `Session - #${model.data.attributes.id} - ${model.data.attributes.id}`
 	};
 };
@@ -45,7 +46,7 @@ export const actions = {
 			return fail(400, { error: `Failed to terminate session` });
 		}
 	},
-    cancel: async ({ locals, params }) => {
+	cancel: async ({ locals, params }) => {
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
 		try {
@@ -60,7 +61,7 @@ export const actions = {
 			return fail(400, { error: `Failed to cancel session` });
 		}
 	},
-    start: async ({ locals, params }) => {
+	start: async ({ locals, params }) => {
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
 		try {
@@ -75,7 +76,7 @@ export const actions = {
 			return fail(400, { error: `Failed to start session` });
 		}
 	},
-    end: async ({ locals, params }) => {
+	end: async ({ locals, params }) => {
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
 		try {
@@ -90,17 +91,17 @@ export const actions = {
 			return fail(400, { error: `Failed to end session` });
 		}
 	},
-    secret: async ({ locals, params }) => {
+	secret: async ({ locals, params }) => {
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
 		try {
 			const sessionService = new SessionService(authToken as string, currentOrgId);
 			const response = await sessionService.retrieveSecret(Number(id));
-			return {
+			return json({
 				success: true,
 				message: `Session secret retrieved successfully`,
-				model: response.data.attributes
-			};
+				secret: response.data
+			});
 		} catch (error: any) {
 			return fail(400, { error: `Failed to retrieve session secret` });
 		}

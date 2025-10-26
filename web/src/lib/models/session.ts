@@ -14,7 +14,11 @@ export interface Session extends BaseModel {
 	actual_duration: number;
 	is_admin_account: boolean;
 	account_name: string;
-	ai_risk_rating: 'low' | 'medium' | 'high' | 'critical';
+	session_activity_risk: 'low' | 'medium' | 'high' | 'critical';
+	deviation_risk: 'low' | 'medium' | 'high' | 'critical';
+	overall_risk: 'low' | 'medium' | 'high' | 'critical';
+	human_audit_required: boolean;
+	human_audit_confidence: number;
 	ai_note: string;
 	ai_reviewed_at: Date;
 	session_note: string;

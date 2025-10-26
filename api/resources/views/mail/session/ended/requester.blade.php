@@ -16,8 +16,8 @@ Your session for **{{ $session->asset->name }}** has been ended successfully.
 ## What Happens Next
 
 ### Credential Revocation
-✅ Your JIT database credentials have been automatically revoked
-✅ You no longer have access to {{ $session->asset->name }}
+- ✅ Your JIT database credentials have been automatically revoked
+- ✅ You no longer have access to {{ $session->asset->name }}
 
 ### Activity Review Process
 📋 **Your session activities are being reviewed:**

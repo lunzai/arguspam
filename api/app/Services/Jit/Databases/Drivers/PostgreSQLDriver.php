@@ -48,10 +48,45 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
             ->fetchAll(PDO::FETCH_COLUMN) ?? [];
     }
 
+    public function testConnection(array $credentials): bool
+    {
+        try {
+            $dsn = $this->getDsn($credentials);
+            $testConnection = new PDO(
+                $dsn,
+                $credentials['username'],
+                $credentials['password'],
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                ]
+            );
+
+            // Test the connection by executing a simple query
+            $testConnection->query('SELECT 1');
+            $testConnection = null; // Close the test connection
+
+            return true;
+        } catch (Exception $e) {
+            Log::debug('Connection test failed', [
+                'host' => $credentials['host'] ?? 'unknown',
+                'port' => $credentials['port'] ?? 'unknown',
+                'database' => $credentials['database'] ?? 'unknown',
+                'username' => $credentials['username'] ?? 'unknown',
+                'error' => $e->getMessage(),
+            ]);
+            return false;
+        }
+    }
+
     public function createUser(string $username, string $password, string|array|null $databases, DatabaseScope $scope, DateTime $expiresAt): bool
     {
         $normalizedDatabases = $this->normalizeDatabases($databases);
         try {
+            // Ensure we have a fresh connection
+            if (!isset($this->connection) || $this->connection === null) {
+                $this->connect($this->config['db']);
+            }
             $this->connection->beginTransaction();
 
             // Create user with expiration
@@ -172,6 +207,10 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
     public function terminateUser(string $username, string $database): bool
     {
         try {
+            // Ensure we have a fresh connection
+            if (!isset($this->connection) || $this->connection === null) {
+                $this->connect($this->config['db']);
+            }
             $this->connection->beginTransaction();
 
             // Terminate active connections

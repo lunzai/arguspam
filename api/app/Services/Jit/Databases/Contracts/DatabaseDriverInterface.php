@@ -29,6 +29,11 @@ interface DatabaseDriverInterface
     public function testAdminConnection(array $adminCredentials): bool;
 
     /**
+     * Test connection with provided credentials
+     */
+    public function testConnection(array $credentials): bool;
+
+    /**
      * Retrieve query logs for a specific user
      */
     public function retrieveUserQueryLogs(string $username): array;

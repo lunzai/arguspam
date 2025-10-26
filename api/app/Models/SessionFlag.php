@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SessionFlag extends Model
 {
+    public $timestamps = false;
+
     protected $fillable = [
         'session_id',
         'flag',

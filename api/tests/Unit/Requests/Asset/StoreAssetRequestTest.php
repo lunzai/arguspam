@@ -6,7 +6,7 @@ use App\Enums\Dbms;
 use App\Enums\Status;
 use App\Http\Requests\Asset\StoreAssetRequest;
 use App\Models\Org;
-use App\Services\Jit\Secrets\SecretsManager;
+use App\Services\Jit\JitManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
 use Mockery;
@@ -18,14 +18,14 @@ class StoreAssetRequestTest extends TestCase
 
     protected Org $org;
 
-    protected SecretsManager $secretsManager;
+    protected JitManager $jitManager;
 
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->org = Org::factory()->create();
-        $this->secretsManager = Mockery::mock(SecretsManager::class);
+        $this->jitManager = Mockery::mock(JitManager::class);
     }
 
     protected function tearDown(): void
@@ -38,7 +38,7 @@ class StoreAssetRequestTest extends TestCase
     public function it_authorizes_all_requests(): void
     {
         // Arrange
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
 
         // Act
         $result = $request->authorize();
@@ -63,7 +63,7 @@ class StoreAssetRequestTest extends TestCase
             'password' => 'secret123',
         ];
 
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -84,7 +84,7 @@ class StoreAssetRequestTest extends TestCase
             'password' => 'secret',
         ];
 
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -107,7 +107,7 @@ class StoreAssetRequestTest extends TestCase
             'password' => 'secret',
         ];
 
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -130,7 +130,7 @@ class StoreAssetRequestTest extends TestCase
             'password' => 'secret',
         ];
 
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -152,7 +152,7 @@ class StoreAssetRequestTest extends TestCase
             'password' => 'secret',
         ];
 
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -175,7 +175,7 @@ class StoreAssetRequestTest extends TestCase
             'password' => 'secret',
         ];
 
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -199,7 +199,7 @@ class StoreAssetRequestTest extends TestCase
             'password' => 'secret',
         ];
 
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -224,7 +224,7 @@ class StoreAssetRequestTest extends TestCase
                 'password' => 'secret',
             ];
 
-            $request = new StoreAssetRequest($this->secretsManager);
+            $request = new StoreAssetRequest($this->jitManager);
             $validator = Validator::make($data, $request->rules());
 
             // Assert
@@ -247,7 +247,7 @@ class StoreAssetRequestTest extends TestCase
             'password' => 'secret',
         ];
 
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -273,7 +273,7 @@ class StoreAssetRequestTest extends TestCase
                 'password' => 'secret',
             ];
 
-            $request = new StoreAssetRequest($this->secretsManager);
+            $request = new StoreAssetRequest($this->jitManager);
             $validator = Validator::make($data, $request->rules());
 
             // Assert
@@ -296,7 +296,7 @@ class StoreAssetRequestTest extends TestCase
             'password' => 'secret',
         ];
 
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -319,7 +319,7 @@ class StoreAssetRequestTest extends TestCase
             'password' => 'secret',
         ];
 
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -350,7 +350,7 @@ class StoreAssetRequestTest extends TestCase
                 'password' => 'secret',
             ];
 
-            $request = new StoreAssetRequest($this->secretsManager);
+            $request = new StoreAssetRequest($this->jitManager);
             $validator = Validator::make($data, $request->rules());
 
             // Assert
@@ -373,7 +373,7 @@ class StoreAssetRequestTest extends TestCase
             'password' => 'secret',
         ];
 
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -395,7 +395,7 @@ class StoreAssetRequestTest extends TestCase
             'password' => 'secret',
         ];
 
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -417,7 +417,7 @@ class StoreAssetRequestTest extends TestCase
             'username' => 'admin',
         ];
 
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -429,7 +429,7 @@ class StoreAssetRequestTest extends TestCase
     public function it_has_after_validation_hook(): void
     {
         // Arrange
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
 
         // Act
         $after = $request->after();
@@ -444,25 +444,25 @@ class StoreAssetRequestTest extends TestCase
     public function it_constructs_with_secrets_manager_dependency(): void
     {
         // Arrange & Act
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
 
         // Assert
         $this->assertInstanceOf(StoreAssetRequest::class, $request);
 
         // Use reflection to verify dependency injection
         $reflection = new \ReflectionClass($request);
-        $property = $reflection->getProperty('secretManager');
+        $property = $reflection->getProperty('jitManager');
         $property->setAccessible(true);
         $injectedManager = $property->getValue($request);
 
-        $this->assertSame($this->secretsManager, $injectedManager);
+        $this->assertSame($this->jitManager, $injectedManager);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_extends_form_request(): void
     {
         // Arrange
-        $request = new StoreAssetRequest($this->secretsManager);
+        $request = new StoreAssetRequest($this->jitManager);
 
         // Assert
         $this->assertInstanceOf(\Illuminate\Foundation\Http\FormRequest::class, $request);

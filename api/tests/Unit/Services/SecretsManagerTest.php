@@ -11,9 +11,9 @@ use App\Models\Org;
 use App\Models\Request;
 use App\Models\Session;
 use App\Models\User;
-use App\Services\Jit\Database\Contracts\DatabaseDriverInterface;
-use App\Services\Jit\Database\DatabaseDriverFactory;
-use App\Services\Jit\Secrets\SecretsManager;
+use App\Services\Jit\Databases\Contracts\DatabaseDriverInterface;
+use App\Services\Jit\Databases\DatabaseDriverFactory;
+use App\Services\Jit\JitManager;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
@@ -21,11 +21,11 @@ use Illuminate\Support\Facades\Log;
 use Mockery;
 use Tests\TestCase;
 
-class SecretsManagerTest extends TestCase
+class JitManagerTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected SecretsManager $secretsManager;
+    protected JitManager $jitManager;
 
     protected User $user;
 
@@ -37,7 +37,7 @@ class SecretsManagerTest extends TestCase
     {
         parent::setUp();
 
-        $this->secretsManager = $this->app->make(SecretsManager::class);
+        $this->jitManager = $this->app->make(JitManager::class);
 
         // Create test data
         $this->org = Org::factory()->create();
@@ -74,7 +74,7 @@ class SecretsManagerTest extends TestCase
         ]);
 
         // Act
-        $credentials = $this->secretsManager->getAdminCredentials($this->asset);
+        $credentials = $this->jitManager->getAdminCredentials($this->asset);
 
         // Assert
         $this->assertIsArray($credentials);
@@ -94,7 +94,7 @@ class SecretsManagerTest extends TestCase
         $this->expectExceptionMessage("No active admin account found for asset: {$this->asset->name}");
 
         // Act
-        $this->secretsManager->getAdminCredentials($this->asset);
+        $this->jitManager->getAdminCredentials($this->asset);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -113,7 +113,7 @@ class SecretsManagerTest extends TestCase
         $this->expectExceptionMessage("No active admin account found for asset: {$this->asset->name}");
 
         // Act
-        $this->secretsManager->getAdminCredentials($this->asset);
+        $this->jitManager->getAdminCredentials($this->asset);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
@@ -132,7 +132,7 @@ class SecretsManagerTest extends TestCase
         $this->expectExceptionMessage("No active admin account found for asset: {$this->asset->name}");
 
         // Act
-        $this->secretsManager->getAdminCredentials($this->asset);
+        $this->jitManager->getAdminCredentials($this->asset);
     }
 
     // #[\PHPUnit\Framework\Attributes\Test]
@@ -157,7 +157,7 @@ class SecretsManagerTest extends TestCase
     //         ->andReturn($mockDriver);
 
     //     // Act
-    //     $credentials = $this->secretsManager->generateCredentials($this->asset);
+    //     $credentials = $this->jitManager->generateCredentials($this->asset);
 
     //     // Assert
     //     $this->assertEquals($expectedCreds, $credentials);
@@ -189,7 +189,7 @@ class SecretsManagerTest extends TestCase
     //         ->andReturn($mockDriver);
 
     //     // Act
-    //     $driver = $this->secretsManager->getDatabaseDriver($this->asset);
+    //     $driver = $this->jitManager->getDatabaseDriver($this->asset);
 
     //     // Assert
     //     $this->assertInstanceOf(DatabaseDriverInterface::class, $driver);
@@ -222,7 +222,7 @@ class SecretsManagerTest extends TestCase
     //     $this->expectExceptionMessage('Failed to connect to database with admin credentials');
 
     //     // Act
-    //     $this->secretsManager->getDatabaseDriver($this->asset);
+    //     $this->jitManager->getDatabaseDriver($this->asset);
     // }
 
     // #[\PHPUnit\Framework\Attributes\Test]
@@ -248,7 +248,7 @@ class SecretsManagerTest extends TestCase
     //     $mockFactory->shouldReceive('create')->once()->andReturn($mockDriver);
 
     //     // Act
-    //     $result = $this->secretsManager->validateScope($this->asset, 'read');
+    //     $result = $this->jitManager->validateScope($this->asset, 'read');
 
     //     // Assert
     //     $this->assertTrue($result);
@@ -277,7 +277,7 @@ class SecretsManagerTest extends TestCase
     //     $mockFactory->shouldReceive('create')->once()->andReturn($mockDriver);
 
     //     // Act
-    //     $result = $this->secretsManager->validateScope($this->asset, 'invalid_scope');
+    //     $result = $this->jitManager->validateScope($this->asset, 'invalid_scope');
 
     //     // Assert
     //     $this->assertFalse($result);
@@ -305,76 +305,18 @@ class SecretsManagerTest extends TestCase
     //     Log::shouldReceive('error')->once();
 
     //     // Act
-    //     $result = $this->secretsManager->validateScope($this->asset, 'read');
+    //     $result = $this->jitManager->validateScope($this->asset, 'read');
 
     //     // Assert
     //     $this->assertFalse($result);
     // }
 
-    #[\PHPUnit\Framework\Attributes\Test]
-    public function it_retrieves_query_logs_for_jit_account(): void
-    {
-        // Arrange
-        $startTime = now()->subHour();
-        $endTime = now();
-
-        // Create admin account first
-        AssetAccount::factory()->create([
-            'asset_id' => $this->asset->id,
-            'type' => AssetAccountType::ADMIN,
-            'username' => 'admin_user',
-            'password' => 'admin_password',
-            'is_active' => true,
-        ]);
-
-        $request = Request::factory()->create([
-            'org_id' => $this->org->id,
-            'requester_id' => $this->user->id,
-            'asset_id' => $this->asset->id,
-            'scope' => DatabaseScope::READ_ONLY,
-        ]);
-
-        $session = Session::factory()->create([
-            'org_id' => $this->org->id,
-            'request_id' => $request->id,
-            'asset_id' => $this->asset->id,
-            'requester_id' => $this->user->id,
-            'start_datetime' => $startTime,
-            'end_datetime' => $endTime,
-        ]);
-
-        $jitAccount = AssetAccount::factory()->create([
-            'asset_id' => $this->asset->id,
-            'type' => AssetAccountType::JIT,
-            'username' => 'jit_user',
-            'is_active' => true,
-        ]);
-
-        $expectedLogs = [
-            ['query_text' => 'SELECT * FROM users', 'timestamp' => now()],
-            ['query_text' => 'SELECT * FROM orders', 'timestamp' => now()],
-        ];
-
-        // Mock the AuditLogManager to return expected logs
-        $mockAuditLogManager = Mockery::mock(\App\Services\Jit\AuditLogManager::class);
-        $mockAuditLogManager->shouldReceive('retrieveQueryLogs')
-            ->once()
-            ->with($jitAccount, $session)
-            ->andReturn($expectedLogs);
-
-        // Replace the AuditLogManager in the SecretsManager
-        $reflection = new \ReflectionClass($this->secretsManager);
-        $property = $reflection->getProperty('auditLogManager');
-        $property->setAccessible(true);
-        $property->setValue($this->secretsManager, $mockAuditLogManager);
-
-        // Act
-        $logs = $this->secretsManager->retrieveQueryLogs($jitAccount, $session);
-
-        // Assert
-        $this->assertCount(2, $logs);
-        $this->assertEquals($expectedLogs, $logs);
-    }
+    // #[\PHPUnit\Framework\Attributes\Test]
+    // public function it_retrieves_query_logs_for_jit_account(): void
+    // {
+    //     // This test is commented out because retrieveQueryLogs method doesn't exist in JitManager
+    //     // Query log retrieval is now handled internally within terminateAccount method
+    // }
 
     // #[\PHPUnit\Framework\Attributes\Test]
     // public function it_retrieves_query_logs_without_driver_parameter(): void
@@ -428,7 +370,7 @@ class SecretsManagerTest extends TestCase
     //     $mockFactory->shouldReceive('create')->once()->andReturn($mockDriver);
 
     //     // Act
-    //     $logs = $this->secretsManager->retrieveQueryLogs($jitAccount, $session);
+    //     $logs = $this->jitManager->retrieveQueryLogs($jitAccount, $session);
 
     //     // Assert
     //     $this->assertCount(1, $logs);
@@ -458,7 +400,7 @@ class SecretsManagerTest extends TestCase
         Log::shouldReceive('error')->zeroOrMoreTimes();
 
         // Act & Assert: should not throw and should early-return
-        $this->secretsManager->terminateAccount($session);
+        $this->jitManager->terminateAccount($session);
         $this->assertTrue(true); // Test passes if no exception is thrown
     }
 
@@ -492,7 +434,7 @@ class SecretsManagerTest extends TestCase
         Log::shouldReceive('error')->zeroOrMoreTimes();
 
         // Act & Assert: should not throw and should early-return
-        $this->secretsManager->terminateAccount($session);
+        $this->jitManager->terminateAccount($session);
         $this->assertTrue(true); // Test passes if no exception is thrown
     }
 
@@ -527,7 +469,7 @@ class SecretsManagerTest extends TestCase
     //     Log::shouldReceive('info')->once();
 
     //     // Act
-    //     $count = $this->secretsManager->cleanupExpiredAccounts();
+    //     $count = $this->jitManager->cleanupExpiredAccounts();
 
     //     // Assert
     //     $this->assertEquals(0, $count); // Failed to cleanup due to exception
@@ -548,7 +490,7 @@ class SecretsManagerTest extends TestCase
         Log::shouldReceive('info')->once();
 
         // Act
-        $count = $this->secretsManager->cleanupExpiredAccounts();
+        $count = $this->jitManager->cleanupExpiredAccounts();
 
         // Assert
         $this->assertEquals(0, $count);
@@ -569,7 +511,7 @@ class SecretsManagerTest extends TestCase
         Log::shouldReceive('info')->once();
 
         // Act
-        $count = $this->secretsManager->cleanupExpiredAccounts();
+        $count = $this->jitManager->cleanupExpiredAccounts();
 
         // Assert
         $this->assertEquals(0, $count);
@@ -579,7 +521,7 @@ class SecretsManagerTest extends TestCase
     public function it_reads_configuration_on_instantiation(): void
     {
         // Arrange & Act
-        $manager = $this->app->make(SecretsManager::class);
+        $manager = $this->app->make(JitManager::class);
 
         // Assert - reflection to test protected property
         $reflection = new \ReflectionClass($manager);

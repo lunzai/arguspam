@@ -16,10 +16,10 @@ Your session for **{{ $session->asset->name }}** has been started successfully.
 ## Important Reminders
 
 ### During Your Session
-✅ **Follow all security policies and procedures**
-✅ **Only access data necessary for your stated purpose**
-✅ **Complete your work within the approved timeframe**
-✅ **All queries and activities are being recorded for audit**
+- ✅ **Follow all security policies and procedures**
+- ✅ **Only access data necessary for your stated purpose**
+- ✅ **Complete your work within the approved timeframe**
+- ✅ **All queries and activities are being recorded for audit**
 
 ### End Your Session
 🔴 **CRITICAL: End your session when you're done**

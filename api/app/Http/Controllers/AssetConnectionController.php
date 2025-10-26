@@ -3,16 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
-use App\Services\Jit\Secrets\SecretsManager;
+use App\Services\Jit\JitManager;
 use Illuminate\Http\Response;
 
 class AssetConnectionController extends Controller
 {
-    protected $secretsManager;
+    protected $jitManager;
 
-    public function __construct(SecretsManager $secretsManager)
+    public function __construct(JitManager $jitManager)
     {
-        $this->secretsManager = $secretsManager;
+        $this->jitManager = $jitManager;
     }
 
     /**
@@ -20,9 +20,23 @@ class AssetConnectionController extends Controller
      */
     public function show(Asset $asset): Response
     {
-        $this->secretsManager
-            ->getDatabaseDriver($asset);
+        $adminCredentials = $this->jitManager->getAdminCredentials($asset);
+        $testResult = $this->jitManager
+            ->testConnection($asset, [
+                'password' => $adminCredentials['password'],
+                'username' => $adminCredentials['username'],
+            ]);
+        if (!$testResult) {
+            throw new \Exception('Failed to test connection');
+        }
         return $this->ok();
     }
 
+    public function index(Asset $asset)
+    {
+        $databases = $this->jitManager->getAllDatabases($asset);
+        return [
+            'data' => $databases,
+        ];
+    }
 }

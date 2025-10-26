@@ -33,9 +33,9 @@ Great news! Your access request for **{{ $request->asset->name }}** has been app
 - You will then have access to view and use the asset's access details
 
 ### Step 2: During Your Session
-✅ **Follow all security policies and procedures**  
-✅ **Only access data necessary for your stated purpose**  
-✅ **Complete your work within the approved timeframe**  
+- ✅ **Follow all security policies and procedures**  
+- ✅ **Only access data necessary for your stated purpose**  
+- ✅ **Complete your work within the approved timeframe**  
 
 ### Step 3: End Your Session
 🔴 **IMPORTANT: Terminate your session as soon as you're done**

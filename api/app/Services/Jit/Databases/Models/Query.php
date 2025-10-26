@@ -11,7 +11,7 @@ class Query
     public DateTime $lastTimestamp;
     public string $commandType;
     public int $count;
-    public string $queryText;
+    public string $query;
 
     public function __construct(
         string $userHost,
@@ -19,14 +19,14 @@ class Query
         string $lastTimestamp,
         string $commandType,
         int $count,
-        string $queryText
+        string $query
     ) {
         $this->userHost = $userHost;
         $this->firstTimestamp = new DateTime($firstTimestamp);
         $this->lastTimestamp = new DateTime($lastTimestamp);
         $this->commandType = $commandType;
         $this->count = $count;
-        $this->queryText = $queryText;
+        $this->query = $query;
     }
 
     public static function fromArray(array $data): Query
@@ -37,7 +37,7 @@ class Query
             $data['last_timestamp'],
             $data['command_type'],
             (int) $data['count'],
-            $data['query_text']
+            $data['query']
         );
     }
 
@@ -49,7 +49,7 @@ class Query
             'last_timestamp' => $this->lastTimestamp->format('Y-m-d H:i:s'),
             'command_type' => $this->commandType,
             'count' => $this->count,
-            'query_text' => $this->queryText,
+            'query' => $this->query,
         ];
     }
 

@@ -16,9 +16,8 @@ Evaluate the following database access request:
 - Sensitive data note: {!! $request->sensitive_data_note !!}
 
 **Analysis Requirements:**
-- Provide an concise **ai_note** (50-200 words) with step-by-step reasoning:  
-  (1) context evaluation → (2) query review → (3) conclusion.  
-- Convert all durations from minutes into human-readable units (e.g., “120 minutes → 2 hours)”, “10080 minutes → 7 days”).  
+- Provide a concise **ai_note** (50-200 words) with natural, flowing analysis that covers context evaluation, query review, and conclusion in a conversational manner.  
+- Convert all durations from minutes into human-readable units (e.g., "120 minutes → 2 hours)", "10080 minutes → 7 days").  
 - Highlight security, privacy, compliance, and operational risks.  
 - Reference relevant compliance frameworks (GDPR, PCI-DSS, HIPAA, SOX, SOC2) when applicable.  
 - If the query or reason is vague, assume the worst-case scenario.
@@ -32,6 +31,6 @@ Evaluate the following database access request:
 - JSON must be pretty-printed with `\n` line breaks for readability.  
 - Use this schema exactly:  
 {
-  "ai_note": "<step-by-step analysis with human-readable durations and final recommendation, Use line breaks to improve readability.>",
+  "ai_note": "<natural, flowing analysis with human-readable durations and final recommendation. Use line breaks to improve readability.>",
   "ai_risk_rating": "<{!! RiskRating::toString('|') !!}>"
 }

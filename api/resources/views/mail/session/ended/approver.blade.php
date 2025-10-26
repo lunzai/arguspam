@@ -23,11 +23,11 @@ The system is now processing the session:
 4. Risk assessment and flagging will be performed
 
 ### You Will Be Notified If:
-⚠️ **Manual audit is required** - High/Critical overall risk, high deviation risk, or serious policy violations detected
-💡 **Optional review recommended** - Medium risk levels, medium human audit confidence, or minor anomalies detected
+- ⚠️ **Manual audit is required** - High/Critical overall risk, high deviation risk, or serious policy violations detected
+- 💡 **Optional review recommended** - Medium risk levels, medium human audit confidence, or minor anomalies detected
 
 ### Low Risk Sessions
-✅ If no significant issues are found, the session will be automatically closed without requiring your review.
+- ✅ If no significant issues are found, the session will be automatically closed without requiring your review.
 
 <x-mail::button :url="$url">
 View Session Details

@@ -22,6 +22,7 @@ class SessionAudit extends Model
         'user_id',
         'username',
         'query',
+        'command_type',
         'count',
         'first_timestamp',
         'last_timestamp',
@@ -76,7 +77,6 @@ class SessionAudit extends Model
     /**
      * Store audit logs for a session
      *
-     * @param  array<array{query_text: string, timestamp: string}>  $queryLogs
      * @return int Number of audit logs stored
      */
     public static function storeForSession(Session $session, array $queryLogs): int
@@ -86,17 +86,18 @@ class SessionAudit extends Model
                 return 0;
             }
             $auditData = [];
-            foreach ($queryLogs as $query) {
+            foreach ($queryLogs as $log) {
                 $auditData[] = [
                     'org_id' => $session->org_id,
                     'session_id' => $session->id,
                     'asset_id' => $session->asset_id,
                     'user_id' => $session->requester_id,
-                    'username' => $query->userHost ?? '',
-                    'query' => $query->queryText ?? '',
-                    'count' => $query->count ?? 0,
-                    'first_timestamp' => $query->firstTimestamp ?? null,
-                    'last_timestamp' => $query->lastTimestamp ?? null,
+                    'username' => $log->userHost ?? '',
+                    'query' => $log->query ?? '',
+                    'command_type' => $log->commandType ?? null,
+                    'count' => $log->count ?? 0,
+                    'first_timestamp' => $log->firstTimestamp ?? null,
+                    'last_timestamp' => $log->lastTimestamp ?? null,
                     'created_at' => now(),
                 ];
             }

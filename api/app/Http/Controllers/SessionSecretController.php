@@ -2,25 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Session\SessionSecretResource;
 use App\Models\Session;
-use Illuminate\Support\Facades\Auth;
 
 class SessionSecretController extends Controller
 {
     /**
      * Show sesssion secret
      */
-    public function show(Session $session)
+    public function show(Session $session): SessionSecretResource
     {
         $this->authorize('retrieveSecret', $session);
-        $isOwner = $session->requester->is(Auth::user());
-        return [
-            'data' => [
-                'canEnd' => $isOwner && $session->canEnd(),
-                'canStart' => $isOwner && $session->canStart(),
-                'canCancel' => $isOwner && $session->canCancel(),
-                'canTerminate' => $isOwner && $session->canTerminate(),
-            ],
-        ];
+        return new SessionSecretResource($session->load('asset', 'assetAccount'));
     }
 }

@@ -23,9 +23,9 @@ This session may have been terminated due to:
 - **Security incident:** Emergency access revocation triggered
 
 ## Actions Taken
-✅ JIT credentials have been immediately revoked
-✅ Requester no longer has access to the asset
-✅ All session activities have been logged
+- ✅ JIT credentials have been immediately revoked
+- ✅ Requester no longer has access to the asset
+- ✅ All session activities have been logged
 
 ## Post-Termination Processing
 The system will now:
@@ -35,8 +35,8 @@ The system will now:
 4. Flag any policy violations
 
 ### You Will Be Notified If:
-⚠️ **Manual audit is required** - High risk rating or serious violations detected
-💡 **Optional review recommended** - Medium risk or minor anomalies found
+- ⚠️ **Manual audit is required** - High risk rating or serious violations detected
+- 💡 **Optional review recommended** - Medium risk or minor anomalies found
 
 <x-mail::button :url="$url">
 View Session Details

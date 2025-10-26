@@ -100,6 +100,8 @@ Route::middleware('auth:sanctum')->group(function () {
             ->name('assets.access-grants.destroy');
         Route::get('/assets/{asset}/connection', [AssetConnectionController::class, 'show'])
             ->name('assets.connection.show');
+        Route::get('/assets/{asset}/databases', [AssetConnectionController::class, 'index'])
+            ->name('assets.connection.index');
         Route::put('/assets/{asset}/credential', [AssetAccountController::class, 'update'])
             ->name('assets.credential.update');
 

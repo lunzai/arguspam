@@ -13,7 +13,7 @@ use App\Events\SessionJitCreated;
 use App\Events\SessionJitTerminated;
 use App\Events\SessionStarted;
 use App\Events\SessionTerminated;
-use App\Services\Jit\Secrets\SecretsManager;
+use App\Services\Jit\JitManager;
 use App\Services\OpenAI\OpenAiService;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
@@ -243,13 +243,15 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
             throw new \Exception('Session is not eligible for starting');
         }
         $this->status = SessionStatus::STARTED;
+        $this->start_datetime = now();
         $this->started_at = now();
         $this->started_by = Auth::id();
         DB::beginTransaction();
         try {
-            $secretManager = App::make(SecretsManager::class);
-            $assetAccount = $secretManager->createAccount($this);
+            $jitManager = App::make(JitManager::class);
+            $assetAccount = $jitManager->createAccount($this);
             $this->asset_account_id = $assetAccount->id;
+            $this->account_created_at = now();
             SessionStarted::dispatchIf($this->save(), $this);
             SessionJitCreated::dispatchIf($assetAccount->isJit(), $assetAccount);
             DB::commit();
@@ -265,9 +267,10 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
             throw new \Exception('Session is not eligible for ending');
         }
         $this->status = SessionStatus::ENDED;
+        $this->end_datetime = now();
         $this->ended_at = now();
         $this->ended_by = Auth::id();
-        $this->actual_duration = now()->diffInMinutes($this->started_at);
+        $this->actual_duration = $this->start_datetime->diffInMinutes($this->end_datetime);
         $this->assetAccount->end();
         // Moved actual account termination to listener because it's time consuming
         SessionEnded::dispatchIf($this->save(), $this, []);
@@ -301,11 +304,13 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
     public function terminateJitAccount(): void
     {
         $this->assetAccount->end();
-        $secretManager = App::make(SecretsManager::class);
-        $isTerminated = $secretManager->terminateAccount($this);
+        $jitManager = App::make(JitManager::class);
+        $isTerminated = $jitManager->terminateAccount($this);
         if (!$isTerminated) {
             throw new \Exception('Failed to terminate JIT account');
         }
+        $this->account_revoked_at = now();
+        $this->save();
         SessionJitTerminated::dispatch($this);
     }
 

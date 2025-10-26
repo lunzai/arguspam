@@ -34,7 +34,7 @@ class MySQLDriver extends AbstractDatabaseDriver
         return sprintf(
             'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',
             $credentials['host'],
-            $credentials['port'] ?? config('pam.database.connection.mysql_port', 3306),
+            $credentials['port'],
             $credentials['database'] ?? ''
         );
     }
@@ -46,6 +46,28 @@ class MySQLDriver extends AbstractDatabaseDriver
             ->fetchAll(PDO::FETCH_COLUMN) ?? [];
     }
 
+    public function testConnection(array $credentials): bool
+    {
+        try {
+            $dsn = $this->getDsn($credentials);
+            $testConnection = new PDO(
+                $dsn,
+                $credentials['username'],
+                $credentials['password'],
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                ]
+            );
+            // Test the connection by executing a simple query
+            $testConnection->query('SELECT 1');
+            $testConnection = null; // Close the test connection
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
     public function createUser(string $username, string $password, string|array $databases, DatabaseScope $scope, DateTime $expiresAt): bool
     {
         try {
@@ -53,28 +75,18 @@ class MySQLDriver extends AbstractDatabaseDriver
             if (!isset($this->connection) || $this->connection === null) {
                 $this->connect($this->config['db']);
             }
-            // Begin transaction
-            $this->connection->beginTransaction();
-            try {
-                // Create user (without password expiration for now)
-                $sql = "CREATE USER :username@'%' IDENTIFIED BY :password";
-                $stmt = $this->connection->prepare($sql);
-                $stmt->execute([
-                    ':username' => $username,
-                    ':password' => $password,
-                ]);
-                // Grant permissions based on scope and databases
-                $this->grantPermissions($username, $databases, $scope);
-                // Flush privileges
-                $this->connection->exec('FLUSH PRIVILEGES');
-                // Commit transaction
-                $this->connection->commit();
-                return true;
-            } catch (Exception $e) {
-                // Rollback transaction on any error
-                $this->connection->rollBack();
-                throw $e;
-            }
+            // Create user (without password expiration for now)
+            $sql = "CREATE USER :username@'%' IDENTIFIED BY :password";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute([
+                ':username' => $username,
+                ':password' => $password,
+            ]);
+            // Grant permissions based on scope and databases
+            $this->grantPermissions($username, $databases, $scope);
+            // Flush privileges
+            $this->connection->exec('FLUSH PRIVILEGES');
+            return true;
         } catch (Exception $e) {
             $this->handleError('createUser', $e, ['username' => $username]);
             return false;
@@ -120,32 +132,23 @@ class MySQLDriver extends AbstractDatabaseDriver
             if (!isset($this->connection) || $this->connection === null) {
                 $this->connect($this->config['db']);
             }
-            $this->connection->beginTransaction();
-            try {
-                // Kill active connections
-                $sql = "SELECT CONCAT('KILL ', id, ';') AS kill_command 
-                        FROM information_schema.processlist 
-                        WHERE user = :username";
-                $stmt = $this->connection->prepare($sql);
-                $stmt->execute([':username' => $username]);
-                $killCommands = $stmt->fetchAll(PDO::FETCH_COLUMN);
-                foreach ($killCommands as $command) {
-                    try {
-                        $this->connection->exec($command);
-                    } catch (Exception $e) {
-                        // Connection might already be terminated
-                        Log::debug('Failed to kill connection', ['command' => $command]);
-                    }
+            $sql = "SELECT CONCAT('KILL ', id, ';') AS kill_command 
+                    FROM information_schema.processlist 
+                    WHERE user = :username";
+            $stmt = $this->connection->prepare($sql);
+            $stmt->execute(['username' => $username]);
+            $killCommands = $stmt->fetchAll(PDO::FETCH_COLUMN);
+            foreach ($killCommands as $command) {
+                try {
+                    $this->connection->exec($command);
+                } catch (Exception $e) {
+                    // Connection might already be terminated
+                    Log::debug('Failed to kill connection', ['command' => $command]);
                 }
-                $this->connection->exec("REVOKE ALL PRIVILEGES, GRANT OPTION FROM '{$username}'@'%' ");
-                $this->connection->exec("DROP USER IF EXISTS '{$username}'@'%' ");
-                $this->connection->exec('FLUSH PRIVILEGES');
-                $this->connection->commit();
-                return true;
-            } catch (Exception $e) {
-                $this->connection->rollBack();
-                throw $e;
             }
+            $this->connection->exec("DROP USER IF EXISTS '{$username}'@'%' ");
+            $this->connection->exec('FLUSH PRIVILEGES');
+            return true;
         } catch (Exception $e) {
             $this->handleError('terminateUser', $e, ['username' => $username]);
             return false;
@@ -184,17 +187,17 @@ class MySQLDriver extends AbstractDatabaseDriver
                     MAX(event_time) AS last_timestamp,
                     command_type,
                     COUNT(*) AS count,
-                    CAST(argument AS CHAR) AS argument
+                    CAST(argument AS CHAR) AS query
                 FROM mysql.general_log 
                 WHERE command_type NOT IN ('Quit', 'Close stmt', 'Init DB', 'Connect')
-                AND user_host LIKE '%test%'
+                AND user_host LIKE :usernamePattern
                 AND CAST(argument AS CHAR) NOT REGEXP '(SET NAMES|SET sql_quote_show_create|SET CHARACTER SET|SET character_set|SET collation_connection|SET lc_messages|SELECT USER()|CONNECTION_ID|current_user|SELECT @@|SHOW |information_schema|performance_schema|SELECT DATABASE|SET autocommit)'
                 GROUP BY CAST(argument AS CHAR), command_type
                 ORDER BY MAX(event_time) DESC";
 
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([
-                ':username_pattern' => $username.'%',
+                'usernamePattern' => '%'.$username.'%',
             ]);
             return array_map(Query::fromArray(...), $stmt->fetchAll());
         } catch (Exception $e) {

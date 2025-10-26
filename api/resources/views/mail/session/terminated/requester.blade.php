@@ -22,9 +22,9 @@ A session can be terminated for several reasons:
 - **Emergency access revocation:** Immediate security response required
 
 ## Immediate Actions Taken
-✅ Your JIT database credentials have been immediately revoked
-✅ You no longer have access to {{ $session->asset->name }}
-✅ All session activities have been recorded for audit
+- ✅ Your JIT database credentials have been immediately revoked
+- ✅ You no longer have access to {{ $session->asset->name }}
+- ✅ All session activities have been recorded for audit
 
 ## What Happens Next
 

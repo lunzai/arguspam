@@ -6,7 +6,7 @@ use App\Enums\Dbms;
 use App\Http\Requests\Asset\UpdateAssetCredentialRequest;
 use App\Models\Asset;
 use App\Models\AssetAccount;
-use App\Services\Jit\Secrets\SecretsManager;
+use App\Services\Jit\JitManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
 use Mockery;
@@ -16,7 +16,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected SecretsManager $secretsManager;
+    protected JitManager $jitManager;
 
     protected Asset $asset;
 
@@ -24,7 +24,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
     {
         parent::setUp();
 
-        $this->secretsManager = Mockery::mock(SecretsManager::class);
+        $this->jitManager = Mockery::mock(JitManager::class);
         $this->asset = Asset::factory()->create();
     }
 
@@ -38,7 +38,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
     public function it_authorizes_all_requests(): void
     {
         // Arrange
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
 
         // Act
         $result = $request->authorize();
@@ -57,7 +57,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
             'dbms' => Dbms::POSTGRESQL->value,
         ];
 
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -76,7 +76,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
             'password' => 'secret123',
         ];
 
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -92,7 +92,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
             'dbms' => Dbms::POSTGRESQL->value,
         ];
 
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -109,7 +109,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
             'dbms' => Dbms::POSTGRESQL->value,
         ];
 
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -126,7 +126,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
             'port' => 5432,
         ];
 
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -153,7 +153,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
                 'dbms' => Dbms::POSTGRESQL->value,
             ];
 
-            $request = new UpdateAssetCredentialRequest($this->secretsManager);
+            $request = new UpdateAssetCredentialRequest($this->jitManager);
             $validator = Validator::make($data, $request->rules());
 
             // Assert
@@ -179,7 +179,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
                 'dbms' => Dbms::POSTGRESQL->value,
             ];
 
-            $request = new UpdateAssetCredentialRequest($this->secretsManager);
+            $request = new UpdateAssetCredentialRequest($this->jitManager);
             $validator = Validator::make($data, $request->rules());
 
             // Assert
@@ -197,7 +197,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
             'dbms' => Dbms::POSTGRESQL->value,
         ];
 
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -218,7 +218,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
                 'dbms' => Dbms::POSTGRESQL->value,
             ];
 
-            $request = new UpdateAssetCredentialRequest($this->secretsManager);
+            $request = new UpdateAssetCredentialRequest($this->jitManager);
             $validator = Validator::make($data, $request->rules());
 
             // Assert
@@ -236,7 +236,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
             'dbms' => Dbms::POSTGRESQL->value,
         ];
 
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -254,7 +254,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
             'dbms' => Dbms::POSTGRESQL->value,
         ];
 
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -280,7 +280,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
                 'dbms' => $dbms->value,
             ];
 
-            $request = new UpdateAssetCredentialRequest($this->secretsManager);
+            $request = new UpdateAssetCredentialRequest($this->jitManager);
             $validator = Validator::make($data, $request->rules());
 
             // Assert
@@ -292,7 +292,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
     public function it_has_enum_validation_for_dbms(): void
     {
         // Arrange
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
 
         // Act
         $rules = $request->rules();
@@ -322,7 +322,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
             'password' => null,
         ];
 
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -341,7 +341,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
             'password' => '', // Empty password should fail required_with
         ];
 
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -361,7 +361,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
             'password' => 'secret123',
         ];
 
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
         $validator = Validator::make($data, $request->rules());
 
         // Act & Assert
@@ -373,7 +373,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
     public function it_has_prepare_for_validation_method(): void
     {
         // Arrange
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
 
         // Act
         $reflection = new \ReflectionMethod($request, 'prepareForValidation');
@@ -387,7 +387,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
     public function it_prepare_for_validation_normalizes_dbms_logic(): void
     {
         // Arrange & Act - Test the logic by reading the method
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
         $reflection = new \ReflectionMethod($request, 'prepareForValidation');
 
         // Assert - Verify method exists and is protected
@@ -409,7 +409,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
     public function it_has_after_validation_hook(): void
     {
         // Arrange
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
 
         // Act
         $after = $request->after();
@@ -424,7 +424,7 @@ class UpdateAssetCredentialRequestTest extends TestCase
     public function it_has_attributes_from_model(): void
     {
         // Arrange
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
 
         // Act
         $attributes = $request->attributes();
@@ -439,25 +439,25 @@ class UpdateAssetCredentialRequestTest extends TestCase
     public function it_constructs_with_secrets_manager_dependency(): void
     {
         // Arrange & Act
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
 
         // Assert
         $this->assertInstanceOf(UpdateAssetCredentialRequest::class, $request);
 
         // Use reflection to verify dependency injection
         $reflection = new \ReflectionClass($request);
-        $property = $reflection->getProperty('secretManager');
+        $property = $reflection->getProperty('jitManager');
         $property->setAccessible(true);
         $injectedManager = $property->getValue($request);
 
-        $this->assertSame($this->secretsManager, $injectedManager);
+        $this->assertSame($this->jitManager, $injectedManager);
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
     public function it_extends_form_request(): void
     {
         // Arrange
-        $request = new UpdateAssetCredentialRequest($this->secretsManager);
+        $request = new UpdateAssetCredentialRequest($this->jitManager);
 
         // Assert
         $this->assertInstanceOf(\Illuminate\Foundation\Http\FormRequest::class, $request);

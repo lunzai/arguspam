@@ -17,9 +17,12 @@ return new class extends Migration
             $table->string('username', 100)
                 ->after('user_id');
             $table->renameColumn('query_text', 'query');
+            $table->string('command_type', 100)
+                ->nullable()
+                ->after('query');
             $table->integer('count')
                 ->default(0)
-                ->after('query');
+                ->after('command_type');
             $table->renameColumn('query_timestamp', 'first_timestamp');
             $table->timestamp('first_timestamp')
                 ->nullable()

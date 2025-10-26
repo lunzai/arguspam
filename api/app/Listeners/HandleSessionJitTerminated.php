@@ -12,7 +12,7 @@ class HandleSessionJitTerminated implements ShouldBeEncrypted, ShouldQueue
 {
     use InteractsWithQueue;
 
-    public $tries = 5;
+    public $tries = 3;
     public $backoff = 10;
 
     public function __construct(private OpenAiService $openAiService) {}

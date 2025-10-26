@@ -63,9 +63,9 @@ While not critical, you may want to review this session to:
 - Verify that deviations from stated purpose are acceptable
 
 ## Your Options
-✅ **Review Now:** Click the button below to examine the session details and SQL queries
-⏭️ **Skip Review:** If you're confident this is acceptable, you can choose not to review
-📋 **Review Later:** The session details remain available for future audit if needed
+- ✅ **Review Now:** Click the button below to examine the session details and SQL queries
+- ⏭️ **Skip Review:** If you're confident this is acceptable, you can choose not to review
+- 📋 **Review Later:** The session details remain available for future audit if needed
 
 <x-mail::button :url="$url">
 View Session Details

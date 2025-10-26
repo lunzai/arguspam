@@ -5,18 +5,18 @@ namespace App\Http\Requests\Asset;
 use App\Enums\Dbms;
 use App\Enums\Status;
 use App\Models\Asset;
-use App\Services\Jit\Secrets\SecretsManager;
+use App\Services\Jit\JitManager;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
 
 class StoreAssetRequest extends FormRequest
 {
-    protected SecretsManager $secretManager;
+    protected JitManager $jitManager;
 
-    public function __construct(SecretsManager $secretManager)
+    public function __construct(JitManager $jitManager)
     {
-        $this->secretManager = $secretManager;
+        $this->jitManager = $jitManager;
     }
     /**
      * Determine if the user is authorized to make this request.
@@ -53,22 +53,21 @@ class StoreAssetRequest extends FormRequest
                 if ($validator->errors()->hasAny(['password', 'username'])) {
                     return;
                 }
-                try {
-                    $this->secretManager->getDatabaseDriver(new Asset([
-                        'org_id' => $this->org_id,
-                        'name' => $this->name,
-                        'description' => $this->description,
-                        'status' => $this->status,
-                        'host' => $this->host,
-                        'port' => $this->port,
-                        'dbms' => $this->dbms,
-                    ]), [
-                        'password' => $this->password,
-                        'username' => $this->username,
-                    ]);
-                } catch (\Exception $e) {
+                $testResult = $this->jitManager->testConnection(new Asset([
+                    'org_id' => $this->org_id,
+                    'name' => $this->name,
+                    'description' => $this->description,
+                    'status' => $this->status,
+                    'host' => $this->host,
+                    'port' => $this->port,
+                    'dbms' => $this->dbms,
+                ]), [
+                    'password' => $this->password,
+                    'username' => $this->username,
+                ]);
+                if (!$testResult) {
                     $validator->errors()
-                        ->add('password', $e->getMessage());
+                        ->add('password', 'Invalid credentials');
                 }
             },
         ];

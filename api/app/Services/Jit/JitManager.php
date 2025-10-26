@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Jit\Secrets;
+namespace App\Services\Jit;
 
 use App\Enums\AssetAccountType;
 use App\Events\SessionJitCreated;
@@ -15,13 +15,19 @@ use App\Services\Jit\Databases\DatabaseDriverFactory;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
-class SecretsManager
+class JitManager
 {
     public function __construct(
         private DatabaseDriverFactory $driverFactory,
         private ?array $config = null
     ) {
         $this->config = $config ?? config('pam.database', []);
+    }
+
+    public function testConnection(Asset $asset, array $credentials): bool
+    {
+        $databaseDriver = $this->getDatabaseDriver($asset);
+        return $databaseDriver->testConnection($credentials);
     }
 
     public function getAllDatabases(Asset $asset): array
@@ -78,37 +84,47 @@ class SecretsManager
             $success = $databaseDriver->createUser(
                 $jitUsername,
                 $jitPassword,
-                $session->request->databases,
+                $session->request->databases ?? [], // TODO: Add select database feature in the future
                 $session->request->scope,
                 $session->scheduled_end_datetime
             );
             if (!$success) {
                 throw new Exception("Failed to create JIT user in database for session: {$session->id}");
             }
-            $databaseDriver->connection->beginTransaction();
-            try {
-                $jitAccount = AssetAccount::create([
-                    'asset_id' => $session->asset->id,
-                    'username' => $jitUsername,
-                    'password' => $jitPassword,
-                    'databases' => $session->request->databases,
-                    'type' => AssetAccountType::JIT,
-                    'expires_at' => $session->scheduled_end_datetime,
-                    'is_active' => true,
-                ]);
-                $updatedSession = $session->update([
-                    'asset_account_id' => $jitAccount->id,
-                    'account_name' => $jitUsername,
-                ]);
-                SessionJitCreated::dispatchIf($updatedSession && $jitAccount, $updatedSession);
-                $databaseDriver->connection->commit();
-                return $jitAccount;
-            } catch (Exception $e) {
-                $databaseDriver->connection->rollBack();
-                $databaseDriver->terminateUser($jitUsername, $session->request->databases);
-                throw $e;
-            }
+
+            // Create the AssetAccount record (no need for additional transaction as createUser already handled DB transaction)
+            $jitAccount = AssetAccount::create([
+                'asset_id' => $session->asset->id,
+                'username' => $jitUsername,
+                'password' => $jitPassword,
+                'databases' => $session->request->databases,
+                'type' => AssetAccountType::JIT,
+                'expires_at' => $session->scheduled_end_datetime,
+                'is_active' => true,
+            ]);
+
+            $updatedSession = $session->update([
+                'asset_account_id' => $jitAccount->id,
+                'account_name' => $jitUsername,
+            ]);
+
+            SessionJitCreated::dispatchIf($updatedSession && $jitAccount, $jitAccount);
+
+            return $jitAccount;
         } catch (Exception $e) {
+            // If we created the database user but failed to create the AssetAccount, clean up the database user
+            if (isset($jitUsername) && isset($session->request->databases)) {
+                try {
+                    $databaseDriver->terminateUser($jitUsername, $session->request->databases);
+                } catch (Exception $cleanupException) {
+                    Log::warning('Failed to clean up database user after account creation failure', [
+                        'session_id' => $session->id,
+                        'username' => $jitUsername,
+                        'error' => $cleanupException->getMessage(),
+                    ]);
+                }
+            }
+
             Log::error('Failed to create JIT account for session', ['session_id' => $session->id, 'error' => $e->getMessage()]);
             throw new Exception($e->getMessage());
         }
@@ -142,7 +158,7 @@ class SecretsManager
                 ]);
                 // Continue with termination even if audit log retrieval fails
             }
-            return $databaseDriver->terminateUser($jitAccount->username, $session->request->databases);
+            return $databaseDriver->terminateUser($jitAccount->username, $session->request->databases ?? []);
         } catch (Exception $e) {
             Log::error('Failed to terminate JIT account', [
                 'session_id' => $session->id,

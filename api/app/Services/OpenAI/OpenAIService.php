@@ -93,7 +93,7 @@ class OpenAiService
 
     private function getResponse(string $systemPrompt, string $userPrompt, array $format = []): CreateResponse
     {
-        $response = OpenAI::responses()->create([
+        $config = [
             'model' => $this->config['model'],
             'input' => [
                 [
@@ -110,7 +110,14 @@ class OpenAiService
             'max_output_tokens' => $this->config['max_output_tokens'],
             'top_p' => $this->config['top_p'],
             'store' => $this->config['store'],
-        ]);
+        ];
+        if (str_starts_with($config['model'], 'gpt-5')) {
+            unset($config['temperature'], $config['top_p']);
+            $config['service_tier'] = 'flex';
+            $config['reasoning']['effort'] = 'low';
+            $config['text']['verbosity'] = 'low';
+        }
+        $response = OpenAI::responses()->create($config);
         return $response;
     }
 

@@ -9,7 +9,8 @@
 		LucideClipboardCheck,
 		X,
 		SquareTerminal,
-		Bot
+		Bot,
+		ArrowRightToLine
 	} from '@lucide/svelte';
 	import * as DL from '$components/description-list';
 	import { shortDateTime, shortDateTimeRange, relativeDateTime } from '$utils/date';
@@ -19,7 +20,7 @@
 	import type { User } from '$models/user';
 	import ApproveFormDialog from './approve-form-dialog.svelte';
 	import RejectFormDialog from './reject-form-dialog.svelte';
-	import { invalidate } from '$app/navigation';
+	import { invalidate, invalidateAll } from '$app/navigation';
 	import PageContent from './page-content.svelte';
 	import { Separator } from '$ui/separator';
 	import { StatusBadge } from '$components/badge';
@@ -58,7 +59,7 @@
 	bind:isOpen={approveDialogIsOpen}
 	data={data.approveForm}
 	onSuccess={async (data: Request) => {
-		await invalidate('requests:view');
+		invalidateAll();
 		approveDialogIsOpen = false;
 	}}
 />
@@ -67,7 +68,7 @@
 	bind:isOpen={rejectDialogIsOpen}
 	data={data.rejectForm}
 	onSuccess={async (data: Request) => {
-		await invalidate('requests:view');
+		invalidateAll();
 		rejectDialogIsOpen = false;
 	}}
 />
@@ -86,7 +87,7 @@
 					return async ({ result, update }) => {
 						if (result.type === 'success') {
 							toast.success('Request cancelled successfully');
-							invalidate('requests:view');
+							invalidateAll();
 							cancel();
 						} else {
 							toast.error('Failed to cancel request');
@@ -225,15 +226,25 @@
 					<DL.Row orientation="vertical">
 						<DL.Label>Cancelled At</DL.Label>
 						<DL.Content>
-							{shortDateTime(model.updated_at as Date)}
+							{shortDateTime(model.cancelled_at as Date)}
 						</DL.Content>
 					</DL.Row>
 				{/if}
 			</DL.Root>
 		</Card.Content>
-		{#if permissions.canApprove || permissions.canCancel}
+		{#if permissions.canApprove || permissions.canCancel || model.status == 'approved'}
 			<Separator />
 			<Card.Footer class="flex-col gap-2">
+				{#if session}
+					<Button
+						variant="outline"
+						class="flex w-full justify-between transition-all duration-200 hover:cursor-pointer hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
+						href="/sessions/{session.id}"
+					>
+						<div class="ml-4 flex-1 text-center">Go To Session</div>
+						<ArrowRightToLine class="h-4 w-4" />
+					</Button>
+				{/if}
 				{#if permissions.canApprove}
 					<Button
 						variant="outline"

@@ -6,21 +6,17 @@ use App\Models\Request;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Notification;
 
 class RequestRejectedNotifyApprover extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $request;
-
     /**
      * Create a new notification instance.
      */
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
+    public function __construct(protected Request $request) {}
 
     /**
      * Get the notification's delivery channels.
@@ -29,7 +25,13 @@ class RequestRejectedNotifyApprover extends Notification implements ShouldQueue
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        $channels = ['mail'];
+
+        if (config('pam.notification.slack.enabled', false)) {
+            $channels[] = 'slack';
+        }
+
+        return $channels;
     }
 
     /**
@@ -49,6 +51,20 @@ class RequestRejectedNotifyApprover extends Notification implements ShouldQueue
                 'url' => config('pam.app.web_url').'/requests/'.$this->request->id,
             ]);
     }
+
+    // public function toSlack(object $notifiable): SlackMessage
+    // {
+    //     return (new SlackMessage)
+    //         ->from('Argus PAM')
+    //         ->to(config('pam.notification.slack.channel.requests'))
+    //         ->content('❌ Request Rejected: '.$this->request->asset->name)
+    //         ->attachment(function ($attachment) {
+    //             $attachment->title('Request Rejected', config('pam.app.web_url').'/requests/'.$this->request->id)
+    //                 ->content('Request for *'.$this->request->asset->name.'* has been rejected.')
+    //                 ->color('danger')
+    //                 ->markdown();
+    //         });
+    // }
 
     /**
      * Get the array representation of the notification.

@@ -22,14 +22,17 @@ class SessionAuditResource extends Resource
         return [
             'attributes' => [
                 'id' => $this->id,
-                'orgId' => $this->org_id,
-                'sessionId' => $this->session_id,
-                'requestId' => $this->request_id,
-                'assetId' => $this->asset_id,
-                'userId' => $this->user_id,
-                'queryText' => $this->query_text,
-                'queryTimestamp' => $this->query_timestamp,
-                'createdAt' => $this->created_at,
+                'org_id' => $this->org_id,
+                'session_id' => $this->session_id,
+                'asset_id' => $this->asset_id,
+                'user_id' => $this->user_id,
+                'username' => $this->username,
+                'query' => $this->query,
+                'command_type' => $this->command_type,
+                'count' => $this->count,
+                'first_timestamp' => $this->first_timestamp,
+                'last_timestamp' => $this->last_timestamp,
+                'created_at' => $this->created_at,
             ],
             $this->mergeWhen($this->hasRelation(), [
                 'relationships' => [

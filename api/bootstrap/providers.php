@@ -2,6 +2,8 @@
 
 return [
     App\Providers\AppServiceProvider::class,
+    App\Providers\HorizonServiceProvider::class,
+    App\Providers\JitServiceProvider::class,
     Torann\GeoIP\GeoIPServiceProvider::class,
-    App\Services\Secrets\SecretsServiceProvider::class,
+    Illuminate\Notifications\SlackChannelServiceProvider::class,
 ];

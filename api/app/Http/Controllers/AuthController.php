@@ -19,7 +19,18 @@ class AuthController extends Controller
 {
     public function me(Request $request): UserResource
     {
-        return UserResource::make($request->user());
+        $user = $request->user();
+        $user
+            ->loadMissing(
+                'orgs',
+                'userGroups',
+                'restrictions',
+                'roles',
+                'permissions'
+            )
+            ->loadCount('scheduledSessions', 'submittedRequests');
+        $user->permissionNames = $user->permissions()->pluck('name')->unique();
+        return UserResource::make($user);
     }
 
     public function login(LoginRequest $request): JsonResponse

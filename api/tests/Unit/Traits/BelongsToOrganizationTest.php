@@ -2,6 +2,8 @@
 
 namespace Tests\Unit\Traits;
 
+use App\Enums\Dbms;
+use App\Enums\Status;
 use App\Models\Asset;
 use App\Models\Org;
 use App\Models\User;
@@ -39,6 +41,8 @@ class BelongsToOrganizationTest extends TestCase
             'name' => 'Asset 1',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => Status::ACTIVE->value,
+            'dbms' => Dbms::MYSQL->value,
         ]);
 
         $this->setCurrentOrganization($this->org2->id);
@@ -47,6 +51,8 @@ class BelongsToOrganizationTest extends TestCase
             'name' => 'Asset 2',
             'host' => '192.168.1.2',
             'port' => 3306,
+            'status' => Status::ACTIVE->value,
+            'dbms' => Dbms::MYSQL->value,
         ]);
 
         $this->setCurrentOrganization($this->org1->id);
@@ -65,6 +71,8 @@ class BelongsToOrganizationTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => Status::ACTIVE->value,
+            'dbms' => Dbms::MYSQL->value,
         ]);
 
         $this->assertEquals($this->org1->id, $asset->org_id);
@@ -79,6 +87,8 @@ class BelongsToOrganizationTest extends TestCase
             'host' => '192.168.1.1',
             'port' => 3306,
             'org_id' => $this->org2->id,
+            'status' => Status::ACTIVE->value,
+            'dbms' => Dbms::MYSQL->value,
         ]);
 
         $this->assertEquals($this->org2->id, $asset->org_id);
@@ -92,6 +102,8 @@ class BelongsToOrganizationTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => Status::ACTIVE->value,
+            'dbms' => Dbms::MYSQL->value,
         ]);
 
         $this->assertInstanceOf(Org::class, $asset->org);
@@ -103,11 +115,11 @@ class BelongsToOrganizationTest extends TestCase
     {
         $this->setCurrentOrganization($this->org1->id);
 
-        Asset::create(['name' => 'Asset 1', 'host' => '192.168.1.1', 'port' => 3306]);
+        Asset::create(['name' => 'Asset 1', 'host' => '192.168.1.1', 'port' => 3306, 'status' => Status::ACTIVE->value, 'dbms' => Dbms::MYSQL->value]);
 
         $this->setCurrentOrganization($this->org2->id);
 
-        Asset::create(['name' => 'Asset 2', 'host' => '192.168.1.2', 'port' => 3306]);
+        Asset::create(['name' => 'Asset 2', 'host' => '192.168.1.2', 'port' => 3306, 'status' => Status::ACTIVE->value, 'dbms' => Dbms::MYSQL->value]);
 
         // Use withoutOrganizationScope to bypass global scope, then apply forOrganization
         $org1Assets = Asset::withoutOrganizationScope()->forOrganization($this->org1->id)->get();
@@ -123,11 +135,11 @@ class BelongsToOrganizationTest extends TestCase
     {
         $this->setCurrentOrganization($this->org1->id);
 
-        Asset::create(['name' => 'Asset 1', 'host' => '192.168.1.1', 'port' => 3306]);
+        Asset::create(['name' => 'Asset 1', 'host' => '192.168.1.1', 'port' => 3306, 'status' => Status::ACTIVE->value, 'dbms' => Dbms::MYSQL->value]);
 
         $this->setCurrentOrganization($this->org2->id);
 
-        Asset::create(['name' => 'Asset 2', 'host' => '192.168.1.2', 'port' => 3306]);
+        Asset::create(['name' => 'Asset 2', 'host' => '192.168.1.2', 'port' => 3306, 'status' => Status::ACTIVE->value, 'dbms' => Dbms::MYSQL->value]);
 
         $allAssets = Asset::withoutOrganizationScope()->get();
 
@@ -142,6 +154,8 @@ class BelongsToOrganizationTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => Status::ACTIVE->value,
+            'dbms' => Dbms::MYSQL->value,
         ]);
 
         $this->assertTrue($asset->isInOrganization($this->org1->id));
@@ -156,6 +170,8 @@ class BelongsToOrganizationTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => Status::ACTIVE->value,
+            'dbms' => Dbms::MYSQL->value,
         ]);
 
         $this->assertTrue($asset->isInCurrentOrganization());
@@ -174,6 +190,8 @@ class BelongsToOrganizationTest extends TestCase
             'host' => '192.168.1.1',
             'port' => 3306,
             'org_id' => $this->org1->id,
+            'status' => Status::ACTIVE->value,
+            'dbms' => Dbms::MYSQL->value,
         ]);
 
         $this->assertFalse($asset->isInCurrentOrganization());
@@ -268,6 +286,8 @@ class BelongsToOrganizationTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => Status::ACTIVE->value,
+            'dbms' => Dbms::MYSQL->value,
         ], $this->org1->id);
 
         $this->assertEquals($this->org1->id, $asset->org_id);
@@ -282,6 +302,8 @@ class BelongsToOrganizationTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => Status::ACTIVE->value,
+            'dbms' => Dbms::MYSQL->value,
         ]);
 
         $this->assertEquals($this->org1->id, $asset->org_id);
@@ -298,6 +320,8 @@ class BelongsToOrganizationTest extends TestCase
             'name' => 'Test Asset',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => Status::ACTIVE->value,
+            'dbms' => Dbms::MYSQL->value,
         ]);
     }
 
@@ -305,11 +329,11 @@ class BelongsToOrganizationTest extends TestCase
     {
         $this->setCurrentOrganization($this->org1->id);
 
-        Asset::create(['name' => 'Asset 1', 'host' => '192.168.1.1', 'port' => 3306]);
+        Asset::create(['name' => 'Asset 1', 'host' => '192.168.1.1', 'port' => 3306, 'status' => Status::ACTIVE->value, 'dbms' => Dbms::MYSQL->value]);
 
         $this->setCurrentOrganization($this->org2->id);
 
-        Asset::create(['name' => 'Asset 2', 'host' => '192.168.1.2', 'port' => 3306]);
+        Asset::create(['name' => 'Asset 2', 'host' => '192.168.1.2', 'port' => 3306, 'status' => Status::ACTIVE->value, 'dbms' => Dbms::MYSQL->value]);
 
         $this->setCurrentOrganization($this->org1->id);
 
@@ -347,6 +371,7 @@ class BelongsToOrganizationTest extends TestCase
         $userGroup = UserGroup::create([
             'name' => 'Test Group',
             'description' => 'Test Description',
+            'status' => Status::ACTIVE->value,
         ]);
 
         $this->assertEquals($this->org1->id, $userGroup->org_id);
@@ -362,14 +387,18 @@ class BelongsToOrganizationTest extends TestCase
             'name' => 'Asset 1',
             'host' => '192.168.1.1',
             'port' => 3306,
+            'status' => Status::ACTIVE->value,
             'org_id' => $this->org1->id,
+            'dbms' => Dbms::MYSQL->value,
         ]);
 
         $asset2 = Asset::create([
             'name' => 'Asset 2',
             'host' => '192.168.1.2',
             'port' => 3306,
+            'status' => Status::ACTIVE->value,
             'org_id' => $this->org2->id,
+            'dbms' => Dbms::MYSQL->value,
         ]);
 
         $allAssets = Asset::all();

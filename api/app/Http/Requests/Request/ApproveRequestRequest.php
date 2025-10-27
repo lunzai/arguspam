@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Request;
 
-use App\Enums\RequestScope;
+use App\Enums\DatabaseScope;
 use App\Enums\RiskRating;
 use App\Models\Request;
 use Carbon\Carbon;
@@ -52,7 +52,7 @@ class ApproveRequestRequest extends FormRequest
                 'min:'.$this->durationMin,
                 'max:'.$this->durationMax,
             ],
-            'scope' => ['required', new Enum(RequestScope::class)],
+            'scope' => ['required', new Enum(DatabaseScope::class)],
             'approver_note' => ['required', 'string'],
             'approver_risk_rating' => ['required', new Enum(RiskRating::class)],
         ];

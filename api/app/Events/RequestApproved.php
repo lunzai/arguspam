@@ -10,13 +10,8 @@ use Illuminate\Queue\SerializesModels;
 class RequestApproved
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
-    public $request;
     /**
      * Create a new event instance.
      */
-    public function __construct(Request $request)
-    {
-        $this->request = $request;
-    }
+    public function __construct(public Request $request) {}
 }

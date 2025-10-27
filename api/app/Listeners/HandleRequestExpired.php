@@ -29,7 +29,9 @@ class HandleRequestExpired implements ShouldBeEncrypted, ShouldQueue
     public function handle(RequestExpired $event): void
     {
         $request = $event->request;
-        $request->requester->notify(new RequestExpiredNotification($request));
+        $request
+            ->requester
+            ->notify(new RequestExpiredNotification($request));
     }
 
     public function failed(RequestExpired $event, \Throwable $exception): void

@@ -16,10 +16,10 @@ class AssetAccountController extends Controller
         DB::transaction(function () use ($validated, $asset) {
             $asset->update($validated);
             if (isset($validated['username']) && isset($validated['password'])) {
-                $asset->adminAccount()->update([
-                    'username' => $validated['username'],
-                    'password' => $validated['password'],
-                ]);
+                $adminAccount = $asset->adminAccount;
+                $adminAccount->username = $validated['username'];
+                $adminAccount->password = $validated['password'];
+                $adminAccount->save();
             }
         });
         $asset->refresh();

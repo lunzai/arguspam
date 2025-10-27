@@ -11,15 +11,8 @@ class SessionStarted
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $session;
-    public array $credentials;
-
     /**
      * Create a new event instance.
      */
-    public function __construct(Session $session, array $credentials)
-    {
-        $this->session = $session;
-        $this->credentials = $credentials;
-    }
+    public function __construct(public Session $session) {}
 }

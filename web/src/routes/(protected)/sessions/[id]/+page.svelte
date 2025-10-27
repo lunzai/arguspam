@@ -1,65 +1,67 @@
 <script lang="ts">
-	import * as Card from '$ui/card';
-	import { Button } from '$ui/button';
-	import { Pencil, Trash2 } from '@lucide/svelte';
-	import * as DL from '$components/description-list';
-	import { relativeDateTime } from '$utils/date';
+	import { shortDateTimeRange } from '$utils/date';
 	import type { ApiSessionResource } from '$resources/session';
 	import type { Session } from '$models/session';
+	import type { Asset } from '$models/asset';
+	import type { User } from '$models/user';
+	import type { Request } from '$models/request';
+	import type { SessionAuditCollection } from '$lib/resources/session-audit';
+	import Sidebar from './sidebar.svelte';
+	import Progress from './progress.svelte';
+	import TabDetails from './tab/details.svelte';
+	import TabAudits from './tab/audits.svelte';
+	import { Separator } from '$ui/separator';
+	import type { SessionFlagCollection } from '$lib/resources/session-flag';
+	import * as Tabs from '$ui/tabs';
 
 	let { data } = $props();
+	const permissions = $derived(data.permissions);
 	const modelResource = $derived(data.model as ApiSessionResource);
 	const model = $derived(modelResource.data.attributes as Session);
-	const modelName = 'sessions';
-	const modelTitle = 'Session';
+	const asset = $derived(modelResource.data.relationships?.asset?.attributes as Asset);
+	const requester = $derived(modelResource.data.relationships?.requester?.attributes as User);
+	const request = $derived(modelResource.data.relationships?.request?.attributes as Request);
+	const approver = $derived(modelResource.data.relationships?.approver?.attributes as User);
+	const audits = $derived(modelResource.data.relationships?.audits as SessionAuditCollection);
+	const flags = $derived(modelResource.data.relationships?.flags as SessionFlagCollection);
+	const user = $derived(data.user as User);
 </script>
 
-<h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.id}</h1>
-<Card.Root class="w-full">
-	<Card.Header>
-		<Card.Title class="text-lg">{modelTitle}</Card.Title>
-		<Card.Description>View {modelTitle.toLowerCase()} details.</Card.Description>
-		<Card.Action>
-			<Button
-				variant="outline"
-				class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-				href={`/${modelName}/${model.id}/edit`}
-			>
-				<Pencil class="h-4 w-4" />
-				Edit
-			</Button>
-			<Button
-				variant="outline"
-				class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
-				href={`/${modelName}/${model.id}/delete`}
-			>
-				<Trash2 class="h-4 w-4" />
-				Delete
-			</Button>
-		</Card.Action>
-	</Card.Header>
-	<Card.Content>
-		<DL.Root divider={null}>
-			<DL.Row>
-				<DL.Label>ID</DL.Label>
-				<DL.Content>{model.id}</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Name</DL.Label>
-				<DL.Content>{model.id}</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Created At</DL.Label>
-				<DL.Content>
-					{relativeDateTime(model.created_at)}
-				</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Updated At</DL.Label>
-				<DL.Content>
-					{relativeDateTime(model.updated_at)}
-				</DL.Content>
-			</DL.Row>
-		</DL.Root>
-	</Card.Content>
-</Card.Root>
+<div class="flex flex-col space-y-4">
+	<h1 class="text-2xl font-medium capitalize">
+		Session - #{model.id} - {asset.name} ({shortDateTimeRange(
+			model.scheduled_start_datetime,
+			model.scheduled_end_datetime
+		)})
+	</h1>
+	<Separator />
+	<div class="mt-2 flex flex-col gap-6 lg:flex-row">
+		<aside class="flex w-full flex-col gap-6 lg:w-64">
+			<Sidebar {model} {asset} {requester} {permissions} {request} {approver} {user} />
+			<Progress {model} />
+		</aside>
+		<Separator orientation="vertical" class="hidden lg:block" />
+		<div class="min-w-0 flex-1">
+			<div class="w-full">
+				<Tabs.Root value="details">
+					<Tabs.List>
+						<Tabs.Trigger value="details" class="cursor-pointer px-5 py-1.5">Details</Tabs.Trigger>
+						<Tabs.Trigger
+							disabled={audits?.length === 0}
+							value="audits"
+							class="px-5 py-1.5 {audits?.length > 0
+								? 'cursor-pointer'
+								: 'hover:cursor-not-allowed'}">Audits</Tabs.Trigger
+						>
+					</Tabs.List>
+					<Tabs.Content value="details">
+						<TabDetails {model} {asset} {requester} {request} {approver} {flags} />
+					</Tabs.Content>
+					<Tabs.Content value="audits">
+						<TabAudits {model} {audits} />
+					</Tabs.Content>
+				</Tabs.Root>
+			</div>
+		</div>
+	</div>
+</div>

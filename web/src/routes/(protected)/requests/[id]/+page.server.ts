@@ -14,7 +14,7 @@ export const load = async ({ params, locals, depends }) => {
 	const model = (await modelService.findById(id, {
 		include: ['account', 'accessGrants', 'asset', 'requester', 'approver', 'rejecter', 'session']
 	})) as ApiRequestResource;
-	const permissions = await modelService.canApprove(Number(id));
+	const permissions = await modelService.permission(Number(id));
 	const approveForm = await superValidate(
 		{
 			start_datetime: new Date(model.data.attributes.start_datetime),

@@ -19,14 +19,14 @@ class UserAccessRestrictionController extends Controller
     public function index(User $user): UserAccessRestrictionCollection
     {
         $this->authorize('viewAny', UserAccessRestriction::class);
-        return new UserAccessRestrictionCollection($user->accessRestrictions);
+        return new UserAccessRestrictionCollection($user->restrictions);
     }
 
     public function store(StoreUserAccessRestrictionRequest $request, User $user): UserAccessRestrictionResource
     {
         $this->authorize('create', UserAccessRestriction::class);
         $validated = $request->validated();
-        $restriction = $user->accessRestrictions()->create($validated);
+        $restriction = $user->restrictions()->create($validated);
 
         return new UserAccessRestrictionResource($restriction);
     }

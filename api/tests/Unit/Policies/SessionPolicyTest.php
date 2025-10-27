@@ -13,7 +13,9 @@ use App\Models\Session;
 use App\Models\User;
 use App\Models\UserGroup;
 use App\Policies\SessionPolicy;
+use App\Services\OpenAI\OpenAiService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery;
 use Tests\TestCase;
 
 class SessionPolicyTest extends TestCase
@@ -33,6 +35,16 @@ class SessionPolicyTest extends TestCase
     {
         parent::setUp();
 
+        // Mock the OpenAI service to prevent API calls during tests
+        $this->mock(OpenAiService::class, function ($mock) {
+            $mock->shouldReceive('evaluateAccessRequest')->andReturn([
+                'output' => [
+                    'ai_note' => 'Test AI evaluation',
+                    'ai_risk_rating' => 'low',
+                ],
+            ]);
+        });
+
         $this->policy = new SessionPolicy;
         $this->user = User::factory()->create();
         $this->requester = User::factory()->create();
@@ -48,10 +60,17 @@ class SessionPolicyTest extends TestCase
             'approver_id' => $this->approver->id,
             'start_datetime' => now(),
             'end_datetime' => now()->addHour(),
+            'scheduled_start_datetime' => now(),
             'scheduled_end_datetime' => now()->addHour(),
             'requested_duration' => 60,
             'actual_duration' => 60,
         ]);
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
     }
 
     public function test_view_any_returns_true_when_user_has_permission(): void
@@ -165,6 +184,10 @@ class SessionPolicyTest extends TestCase
         $this->giveUserAssetAccess($this->user, $this->asset, AssetAccessRole::APPROVER);
         $this->giveUserPermission($this->user, 'session:terminate');
 
+        // Set session status to STARTED so it can be terminated
+        $this->session->status = \App\Enums\SessionStatus::STARTED;
+        $this->session->save();
+
         $this->assertTrue($this->policy->terminate($this->user, $this->session));
     }
 
@@ -179,6 +202,10 @@ class SessionPolicyTest extends TestCase
     public function test_retrieve_secret_returns_true_when_user_is_requester_with_permission(): void
     {
         $this->giveUserPermission($this->requester, 'session:retrievesecret');
+
+        // Set session to STARTED status so it's active
+        $this->session->status = \App\Enums\SessionStatus::STARTED;
+        $this->session->save();
 
         $this->assertTrue($this->policy->retrieveSecret($this->requester, $this->session));
     }
@@ -207,6 +234,10 @@ class SessionPolicyTest extends TestCase
     public function test_end_returns_true_when_user_is_requester_with_permission(): void
     {
         $this->giveUserPermission($this->requester, 'session:end');
+
+        // Set session to STARTED status so it can be ended
+        $this->session->status = \App\Enums\SessionStatus::STARTED;
+        $this->session->save();
 
         $this->assertTrue($this->policy->end($this->requester, $this->session));
     }
@@ -304,9 +335,15 @@ class SessionPolicyTest extends TestCase
         $this->giveUserPermission($this->requester, 'session:start');
         $this->giveUserPermission($this->requester, 'session:end');
 
+        // For start action, session should be in SCHEDULED status (canBeStarted)
+        $this->assertTrue($this->policy->start($this->requester, $this->session));
+
+        // Set session to STARTED for retrieveSecret and end actions
+        $this->session->status = \App\Enums\SessionStatus::STARTED;
+        $this->session->save();
+
         // Requester should be able to perform all actions
         $this->assertTrue($this->policy->retrieveSecret($this->requester, $this->session));
-        $this->assertTrue($this->policy->start($this->requester, $this->session));
         $this->assertTrue($this->policy->end($this->requester, $this->session));
 
         // Other user with same permissions should not be able to perform these actions
@@ -328,6 +365,10 @@ class SessionPolicyTest extends TestCase
 
     public function test_complex_terminate_logic(): void
     {
+        // Set session to STARTED status so it can be terminated
+        $this->session->status = \App\Enums\SessionStatus::STARTED;
+        $this->session->save();
+
         // Approver with terminate permission should be able to terminate others' sessions
         $approver = User::factory()->create();
         $this->giveUserAssetAccess($approver, $this->asset, AssetAccessRole::APPROVER);

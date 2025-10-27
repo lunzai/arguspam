@@ -15,7 +15,9 @@ class AssetPolicy
 
     public function view(User $user, Asset $asset): bool
     {
-        return $user->hasAnyPermission('asset:view') && ($user->canRequest($asset) || $user->canApprove($asset));
+        return $this->viewAny($user) ||
+            $user->hasAnyPermission('asset:view') ||
+            ($user->canRequest($asset) || $user->canApprove($asset));
     }
 
     public function create(User $user): bool

@@ -11,18 +11,11 @@ use Illuminate\Notifications\Notification;
 class SessionEndedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
-    protected $terminationResults;
-
-    protected $session;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(Session $session, array $terminationResults)
-    {
-        $this->session = $session;
-        $this->terminationResults = $terminationResults;
-    }
+    public function __construct(protected Session $session, protected array $terminationResults) {}
 
     /**
      * Get the notification's delivery channels.

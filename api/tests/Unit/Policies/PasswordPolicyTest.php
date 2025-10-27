@@ -24,21 +24,21 @@ class PasswordPolicyTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    public function test_update_returns_true_when_user_has_permission(): void
+    public function test_change_returns_true_when_user_has_permission(): void
     {
-        $this->giveUserPermission($this->user, 'password:update');
+        $this->giveUserPermission($this->user, 'password:change');
 
-        $this->assertTrue($this->policy->update($this->user));
+        $this->assertTrue($this->policy->change($this->user));
     }
 
-    public function test_update_returns_false_when_user_lacks_permission(): void
+    public function test_change_returns_false_when_user_lacks_permission(): void
     {
-        $this->assertFalse($this->policy->update($this->user));
+        $this->assertFalse($this->policy->change($this->user));
     }
 
-    public function test_user_with_no_permissions_cannot_update(): void
+    public function test_user_with_no_permissions_cannot_change(): void
     {
-        $this->assertFalse($this->policy->update($this->user));
+        $this->assertFalse($this->policy->change($this->user));
     }
 
     public function test_multiple_users_with_different_permissions(): void
@@ -46,34 +46,34 @@ class PasswordPolicyTest extends TestCase
         $authorizedUser = User::factory()->create();
         $unauthorizedUser = User::factory()->create();
 
-        $this->giveUserPermission($authorizedUser, 'password:update');
+        $this->giveUserPermission($authorizedUser, 'password:change');
 
-        $this->assertTrue($this->policy->update($authorizedUser));
-        $this->assertFalse($this->policy->update($unauthorizedUser));
-        $this->assertFalse($this->policy->update($this->user));
+        $this->assertTrue($this->policy->change($authorizedUser));
+        $this->assertFalse($this->policy->change($unauthorizedUser));
+        $this->assertFalse($this->policy->change($this->user));
     }
 
     public function test_permission_names_are_case_insensitive(): void
     {
-        $this->giveUserPermission($this->user, 'PASSWORD:UPDATE');
+        $this->giveUserPermission($this->user, 'PASSWORD:CHANGE');
 
-        $this->assertTrue($this->policy->update($this->user));
+        $this->assertTrue($this->policy->change($this->user));
     }
 
-    public function test_update_with_similar_but_different_permission_names(): void
+    public function test_change_with_similar_but_different_permission_names(): void
     {
         // Test with similar but different permission names
-        $this->giveUserPermission($this->user, 'password:create'); // Note: 'create' not 'update'
+        $this->giveUserPermission($this->user, 'password:create'); // Note: 'create' not 'change'
 
-        $this->assertFalse($this->policy->update($this->user)); // Should not match
+        $this->assertFalse($this->policy->change($this->user)); // Should not match
     }
 
     public function test_policy_handles_edge_cases(): void
     {
         // Test with permission that starts with the same prefix but is different
-        $this->giveUserPermission($this->user, 'password:updated');
+        $this->giveUserPermission($this->user, 'password:changed');
 
-        $this->assertFalse($this->policy->update($this->user)); // Should not match
+        $this->assertFalse($this->policy->change($this->user)); // Should not match
     }
 
     public function test_user_with_multiple_roles_and_permissions(): void
@@ -82,8 +82,8 @@ class PasswordPolicyTest extends TestCase
         $role2 = Role::factory()->create();
 
         $permission1 = Permission::firstOrCreate(
-            ['name' => 'password:update'],
-            ['description' => 'Update Password']
+            ['name' => 'password:change'],
+            ['description' => 'Change Password']
         );
         $permission2 = Permission::firstOrCreate(
             ['name' => 'some:other'],
@@ -96,7 +96,7 @@ class PasswordPolicyTest extends TestCase
         $this->user->roles()->attach([$role1->id, $role2->id]);
         $this->user->clearUserRolePermissionCache();
 
-        $this->assertTrue($this->policy->update($this->user));
+        $this->assertTrue($this->policy->change($this->user));
     }
 
     public function test_password_permission_is_independent_of_other_permissions(): void
@@ -106,19 +106,19 @@ class PasswordPolicyTest extends TestCase
         $this->giveUserPermission($userWithOtherPerms, 'user:view');
         $this->giveUserPermission($userWithOtherPerms, 'asset:view');
 
-        $this->assertFalse($this->policy->update($userWithOtherPerms));
+        $this->assertFalse($this->policy->change($userWithOtherPerms));
 
         // Different user with password permission should have access
         $userWithPassword = User::factory()->create();
-        $this->giveUserPermission($userWithPassword, 'password:update');
-        $this->assertTrue($this->policy->update($userWithPassword));
+        $this->giveUserPermission($userWithPassword, 'password:change');
+        $this->assertTrue($this->policy->change($userWithPassword));
     }
 
-    public function test_user_with_password_permission_only_has_update_access(): void
+    public function test_user_with_password_permission_only_has_change_access(): void
     {
-        $this->giveUserPermission($this->user, 'password:update');
+        $this->giveUserPermission($this->user, 'password:change');
 
-        $this->assertTrue($this->policy->update($this->user));
+        $this->assertTrue($this->policy->change($this->user));
 
         // User should not have any other permissions
         $this->assertFalse($this->user->hasAnyPermission('user:view'));
@@ -130,32 +130,32 @@ class PasswordPolicyTest extends TestCase
     {
         // Test that only exact permission match works
         $variations = [
-            'password:updates',
-            'password:updating',
+            'password:changes',
+            'password:changing',
             'password:view',
             'password:create',
             'password:delete',
-            'passwords:update',
-            'user:password:update',
+            'passwords:change',
+            'user:password:change',
         ];
 
         foreach ($variations as $variation) {
             $testUser = User::factory()->create();
             $this->giveUserPermission($testUser, $variation);
 
-            $this->assertFalse($this->policy->update($testUser), "Permission '{$variation}' should not grant update access");
+            $this->assertFalse($this->policy->change($testUser), "Permission '{$variation}' should not grant change access");
         }
     }
 
     public function test_multiple_password_permissions_scenario(): void
     {
         // Give user multiple password-related permissions
-        $this->giveUserPermission($this->user, 'password:update');
+        $this->giveUserPermission($this->user, 'password:change');
         $this->giveUserPermission($this->user, 'password:view');
         $this->giveUserPermission($this->user, 'password:create');
 
-        // Should still return true for update
-        $this->assertTrue($this->policy->update($this->user));
+        // Should still return true for change
+        $this->assertTrue($this->policy->change($this->user));
 
         // Verify user has multiple permissions
         $this->assertTrue($this->user->hasAnyPermission('password:view'));

@@ -31,7 +31,7 @@
 
 	const platformNavItems = [
 		{
-			title: 'Dashboard (TODO)',
+			title: 'Dashboard',
 			url: '/dashboard',
 			icon: LayoutDashboardIcon,
 			isActive: pathname.startsWith('/dashboard')
@@ -53,7 +53,7 @@
 					url: '/requests/assets'
 				},
 				{
-					title: 'Pending Approval (TODO)',
+					title: 'Pending Approval',
 					url: '/requests/pending-approval'
 				},
 				{
@@ -63,7 +63,7 @@
 			]
 		},
 		{
-			title: 'Sessions (TODO)',
+			title: 'Sessions',
 			url: '#',
 			icon: SquareTerminalIcon,
 			isActive: pathname.startsWith('/sessions'),
@@ -78,12 +78,12 @@
 				}
 			]
 		},
-		{
-			title: 'Audits (TODO)',
-			url: '/audits',
-			icon: Cctv,
-			isActive: pathname.startsWith('/audits')
-		},
+		// {
+		// 	title: 'Audits (TODO)',
+		// 	url: '/audits',
+		// 	icon: Cctv,
+		// 	isActive: pathname.startsWith('/audits')
+		// },
 		{
 			title: 'Settings',
 			url: '/settings/account',

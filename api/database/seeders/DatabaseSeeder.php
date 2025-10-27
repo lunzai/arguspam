@@ -17,13 +17,15 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    private const ORG_COUNT = 3;
+    private const ORG_COUNT = 2;
 
-    private const USER_COUNT = 100;
+    private const USER_COUNT = 50;
 
-    private const USER_GROUP_COUNT = 10;
+    private const USER_GROUP_COUNT = 5;
 
-    private const ASSET_COUNT = 25;
+    private const ASSET_COUNT = 8;
+
+    private const REQUEST_COUNT = 5;
 
     /**
      * Seed the application's database.
@@ -36,10 +38,10 @@ class DatabaseSeeder extends Seeder
         $defaultUserRole = Role::where('name', config('pam.rbac.default_user_role'))
             ->first();
 
-        $users = User::factory(2)
+        $defaultUser = User::factory(2)
             ->sequence(
-                ['name' => 'Admin', 'email' => 'admin@admin.com'],
-                ['name' => 'Hean Luen', 'email' => 'heanluen@gmail.com'],
+                ['name' => 'Admin', 'email' => 'admin@admin.com', 'default_timezone' => 'Asia/Singapore'],
+                ['name' => 'Hean Luen', 'email' => 'heanluen@gmail.com', 'default_timezone' => 'Asia/Singapore'],
             )
             ->hasAttached($defaultAdminRole)
             ->create();
@@ -59,7 +61,7 @@ class DatabaseSeeder extends Seeder
             )
             ->create();
 
-        $users->each(function ($user) use ($orgs) {
+        $defaultUser->each(function ($user) use ($orgs) {
             $user->orgs()->attach($orgs, ['joined_at' => now()->subDays(rand(0, 3))]);
         });
 
@@ -89,7 +91,7 @@ class DatabaseSeeder extends Seeder
                 ->recycle($orgs)
                 ->has(
                     AssetAccount::factory()
-                        ->count(rand(1, 2)),
+                        ->count(1),
                     'accounts'
                 )
                 ->create();
@@ -98,24 +100,38 @@ class DatabaseSeeder extends Seeder
 
             // TODO: Fix this
             $asset->users()->attach([
-                ...$assetOrgUsers->take($requesterCount)
-                    ->map(fn ($user) => [
-                        'asset_id' => $asset->id,
-                        'user_id' => $user->id,
-                        'created_by' => 1,
-                        'updated_by' => 1,
-                        'role' => AssetAccessRole::REQUESTER->value,
-                    ])
-                    ->all(),
-                ...$assetOrgUsers->skip($requesterCount)
-                    ->map(fn ($user) => [
-                        'asset_id' => $asset->id,
-                        'user_id' => $user->id,
-                        'created_by' => 1,
-                        'updated_by' => 1,
-                        'role' => AssetAccessRole::APPROVER->value,
-                    ])
-                    ->all(),
+                ...$defaultUser->map(fn ($user) => [
+                    'asset_id' => $asset->id,
+                    'user_id' => $user->id,
+                    'created_by' => 1,
+                    'updated_by' => 1,
+                    'role' => AssetAccessRole::REQUESTER->value,
+                ])->all(),
+                ...$defaultUser->map(fn ($user) => [
+                    'asset_id' => $asset->id,
+                    'user_id' => $user->id,
+                    'created_by' => 1,
+                    'updated_by' => 1,
+                    'role' => AssetAccessRole::APPROVER->value,
+                ])->all(),
+                // ...$assetOrgUsers->take($requesterCount)
+                //     ->map(fn ($user) => [
+                //         'asset_id' => $asset->id,
+                //         'user_id' => $user->id,
+                //         'created_by' => 1,
+                //         'updated_by' => 1,
+                //         'role' => AssetAccessRole::REQUESTER->value,
+                //     ])
+                //     ->all(),
+                // ...$assetOrgUsers->skip($requesterCount)
+                //     ->map(fn ($user) => [
+                //         'asset_id' => $asset->id,
+                //         'user_id' => $user->id,
+                //         'created_by' => 1,
+                //         'updated_by' => 1,
+                //         'role' => AssetAccessRole::APPROVER->value,
+                //     ])
+                //     ->all(),
             ]);
             $assets[] = $asset;
         }

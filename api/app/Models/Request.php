@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\RequestScope;
+use App\Enums\DatabaseScope;
 use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
 use App\Events\RequestApproved;
@@ -34,6 +34,7 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         'org_id',
         'asset_id',
         'asset_account_id',
+        'databases',
         'requester_id',
         'start_datetime',
         'end_datetime',
@@ -73,7 +74,8 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         'status' => RequestStatus::class,
         'approver_risk_rating' => RiskRating::class,
         'ai_risk_rating' => RiskRating::class,
-        'scope' => RequestScope::class,
+        'scope' => DatabaseScope::class,
+        'databases' => 'array',
     ];
 
     public static $attributeLabels = [
@@ -136,9 +138,10 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
     public function getAiEvaluation(OpenAiService $openAiService): void
     {
         $evaluation = $openAiService->evaluateAccessRequest($this);
+        $result = $evaluation['output_object'];
 
-        $this->ai_note = $evaluation['output']['ai_note'];
-        $this->ai_risk_rating = $evaluation['output']['ai_risk_rating'];
+        $this->ai_note = $result->aiNote;
+        $this->ai_risk_rating = $result->aiRiskRating;
         $this->save();
     }
 

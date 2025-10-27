@@ -4,10 +4,11 @@ namespace App\Models;
 
 use App\Enums\AssetAccountType;
 use App\Traits\HasBlamable;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class AssetAccount extends Model
 {
@@ -18,20 +19,23 @@ class AssetAccount extends Model
         'asset_id',
         'username',
         'password',
+        'databases',
         'type',
+        'ended_at',
         'expires_at',
         'is_active',
     ];
 
     protected $casts = [
+        'ended_at' => 'datetime',
+        'expires_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
-        'expires_at' => 'datetime',
         'is_active' => 'boolean',
         'type' => AssetAccountType::class,
         'password' => 'encrypted',
         'username' => 'encrypted',
+        'databases' => 'array',
     ];
 
     protected $hidden = [
@@ -50,38 +54,33 @@ class AssetAccount extends Model
 
     public static $includable = [
         'asset',
-        'requests',
-        'sessions',
+        'session',
         'createdBy',
         'updatedBy',
     ];
 
-    // TODO: To remove
-    // public function wipeCredentials()
-    // {
-    //     $this->username = 'trashed_' . Str::random(8);
-    //     $this->password = Str::password();
-    //     $this->save();
-    // }
-
-    public function scopeActive($query)
+    #[Scope]
+    public function active(Builder $query): void
     {
-        return $query->where('is_active', true);
+        $query->where('is_active', true);
     }
 
-    public function scopeExpired($query)
+    #[Scope]
+    public function expired(Builder $query): void
     {
-        return $query->where('expires_at', '<', now());
+        $query->where('expires_at', '<=', now());
     }
 
-    public function scopeJit($query)
+    #[Scope]
+    public function jit(Builder $query): void
     {
-        return $query->where('type', AssetAccountType::JIT);
+        $query->where('type', AssetAccountType::JIT);
     }
 
-    public function scopeAdmin($query)
+    #[Scope]
+    public function admin(Builder $query): void
     {
-        return $query->where('type', AssetAccountType::ADMIN);
+        $query->where('type', AssetAccountType::ADMIN);
     }
 
     public function isExpired(): bool
@@ -89,18 +88,25 @@ class AssetAccount extends Model
         return $this->expires_at && $this->expires_at->isPast();
     }
 
+    public function isJit(): bool
+    {
+        return $this->type === AssetAccountType::JIT;
+    }
+
+    public function end(): void
+    {
+        $this->is_active = false;
+        $this->ended_at = now();
+        $this->save();
+    }
+
     public function asset(): BelongsTo
     {
         return $this->belongsTo(Asset::class);
     }
 
-    public function requests(): HasMany
+    public function session(): HasOne
     {
-        return $this->hasMany(Request::class);
-    }
-
-    public function sessions(): HasMany
-    {
-        return $this->hasMany(Session::class);
+        return $this->hasOne(Session::class, 'asset_account_id', 'id');
     }
 }

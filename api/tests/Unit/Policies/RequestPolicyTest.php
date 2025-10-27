@@ -142,6 +142,7 @@ class RequestPolicyTest extends TestCase
     public function test_approve_returns_true_when_user_has_approve_any_permission(): void
     {
         $this->giveUserPermission($this->user, 'request:approveany');
+        $this->request->submit();
 
         $this->assertTrue($this->policy->approve($this->user, $this->request));
     }
@@ -150,6 +151,7 @@ class RequestPolicyTest extends TestCase
     {
         $this->giveUserPermission($this->approver, 'request:approve');
         $this->giveUserAssetApprovalAccess($this->approver, $this->asset);
+        $this->request->submit();
 
         $this->assertTrue($this->policy->approve($this->approver, $this->request));
     }
@@ -191,6 +193,7 @@ class RequestPolicyTest extends TestCase
     public function test_reject_returns_true_when_user_has_reject_any_permission(): void
     {
         $this->giveUserPermission($this->user, 'request:rejectany');
+        $this->request->submit();
 
         $this->assertTrue($this->policy->reject($this->user, $this->request));
     }
@@ -199,6 +202,7 @@ class RequestPolicyTest extends TestCase
     {
         $this->giveUserPermission($this->approver, 'request:reject');
         $this->giveUserAssetApprovalAccess($this->approver, $this->asset);
+        $this->request->submit();
 
         $this->assertTrue($this->policy->reject($this->approver, $this->request));
     }

@@ -5,18 +5,18 @@ namespace App\Http\Requests\Asset;
 use App\Enums\Dbms;
 use App\Models\Asset;
 use App\Models\AssetAccount;
-use App\Services\Secrets\SecretsManager;
+use App\Services\Jit\JitManager;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
 
 class UpdateAssetCredentialRequest extends FormRequest
 {
-    protected $secretManager;
+    protected $jitManager;
 
-    public function __construct(SecretsManager $secretManager)
+    public function __construct(JitManager $jitManager)
     {
-        $this->secretManager = $secretManager;
+        $this->jitManager = $jitManager;
     }
     /**
      * Determine if the user is authorized to make this request.
@@ -64,7 +64,7 @@ class UpdateAssetCredentialRequest extends FormRequest
                     return;
                 }
                 try {
-                    $this->secretManager->getDatabaseDriver(new Asset([
+                    $this->jitManager->testConnection(new Asset([
                         'host' => $this->host,
                         'port' => $this->port,
                         'dbms' => $this->dbms,

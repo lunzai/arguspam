@@ -10,37 +10,41 @@ class SessionStatusTest extends TestCase
     public function test_enum_cases_exist()
     {
         $cases = SessionStatus::cases();
-        $this->assertCount(5, $cases);
+        $this->assertCount(6, $cases);
 
         $this->assertContains(SessionStatus::SCHEDULED, $cases);
-        $this->assertContains(SessionStatus::ACTIVE, $cases);
+        $this->assertContains(SessionStatus::CANCELLED, $cases);
+        $this->assertContains(SessionStatus::STARTED, $cases);
+        $this->assertContains(SessionStatus::ENDED, $cases);
         $this->assertContains(SessionStatus::EXPIRED, $cases);
         $this->assertContains(SessionStatus::TERMINATED, $cases);
-        $this->assertContains(SessionStatus::ENDED, $cases);
     }
 
     public function test_enum_values()
     {
         $this->assertEquals('scheduled', SessionStatus::SCHEDULED->value);
-        $this->assertEquals('active', SessionStatus::ACTIVE->value);
+        $this->assertEquals('cancelled', SessionStatus::CANCELLED->value);
+        $this->assertEquals('started', SessionStatus::STARTED->value);
+        $this->assertEquals('ended', SessionStatus::ENDED->value);
         $this->assertEquals('expired', SessionStatus::EXPIRED->value);
         $this->assertEquals('terminated', SessionStatus::TERMINATED->value);
-        $this->assertEquals('ended', SessionStatus::ENDED->value);
     }
 
     public function test_enum_from_string()
     {
         $this->assertEquals(SessionStatus::SCHEDULED, SessionStatus::from('scheduled'));
-        $this->assertEquals(SessionStatus::ACTIVE, SessionStatus::from('active'));
+        $this->assertEquals(SessionStatus::CANCELLED, SessionStatus::from('cancelled'));
+        $this->assertEquals(SessionStatus::STARTED, SessionStatus::from('started'));
+        $this->assertEquals(SessionStatus::ENDED, SessionStatus::from('ended'));
         $this->assertEquals(SessionStatus::EXPIRED, SessionStatus::from('expired'));
         $this->assertEquals(SessionStatus::TERMINATED, SessionStatus::from('terminated'));
-        $this->assertEquals(SessionStatus::ENDED, SessionStatus::from('ended'));
     }
 
     public function test_enum_try_from_string()
     {
         $this->assertEquals(SessionStatus::SCHEDULED, SessionStatus::tryFrom('scheduled'));
-        $this->assertEquals(SessionStatus::ACTIVE, SessionStatus::tryFrom('active'));
+        $this->assertEquals(SessionStatus::CANCELLED, SessionStatus::tryFrom('cancelled'));
+        $this->assertEquals(SessionStatus::STARTED, SessionStatus::tryFrom('started'));
         $this->assertEquals(SessionStatus::EXPIRED, SessionStatus::tryFrom('expired'));
         $this->assertNull(SessionStatus::tryFrom('invalid'));
     }

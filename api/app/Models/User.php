@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\AssetAccessRole;
+use App\Enums\RequestStatus;
+use App\Enums\SessionStatus;
 use App\Enums\Status;
 use App\Http\Filters\QueryFilter;
 use App\Traits\HasBlamable;
@@ -18,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
@@ -58,9 +61,11 @@ class User extends Authenticatable
         'requesterAssetAccessGrants',
         'requests',
         'sessions',
-        'accessRestrictions',
+        'restrictions',
         'roles',
         'permissions',
+        'scheduledSessions',
+        'submittedRequests',
     ];
 
     protected function casts(): array
@@ -276,7 +281,37 @@ class User extends Authenticatable
 
     public function sessions(): HasMany
     {
-        return $this->hasMany(Session::class);
+        return $this->hasMany(Session::class, 'requester_id');
+    }
+
+    public function scheduledSessions(): HasMany
+    {
+        return $this->sessions()
+            ->where('status', SessionStatus::SCHEDULED->value);
+    }
+
+    public function submittedRequests(): HasMany
+    {
+        return $this->requests()
+            ->where('status', RequestStatus::SUBMITTED->value);
+    }
+
+    public function permissions(): BelongsToMany
+    {
+        return $this->belongsToMany(Permission::class, 'permission_role', 'role_id', 'permission_id')
+            ->whereIn('permission_role.role_id', function ($query) {
+                $query->select('role_id')
+                    ->from('role_user')
+                    ->where('user_id', $this->getKey());
+            })
+            ->distinct();
+    }
+
+    public function permissionNames(): Collection
+    {
+        return $this->permissions()
+            ->pluck('name')
+            ->unique();
     }
 
     public function sessionAudits(): HasMany
@@ -284,7 +319,7 @@ class User extends Authenticatable
         return $this->hasMany(SessionAudit::class);
     }
 
-    public function accessRestrictions(): HasMany
+    public function restrictions(): HasMany
     {
         return $this->hasMany(UserAccessRestriction::class);
     }

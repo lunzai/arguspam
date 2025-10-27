@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Models\Session;
-use App\Services\Secrets\SecretsManager;
+use App\Services\Jit\Secrets\SecretsManager;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -26,26 +26,24 @@ class ProcessExpiredSessions implements ShouldQueue
     public function handle(SecretsManager $secretsManager): void
     {
         // Find expired active sessions
-        $expiredSessions = Session::where('status', 'active')
+        $expiredSessions = Session::where('status', 'started')
             ->where('scheduled_end_datetime', '<', now())
             ->get();
 
         foreach ($expiredSessions as $session) {
             try {
                 // Terminate JIT account
-                $terminationResults = $secretsManager->terminateAccount($session);
+                $secretsManager->terminateAccount($session);
 
                 // Update session
                 $session->update([
                     'status' => 'expired',
-                    'is_expired' => true,
                     'end_datetime' => $session->scheduled_end_datetime,
                     'actual_duration' => $session->scheduled_end_datetime->diffInMinutes($session->start_datetime),
                 ]);
 
                 Log::info('Processed expired session', [
                     'session_id' => $session->id,
-                    'termination_results' => $terminationResults,
                 ]);
 
             } catch (\Exception $e) {

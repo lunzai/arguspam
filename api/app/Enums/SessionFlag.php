@@ -2,8 +2,11 @@
 
 namespace App\Enums;
 
+use App\Traits\EnumToString;
+
 enum SessionFlag: string
 {
+    use EnumToString;
     // Unauthorized access, privilege escalation, suspicious patterns, external data transfers
     case SECURITY_VIOLATION = 'SECURITY VIOLATION';
     // GDPR, regulatory, policy violations, audit tampering, data retention breaches

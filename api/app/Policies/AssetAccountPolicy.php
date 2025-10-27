@@ -7,21 +7,21 @@ use App\Models\User;
 
 class AssetAccountPolicy
 {
-    // public function viewAny(User $user): bool
-    // {
-    //     return $user->hasAnyPermission('assetaccount:viewany');
-    // }
+    public function viewAny(User $user): bool
+    {
+        return $user->hasAnyPermission('assetaccount:viewany');
+    }
 
-    // public function view(User $user, AssetAccount $assetAccount): bool
-    // {
-    //     return $this->viewAny($user) ||
-    //         ($user->canAccessAsset($user, $assetAccount->asset) && $user->hasAnyPermission('assetaccount:view'));
-    // }
+    public function view(User $user, AssetAccount $assetAccount): bool
+    {
+        return $this->viewAny($user) ||
+            ($user->canAccessAsset($user, $assetAccount->asset) && $user->hasAnyPermission('assetaccount:view'));
+    }
 
-    // public function create(User $user): bool
-    // {
-    //     return $user->hasAnyPermission('assetaccount:create');
-    // }
+    public function create(User $user): bool
+    {
+        return $user->hasAnyPermission('assetaccount:create');
+    }
 
     public function updateAny(User $user): bool
     {
@@ -34,13 +34,13 @@ class AssetAccountPolicy
             ($user->hasAnyPermission('assetaccount:update') && $user->canAccessAsset($user, $assetAccount->asset));
     }
 
-    // public function deleteAny(User $user): bool
-    // {
-    //     return $user->hasAnyPermission('assetaccount:deleteany');
-    // }
+    public function deleteAny(User $user): bool
+    {
+        return $user->hasAnyPermission('assetaccount:deleteany');
+    }
 
-    // public function restoreAny(User $user): bool
-    // {
-    //     return $user->hasAnyPermission('assetaccount:restoreany');
-    // }
+    public function restoreAny(User $user): bool
+    {
+        return $user->hasAnyPermission('assetaccount:restoreany');
+    }
 }

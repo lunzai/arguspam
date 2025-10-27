@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\RequestApproved;
+use App\Models\Session;
 use App\Notifications\RequestApprovedNotifyApprover;
 use App\Notifications\RequestApprovedNotifyRequester;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
@@ -31,8 +32,14 @@ class HandleRequestApproved implements ShouldBeEncrypted, ShouldQueue
     public function handle(RequestApproved $event): void
     {
         $request = $event->request;
-        $request->requester->notify(new RequestApprovedNotifyRequester($request));
-        $approvers = $request->asset->getApprovers();
+        Session::createFromRequest($request);
+        $request
+            ->requester
+            ->notify(new RequestApprovedNotifyRequester($request));
+        $approvers = $request
+            ->asset
+            ->getApprovers()
+            ->except($request->requester_id);
         Notification::send($approvers, new RequestApprovedNotifyApprover($request));
     }
 

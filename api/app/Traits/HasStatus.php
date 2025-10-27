@@ -3,10 +3,16 @@
 namespace App\Traits;
 
 use App\Enums\Status;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Builder;
 
 trait HasStatus
 {
-    protected string $statusColumn = 'status';
+    #[Scope]
+    public function active(Builder $query): void
+    {
+        $query->where('status', Status::ACTIVE->value);
+    }
 
     public function isActive(): bool
     {

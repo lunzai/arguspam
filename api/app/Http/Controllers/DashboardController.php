@@ -3,135 +3,43 @@
 namespace App\Http\Controllers;
 
 use App\Enums\CacheKey;
-use App\Enums\RequestStatus;
-use App\Enums\SessionStatus;
-use App\Enums\Status;
+use App\Services\DashboardService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
         $this->authorize('dashboard:viewany');
-        $cacheFlexibleDuration = [300, 3600];
-        $currentOrgId = request()->get(config('pam.org.request_attribute'));
+        $currentOrgId = $request->get(config('pam.org.request_attribute'));
+        $dashboardService = new DashboardService($currentOrgId);
+        $cacheFlexibleDuration = [5, 3600];
 
-        $userCount = Cache::flexible(
-            CacheKey::ORG_USERS_COUNT->key($currentOrgId),
+        $data = Cache::flexible(
+            CacheKey::DASHBOARD->key($currentOrgId),
             $cacheFlexibleDuration,
-            function () use ($currentOrgId) {
-                return DB::table('users')
-                    ->join('org_user', 'users.id', '=', 'org_user.user_id')
-                    ->where([
-                        'org_user.org_id' => $currentOrgId,
-                        'status' => Status::ACTIVE,
-                    ])
-                    ->count();
-            }
-        );
-
-        $userGroupCount = Cache::flexible(
-            CacheKey::ORG_USER_GROUPS_COUNT->key($currentOrgId),
-            $cacheFlexibleDuration,
-            function () use ($currentOrgId) {
-                return DB::table('user_groups')
-                    ->where([
-                        'org_id' => $currentOrgId,
-                        'status' => Status::ACTIVE,
-                    ])
-                    ->count();
-            }
-        );
-
-        $assetCount = Cache::flexible(
-            CacheKey::ORG_ASSETS_COUNT->key($currentOrgId),
-            $cacheFlexibleDuration,
-            function () use ($currentOrgId) {
-                return DB::table('assets')
-                    ->where([
-                        'org_id' => $currentOrgId,
-                        'status' => Status::ACTIVE,
-                    ])
-                    ->count();
-            }
-        );
-
-        $pendingRequestCount = Cache::flexible(
-            CacheKey::ORG_REQUESTS_PENDING_COUNT->key($currentOrgId),
-            $cacheFlexibleDuration,
-            function () use ($currentOrgId) {
-                return DB::table('requests')
-                    ->where([
-                        'org_id' => $currentOrgId,
-                        'status' => RequestStatus::PENDING,
-                    ])
-                    ->count();
-            }
-        );
-
-        $requestCount = Cache::flexible(
-            CacheKey::ORG_REQUESTS_COUNT->key($currentOrgId),
-            $cacheFlexibleDuration,
-            function () use ($currentOrgId) {
-                return DB::table('requests')
-                    ->where([
-                        'org_id' => $currentOrgId,
-                    ])
-                    ->count();
-            }
-        );
-
-        $scheduledSessionCount = Cache::flexible(
-            CacheKey::ORG_SESSIONS_SCHEDULED_COUNT->key($currentOrgId),
-            $cacheFlexibleDuration,
-            function () use ($currentOrgId) {
-                return DB::table('sessions')
-                    ->where([
-                        'org_id' => $currentOrgId,
-                        'status' => SessionStatus::SCHEDULED,
-                    ])
-                    ->count();
-            }
-        );
-
-        $activeSessionCount = Cache::flexible(
-            CacheKey::ORG_SESSIONS_ACTIVE_COUNT->key($currentOrgId),
-            $cacheFlexibleDuration,
-            function () use ($currentOrgId) {
-                return DB::table('sessions')
-                    ->where([
-                        'org_id' => $currentOrgId,
-                        'status' => SessionStatus::STARTED,
-                    ])
-                    ->count();
-            }
-        );
-
-        $sessionCount = Cache::flexible(
-            CacheKey::ORG_SESSIONS_COUNT->key($currentOrgId),
-            $cacheFlexibleDuration,
-            function () use ($currentOrgId) {
-                return DB::table('requests')
-                    ->where([
-                        'org_id' => $currentOrgId,
-                    ])
-                    ->count();
+            function () use ($dashboardService) {
+                return [
+                    'user_count' => $dashboardService->getUserCount(),
+                    'user_group_count' => $dashboardService->getUserGroupCount(),
+                    'asset_count' => $dashboardService->getAssetCount(),
+                    'request_count' => $dashboardService->getRequestCount(),
+                    'session_count' => $dashboardService->getSessionCount(),
+                    'request_status_count' => $dashboardService->getRequestStatusCount(90),
+                    'session_status_count' => $dashboardService->getSessionStatusCount(90),
+                    'session_flag_count' => $dashboardService->getSessionFlagCount(90),
+                    'asset_distribution' => $dashboardService->getAssetDistribution(),
+                    'request_scope_distribution' => $dashboardService->getRequestScopeDistribution(),
+                    'request_approver_risk_rating_distribution' => $dashboardService->getRequestApproverRiskRatingDistribution(),
+                    'session_audit_flag_distribution' => $dashboardService->getSessionAuditFlagDistribution(),
+                ];
             }
         );
 
         return response()->json([
-            'data' => [
-                'user_count' => $userCount,
-                'user_group_count' => $userGroupCount,
-                'asset_count' => $assetCount,
-                'pending_request_count' => $pendingRequestCount,
-                'request_count' => $requestCount,
-                'scheduled_session_count' => $scheduledSessionCount,
-                'active_session_count' => $activeSessionCount,
-                'session_count' => $sessionCount,
-            ],
+            'data' => $data,
         ]);
     }
 }

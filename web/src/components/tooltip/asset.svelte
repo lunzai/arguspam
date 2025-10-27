@@ -7,7 +7,7 @@
 
 <Tooltip.Root>
 	<Tooltip.Root>
-		<Tooltip.Trigger>
+		<Tooltip.Trigger class="text-left">
 			{#if children}
 				{@render children()}
 			{:else}

@@ -295,7 +295,10 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         $this->status = SessionStatus::TERMINATED;
         $this->terminated_at = now();
         $this->terminated_by = Auth::id();
-        $this->actual_duration = now()->diffInMinutes($this->started_at);
+        if ($this->start_datetime) {
+            $this->end_datetime = now();
+            $this->actual_duration = $this->start_datetime->diffInMinutes($this->end_datetime);
+        }        
         $this->assetAccount->end();
         // Moved actual account termination to listener because it's time consuming
         SessionTerminated::dispatchIf($this->save(), $this);

@@ -45,7 +45,7 @@
 	const canTerminate = $derived(
 		permissions.canTerminate && model.status == 'started' && user.id != model.requester_id
 	);
-	const canRetrieveSecret = $derived(permissions.canRetrieveSecret && model.status == 'started');
+	const canRetrieveSecret = $derived(permissions.canRetrieveSecret && model.status == 'started' && user.id == model.requester_id);
 	const showActions = $derived(canStart || canCancel || canEnd || canTerminate);
 
 	// const canStart = true;

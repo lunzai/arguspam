@@ -8,6 +8,10 @@ enum CacheKey: string
     case TIMEZONES = 'timezones';
     case AUTH_2FA_TEMP_KEY = 'auth:2fa:temp_key';
 
+    // DASHBOARD
+    case DASHBOARD = 'dashboard';
+
+    // --------------------------------
     // USER
     case USERS = 'users';
     case USER_ORG = 'user:org';
@@ -30,7 +34,7 @@ enum CacheKey: string
     case ACCESS_RESTRICTION_USER_GROUPS = 'access_restriction:user_groups';
 
     // DASHBOARD
-    case ORG_USERS_COUNT = 'org:user:count';
+
     case ORG_USER_GROUPS_COUNT = 'org:user_group:count';
     case ORG_ASSETS_COUNT = 'org:asset:count';
     case ORG_REQUESTS_COUNT = 'org:request:count';

@@ -64,12 +64,6 @@ return new class extends Migration
             $table->string('status', 20)->change();
         });
 
-        // Change user_access_restrictions enum columns
-        Schema::table('user_access_restrictions', function (Blueprint $table) {
-            $table->string('type', 20)->change();
-            $table->string('status', 20)->change();
-        });
-
         // Change access_restrictions enum columns
         Schema::table('access_restrictions', function (Blueprint $table) {
             $table->string('type', 20)->change();
@@ -124,12 +118,6 @@ return new class extends Migration
         // Revert sessions.status
         Schema::table('sessions', function (Blueprint $table) {
             $table->enum('status', array_column(SessionStatus::cases(), 'value'))->default(SessionStatus::SCHEDULED->value)->change();
-        });
-
-        // Revert user_access_restrictions enum columns
-        Schema::table('user_access_restrictions', function (Blueprint $table) {
-            $table->enum('type', array_column(AccessRestrictionType::cases(), 'value'))->change();
-            $table->enum('status', array_column(Status::cases(), 'value'))->default(Status::ACTIVE->value)->change();
         });
 
         // Revert access_restrictions enum columns

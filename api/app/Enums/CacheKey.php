@@ -61,13 +61,6 @@ enum CacheKey: string
     case SESSIONS = 'sessions';
     case SESSION_AUDITS = 'session_audits';
 
-    // NOT SURE
-    case SETTING_VALUE = 'settings:value';
-    case SETTING_KEY = 'settings:key';
-    case SETTING_ALL = 'settings:all';
-    case SETTING_GROUP = 'settings:group';
-    case SETTING_GROUP_ALL = 'settings:group:all';
-
     public function key($id): string
     {
         return "{$this->value}:{$id}";

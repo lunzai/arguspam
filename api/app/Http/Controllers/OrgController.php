@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\CacheKey;
 use App\Http\Filters\OrgFilter;
 use App\Http\Requests\Org\StoreOrgRequest;
 use App\Http\Requests\Org\UpdateOrgRequest;
@@ -13,7 +12,6 @@ use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 
 class OrgController extends Controller
 {
@@ -21,15 +19,8 @@ class OrgController extends Controller
 
     public function index(OrgFilter $filter, Request $request): OrgCollection
     {
-        $this->authorize('viewAny', Org::class);
+        $this->authorize('view', Org::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        // $orgs = Cache::remember(
-        //     CacheKey::ORGS->value,
-        //     config('cache.default_ttl'),
-        //     function () use ($filter, $pagination) {
-        //         return Org::filter($filter)->paginate($pagination);
-        //     }
-        // );
         $orgs = Org::filter($filter)
             ->paginate($pagination);
         return new OrgCollection($orgs);

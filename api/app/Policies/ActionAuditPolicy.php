@@ -6,8 +6,8 @@ use App\Models\User;
 
 class ActionAuditPolicy
 {
-    public function viewAny(User $user): bool
+    public function view(User $user): bool
     {
-        return $user->hasAnyPermission('actionaudit:viewany');
+        return $user->hasAnyPermission('actionaudit:view');
     }
 }

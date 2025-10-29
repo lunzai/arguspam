@@ -13,7 +13,6 @@ use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
 use App\Enums\SessionFlag;
 use App\Enums\SessionStatus;
-use App\Enums\SettingDataType;
 use App\Enums\Status;
 use App\Enums\UserRole;
 use PHPUnit\Framework\TestCase;
@@ -34,7 +33,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];
@@ -64,7 +62,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];
@@ -90,7 +87,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];
@@ -121,7 +117,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];
@@ -150,7 +145,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];
@@ -183,7 +177,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];
@@ -208,7 +201,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];
@@ -240,7 +232,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];
@@ -271,7 +262,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];
@@ -308,7 +298,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];
@@ -340,7 +329,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];
@@ -368,7 +356,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];
@@ -396,7 +383,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];
@@ -427,7 +413,6 @@ class AllEnumsTest extends TestCase
             RiskRating::class,
             SessionFlag::class,
             SessionStatus::class,
-            SettingDataType::class,
             Status::class,
             UserRole::class,
         ];

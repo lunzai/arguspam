@@ -7,15 +7,9 @@ use App\Models\UserGroup;
 
 class UserGroupPolicy
 {
-    public function viewAny(User $user): bool
-    {
-        return $user->hasAnyPermission('usergroup:viewany');
-    }
-
     public function view(User $user, UserGroup $userGroup): bool
     {
-        return $this->viewAny($user) ||
-            ($user->userGroups->contains($userGroup) && $user->hasAnyPermission('usergroup:view'));
+        return $user->hasAnyPermission('usergroup:view');
     }
 
     public function create(User $user): bool
@@ -23,24 +17,23 @@ class UserGroupPolicy
         return $user->hasAnyPermission('usergroup:create');
     }
 
-    public function updateAny(User $user): bool
-    {
-        return $user->hasAnyPermission('usergroup:updateany');
-    }
-
     public function update(User $user, UserGroup $userGroup): bool
     {
-        return $this->updateAny($user) ||
-            ($user->userGroups->contains($userGroup) && $user->hasAnyPermission('usergroup:update'));
+        return $user->hasAnyPermission('usergroup:update');
     }
 
-    public function deleteAny(User $user): bool
+    public function delete(User $user, UserGroup $userGroup): bool
     {
-        return $user->hasAnyPermission('usergroup:deleteany');
+        return $user->hasAnyPermission('usergroup:delete');
     }
 
-    public function restoreAny(User $user): bool
+    public function addUser(User $user, UserGroup $userGroup): bool
     {
-        return $user->hasAnyPermission('usergroup:restoreany');
+        return $user->hasAnyPermission('usergroup:adduser');
+    }
+
+    public function removeUser(User $user, UserGroup $userGroup): bool
+    {
+        return $user->hasAnyPermission('usergroup:removeuser');
     }
 }

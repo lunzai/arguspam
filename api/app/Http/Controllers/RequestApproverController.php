@@ -19,6 +19,7 @@ class RequestApproverController extends Controller
      */
     public function show(RequestModel $requestModel)
     {
+        $this->authorize('view', $requestModel);
         $canApproveOrCancel = $requestModel->canApprove();
         return [
             'data' => [
@@ -33,6 +34,9 @@ class RequestApproverController extends Controller
      */
     public function store(ApproveRequestRequest $request, RequestModel $requestModel): RequestResource
     {
+        if (!$requestModel->canApprove()) {
+            return $this->unprocessableEntity('Request is not eligible for approval');
+        }
         $this->authorize('approve', $requestModel);
         $validated = $request->validated();
         $requestModel->resetApproval();
@@ -47,6 +51,9 @@ class RequestApproverController extends Controller
      */
     public function update(RejectRequestRequest $request, RequestModel $requestModel): RequestResource
     {
+        if (!$requestModel->canApprove()) {
+            return $this->unprocessableEntity('Request is not eligible for rejection');
+        }
         $this->authorize('reject', $requestModel);
         $validated = $request->validated();
         $requestModel->resetApproval();
@@ -56,8 +63,14 @@ class RequestApproverController extends Controller
         return new RequestResource($requestModel);
     }
 
+    /**
+     * Cancel request
+     */
     public function delete(RequestModel $requestModel): RequestResource
     {
+        if (!$requestModel->canCancel()) {
+            return $this->unprocessableEntity('Request is not eligible for cancellation');
+        }
         $this->authorize('cancel', $requestModel);
         $requestModel->resetApproval();
         $requestModel->cancel();

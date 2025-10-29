@@ -66,7 +66,6 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         'submitted_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
         'approved_at' => 'datetime',
         'rejected_at' => 'datetime',
         'cancelled_at' => 'datetime',

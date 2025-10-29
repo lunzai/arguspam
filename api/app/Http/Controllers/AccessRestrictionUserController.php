@@ -2,26 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\CacheKey;
 use App\Http\Resources\user\UserCollection;
 use App\Models\AccessRestriction;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cache;
 
 class AccessRestrictionUserController extends Controller
 {
     public function index(AccessRestriction $accessRestriction, Request $request): UserCollection
     {
-        $this->authorize('accessrestrictionuser:viewany', $accessRestriction);
+        $this->authorize('listUsers', $accessRestriction);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        // $users = Cache::remember(
-        //     CacheKey::ACCESS_RESTRICTION_USERS->key($accessRestriction->id),
-        //     config('cache.default_ttl'),
-        //     function () use ($accessRestriction, $pagination) {
-        //         return $accessRestriction->users()->paginate($pagination);
-        //     }
-        // );
         $users = $accessRestriction->users()
             ->paginate($pagination);
         return new UserCollection($users);
@@ -29,7 +20,7 @@ class AccessRestrictionUserController extends Controller
 
     public function store(Request $request, AccessRestriction $accessRestriction): Response
     {
-        $this->authorize('accessrestrictionuser:create', $accessRestriction);
+        $this->authorize('addUser', $accessRestriction);
         $validated = $request->validate([
             'user_ids' => ['required', 'array', 'min:1'],
             'user_ids.*' => ['required', 'exists:users,id'],
@@ -40,7 +31,7 @@ class AccessRestrictionUserController extends Controller
 
     public function destroy(AccessRestriction $accessRestriction, Request $request): Response
     {
-        $this->authorize('accessrestrictionuser:delete', $accessRestriction);
+        $this->authorize('removeUser', $accessRestriction);
         $validated = $request->validate([
             'user_ids' => ['required', 'array', 'min:1'],
             'user_ids.*' => ['integer', 'exists:users,id'],

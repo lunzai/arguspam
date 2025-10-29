@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Gate;
 
 class Model extends EloquentModel
 {
+    public $statusColumn = 'status';
     /**
      * List of relationships that can be included via API
      *

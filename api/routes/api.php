@@ -20,15 +20,11 @@ use App\Http\Controllers\RequestController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\SessionApproverController;
-use App\Http\Controllers\SessionAuditController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SessionRequesterController;
 use App\Http\Controllers\SessionSecretController;
-use App\Http\Controllers\SettingController;
-use App\Http\Controllers\SettingGroupController;
 use App\Http\Controllers\TimezoneController;
 use App\Http\Controllers\TwoFactorAuthenticationController;
-use App\Http\Controllers\UserAccessRestrictionController;
 use App\Http\Controllers\UserAssetController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserGroupController;
@@ -116,14 +112,7 @@ Route::middleware('auth:sanctum')->group(function () {
         'permissions' => PermissionController::class,
         'access-restrictions' => AccessRestrictionController::class,
     ]);
-
-    Route::get('/settings', [SettingController::class, 'index']);
-    Route::put('/settings', [SettingController::class, 'update']);
-    Route::get('/settings/groups', [SettingGroupController::class, 'index']);
-    Route::get('/settings/groups/{group}', [SettingGroupController::class, 'show']);
     Route::apiResource('audits', AuditController::class)
-        ->only(['index', 'show']);
-    Route::apiResource('session-audits', SessionAuditController::class)
         ->only(['index', 'show']);
     Route::get('/users/{user}/2fa', [TwoFactorAuthenticationController::class, 'show'])
         ->name('users.two-factor-authentication.show');
@@ -139,7 +128,6 @@ Route::middleware('auth:sanctum')->group(function () {
         ->only(['store']);
     Route::delete('users/{user}/roles', [UserRoleController::class, 'destroy'])
         ->name('users.roles.destroy');
-    Route::apiResource('users.user-access-restrictions', UserAccessRestrictionController::class);
     Route::get('roles/{role}/permissions', [RolePermissionController::class, 'index'])
         ->name('roles.permissions.index');
     Route::put('roles/{role}/permissions', [RolePermissionController::class, 'update'])

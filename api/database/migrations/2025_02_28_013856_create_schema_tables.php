@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\AccessRestrictionType;
 use App\Enums\AssetAccessRole;
 use App\Enums\DatabaseScope;
 use App\Enums\Dbms;
@@ -26,7 +25,6 @@ return new class extends Migration
     private const TABLE_REQUEST = 'requests';
     private const TABLE_SESSION = 'sessions';
     private const TABLE_SESSION_AUDIT = 'session_audits';
-    private const TABLE_USER_ACCESS_RESTRICTION = 'user_access_restrictions';
     private const TABLE_ACTION_AUDIT = 'action_audits';
 
     private function addBlameableColumns(Blueprint $table)
@@ -309,24 +307,6 @@ return new class extends Migration
                 ->useCurrent();
         });
 
-        Schema::create(self::TABLE_USER_ACCESS_RESTRICTION, function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')
-                ->constrained()
-                ->cascadeOnDelete();
-            $table->enum('type', array_column(AccessRestrictionType::cases(), 'value'));
-            $table->json('value');
-            $table->enum('status', array_column(Status::cases(), 'value'))
-                ->default(Status::ACTIVE->value);
-            $this->addBlameableColumns($table);
-        });
-
-        // DB::statement(sprintf('
-        //     ALTER TABLE %1$s
-        //     ADD CONSTRAINT %1$s_check_user_or_user_group
-        //     CHECK (user_id IS NOT NULL OR user_group_id IS NOT NULL)
-        // ', self::TABLE_USER_ACCESS_RESTRICTION));
-
         Schema::create(self::TABLE_ACTION_AUDIT, function (Blueprint $table) {
             $table->id();
             $table->foreignId('org_id')
@@ -364,7 +344,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists(self::TABLE_ACTION_AUDIT);
-        Schema::dropIfExists(self::TABLE_USER_ACCESS_RESTRICTION);
         Schema::dropIfExists(self::TABLE_SESSION_AUDIT);
         Schema::dropIfExists(self::TABLE_SESSION);
         Schema::dropIfExists(self::TABLE_REQUEST);

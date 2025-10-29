@@ -12,6 +12,9 @@ class SessionSecretController extends Controller
      */
     public function show(Session $session): SessionSecretResource
     {
+        if (!$session->canRetrieveSecret()) {
+            return $this->unprocessableEntity('Session is not eligible for secret retrieval');
+        }
         $this->authorize('retrieveSecret', $session);
         return new SessionSecretResource($session->load('asset', 'assetAccount'));
     }

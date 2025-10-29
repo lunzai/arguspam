@@ -33,7 +33,7 @@
 	const modelTitle = 'Role';
 	let isDefault = $derived(model.is_default ? 'Yes' : 'No');
 
-	let permissionList = $derived(
+	const permissionList = $derived(
 		Object.entries(
 			permissionCollection.data.reduce((groups: any, item: PermissionResource) => {
 				const key = item.attributes.name.split(':')[0];
@@ -48,6 +48,8 @@
 			items: items as { attributes: Permission; selected: boolean }[]
 		}))
 	);
+    console.log(permissionList);
+    console.log(permissionCollection);
 	let selectedPermssion = $derived(
 		rolePermissionCollection.data.map((p: PermissionResource) => p.attributes)
 	);

@@ -12,7 +12,6 @@ class DashboardController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $this->authorize('dashboard:viewany');
         $currentOrgId = $request->get(config('pam.org.request_attribute'));
         $dashboardService = new DashboardService($currentOrgId);
         $cacheFlexibleDuration = [5, 3600];

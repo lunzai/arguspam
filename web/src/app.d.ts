@@ -4,10 +4,9 @@ declare global {
 	namespace App {
 		// interface Error {}
 		interface Locals {
-			authToken?: string;
-			currentOrgId?: number;
-			user?: User;
-			userOrgs?: Org[];
+			authToken: string | null;
+			currentOrgId: number | null;
+			me: Me | null;
 		}
 		// interface PageData {}
 		// interface PageState {}

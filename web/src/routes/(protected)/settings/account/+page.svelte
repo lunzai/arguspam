@@ -3,15 +3,14 @@
 	import { Input } from '$ui/input';
 	import * as Form from '$ui/form';
 	import { toast } from 'svelte-sonner';
-	import { authStore } from '$lib/stores/auth';
 	import { Loader2 } from '@lucide/svelte';
-	import type { User } from '$models/user';
 	import { superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
 	import * as Card from '$ui/card';
 	import { TIMEZONES } from '$lib/constants/timezones';
 	import * as Select from '$ui/select';
-
+	import { layoutStore } from '$lib/stores/layout';
+	import type { User } from '$models/user';
 	let { data } = $props();
 
 	const form = superForm(data.form, {
@@ -23,7 +22,7 @@
 				return;
 			}
 			if (result.type === 'success') {
-				authStore.setUser(result.data.user as User);
+				layoutStore.setUser(result.data.user as User);
 				toast.success(result.data.message);
 			} else if (result.type === 'failure') {
 				toast.error(result.data.error);

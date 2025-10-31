@@ -1,7 +1,14 @@
 <script lang="ts">
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
-	import { Pencil, Trash2, Save, LockKeyhole, LockKeyholeOpen } from '@lucide/svelte';
+	import {
+		Pencil,
+		Trash2,
+		Save,
+		LockKeyhole,
+		LockKeyholeOpen,
+		AlertCircleIcon
+	} from '@lucide/svelte';
 	import * as DL from '$components/description-list';
 	import { relativeDateTime } from '$utils/date';
 	import { StatusBadge } from '$components/badge';
@@ -18,6 +25,7 @@
 	import { enhance } from '$app/forms';
 	import { goto } from '$app/navigation';
 	import Loader from '$components/loader.svelte';
+	import * as Alert from '$ui/alert';
 
 	let { data } = $props();
 	const rolePermissionCollection = $derived(
@@ -29,9 +37,9 @@
 	const modelResource = $derived(data.model as ApiRoleResource);
 	const model = $derived(modelResource.data.attributes as Role);
 	const hasUsers = $derived(modelResource.data.relationships?.users?.length ?? 0 > 0) as boolean;
-	const modelName = 'roles';
 	const modelTitle = 'Role';
-	let isDefault = $derived(model.is_default ? 'Yes' : 'No');
+	const isDefault = $derived(model.is_default ? 'Yes' : 'No');
+	const isDefaultAdmin = $derived(model.is_default && model.name === 'Admin');
 
 	const permissionList = $derived(
 		Object.entries(
@@ -48,8 +56,6 @@
 			items: items as { attributes: Permission; selected: boolean }[]
 		}))
 	);
-    console.log(permissionList);
-    console.log(permissionCollection);
 	let selectedPermssion = $derived(
 		rolePermissionCollection.data.map((p: PermissionResource) => p.attributes)
 	);
@@ -109,12 +115,18 @@
 					<Trash2 class="h-4 w-4" />
 					Delete
 				</Button>
-			{:else}
-				<Button variant="outline" size="sm" disabled>Default roles are not editable</Button>
 			{/if}
 		</Card.Action>
 	</Card.Header>
 	<Card.Content>
+		{#if isDefault}
+			<Alert.Root class="mb-5 border-blue-200 bg-blue-50 text-blue-500">
+				<AlertCircleIcon />
+				<Alert.Description class="text-blue-500">
+					<p>Default role details are not editable</p>
+				</Alert.Description>
+			</Alert.Root>
+		{/if}
 		<DL.Root divider={null}>
 			<DL.Row>
 				<DL.Label>ID</DL.Label>
@@ -131,7 +143,7 @@
 			<DL.Row>
 				<DL.Label>Default Role</DL.Label>
 				<DL.Content>
-					<StatusBadge bind:status={isDefault} class="text-sm" />
+					<StatusBadge status={isDefault} class="text-sm" />
 				</DL.Content>
 			</DL.Row>
 			<DL.Row>
@@ -158,56 +170,68 @@
 		<Card.Title class="text-lg">Permissions</Card.Title>
 		<Card.Description>View {modelTitle.toLowerCase()} permissions.</Card.Description>
 		<Card.Action>
-			<Button
-				variant="outline"
-				size="sm"
-				class="group relative transition-all duration-200
-				{savePermissionsIsLocked
-					? 'border-gray-200 text-gray-500 hover:border-green-200 hover:bg-green-50 hover:text-green-500'
-					: 'border-green-200 text-green-500 hover:border-gray-200 hover:bg-gray-50 hover:text-gray-500'}
-				"
-				onclick={() => {
-					savePermissionsIsLocked = !savePermissionsIsLocked;
-				}}
-			>
-				{#if savePermissionsIsLocked}
-					<div class="relative size-4">
-						<LockKeyhole
-							class="absolute top-0 left-0 size-4 transition-all duration-500 group-hover:opacity-0"
-						/>
-						<LockKeyholeOpen
-							class="absolute top-0 left-0 size-4 opacity-0 transition-all duration-500 group-hover:opacity-100"
-						/>
-					</div>
-				{:else}
-					<div class="relative size-4">
-						<LockKeyholeOpen
-							class="absolute top-0 left-0 size-4 transition-all duration-500 group-hover:opacity-0"
-						/>
-						<LockKeyhole
-							class="absolute top-0 left-0 size-4 opacity-0 transition-all duration-500 group-hover:opacity-100"
-						/>
-					</div>
-				{/if}
-			</Button>
-			<Button
-				disabled={savePermissionsIsLocked}
-				variant="outline"
-				size="sm"
-				class="border-blue-200 text-blue-500 
-				transition-all duration-200 hover:bg-blue-50 hover:text-blue-500
-				{savePermissionsIsLocked ? 'cursor-not-allowed border-gray-200 bg-gray-50 text-gray-500' : ''}
-				"
-				onclick={() => {
-					handleSavePermissions();
-				}}
-			>
-				<Save class="h-4 w-4" />
-				Save Permissions
-			</Button>
+			{#if !isDefaultAdmin}
+				<Button
+					variant="outline"
+					size="sm"
+					class="group relative transition-all duration-200
+                    {savePermissionsIsLocked
+						? 'border-gray-200 text-gray-500 hover:border-green-200 hover:bg-green-50 hover:text-green-500'
+						: 'border-green-200 text-green-500 hover:border-gray-200 hover:bg-gray-50 hover:text-gray-500'}
+                    "
+					onclick={() => {
+						savePermissionsIsLocked = !savePermissionsIsLocked;
+					}}
+				>
+					{#if savePermissionsIsLocked}
+						<div class="relative size-4">
+							<LockKeyhole
+								class="absolute top-0 left-0 size-4 transition-all duration-500 group-hover:opacity-0"
+							/>
+							<LockKeyholeOpen
+								class="absolute top-0 left-0 size-4 opacity-0 transition-all duration-500 group-hover:opacity-100"
+							/>
+						</div>
+					{:else}
+						<div class="relative size-4">
+							<LockKeyholeOpen
+								class="absolute top-0 left-0 size-4 transition-all duration-500 group-hover:opacity-0"
+							/>
+							<LockKeyhole
+								class="absolute top-0 left-0 size-4 opacity-0 transition-all duration-500 group-hover:opacity-100"
+							/>
+						</div>
+					{/if}
+				</Button>
+				<Button
+					disabled={savePermissionsIsLocked}
+					variant="outline"
+					size="sm"
+					class="border-blue-200 text-blue-500 
+                    transition-all duration-200 hover:bg-blue-50 hover:text-blue-500
+                    {savePermissionsIsLocked
+						? 'cursor-not-allowed border-gray-200 bg-gray-50 text-gray-500'
+						: ''}
+                    "
+					onclick={() => {
+						handleSavePermissions();
+					}}
+				>
+					<Save class="h-4 w-4" />
+					Save Permissions
+				</Button>
+			{/if}
 		</Card.Action>
 	</Card.Header>
 	<Card.Content>
+		{#if isDefaultAdmin}
+			<Alert.Root class="mb-5 border-blue-200 bg-blue-50 text-blue-500">
+				<AlertCircleIcon />
+				<Alert.Description class="text-blue-500">
+					<p>All permissions are granted by default to Admin role</p>
+				</Alert.Description>
+			</Alert.Root>
+		{/if}
 		<div class="flex flex-col gap-6 pt-1">
 			{#each permissionList as permission (permission.groupName)}
 				<div class="flex flex-col gap-2">

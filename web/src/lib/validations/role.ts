@@ -6,7 +6,7 @@ export const RoleSchema = z.object({
 		.min(2, 'Name must be at least 2 characters')
 		.max(100, 'Name must be less than 100 characters'),
 	description: z.string().max(255, 'Description must be less than 255 characters').nullish(),
-	is_default: z.boolean().default(false)
+	is_default: z.boolean()
 });
 
 export type Role = z.infer<typeof RoleSchema>;

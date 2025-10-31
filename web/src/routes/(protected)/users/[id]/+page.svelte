@@ -21,14 +21,14 @@
 	import FormDialog from './form-dialog.svelte';
 	import RoleFormDialog from './role-form-dialog.svelte';
 	import type { OrgResource } from '$resources/org';
-	import type { RoleResource } from '$resources/role';
 	import type { UserGroupResource } from '$resources/user-group';
+	import type { RoleResource } from '$resources/role';
 
 	let { data } = $props();
 	const modelResource = $derived(data.model as ApiUserResource);
 	const model = $derived(modelResource.data.attributes as User);
 	const orgs = $derived(modelResource.data.relationships?.orgs as OrgResource[]);
-	const roles = $derived(data.roles as RoleResource[]);
+	const roles = $derived(data.roles);
 	const userGroups = $derived(modelResource.data.relationships?.userGroups as UserGroupResource[]);
 	const userRoles = $derived(modelResource.data.relationships?.roles as RoleResource[]);
 	let editUserDialogIsOpen = $state(false);

@@ -3,8 +3,6 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { UserProfileSchema } from '$validations/user';
 import { fail, type Actions } from '@sveltejs/kit';
 import { UserService } from '$services/user';
-import { authStore } from '$stores/auth';
-import type { User } from '$models/user';
 import { setFormErrors } from '$utils/form';
 
 export const load = async ({ locals }: any) => {
@@ -34,7 +32,6 @@ export const actions: Actions = {
 			const userService = new UserService(authToken as string);
 			const userResource = await userService.me();
 			const userResponse = await userService.update(userResource.data.attributes.id, form.data);
-			authStore.setUser(userResponse.data.attributes as User);
 			return {
 				success: true,
 				message: 'Profile updated successfully',

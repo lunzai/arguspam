@@ -1,4 +1,4 @@
-import type { User } from '$models/user';
+import type { Me, User } from '$models/user';
 import type {
 	ApiResourceResponse,
 	ApiCollectionResponse,
@@ -16,3 +16,6 @@ export interface TwoFactorQrCodeResponse {
 		qr_code: string;
 	};
 }
+
+export interface MeResource extends Resource<Me> {}
+export interface ApiMeResource extends ApiResourceResponse<Me> {}

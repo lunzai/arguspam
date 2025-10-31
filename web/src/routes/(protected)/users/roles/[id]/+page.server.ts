@@ -21,8 +21,8 @@ export const load = async ({ params, locals, depends }) => {
 	const rolePermissionCollection = await modelService.getPermissions(Number(id));
 	const permissionService = new PermissionService(authToken as string, currentOrgId);
 	const permissionCollection = await permissionService.findAll({
-		perPage: 10000,
-		sort: ['name']
+		perPage: 10000
+		// sort: ['name']
 	});
 	const form = await superValidate(
 		{

@@ -1,11 +1,8 @@
 import type { LayoutLoad } from './$types';
-import { authStore } from '$stores/auth.js';
-import { orgStore } from '$stores/org';
+import { layoutStore } from '$lib/stores/layout';
 
 export const load: LayoutLoad = async ({ data }) => {
-	const { user, currentOrgId, userOrgs } = data;
-	authStore.setUser(user);
-	orgStore.setOrgs(userOrgs);
-	orgStore.setCurrentOrgId(currentOrgId);
-	delete data.authToken;
+	const { me, currentOrgId } = data;
+	layoutStore.setMe(me);
+	layoutStore.setCurrentOrgId(currentOrgId);
 };

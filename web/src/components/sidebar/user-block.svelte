@@ -1,9 +1,9 @@
 <script lang="ts">
 	import * as Avatar from '$ui/avatar';
 	import { generateAvatar, getInitials } from '$utils/avatar';
-	import { authStore } from '$stores/auth';
+	import { layoutStore } from '$stores/layout';
 
-	const user = $derived($authStore.user);
+	const user = $derived($layoutStore.user);
 	const identifier = $derived(`${user.id}|${user.email}`);
 </script>
 

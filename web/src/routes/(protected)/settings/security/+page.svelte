@@ -11,7 +11,7 @@
 
 	let { data } = $props();
 	let twoFactorIsLoading = $state(false);
-	let user = $derived(data.user);
+	let user = $derived(data.me);
 	let require2faSetup = $derived(user.two_factor_enabled && !user.two_factor_confirmed_at);
 	let is2faConfirmed = $derived(user.two_factor_confirmed_at !== null);
 	let is2faEnabled = $derived(user.two_factor_enabled);

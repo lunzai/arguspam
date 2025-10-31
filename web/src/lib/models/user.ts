@@ -24,3 +24,8 @@ export interface Me extends User {
 	submitted_requests_count: number;
 	orgs: Org[];
 }
+
+export interface UserProfile {
+    name: string;
+	default_timezone: string;
+}

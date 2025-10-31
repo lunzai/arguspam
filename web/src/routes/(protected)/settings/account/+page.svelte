@@ -12,17 +12,17 @@
 	import { layoutStore } from '$lib/stores/layout';
 	import type { User } from '$models/user';
 	let { data } = $props();
-
+    console.log(data);
 	const form = superForm(data.form, {
-		validators: zodClient(UserProfileSchema),
+		validators: zodClient(UserProfileSchema as any),
 		delayMs: 100,
 		resetForm: false,
-		onUpdate({ form, result }) {
+		async onUpdate({ form, result }) {
 			if (!form.valid) {
 				return;
 			}
 			if (result.type === 'success') {
-				layoutStore.setUser(result.data.user as User);
+				await layoutStore.setUser(result.data.user as User);
 				toast.success(result.data.message);
 			} else if (result.type === 'failure') {
 				toast.error(result.data.error);
@@ -54,7 +54,7 @@
 					<label for="email" class="flex gap-2 text-sm leading-none font-medium select-none"
 						>Email</label
 					>
-					<Input type="email" value={data.user.email} readonly disabled />
+					<Input type="email" value={data.me.email} readonly disabled />
 					<p class="text-muted-foreground text-sm">
 						Email address cannot be changed. Contact your administrator to update your email.
 					</p>

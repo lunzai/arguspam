@@ -10,11 +10,11 @@ import { TwoFactorCodeSchema } from '$lib/validations/auth';
 export const load: PageServerLoad = async ({ locals, depends }) => {
 	depends('settings:security');
 	let qrCode = null;
-	const { authToken, currentOrgId, user } = locals;
+	const { authToken, currentOrgId, me } = locals;
 
-	const userService = new UserService(authToken as string, currentOrgId);
-	if (user.two_factor_enabled && !user.two_factor_confirmed_at) {
-		qrCode = await userService.getTwoFactorQrCode(Number(user.id)).then((result) => {
+	const userService = new UserService(authToken as string, currentOrgId as number);
+	if (me.two_factor_enabled && !me.two_factor_confirmed_at) {
+		qrCode = await userService.getTwoFactorQrCode(Number(me.id)).then((result) => {
 			return result.data.qr_code;
 		});
 	}
@@ -24,7 +24,7 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
 		changePasswordForm,
 		twoFactorVerifyForm,
 		qrCode,
-		user,
+		me,
 		title: 'Settings - Security'
 	};
 };
@@ -57,12 +57,12 @@ export const actions: Actions = {
 		}
 	},
 	updateTwoFactor: async ({ request, locals }) => {
-		const { authToken, currentOrgId, user } = locals;
+		const { authToken, currentOrgId, me } = locals;
 		const formData = await request.formData();
 		const enabled = formData.get('enabled') === '1';
 		try {
-			const userService = new UserService(authToken as string, currentOrgId);
-			await userService.updateTwoFactor(Number(user.id), enabled);
+			const userService = new UserService(authToken as string, currentOrgId as number);
+			await userService.updateTwoFactor(Number(me.id), enabled);
 			return {
 				success: true
 			};
@@ -71,11 +71,11 @@ export const actions: Actions = {
 		}
 	},
 	removeTwoFactor: async ({ request, locals }) => {
-		const { authToken, currentOrgId, user } = locals;
+		const { authToken, currentOrgId, me } = locals;
 
 		try {
-			const userService = new UserService(authToken as string, currentOrgId);
-			await userService.disableTwoFactor(Number(user.id));
+			const userService = new UserService(authToken as string, currentOrgId as number);
+			await userService.disableTwoFactor(Number(me.id));
 			return {
 				success: true
 			};
@@ -84,15 +84,15 @@ export const actions: Actions = {
 		}
 	},
 	verifyTwoFactor: async ({ request, locals }) => {
-		const { authToken, currentOrgId, user } = locals;
+		const { authToken, currentOrgId, me } = locals;
 		const form = await superValidate(request, zod(TwoFactorCodeSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
 		const data = form.data;
 		try {
-			const userService = new UserService(authToken as string, currentOrgId);
-			await userService.verifyTwoFactor(Number(user.id), data.code);
+			const userService = new UserService(authToken as string, currentOrgId as number);
+			await userService.verifyTwoFactor(Number(me.id), data.code);
 			return {
 				success: true,
 				message: `Two-factor authentication verified successfully`,

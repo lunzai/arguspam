@@ -1,7 +1,7 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
 import type { Role } from '$models/role';
 import { RoleSchema } from '$validations/role';
@@ -14,7 +14,7 @@ export const load: PageServerLoad = async ({ depends }) => {
 		description: '',
 		is_default: false
 	} as Role;
-	const form = await superValidate(zod(RoleSchema));
+	const form = await superValidate(zod4(RoleSchema));
 	return {
 		form,
 		model,
@@ -25,7 +25,7 @@ export const load: PageServerLoad = async ({ depends }) => {
 export const actions = {
 	save: async ({ request, locals }) => {
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(RoleSchema));
+		const form = await superValidate(request, zod4(RoleSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

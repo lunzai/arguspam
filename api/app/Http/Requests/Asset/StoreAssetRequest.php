@@ -46,32 +46,32 @@ class StoreAssetRequest extends FormRequest
         ];
     }
 
-    public function after(): array
-    {
-        return [
-            function (Validator $validator) {
-                if ($validator->errors()->hasAny(['password', 'username'])) {
-                    return;
-                }
-                $testResult = $this->jitManager->testConnection(new Asset([
-                    'org_id' => $this->org_id,
-                    'name' => $this->name,
-                    'description' => $this->description,
-                    'status' => $this->status,
-                    'host' => $this->host,
-                    'port' => $this->port,
-                    'dbms' => $this->dbms,
-                ]), [
-                    'password' => $this->password,
-                    'username' => $this->username,
-                ]);
-                if (!$testResult) {
-                    $validator->errors()
-                        ->add('password', 'Invalid credentials');
-                }
-            },
-        ];
-    }
+    // public function after(): array
+    // {
+    //     return [
+    //         function (Validator $validator) {
+    //             if ($validator->errors()->hasAny(['password', 'username'])) {
+    //                 return;
+    //             }
+    //             $testResult = $this->jitManager->testConnection(new Asset([
+    //                 'org_id' => $this->org_id,
+    //                 'name' => $this->name,
+    //                 'description' => $this->description,
+    //                 'status' => $this->status,
+    //                 'host' => $this->host,
+    //                 'port' => $this->port,
+    //                 'dbms' => $this->dbms,
+    //             ]), [
+    //                 'password' => $this->password,
+    //                 'username' => $this->username,
+    //             ]);
+    //             if (!$testResult) {
+    //                 $validator->errors()
+    //                     ->add('password', 'Invalid credentials');
+    //             }
+    //         },
+    //     ];
+    // }
 
     public function attributes(): array
     {

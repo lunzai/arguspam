@@ -5,7 +5,7 @@ import type { ApiUserGroupResource } from '$resources/user-group';
 import { OrgService } from '$services/org';
 import { UserGroupSchema } from '$validations/user-group';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
 
 export const load = async ({ params, locals, depends }) => {
@@ -25,7 +25,7 @@ export const load = async ({ params, locals, depends }) => {
 			description: model.data.attributes.description,
 			status: model.data.attributes.status
 		},
-		zod(UserGroupSchema)
+		zod4(UserGroupSchema)
 	);
 	return {
 		form,
@@ -39,7 +39,7 @@ export const actions = {
 	save: async ({ request, locals, params }) => {
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(UserGroupSchema));
+		const form = await superValidate(request, zod4(UserGroupSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

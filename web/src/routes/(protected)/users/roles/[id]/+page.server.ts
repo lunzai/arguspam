@@ -1,7 +1,7 @@
 import { RoleService } from '$services/role';
 import type { ApiRoleResource } from '$resources/role';
 import { PermissionService } from '$services/permission';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms';
 import { RoleSchema } from '$validations/role';
 import { fail } from '@sveltejs/kit';
@@ -30,7 +30,7 @@ export const load = async ({ params, locals, depends }) => {
 			description: model.data.attributes.description,
 			is_default: model.data.attributes.is_default
 		},
-		zod(RoleSchema)
+		zod4(RoleSchema)
 	);
 	return {
 		form,
@@ -45,7 +45,7 @@ export const actions = {
 	save: async ({ request, locals, params }) => {
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(RoleSchema));
+		const form = await superValidate(request, zod4(RoleSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

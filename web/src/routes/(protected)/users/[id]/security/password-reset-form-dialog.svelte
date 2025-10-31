@@ -4,7 +4,7 @@
 	import * as Form from '$ui/form';
 	import { Input } from '$ui/input';
 	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import { ResetPasswordSchema } from '$validations/user';
 	import Loader from '$components/loader.svelte';
@@ -25,7 +25,7 @@
 
 	const form = superForm(data, {
 		id: 'resetPasswordForm',
-		validators: zodClient(ResetPasswordSchema),
+		validators: zod4Client(ResetPasswordSchema),
 		delayMs: 100,
 		async onUpdate({ form, result }) {
 			if (!form.valid) {

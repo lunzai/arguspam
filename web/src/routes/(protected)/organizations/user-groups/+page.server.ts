@@ -2,7 +2,7 @@ import type { Actions, PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
 import { UserGroupService } from '$services/user-group';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
 import type { UserGroup } from '$models/user-group';
 import { UserGroupSchema } from '$validations/user-group';
@@ -16,7 +16,7 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
 		description: '',
 		status: 'active'
 	} as UserGroup;
-	const form = await superValidate(zod(UserGroupSchema));
+	const form = await superValidate(zod4(UserGroupSchema));
 	return {
 		form,
 		model,
@@ -27,7 +27,7 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
 export const actions = {
 	save: async ({ request, locals, params }) => {
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(UserGroupSchema));
+		const form = await superValidate(request, zod4(UserGroupSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

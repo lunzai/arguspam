@@ -5,7 +5,7 @@
 	import * as Form from '$ui/form';
 	import * as Dialog from '$ui/dialog';
 	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import { capitalizeWords } from '$utils/string';
 	import { Button } from '$ui/button';
@@ -28,7 +28,7 @@
 	}: Props = $props();
 
 	const form = superForm(data, {
-		validators: zodClient(AssetUpdateSchema),
+		validators: zod4Client(AssetUpdateSchema),
 		delayMs: 100,
 		async onUpdate({ form, result }) {
 			if (!form.valid) {

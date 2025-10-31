@@ -55,30 +55,30 @@ class UpdateAssetCredentialRequest extends FormRequest
         ];
     }
 
-    public function after(): array
-    {
-        return [
-            function (Validator $validator) {
-                $adminAccount = $this->route('asset')->adminAccount;
-                if ($validator->errors()->hasAny(['password', 'username']) || !$adminAccount) {
-                    return;
-                }
-                try {
-                    $this->jitManager->testConnection(new Asset([
-                        'host' => $this->host,
-                        'port' => $this->port,
-                        'dbms' => $this->dbms,
-                    ]), [
-                        'password' => $this->password ?? $adminAccount->password,
-                        'username' => $this->username ?? $adminAccount->username,
-                    ]);
-                } catch (\Exception $e) {
-                    $validator->errors()
-                        ->add('password', $e->getMessage());
-                }
-            },
-        ];
-    }
+    // public function after(): array
+    // {
+    //     return [
+    //         function (Validator $validator) {
+    //             $adminAccount = $this->route('asset')->adminAccount;
+    //             if ($validator->errors()->hasAny(['password', 'username']) || !$adminAccount) {
+    //                 return;
+    //             }
+    //             try {
+    //                 $this->jitManager->testConnection(new Asset([
+    //                     'host' => $this->host,
+    //                     'port' => $this->port,
+    //                     'dbms' => $this->dbms,
+    //                 ]), [
+    //                     'password' => $this->password ?? $adminAccount->password,
+    //                     'username' => $this->username ?? $adminAccount->username,
+    //                 ]);
+    //             } catch (\Exception $e) {
+    //                 $validator->errors()
+    //                     ->add('password', $e->getMessage());
+    //             }
+    //         },
+    //     ];
+    // }
 
     public function attributes(): array
     {

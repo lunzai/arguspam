@@ -26,6 +26,9 @@ class JitManager
 
     public function testConnection(Asset $asset, array $credentials): bool
     {
+        $credentials['host'] = $asset->host;
+        $credentials['port'] = $asset->port;
+        $credentials['database'] = $asset->database;
         $databaseDriver = $this->getDatabaseDriver($asset);
         return $databaseDriver->testConnection($credentials);
     }

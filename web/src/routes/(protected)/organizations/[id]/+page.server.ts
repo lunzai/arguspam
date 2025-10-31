@@ -20,7 +20,7 @@ import { OrgService } from '$services/org';
 import type { ApiOrgResource } from '$resources/org';
 import { OrgSchema } from '$validations/org';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$lib/utils/form';
 import { UserService } from '$services/user';
 
@@ -42,7 +42,7 @@ export const load = async ({ params, locals, depends }) => {
 			description: model.data.attributes.description,
 			status: model.data.attributes.status
 		},
-		zod(OrgSchema)
+		zod4(OrgSchema)
 	);
 	return {
 		form,
@@ -56,7 +56,7 @@ export const actions = {
 	save: async ({ request, locals, params }) => {
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(OrgSchema));
+		const form = await superValidate(request, zod4(OrgSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

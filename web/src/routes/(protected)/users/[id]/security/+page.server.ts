@@ -2,7 +2,7 @@ import type { ApiUserResource } from '$resources/user';
 import { UserService } from '$services/user';
 import { superValidate } from 'sveltekit-superforms';
 import type { Actions } from '@sveltejs/kit';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { fail } from '@sveltejs/kit';
 import type { User } from '$models/user';
 import type { PageServerLoad } from './$types';
@@ -24,8 +24,8 @@ export const load: PageServerLoad = async ({ params, locals, depends, parent }) 
 			return result.data.qr_code;
 		});
 	}
-	const twoFactorVerifyForm = await superValidate(zod(TwoFactorCodeSchema));
-	const resetPasswordForm = await superValidate(zod(ResetPasswordSchema));
+	const twoFactorVerifyForm = await superValidate(zod4(TwoFactorCodeSchema));
+	const resetPasswordForm = await superValidate(zod4(ResetPasswordSchema));
 	return {
 		twoFactorVerifyForm,
 		resetPasswordForm,
@@ -40,7 +40,7 @@ export const actions = {
 	resetPassword: async ({ request, locals, params }) => {
 		const { authToken, currentOrgId } = locals;
 		const { id } = params;
-		const form = await superValidate(request, zod(ResetPasswordSchema));
+		const form = await superValidate(request, zod4(ResetPasswordSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
@@ -88,7 +88,7 @@ export const actions = {
 	verifyTwoFactor: async ({ request, locals, params }) => {
 		const { authToken, currentOrgId } = locals;
 		const { id } = params;
-		const form = await superValidate(request, zod(TwoFactorCodeSchema));
+		const form = await superValidate(request, zod4(TwoFactorCodeSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

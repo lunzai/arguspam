@@ -5,7 +5,7 @@
 	import { slide } from 'svelte/transition';
 	import * as Form from '$ui/form';
 	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import { TwoFactorCodeSchema } from '$validations/auth';
 
@@ -28,7 +28,7 @@
 	}: Props = $props();
 
 	const form = superForm(data, {
-		validators: zodClient(TwoFactorCodeSchema),
+		validators: zod4Client(TwoFactorCodeSchema),
 		delayMs: 100,
 		async onUpdate({ form, result }) {
 			if (!form.valid) {

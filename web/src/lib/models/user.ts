@@ -26,6 +26,6 @@ export interface Me extends User {
 }
 
 export interface UserProfile {
-    name: string;
+	name: string;
 	default_timezone: string;
 }

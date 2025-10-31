@@ -10,13 +10,11 @@ export const RequesterSchema = z
 		org_id: z.number(),
 		asset_id: z.number(),
 		start_datetime: z.date({
-			required_error: 'Start datetime is required',
-			invalid_type_error: 'Invalid date'
+			error: (issue) => (issue.input === undefined ? 'Start datetime is required' : 'Invalid date')
 		}),
 		end_datetime: z
 			.date({
-				required_error: 'End datetime is required',
-				invalid_type_error: 'Invalid date'
+				error: (issue) => (issue.input === undefined ? 'End datetime is required' : 'Invalid date')
 			})
 			.min(new Date(), { message: 'End datetime must be in the future' }),
 		duration: z.number().nullish(),
@@ -70,15 +68,13 @@ export const RequesterSchema = z
 export const ApproveSchema = z
 	.object({
 		start_datetime: z.date({
-			required_error: 'Start datetime is required',
-			invalid_type_error: 'Invalid date'
+			error: (issue) => (issue.input === undefined ? 'Start datetime is required' : 'Invalid date')
 		}),
 		end_datetime: z
 			.date({
-				required_error: 'End datetime is required',
-				invalid_type_error: 'Invalid date'
+				error: (issue) => (issue.input === undefined ? 'End datetime is required' : 'Invalid date')
 			})
-			.min(new Date(), { message: 'End datetime must be in the future' }),
+			.min(new Date(), { error: 'End datetime must be in the future' }),
 		duration: z.number().nullish(),
 		scope: z.enum(['ReadOnly', 'ReadWrite', 'DDL', 'DML', 'All']),
 		approver_risk_rating: z.enum(['low', 'medium', 'high', 'critical']),

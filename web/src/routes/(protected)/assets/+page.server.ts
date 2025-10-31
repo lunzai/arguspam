@@ -1,6 +1,6 @@
 import type { PageServerLoad, Actions } from './$types';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
 import { fail } from '@sveltejs/kit';
 import { AssetSchema } from '$lib/validations/asset';
@@ -21,7 +21,7 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
 		username: '',
 		password: ''
 	} as Partial<Asset>;
-	const form = await superValidate(zod(AssetSchema));
+	const form = await superValidate(zod4(AssetSchema));
 	return {
 		title: 'Assets',
 		form,
@@ -32,7 +32,7 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
 export const actions = {
 	save: async ({ request, locals, params }) => {
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(AssetSchema));
+		const form = await superValidate(request, zod4(AssetSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

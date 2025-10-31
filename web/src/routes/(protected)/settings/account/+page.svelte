@@ -5,16 +5,20 @@
 	import { toast } from 'svelte-sonner';
 	import { Loader2 } from '@lucide/svelte';
 	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
+	import type { SuperValidated } from 'sveltekit-superforms';
 	import * as Card from '$ui/card';
 	import { TIMEZONES } from '$lib/constants/timezones';
 	import * as Select from '$ui/select';
 	import { layoutStore } from '$lib/stores/layout';
-	import type { User } from '$models/user';
-	let { data } = $props();
-    console.log(data);
-	const form = superForm(data.form, {
-		validators: zodClient(UserProfileSchema as any),
+	import type { User, Me } from '$models/user';
+	import type { UserProfile } from '$lib/validations/user';
+	let { data } = $props<{
+		data: { form: SuperValidated<UserProfile>; me: Me; title: string };
+	}>();
+	console.log(data);
+	const form = superForm<UserProfile>(data.form, {
+		validators: zod4Client(UserProfileSchema),
 		delayMs: 100,
 		resetForm: false,
 		async onUpdate({ form, result }) {

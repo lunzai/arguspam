@@ -3,7 +3,7 @@ import type { ApiRequestResource } from '$resources/request';
 import type { Actions } from '@sveltejs/kit';
 import { fail, superValidate } from 'sveltekit-superforms/client';
 import { ApproveSchema, RejectSchema } from '$lib/validations/request';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
 
 export const load = async ({ params, locals, depends }) => {
@@ -24,10 +24,10 @@ export const load = async ({ params, locals, depends }) => {
 			approver_risk_rating: model.data.attributes.ai_risk_rating,
 			approver_note: model.data.attributes.approver_note
 		},
-		zod(ApproveSchema),
+		zod4(ApproveSchema),
 		{ errors: false }
 	);
-	const rejectForm = await superValidate(zod(RejectSchema));
+	const rejectForm = await superValidate(zod4(RejectSchema));
 	return {
 		approveForm,
 		rejectForm,
@@ -41,7 +41,7 @@ export const actions = {
 	approve: async ({ request, locals, params }) => {
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(ApproveSchema));
+		const form = await superValidate(request, zod4(ApproveSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
@@ -66,7 +66,7 @@ export const actions = {
 	reject: async ({ request, locals, params }) => {
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(RejectSchema));
+		const form = await superValidate(request, zod4(RejectSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

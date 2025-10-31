@@ -11,10 +11,10 @@
 
 	let { data } = $props();
 	let twoFactorIsLoading = $state(false);
-	let user = $derived(data.me);
-	let require2faSetup = $derived(user.two_factor_enabled && !user.two_factor_confirmed_at);
-	let is2faConfirmed = $derived(user.two_factor_confirmed_at !== null);
-	let is2faEnabled = $derived(user.two_factor_enabled);
+	let me = $derived(data.me);
+	let require2faSetup = $derived(me.two_factor_enabled && !me.two_factor_confirmed_at);
+	let is2faConfirmed = $derived(me.two_factor_confirmed_at !== null);
+	let is2faEnabled = $derived(me.two_factor_enabled);
 
 	async function handleTwoFactorChange(checked: boolean) {
 		try {
@@ -27,7 +27,6 @@
 			});
 			const result = await response.json();
 			if (result.type === 'success') {
-				data.user.two_factor_enabled = checked;
 				if (checked) {
 					toast.success('Two-factor authentication enabled');
 				} else {
@@ -95,7 +94,7 @@
 						>
 							<p>
 								You have already setup two-factor authentication on {shortDateTime(
-									data.user.two_factor_confirmed_at ?? ''
+									me?.two_factor_confirmed_at ?? ''
 								)}.
 							</p>
 							<p>To remove two-factor authentication, please click the button below.</p>

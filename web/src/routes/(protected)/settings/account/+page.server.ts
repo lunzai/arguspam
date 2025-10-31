@@ -1,5 +1,5 @@
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { UserProfileSchema } from '$validations/user';
 import { fail, type Actions } from '@sveltejs/kit';
 import { UserService } from '$services/user';
@@ -8,13 +8,13 @@ import type { UserProfile } from '$lib/models/user';
 
 export const load = async ({ locals }: any) => {
 	const { me } = locals;
-    console.log('load', locals);
+	console.log('load', locals);
 	const form = await superValidate(
 		{
 			name: me?.name || '',
 			default_timezone: me?.default_timezone || ''
 		} as UserProfile,
-		zod(UserProfileSchema as any)
+		zod4(UserProfileSchema as any)
 	);
 	return {
 		form,
@@ -26,7 +26,7 @@ export const load = async ({ locals }: any) => {
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const { authToken, me } = locals;
-		const form = await superValidate(request, zod(UserProfileSchema as any));
+		const form = await superValidate(request, zod4(UserProfileSchema as any));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

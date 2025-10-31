@@ -5,12 +5,12 @@
 	import { Loader2 } from '@lucide/svelte';
 	import { ChangePasswordSchema } from '$validations/user';
 	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 
 	let { data } = $props();
 
 	const form = superForm(data.form, {
-		validators: zodClient(ChangePasswordSchema),
+		validators: zod4Client(ChangePasswordSchema),
 		delayMs: 100,
 		resetForm: false,
 		onUpdate({ form, result }) {

@@ -1,7 +1,7 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
 import { RoleService } from '$services/role';
 import { UserSchema, UserUpdateRolesSchema } from '$validations/user';
@@ -17,13 +17,13 @@ export const load: PageServerLoad = async ({ depends, parent, locals }) => {
 			status: 'active'
 		}
 	});
-	const form = await superValidate(data.model.data.attributes, zod(UserSchema));
+	const form = await superValidate(data.model.data.attributes, zod4(UserSchema));
 	const updateRolesForm = await superValidate(
 		{
 			roleIds:
 				data.model.data.relationships?.roles?.map((role) => role.attributes.id.toString()) ?? []
 		},
-		zod(UserUpdateRolesSchema)
+		zod4(UserUpdateRolesSchema)
 	);
 	return {
 		form,
@@ -38,7 +38,7 @@ export const actions = {
 	save: async ({ request, locals, params }) => {
 		const { authToken, currentOrgId } = locals;
 		const { id } = params;
-		const form = await superValidate(request, zod(UserSchema));
+		const form = await superValidate(request, zod4(UserSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
@@ -63,7 +63,7 @@ export const actions = {
 	roles: async ({ request, locals, params }) => {
 		const { authToken, currentOrgId } = locals;
 		const { id } = params;
-		const form = await superValidate(request, zod(UserUpdateRolesSchema));
+		const form = await superValidate(request, zod4(UserUpdateRolesSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

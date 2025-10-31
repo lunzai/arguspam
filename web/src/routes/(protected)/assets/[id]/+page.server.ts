@@ -3,7 +3,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { AssetService } from '$services/asset';
 import { OrgService } from '$services/org';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms';
 import { setFormErrors } from '$lib/utils/form';
 import {
@@ -65,7 +65,7 @@ export const actions = {
 	save: async ({ request, locals, params }) => {
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(AssetUpdateSchema));
+		const form = await superValidate(request, zod4(AssetUpdateSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
@@ -90,7 +90,7 @@ export const actions = {
 	updateCredentials: async ({ request, locals, params }) => {
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(AssetCredentialsSchema));
+		const form = await superValidate(request, zod4(AssetCredentialsSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
@@ -115,7 +115,7 @@ export const actions = {
 	removeAccess: async ({ request, locals, params }) => {
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(AssetRemoveAccessSchema));
+		const form = await superValidate(request, zod4(AssetRemoveAccessSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
@@ -139,7 +139,7 @@ export const actions = {
 	addAccess: async ({ request, locals, params }) => {
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(AssetAddAccessSchema));
+		const form = await superValidate(request, zod4(AssetAddAccessSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

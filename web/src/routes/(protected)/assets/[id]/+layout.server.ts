@@ -3,7 +3,7 @@ import { AssetService } from '$services/asset';
 import type { ApiAssetResource } from '$resources/asset';
 import type { Asset } from '$lib/models/asset';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { AssetUpdateSchema, AssetCredentialsSchema } from '$validations/asset';
 import type { AssetAccountCollection, AssetAccountResource } from '$resources/asset-account';
 
@@ -31,7 +31,7 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 			description: model.data.attributes.description,
 			status: model.data.attributes.status
 		},
-		zod(AssetUpdateSchema)
+		zod4(AssetUpdateSchema)
 	);
 	const credentialsForm = await superValidate(
 		{
@@ -41,7 +41,7 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 			username: adminAccount?.attributes?.username,
 			password: ''
 		},
-		zod(AssetCredentialsSchema),
+		zod4(AssetCredentialsSchema),
 		{ errors: false }
 	);
 	return {

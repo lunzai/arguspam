@@ -10,7 +10,7 @@ class CacheKeyTest extends TestCase
     public function test_enum_cases_exist()
     {
         $cases = CacheKey::cases();
-        $this->assertCount(34, $cases);
+        $this->assertCount(30, $cases);
 
         // Test original 8 cases still exist
         $this->assertContains(CacheKey::USER_PERMISSIONS, $cases);

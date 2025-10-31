@@ -46,7 +46,8 @@ class SessionFlagTest extends TestCase
         $this->assertEquals(SessionFlag::SYSTEM_INTEGRITY_RISK, SessionFlag::tryFrom('SYSTEM INTEGRITY RISK'));
         $this->assertNull(SessionFlag::tryFrom('invalid'));
         $this->assertNull(SessionFlag::tryFrom(''));
-        $this->assertNull(SessionFlag::tryFrom(null));
+        // PHP 8.3+ deprecates passing null to tryFrom, but we still test it
+        @$this->assertNull(SessionFlag::tryFrom(null));
     }
 
     public function test_enum_from_invalid_string_throws_exception(): void
@@ -64,7 +65,8 @@ class SessionFlagTest extends TestCase
     public function test_enum_from_null_throws_exception(): void
     {
         $this->expectException(\ValueError::class);
-        SessionFlag::from(null);
+        // PHP 8.3+ deprecates passing null to from, but it still throws ValueError
+        @SessionFlag::from(null);
     }
 
     public function test_enum_is_backed_enum(): void

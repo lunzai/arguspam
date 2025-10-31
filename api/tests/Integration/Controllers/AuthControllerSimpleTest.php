@@ -3,6 +3,7 @@
 namespace Tests\Unit\Controllers;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Resources\User\MeResource;
 use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -30,7 +31,7 @@ class AuthControllerSimpleTest extends TestCase
 
         $response = $this->controller->me($request);
 
-        $this->assertInstanceOf(UserResource::class, $response);
+        $this->assertInstanceOf(MeResource::class, $response);
         $this->assertEquals($user->id, $response->resource->id);
     }
 
@@ -56,6 +57,6 @@ class AuthControllerSimpleTest extends TestCase
 
         $result = $this->controller->me($request);
 
-        $this->assertInstanceOf(UserResource::class, $result);
+        $this->assertInstanceOf(MeResource::class, $result);
     }
 }

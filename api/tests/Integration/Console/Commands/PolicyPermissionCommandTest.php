@@ -39,6 +39,7 @@ class PolicyPermissionCommandTest extends TestCase
             ->with(false);
 
         $this->artisan(PolicyPermission::class)
+            ->expectsConfirmation('Remove deprecated permissions?', 'no')
             ->expectsOutput('No permissions found in policies.')
             ->expectsOutput('Permissions synced successfully!')
             ->assertExitCode(0);
@@ -67,11 +68,12 @@ class PolicyPermissionCommandTest extends TestCase
             ->with(false);
 
         $this->artisan(PolicyPermission::class)
+            ->expectsConfirmation('Remove deprecated permissions?', 'no')
             ->expectsOutput('Permissions synced successfully!')
             ->assertExitCode(0);
     }
 
-    public function test_handle_with_remove_others_option_and_confirmation()
+    public function test_handle_with_remove_deprecated_confirmation()
     {
         $changes = [
             'to_add' => collect([
@@ -92,33 +94,34 @@ class PolicyPermissionCommandTest extends TestCase
             ->method('syncPermissions')
             ->with(true);
 
-        $this->artisan(PolicyPermission::class, ['--remove-others' => true])
-            ->expectsConfirmation('This will remove existing permissions. Continue?', 'yes')
+        $this->artisan(PolicyPermission::class)
+            ->expectsConfirmation('Remove deprecated permissions?', 'yes')
             ->expectsOutput('Permissions synced successfully!')
             ->assertExitCode(0);
     }
 
-    public function test_handle_with_remove_others_option_and_declined_confirmation()
+    public function test_handle_with_declined_remove_deprecated_confirmation()
     {
         $changes = [
             'to_add' => collect(),
-            'to_remove' => collect([
-                ['name' => 'old.permission', 'description' => 'Old permission'],
-            ]),
+            'to_remove' => collect(),
             'unchanged' => collect(),
         ];
 
         $this->mockService->expects($this->once())
             ->method('getChanges')
-            ->with(true)
+            ->with(false)
             ->willReturn($changes);
 
-        $this->mockService->expects($this->never())
-            ->method('syncPermissions');
+        $this->mockService->expects($this->once())
+            ->method('syncPermissions')
+            ->with(false);
 
-        $this->artisan(PolicyPermission::class, ['--remove-others' => true])
-            ->expectsConfirmation('This will remove existing permissions. Continue?', 'no')
-            ->assertExitCode(1);
+        $this->artisan(PolicyPermission::class)
+            ->expectsConfirmation('Remove deprecated permissions?', 'no')
+            ->expectsOutput('No permissions found in policies.')
+            ->expectsOutput('Permissions synced successfully!')
+            ->assertExitCode(0);
     }
 
     public function test_handle_with_dry_run_option()
@@ -140,11 +143,12 @@ class PolicyPermissionCommandTest extends TestCase
             ->method('syncPermissions');
 
         $this->artisan(PolicyPermission::class, ['--dry-run' => true])
+            ->expectsConfirmation('Remove deprecated permissions?', 'no')
             ->expectsOutput('Dry run complete. No changes were made.')
             ->assertExitCode(0);
     }
 
-    public function test_handle_with_remove_others_but_no_permissions_to_remove()
+    public function test_handle_with_remove_deprecated_but_no_permissions_to_remove()
     {
         $changes = [
             'to_add' => collect([
@@ -163,7 +167,8 @@ class PolicyPermissionCommandTest extends TestCase
             ->method('syncPermissions')
             ->with(true);
 
-        $this->artisan(PolicyPermission::class, ['--remove-others' => true])
+        $this->artisan(PolicyPermission::class)
+            ->expectsConfirmation('Remove deprecated permissions?', 'yes')
             ->expectsOutput('Permissions synced successfully!')
             ->assertExitCode(0);
     }
@@ -192,6 +197,7 @@ class PolicyPermissionCommandTest extends TestCase
             ->with(false);
 
         $this->artisan(PolicyPermission::class)
+            ->expectsConfirmation('Remove deprecated permissions?', 'no')
             ->expectsOutput('Permissions synced successfully!')
             ->assertExitCode(0);
     }
@@ -200,7 +206,6 @@ class PolicyPermissionCommandTest extends TestCase
     {
         $command = new PolicyPermission($this->mockService);
         $this->assertStringContainsString('permission:sync', $command->getName());
-        $this->assertTrue($command->getDefinition()->hasOption('remove-others'));
         $this->assertTrue($command->getDefinition()->hasOption('dry-run'));
     }
 

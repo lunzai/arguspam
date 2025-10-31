@@ -35,6 +35,7 @@ enum CacheKey: string
 
     // DASHBOARD
 
+    case ORG_USERS_COUNT = 'org:user:count';
     case ORG_USER_GROUPS_COUNT = 'org:user_group:count';
     case ORG_ASSETS_COUNT = 'org:asset:count';
     case ORG_REQUESTS_COUNT = 'org:request:count';

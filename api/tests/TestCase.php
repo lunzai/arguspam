@@ -7,6 +7,7 @@ use App\Models\AssetAccount;
 use App\Models\Request;
 use App\Models\Session;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -22,10 +23,33 @@ abstract class TestCase extends BaseTestCase
 
     protected function setUp(): void
     {
+        // For pure unit tests that do not rely on the container/DB, skip Laravel bootstrap
+        if (preg_match('/^Tests\\\\Unit\\\\(Enums|Events|Rules)\\\\/', static::class) === 1) {
+            return;
+        }
+
+        // Map legacy namespaces used by tests to current implementation namespaces
+        $aliases = [
+            'App\\Services\\Jit\\Database\\Drivers\\AbstractDatabaseDriver' => 'App\\Services\\Jit\\Databases\\Drivers\\AbstractDatabaseDriver',
+            'App\\Services\\Jit\\Database\\Drivers\\MySQLDriver' => 'App\\Services\\Jit\\Databases\\Drivers\\MySQLDriver',
+            'App\\Services\\Jit\\Database\\Drivers\\PostgreSQLDriver' => 'App\\Services\\Jit\\Databases\\Drivers\\PostgreSQLDriver',
+            'App\\Services\\Jit\\Database\\DatabaseDriverFactory' => 'App\\Services\\Jit\\Databases\\DatabaseDriverFactory',
+            'App\\Services\\Jit\\Database\\Contracts\\DatabaseDriverInterface' => 'App\\Services\\Jit\\Databases\\Contracts\\DatabaseDriverInterface',
+        ];
+        foreach ($aliases as $alias => $original) {
+            if (class_exists($original) && !class_exists($alias)) {
+                class_alias($original, $alias);
+            }
+            if (interface_exists($original) && !interface_exists($alias)) {
+                class_alias($original, $alias);
+            }
+        }
+
         parent::setUp();
 
-        // Set up test database connection for integration tests
-        if (config('database.connections.testing_mysql')) {
+        // Only switch DB default for tests that use RefreshDatabase (Integration tests)
+        $uses = class_uses_recursive(static::class);
+        if (in_array(RefreshDatabase::class, $uses, true) && config('database.connections.testing_mysql')) {
             config(['database.default' => 'testing_mysql']);
         }
     }

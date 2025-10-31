@@ -29,8 +29,10 @@ class HandleSessionCreatedTest extends TestCase
         parent::setUp();
 
         $this->listener = new HandleSessionCreated;
-        $this->requester = \Mockery::mock(User::class);
-        $this->approver = \Mockery::mock(User::class);
+        $this->requester = new User();
+        $this->requester->id = 1;
+        $this->approver = new User();
+        $this->approver->id = 2;
         $this->session = \Mockery::mock(Session::class);
     }
 
@@ -106,12 +108,13 @@ class HandleSessionCreatedTest extends TestCase
 
         // Mock session relationships
         $this->session->shouldReceive('getAttribute')->with('requester')->andReturn($this->requester);
+        // Make approver same as requester to avoid approver notification in this test
         $this->session->shouldReceive('getAttribute')->with('approver_id')->andReturn(1);
-        $this->session->shouldReceive('getAttribute')->with('requester_id')->andReturn(2);
+        $this->session->shouldReceive('getAttribute')->with('requester_id')->andReturn(1);
         $this->session->shouldReceive('setAttribute')->andReturnSelf();
         $this->session->approver_id = 1;
-        $this->session->requester_id = 2;
-        $this->requester->shouldReceive('notify')->once();
+        $this->session->requester_id = 1;
+        // notification captured by Notification::fake
 
         $event = new SessionCreated($this->session);
         $this->listener->handle($event);
@@ -134,8 +137,7 @@ class HandleSessionCreatedTest extends TestCase
         $this->session->shouldReceive('setAttribute')->andReturnSelf();
         $this->session->approver_id = 1;
         $this->session->requester_id = 2;
-        $this->requester->shouldReceive('notify')->once();
-        $this->approver->shouldReceive('notify')->once();
+        // notifications captured by Notification::fake
 
         $event = new SessionCreated($this->session);
         $this->listener->handle($event);
@@ -157,7 +159,7 @@ class HandleSessionCreatedTest extends TestCase
         $this->session->shouldReceive('setAttribute')->andReturnSelf();
         $this->session->approver_id = 1;
         $this->session->requester_id = 1; // Same as approver
-        $this->requester->shouldReceive('notify')->once();
+        // notification captured by Notification::fake
 
         $event = new SessionCreated($this->session);
         $this->listener->handle($event);

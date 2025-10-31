@@ -33,7 +33,13 @@ class HandleSessionAiReviewedTest extends TestCase
         $this->listener = new HandleSessionAiReviewed;
         $this->requester = \Mockery::mock(User::class);
         $this->approver = \Mockery::mock(User::class);
-        $this->session = \Mockery::mock(Session::class);
+        $this->session = \Mockery::mock(Session::class)->makePartial();
+    }
+
+    protected function tearDown(): void
+    {
+        \Mockery::close();
+        parent::tearDown();
     }
 
     public function test_listener_implements_should_queue(): void
@@ -98,84 +104,120 @@ class HandleSessionAiReviewedTest extends TestCase
 
     public function test_handle_sends_required_notifications_when_manual_review_required(): void
     {
-        Notification::fake();
+        // Setup session properties
+        $this->session->approver_id = 1;
+        $this->session->requester_id = 2;
+        $this->session->requester = $this->requester;
+        $this->session->approver = $this->approver;
 
         // Mock session to require manual review
         $this->session->shouldReceive('isRequiredManualReview')->andReturn(true);
-        $this->session->shouldReceive('getAttribute')->with('requester')->andReturn($this->requester);
-        $this->session->shouldReceive('getAttribute')->with('approver')->andReturn($this->approver);
-        $this->session->shouldReceive('getAttribute')->with('approver_id')->andReturn(1);
-        $this->session->shouldReceive('getAttribute')->with('requester_id')->andReturn(2);
-        $this->session->shouldReceive('setAttribute')->andReturnSelf();
-        $this->session->approver_id = 1;
-        $this->session->requester_id = 2;
+        
+        // Allow getAttribute to return properties (permissive mock)
+        // Store properties in a closure variable to access them
+        $sessionProps = [];
+        $sessionProps['requester'] = $this->requester;
+        $sessionProps['approver'] = $this->approver;
+        $sessionProps['approver_id'] = 1;
+        $sessionProps['requester_id'] = 2;
+        
+        $this->session->shouldReceive('getAttribute')
+            ->andReturnUsing(function ($key) use ($sessionProps) {
+                return $sessionProps[$key] ?? null;
+            });
 
-        $this->requester->shouldReceive('notify')->once();
-        $this->approver->shouldReceive('notify')->once();
+        // Mock User models - verify notify() is called with correct notification types
+        $this->requester->shouldReceive('notify')
+            ->once()
+            ->with(\Mockery::type(SessionReviewRequiredNotifyRequester::class))
+            ->andReturn(true);
+        $this->approver->shouldReceive('notify')
+            ->once()
+            ->with(\Mockery::type(SessionReviewRequiredNotifyApprover::class))
+            ->andReturn(true);
 
         $event = new SessionAiAudited($this->session);
         $this->listener->handle($event);
-
-        Notification::assertSentTo(
-            $this->requester,
-            SessionReviewRequiredNotifyRequester::class
-        );
-        Notification::assertSentTo(
-            $this->approver,
-            SessionReviewRequiredNotifyApprover::class
-        );
+        
+        // Explicit assertion - Mockery expectations are verified in tearDown()
+        $this->addToAssertionCount(2); // One for each notify() expectation
     }
 
     public function test_handle_sends_optional_notifications_when_manual_review_not_required(): void
     {
-        Notification::fake();
+        // Setup session properties
+        $this->session->approver_id = 1;
+        $this->session->requester_id = 2;
+        $this->session->requester = $this->requester;
+        $this->session->approver = $this->approver;
 
         // Mock session to not require manual review
         $this->session->shouldReceive('isRequiredManualReview')->andReturn(false);
-        $this->session->shouldReceive('getAttribute')->with('requester')->andReturn($this->requester);
-        $this->session->shouldReceive('getAttribute')->with('approver')->andReturn($this->approver);
-        $this->session->shouldReceive('getAttribute')->with('approver_id')->andReturn(1);
-        $this->session->shouldReceive('getAttribute')->with('requester_id')->andReturn(2);
-        $this->session->shouldReceive('setAttribute')->andReturnSelf();
-        $this->session->approver_id = 1;
-        $this->session->requester_id = 2;
+        
+        // Allow getAttribute to return properties (permissive mock)
+        // Store properties in a closure variable to access them
+        $sessionProps = [];
+        $sessionProps['requester'] = $this->requester;
+        $sessionProps['approver'] = $this->approver;
+        $sessionProps['approver_id'] = 1;
+        $sessionProps['requester_id'] = 2;
+        
+        $this->session->shouldReceive('getAttribute')
+            ->andReturnUsing(function ($key) use ($sessionProps) {
+                return $sessionProps[$key] ?? null;
+            });
 
-        $this->requester->shouldReceive('notify')->once();
-        $this->approver->shouldReceive('notify')->once();
+        // Mock User models - verify notify() is called with correct notification types
+        $this->requester->shouldReceive('notify')
+            ->once()
+            ->with(\Mockery::type(SessionReviewOptionalNotifyRequester::class))
+            ->andReturn(true);
+        $this->approver->shouldReceive('notify')
+            ->once()
+            ->with(\Mockery::type(SessionReviewOptionalNotifyApprover::class))
+            ->andReturn(true);
 
         $event = new SessionAiAudited($this->session);
         $this->listener->handle($event);
-
-        Notification::assertSentTo(
-            $this->requester,
-            SessionReviewOptionalNotifyRequester::class
-        );
-        Notification::assertSentTo(
-            $this->approver,
-            SessionReviewOptionalNotifyApprover::class
-        );
+        
+        // Explicit assertion - Mockery expectations are verified in tearDown()
+        $this->addToAssertionCount(2); // One for each notify() expectation
     }
 
     public function test_handle_does_not_notify_approver_when_approver_is_same_as_requester(): void
     {
-        Notification::fake();
-
         // Set approver same as requester
-        $this->session->approver_id = $this->session->requester_id;
+        $this->session->approver_id = 1;
+        $this->session->requester_id = 1;
+        $this->session->requester = $this->requester;
+        $this->session->approver = $this->approver;
         $this->session->shouldReceive('isRequiredManualReview')->andReturn(true);
-        $this->session->shouldReceive('getAttribute')->with('requester')->andReturn($this->requester);
+
+        // Allow getAttribute to return properties (permissive mock)
+        // Store properties in a closure variable to access them
+        $sessionProps = [];
+        $sessionProps['requester'] = $this->requester;
+        $sessionProps['approver'] = $this->approver;
+        $sessionProps['approver_id'] = 1;
+        $sessionProps['requester_id'] = 1;
+        
+        $this->session->shouldReceive('getAttribute')
+            ->andReturnUsing(function ($key) use ($sessionProps) {
+                return $sessionProps[$key] ?? null;
+            });
+
+        // Mock User model - verify requester is notified but approver is not
+        $this->requester->shouldReceive('notify')
+            ->once()
+            ->with(\Mockery::type(SessionReviewRequiredNotifyRequester::class))
+            ->andReturn(true);
+        $this->approver->shouldReceive('notify')->never();
 
         $event = new SessionAiAudited($this->session);
         $this->listener->handle($event);
-
-        Notification::assertSentTo(
-            $this->requester,
-            SessionReviewRequiredNotifyRequester::class
-        );
-        Notification::assertNotSentTo(
-            $this->approver,
-            SessionReviewRequiredNotifyApprover::class
-        );
+        
+        // Explicit assertion - Mockery expectations are verified in tearDown()
+        $this->addToAssertionCount(2); // One for each notify() expectation
     }
 
     public function test_handle_uses_correct_notification_classes(): void

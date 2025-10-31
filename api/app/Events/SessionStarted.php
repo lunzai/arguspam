@@ -14,5 +14,5 @@ class SessionStarted
     /**
      * Create a new event instance.
      */
-    public function __construct(public Session $session) {}
+    public function __construct(public Session $session, public array $credentials = []) {}
 }

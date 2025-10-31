@@ -24,12 +24,18 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use PragmaRX\Google2FAQRCode\Google2FA;
+use App\Http\Resources\Permission\PermissionResource;
+use App\Http\Resources\Permission\PermissionsCollection;
+use Illuminate\Support\Facades\Log;
+use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
+use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasBlamable, HasFactory,
-        HasRbac, HasStatus, Notifiable, SoftDeletes;
+        HasRbac, HasStatus, Notifiable, SoftDeletes,
+        HasRelationships;
 
     protected $fillable = [
         'name',
@@ -192,12 +198,14 @@ class User extends Authenticatable
 
     public function orgs(): BelongsToMany
     {
-        return $this->belongsToMany(Org::class);
+        return $this->belongsToMany(Org::class)
+            ->active();
     }
 
     public function userGroups(): BelongsToMany
     {
-        return $this->belongsToMany(UserGroup::class, 'user_user_group');
+        return $this->belongsToMany(UserGroup::class, 'user_user_group')
+            ->active();
     }
 
     public function assetAccessGrants(): HasMany
@@ -297,22 +305,27 @@ class User extends Authenticatable
             ->where('status', RequestStatus::SUBMITTED->value);
     }
 
-    public function permissions(): BelongsToMany
-    {
-        return $this->belongsToMany(Permission::class, 'permission_role', 'role_id', 'permission_id')
-            ->whereIn('permission_role.role_id', function ($query) {
-                $query->select('role_id')
-                    ->from('role_user')
-                    ->where('user_id', $this->getKey());
-            })
-            ->distinct();
-    }
+    // TODO: remove
+    // public function getPermissions(): Collection
+    // {
+    //     return $this->roles()
+    //         ->with('permissions')
+    //         ->get()
+    //         ->pluck('permissions')
+    //         ->flatten()
+    //         ->unique('id')
+    //         ->select(['id', 'name', 'description'])
+    //         ->groupBy(function (array $item, string $key) { 
+    //             return explode(':', $item['name'])[0]; 
+    //         });
+    // }
 
-    public function permissionNames(): Collection
+    public function permissions(): HasManyDeep
     {
-        return $this->permissions()
-            ->pluck('name')
-            ->unique();
+        return $this->hasManyDeep(
+            Permission::class, 
+            ['role_user', Role::class, 'permission_role']
+        )->distinct();
     }
 
     public function sessionAudits(): HasMany
@@ -320,9 +333,9 @@ class User extends Authenticatable
         return $this->hasMany(SessionAudit::class);
     }
 
-    public function restrictions(): HasMany
+    public function restrictions(): BelongsToMany
     {
-        return $this->hasMany(UserAccessRestriction::class);
+        return $this->belongsToMany(AccessRestriction::class, 'access_restriction_user');
     }
 
     public function actionAudits(): HasMany

@@ -24,21 +24,21 @@ class ActionAuditPolicyTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    public function test_view_any_returns_true_when_user_has_permission(): void
+    public function test_view_returns_true_when_user_has_permission(): void
     {
-        $this->giveUserPermission($this->user, 'actionaudit:viewany');
+        $this->giveUserPermission($this->user, 'actionaudit:view');
 
-        $this->assertTrue($this->policy->viewAny($this->user));
+        $this->assertTrue($this->policy->view($this->user));
     }
 
-    public function test_view_any_returns_false_when_user_lacks_permission(): void
+    public function test_view_returns_false_when_user_lacks_permission(): void
     {
-        $this->assertFalse($this->policy->viewAny($this->user));
+        $this->assertFalse($this->policy->view($this->user));
     }
 
-    public function test_user_with_no_permissions_cannot_view_any(): void
+    public function test_user_with_no_permissions_cannot_view(): void
     {
-        $this->assertFalse($this->policy->viewAny($this->user));
+        $this->assertFalse($this->policy->view($this->user));
     }
 
     public function test_multiple_users_with_different_permissions(): void
@@ -46,34 +46,34 @@ class ActionAuditPolicyTest extends TestCase
         $authorizedUser = User::factory()->create();
         $unauthorizedUser = User::factory()->create();
 
-        $this->giveUserPermission($authorizedUser, 'actionaudit:viewany');
+        $this->giveUserPermission($authorizedUser, 'actionaudit:view');
 
-        $this->assertTrue($this->policy->viewAny($authorizedUser));
-        $this->assertFalse($this->policy->viewAny($unauthorizedUser));
-        $this->assertFalse($this->policy->viewAny($this->user));
+        $this->assertTrue($this->policy->view($authorizedUser));
+        $this->assertFalse($this->policy->view($unauthorizedUser));
+        $this->assertFalse($this->policy->view($this->user));
     }
 
     public function test_permission_names_are_case_insensitive(): void
     {
-        $this->giveUserPermission($this->user, 'ACTIONAUDIT:VIEWANY');
+        $this->giveUserPermission($this->user, 'ACTIONAUDIT:VIEW');
 
-        $this->assertTrue($this->policy->viewAny($this->user));
+        $this->assertTrue($this->policy->view($this->user));
     }
 
-    public function test_view_any_with_similar_but_different_permission_names(): void
+    public function test_view_with_similar_but_different_permission_names(): void
     {
         // Test with similar but different permission names
-        $this->giveUserPermission($this->user, 'actionaudit:view'); // Note: 'view' not 'viewany'
+        $this->giveUserPermission($this->user, 'actionaudit:viewall'); // Note: 'viewall' not 'view'
 
-        $this->assertFalse($this->policy->viewAny($this->user)); // Should not match
+        $this->assertFalse($this->policy->view($this->user)); // Should not match
     }
 
     public function test_policy_handles_edge_cases(): void
     {
         // Test with permission that starts with the same prefix but is different
-        $this->giveUserPermission($this->user, 'actionaudit:viewanyother');
+        $this->giveUserPermission($this->user, 'actionaudit:viewother');
 
-        $this->assertFalse($this->policy->viewAny($this->user)); // Should not match
+        $this->assertFalse($this->policy->view($this->user)); // Should not match
     }
 
     public function test_user_with_multiple_roles_and_permissions(): void
@@ -82,8 +82,8 @@ class ActionAuditPolicyTest extends TestCase
         $role2 = Role::factory()->create();
 
         $permission1 = Permission::firstOrCreate(
-            ['name' => 'actionaudit:viewany'],
-            ['description' => 'View Any Action Audit']
+            ['name' => 'actionaudit:view'],
+            ['description' => 'View Action Audit']
         );
         $permission2 = Permission::firstOrCreate(
             ['name' => 'some:other'],
@@ -96,7 +96,7 @@ class ActionAuditPolicyTest extends TestCase
         $this->user->roles()->attach([$role1->id, $role2->id]);
         $this->user->clearUserRolePermissionCache();
 
-        $this->assertTrue($this->policy->viewAny($this->user));
+        $this->assertTrue($this->policy->view($this->user));
     }
 
     private function giveUserPermission(User $user, string $permissionName): void

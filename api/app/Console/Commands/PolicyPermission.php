@@ -2,15 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\CacheKey;
 use App\Services\PolicyPermissionService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Cache;
 
 class PolicyPermission extends Command
 {
     protected $signature = 'permission:sync 
-                          {--remove-others : Remove permissions not found in policies}
                           {--dry-run : Show changes without executing}';
 
     protected $description = 'Sync permissions from policies to database';
@@ -25,8 +22,8 @@ class PolicyPermission extends Command
 
     public function handle(): int
     {
-        $removeOthers = $this->option('remove-others');
         $dryRun = $this->option('dry-run');
+        $removeOthers = $this->confirm('Remove deprecated permissions?', false);
         $changes = $this->service->getChanges($removeOthers);
 
         $this->showChanges($changes);
@@ -36,15 +33,8 @@ class PolicyPermission extends Command
             return self::SUCCESS;
         }
 
-        if ($removeOthers && $changes['to_remove']->isNotEmpty()) {
-            if (!$this->confirm('This will remove existing permissions. Continue?')) {
-                return self::FAILURE;
-            }
-        }
-
         $this->service->syncPermissions($removeOthers);
         $this->info('Permissions synced successfully!');
-        Cache::forget(CacheKey::PERMISSIONS->value);
         return self::SUCCESS;
     }
 

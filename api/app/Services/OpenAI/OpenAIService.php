@@ -31,7 +31,11 @@ class OpenAiService
         ])->render();
         $format = $this->getFormat('prompts/return-formats/session-review.json');
         try {
-            $response = $this->getResponse($systemPrompt, $userPrompt, $format);
+            $response = $this->getResponse($systemPrompt, $userPrompt, $format, [
+                'type' => 'session_review',
+                'ref_id' => $session->id,
+                'org_id' => $session->org_id,
+            ]);
             return $this->prepareResponse($response, SessionAudit::class);
         } catch (Exception $e) {
             Log::error('Session review failed', [
@@ -55,7 +59,11 @@ class OpenAiService
         ])->render();
         $format = $this->getFormat('prompts/return-formats/request-evaluation.json');
         try {
-            $response = $this->getResponse($systemPrompt, $userPrompt, $format);
+            $response = $this->getResponse($systemPrompt, $userPrompt, $format, [
+                'type' => 'request_evaluation',
+                'ref_id' => $request->id,
+                'org_id' => $request->org_id,
+            ]);
             return $this->prepareResponse($response, RequestEvaluation::class);
         } catch (Exception $e) {
             Log::error('Access request evaluation failed', [
@@ -66,6 +74,7 @@ class OpenAiService
         }
     }
 
+    // TODO: Record the response in DB
     private function prepareResponse(CreateResponse $response, string $responseClassName): array
     {
         $outputJson = json_decode($response->outputText, true);
@@ -91,8 +100,12 @@ class OpenAiService
         ];
     }
 
-    private function getResponse(string $systemPrompt, string $userPrompt, array $format = []): CreateResponse
+    private function getResponse(string $systemPrompt, string $userPrompt, array $format = [], array $metadata = []): CreateResponse
     {
+        $metadata = array_map(fn ($value) => e($value), array_merge(
+            $this->config['metadata'] ?? [], 
+            $metadata
+        ));
         $config = [
             'model' => $this->config['model'],
             'input' => [
@@ -110,7 +123,9 @@ class OpenAiService
             'max_output_tokens' => $this->config['max_output_tokens'],
             'top_p' => $this->config['top_p'],
             'store' => $this->config['store'],
+            'metadata' => $metadata,
         ];
+        Log::info('OpenAI config', ['config' => $config]);
         if (str_starts_with($config['model'], 'gpt-5')) {
             unset($config['temperature'], $config['top_p']);
             $config['service_tier'] = 'flex';

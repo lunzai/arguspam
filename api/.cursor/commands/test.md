@@ -1,111 +1,76 @@
 # Continue Unit Testing
 
-**Goal**: Achieve 80%+ test coverage for the Laravel API project.
+**Goal**: Follow the Unit Test Strategy & Plan to reach P0 100% and P1 90% coverage with fast, pure unit tests.
 
 ## Context
-- Current Coverage: **45.20%** (2347/5193 lines)
-- Target Coverage: **80%+**
-- Test Suite: PHPUnit 12.4.1 with Laravel
-- Total Tests: 1698 tests with 26 failures/errors
+- Test Runner: PHPUnit 12.x with Laravel
+- Plan Source: `/.cursor/unit-test-plan.md`
 
 ## Your Tasks
 
-### 1. Check Current Status
-First, identify where we are in the testing roadmap:
-- Read the plan file: `80--test-coverage-plan.plan.md`
-- Check which todos are completed/in-progress
-- Run tests to see current failures: `XDEBUG_MODE=coverage vendor/bin/phpunit`
+### 1) Check Current Status
+- Read `/.cursor/unit-test-plan.md` (Migration Plan + Current Status).
+- Run the Unit suite to see current failures: `vendor/bin/phpunit --testsuite=Unit`.
+- If measuring, run with coverage: `vendor/bin/phpunit --testsuite=Unit --coverage-text`.
 
-### 2. Priority Order
-Work through these phases in order:
+### 2) Work Through Migration Phases (from the plan)
 
-**Phase 1: Fix Existing Test Failures (26 total)**
-- SessionPolicy tests (5 errors): Missing `deleteAny()`, `restoreAny()` methods
-- SessionAuditPolicyTest: Empty test class
-- Events/AllEventsTest (4 errors): SessionAiReviewed vs SessionAiAudited mismatch
-- Listeners/AllListenersTest (1 failure): Event name inconsistency
-- Notification tests (16 failures): Missing introduction text
-- User model test (1 failure): Missing includable relationships
+**Phase 1: Organize Tests (DONE)**
+1. Create `tests/Integration/` directory ✅
+2. Move database-dependent tests from `tests/Unit/` to `tests/Integration/` ✅
+3. Update `phpunit.xml` test suites ✅
 
-**Phase 2: Add Listener Tests (23.78% coverage)**
-- Test the 13 untested listener classes in `app/Listeners/`
-- Follow patterns in existing listener tests
+**Phase 2: Convert to Pure Unit Tests**
+1. Rewrite controllers/services/policies in `tests/Unit/*` to use mocks only
+2. Update `tests/Unit/Models/*` to test logic only (no DB)
 
-**Phase 3: Add Notification Tests (10.34% class coverage)**
-- Test 26 untested notification classes
-- Focus on instantiation, toMail(), toArray(), via() methods
+**Phase 3: Achieve Coverage Goals**
+1. Add missing unit tests for uncovered P0/P1 code
+2. Measure coverage: `vendor/bin/phpunit --coverage-html coverage-report`
 
-**Phase 4: Enhance Model Tests**
-- Add comprehensive Session model tests (canStart, canEnd, canCancel, canTerminate)
-- Test edge cases and state transitions
+**Phase 4: Optimize**
+1. Parallelize unit tests where applicable
+2. Use in-memory SQLite for integration tests
+3. Ensure CI runs fast unit tests gate
 
-**Phase 5: Add Controller Tests (4.16% coverage)**
-Create tests following the pattern in `tests/Unit/Controllers/AuthControllerSimpleTest.php`:
-- `SessionRequesterControllerTest.php` for `app/Http/Controllers/SessionRequesterController.php`
-- `SessionApproverControllerTest.php` for `app/Http/Controllers/SessionApproverController.php`
-- Other untested controllers (33 controllers total, only 1 has tests)
+### 3) Testing Patterns to Follow
+- See templates in `/.cursor/unit-test-plan.md`:
+  - Controllers/Services use mocks (no DB, no HTTP, no files)
+  - Policies mock `User::hasAnyPermission()`
+  - Models: test logic, casts, accessors; move relationships/scopes to Integration
 
-### 3. Testing Patterns to Follow
+### 4) Commands You'll Need
+- Run Unit tests only (fast):
+  - `vendor/bin/phpunit --testsuite=Unit`
+  - With coverage: `vendor/bin/phpunit --testsuite=Unit --coverage-text`
+- Run Integration tests:
+  - `vendor/bin/phpunit --testsuite=Integration`
+- Run both Unit + Integration:
+  - `vendor/bin/phpunit --testsuite=Unit,Integration`
+- Run full suite:
+  - `vendor/bin/phpunit`
+- Generate HTML coverage report:
+  - `XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html coverage-report`
+- Run a specific test file:
+  - `vendor/bin/phpunit tests/Unit/Path/To/YourTest.php`
 
-**Controller Tests:**
-```php
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Models\{Session, User};
-
-class SessionRequesterControllerTest extends TestCase
-{
-    use RefreshDatabase;
-    
-    // Test controller instantiation
-    // Test each method (show, store, update, delete)
-    // Test authorization checks
-    // Test with factories for models
-}
-```
-
-**Model Tests:**
-```php
-// Test model methods
-// Test relationships
-// Test scopes
-// Test attributes/casts
-// Test business logic methods
-```
-
-**Policy Tests:**
-```php
-// Test each policy method
-// Test with different user permissions
-// Test authorization rules
-```
-
-### 4. Commands You'll Need
-- Run all tests: `vendor/bin/phpunit`
-- Run with coverage: `XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-text`
-- Run specific test: `vendor/bin/phpunit tests/Unit/Controllers/SessionRequesterControllerTest.php`
-- Generate HTML coverage: `XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-html coverage-report`
-
-### 5. Key Files to Reference
-- Test case base: `tests/TestCase.php`
-- Existing controller test: `tests/Unit/Controllers/AuthControllerSimpleTest.php`
+### 5) Key Files to Reference
+- Plan and templates: `/.cursor/unit-test-plan.md`
+- Base test case: `tests/TestCase.php`
+- Example controller test: `tests/Unit/Controllers/AuthControllerSimpleTest.php`
 - Model factories: `database/factories/`
-- Coverage report: `coverage-report/index.html`
+- Coverage HTML: `coverage-report/index.html`
 
-### 6. Success Criteria
-- All existing tests pass (0 failures/errors)
-- Code coverage reaches 80%+ 
-- New tests follow existing patterns
-- Tests are focused and maintainable
+### 6) Success Criteria
+- 0 failures/errors in Unit suite
+- P0 code at 100% coverage; P1 code at 90%+
+- Unit tests are pure (no DB/HTTP/files) and fast (< 0.1s per test)
+- Tests follow the provided templates and are maintainable
 
 ## Instructions
-1. Start by checking the plan and current test results
-2. Pick the next uncompleted todo from the plan
-3. Work on it systematically
-4. Run tests frequently to verify progress
-5. Update the plan todos as you complete them
-6. When done with a phase, move to the next one
-7. Keep me informed of progress and any blockers
+1. Phase 1: Organize tests (create Integration suite, move DB tests, update phpunit.xml).
+2. Phase 2: Convert Unit tests to pure mocks per templates (no DB/HTTP/files).
+3. Phase 3: Add tests to hit P0/P1 coverage targets; generate coverage report.
+4. Phase 4: Optimize (parallelize, in-memory SQLite for Integration, CI gating).
 
-**Remember**: Follow Laravel testing best practices, use factories for test data, and ensure tests are isolated and repeatable.
-
+Remember: If it touches the database, it's Integration — not Unit.

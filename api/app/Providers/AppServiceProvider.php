@@ -31,21 +31,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Gate::define('dashboard:viewany', [DashboardPolicy::class, 'viewAny']);
-        // Gate::define('orguser:viewany', [OrgUserPolicy::class, 'viewAny']);
-        // Gate::define('orguser:create', [OrgUserPolicy::class, 'create']);
-        // Gate::define('orguser:delete', [OrgUserPolicy::class, 'delete']);
-        // Gate::define('password:update', [PasswordPolicy::class, 'update']);
-        // Gate::define('rolepermission:create', [RolePermissionPolicy::class, 'create']);
-        // Gate::define('rolepermission:delete', [RolePermissionPolicy::class, 'delete']);
-        // Gate::define('usergroupuser:create', [UserGroupUserPolicy::class, 'create']);
-        // Gate::define('usergroupuser:delete', [UserGroupUserPolicy::class, 'delete']);
-        // Gate::define('userorg:viewany', [UserOrgPolicy::class, 'viewAny']);
-        // Gate::define('userorg:view', [UserOrgPolicy::class, 'view']);
-        // Gate::define('userrole:create', [UserRolePolicy::class, 'create']);
-        // Gate::define('userrole:delete', [UserRolePolicy::class, 'delete']);
         Gate::before(function (User $user, string $ability) {
-            if ($user->isAdmin() && config('pam.rbac.admin_bypass_gate') && config('app.debug')) {
+            if ($user->isAdmin()) {
                 return true;
             }
         });

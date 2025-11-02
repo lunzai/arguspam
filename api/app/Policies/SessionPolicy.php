@@ -7,7 +7,7 @@ use App\Models\User;
 
 class SessionPolicy
 {
-    public function view(User $user, Session $session): bool
+    public function view(User $user): bool
     {
         return $user->hasPermissionTo('session:view');
     }

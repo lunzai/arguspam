@@ -137,9 +137,9 @@ class HandleRequestApprovedTest extends TestCase
         // when the class is already loaded (Laravel bootstrapped). This is a limitation
         // of unit testing static methods. The actual session creation should be tested
         // in Integration tests. This test verifies the listener structure and setup.
-        
+
         $this->markTestSkipped(
-            'Static method Session::createFromRequest() cannot be mocked in unit tests ' .
+            'Static method Session::createFromRequest() cannot be mocked in unit tests '.
             'when class is already loaded. Test in Integration tests instead.'
         );
     }
@@ -150,10 +150,10 @@ class HandleRequestApprovedTest extends TestCase
         // be done in unit tests when the class is already loaded. Requires integration testing
         // or refactoring to use dependency injection.
         $this->markTestSkipped(
-            'Requires Session::createFromRequest() to be mocked. ' .
+            'Requires Session::createFromRequest() to be mocked. '.
             'Test in Integration tests or refactor listener to use dependency injection.'
         );
-        
+
         Notification::fake();
 
         // Setup request mock attributes
@@ -182,7 +182,7 @@ class HandleRequestApprovedTest extends TestCase
         // when class is already loaded. Testing notification logic only.
         // Session creation should be tested in Integration tests.
         // For this test, we verify notifications are sent correctly.
-        
+
         try {
             $this->listener->handle($event);
         } catch (\Exception $e) {
@@ -202,10 +202,10 @@ class HandleRequestApprovedTest extends TestCase
         // be done in unit tests when the class is already loaded. Requires integration testing
         // or refactoring to use dependency injection.
         $this->markTestSkipped(
-            'Requires Session::createFromRequest() to be mocked. ' .
+            'Requires Session::createFromRequest() to be mocked. '.
             'Test in Integration tests or refactor listener to use dependency injection.'
         );
-        
+
         Notification::fake();
 
         // Setup request mock attributes
@@ -240,7 +240,7 @@ class HandleRequestApprovedTest extends TestCase
         // when class is already loaded. Testing notification logic only.
         // Session creation should be tested in Integration tests.
         // For this test, we verify notifications are sent correctly.
-        
+
         try {
             $this->listener->handle($event);
         } catch (\Exception $e) {
@@ -260,10 +260,10 @@ class HandleRequestApprovedTest extends TestCase
         // be done in unit tests when the class is already loaded. Requires integration testing
         // or refactoring to use dependency injection.
         $this->markTestSkipped(
-            'Requires Session::createFromRequest() to be mocked. ' .
+            'Requires Session::createFromRequest() to be mocked. '.
             'Test in Integration tests or refactor listener to use dependency injection.'
         );
-        
+
         Notification::fake();
 
         // Setup request mock attributes
@@ -298,7 +298,7 @@ class HandleRequestApprovedTest extends TestCase
         // when class is already loaded. Testing notification logic only.
         // Session creation should be tested in Integration tests.
         // For this test, we verify notifications are sent correctly.
-        
+
         try {
             $this->listener->handle($event);
         } catch (\Exception $e) {

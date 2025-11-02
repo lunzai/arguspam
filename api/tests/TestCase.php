@@ -6,8 +6,8 @@ use App\Models\Asset;
 use App\Models\AssetAccount;
 use App\Models\Request;
 use App\Models\Session;
-use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {

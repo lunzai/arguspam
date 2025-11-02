@@ -25,7 +25,7 @@ class RequestPolicyTest extends TestCase
             ->with('request:view')
             ->andReturn(true);
 
-        $policy = new RequestPolicy();
+        $policy = new RequestPolicy;
         $this->assertTrue($policy->view($user, $request));
     }
 
@@ -37,7 +37,7 @@ class RequestPolicyTest extends TestCase
             ->with('request:create')
             ->andReturn(true);
 
-        $policy = new RequestPolicy();
+        $policy = new RequestPolicy;
         $this->assertTrue($policy->create($user));
     }
 
@@ -49,7 +49,7 @@ class RequestPolicyTest extends TestCase
             ->with('request:approveany')
             ->andReturn(true);
 
-        $policy = new RequestPolicy();
+        $policy = new RequestPolicy;
         $this->assertTrue($policy->approveAny($user));
     }
 
@@ -59,12 +59,12 @@ class RequestPolicyTest extends TestCase
         $request = Mockery::mock(RequestModel::class);
         $asset = Mockery::mock();
         $request->shouldReceive('getAttribute')->with('asset')->andReturn($asset);
-        
+
         $user->shouldReceive('hasPermissionTo')
             ->with('request:approveany')
             ->andReturn(true);
 
-        $policy = new RequestPolicy();
+        $policy = new RequestPolicy;
         $this->assertTrue($policy->approve($user, $request));
     }
 
@@ -74,7 +74,7 @@ class RequestPolicyTest extends TestCase
         $request = Mockery::mock(RequestModel::class);
         $requester = Mockery::mock(User::class);
         $request->shouldReceive('getAttribute')->with('requester')->andReturn($requester);
-        
+
         $user->shouldReceive('hasPermissionTo')
             ->with('request:cancelany')
             ->andReturn(false);
@@ -85,8 +85,7 @@ class RequestPolicyTest extends TestCase
             ->with($user)
             ->andReturn(true);
 
-        $policy = new RequestPolicy();
+        $policy = new RequestPolicy;
         $this->assertTrue($policy->cancel($user, $request));
     }
 }
-

@@ -7,7 +7,7 @@ use App\Models\User;
 
 class RequestPolicy
 {
-    public function view(User $user, Request $request): bool
+    public function view(User $user): bool
     {
         return $user->hasAnyPermission('request:view');
     }
@@ -65,15 +65,5 @@ class RequestPolicy
             return false;
         }
         return $request->requester->is($user);
-    }
-
-    public function deleteAny(User $user): bool
-    {
-        return $user->hasPermissionTo('request:deleteany');
-    }
-
-    public function restoreAny(User $user): bool
-    {
-        return $user->hasPermissionTo('request:restoreany');
     }
 }

@@ -112,7 +112,7 @@ class HandleSessionAiReviewedTest extends TestCase
 
         // Mock session to require manual review
         $this->session->shouldReceive('isRequiredManualReview')->andReturn(true);
-        
+
         // Allow getAttribute to return properties (permissive mock)
         // Store properties in a closure variable to access them
         $sessionProps = [];
@@ -120,7 +120,7 @@ class HandleSessionAiReviewedTest extends TestCase
         $sessionProps['approver'] = $this->approver;
         $sessionProps['approver_id'] = 1;
         $sessionProps['requester_id'] = 2;
-        
+
         $this->session->shouldReceive('getAttribute')
             ->andReturnUsing(function ($key) use ($sessionProps) {
                 return $sessionProps[$key] ?? null;
@@ -138,7 +138,7 @@ class HandleSessionAiReviewedTest extends TestCase
 
         $event = new SessionAiAudited($this->session);
         $this->listener->handle($event);
-        
+
         // Explicit assertion - Mockery expectations are verified in tearDown()
         $this->addToAssertionCount(2); // One for each notify() expectation
     }
@@ -153,7 +153,7 @@ class HandleSessionAiReviewedTest extends TestCase
 
         // Mock session to not require manual review
         $this->session->shouldReceive('isRequiredManualReview')->andReturn(false);
-        
+
         // Allow getAttribute to return properties (permissive mock)
         // Store properties in a closure variable to access them
         $sessionProps = [];
@@ -161,7 +161,7 @@ class HandleSessionAiReviewedTest extends TestCase
         $sessionProps['approver'] = $this->approver;
         $sessionProps['approver_id'] = 1;
         $sessionProps['requester_id'] = 2;
-        
+
         $this->session->shouldReceive('getAttribute')
             ->andReturnUsing(function ($key) use ($sessionProps) {
                 return $sessionProps[$key] ?? null;
@@ -179,7 +179,7 @@ class HandleSessionAiReviewedTest extends TestCase
 
         $event = new SessionAiAudited($this->session);
         $this->listener->handle($event);
-        
+
         // Explicit assertion - Mockery expectations are verified in tearDown()
         $this->addToAssertionCount(2); // One for each notify() expectation
     }
@@ -200,7 +200,7 @@ class HandleSessionAiReviewedTest extends TestCase
         $sessionProps['approver'] = $this->approver;
         $sessionProps['approver_id'] = 1;
         $sessionProps['requester_id'] = 1;
-        
+
         $this->session->shouldReceive('getAttribute')
             ->andReturnUsing(function ($key) use ($sessionProps) {
                 return $sessionProps[$key] ?? null;
@@ -215,7 +215,7 @@ class HandleSessionAiReviewedTest extends TestCase
 
         $event = new SessionAiAudited($this->session);
         $this->listener->handle($event);
-        
+
         // Explicit assertion - Mockery expectations are verified in tearDown()
         $this->addToAssertionCount(2); // One for each notify() expectation
     }

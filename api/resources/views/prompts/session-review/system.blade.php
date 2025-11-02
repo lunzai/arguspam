@@ -55,7 +55,7 @@ Assign separate risk ratings for session activities and deviations from original
 - Queries completely unrelated to stated purpose: minimum {{ RiskRating::HIGH->value }} deviation risk
 - Bulk data extraction (SELECT * with no/minimal WHERE clause): minimum {{ RiskRating::MEDIUM->value }} session activity risk
 - Access to tables not mentioned in intended queries: flag as needed, affects deviation risk
-- DDL/DML operations not justified in request: minimum {{ RiskRating::HIGH->value }} session activity risk
+- DDL/ALL operations not justified in request: minimum {{ RiskRating::HIGH->value }} session activity risk
 
 # Query Analysis Guidelines
 **Red Flags to Identify:**

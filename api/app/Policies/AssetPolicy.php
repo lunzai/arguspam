@@ -8,7 +8,7 @@ use App\Models\User;
 
 class AssetPolicy
 {
-    public function view(User $user, Asset $asset): bool
+    public function view(User $user): bool
     {
         return $user->hasAnyPermission('asset:view');
     }

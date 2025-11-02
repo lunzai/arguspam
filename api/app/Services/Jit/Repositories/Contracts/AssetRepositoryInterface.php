@@ -9,5 +9,3 @@ interface AssetRepositoryInterface
 {
     public function getActiveAdminAccount(Asset $asset): ?AssetAccount;
 }
-
-

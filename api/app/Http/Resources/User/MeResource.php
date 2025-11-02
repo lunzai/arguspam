@@ -2,12 +2,7 @@
 
 namespace App\Http\Resources\User;
 
-use App\Http\Resources\AssetAccessGrant\AssetAccessGrantResource;
-use App\Http\Resources\Org\OrgResource;
-use App\Http\Resources\Request\RequestResource;
 use App\Http\Resources\Resource;
-use App\Http\Resources\Session\SessionResource;
-use App\Http\Resources\UserGroup\UserGroupResource;
 use Illuminate\Http\Request;
 
 class MeResource extends Resource
@@ -42,11 +37,6 @@ class MeResource extends Resource
                 }),
                 'permissions' => $this->permissions
                     ->select(['id', 'name', 'description'])
-                    ->groupBy(fn($item) => explode(':', $item['name'])[0])
-                    ->map(fn($group) => [
-                        'group' => explode(':', $group->first()['name'])[0],
-                        'data' => $group->values()->all(),
-                    ])
                     ->values(),
                 'scheduled_sessions_count' => $this->scheduledSessions->count(),
                 'submitted_requests_count' => $this->submittedRequests->count(),

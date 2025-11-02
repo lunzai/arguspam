@@ -53,9 +53,9 @@ class UserPolicy
         return $user->hasAnyPermission('user:resetpasswordany');
     }
 
-    public function changePassword(User $user): bool
+    public function changePassword(User $user, User $model): bool
     {
-        return $user->hasAnyPermission('user:changepassword');
+        return $user->hasAnyPermission('user:changepassword') && $user->is($model);
     }
 
     public function enrollTwoFactorAuthenticationAny(User $user): bool

@@ -23,7 +23,7 @@ class UserPolicyTest extends TestCase
             ->with('user:viewany')
             ->andReturn(true);
 
-        $policy = new UserPolicy();
+        $policy = new UserPolicy;
         $this->assertTrue($policy->viewAny($user));
     }
 
@@ -35,7 +35,7 @@ class UserPolicyTest extends TestCase
             ->with('user:viewany')
             ->andReturn(false);
 
-        $policy = new UserPolicy();
+        $policy = new UserPolicy;
         $this->assertFalse($policy->viewAny($user));
     }
 
@@ -47,7 +47,7 @@ class UserPolicyTest extends TestCase
             ->with('user:viewany')
             ->andReturn(true);
 
-        $policy = new UserPolicy();
+        $policy = new UserPolicy;
         $this->assertTrue($policy->view($user, $model));
     }
 
@@ -66,7 +66,7 @@ class UserPolicyTest extends TestCase
             ->with('user:view')
             ->andReturn(true);
 
-        $policy = new UserPolicy();
+        $policy = new UserPolicy;
         $this->assertTrue($policy->view($user, $model));
     }
 
@@ -78,7 +78,7 @@ class UserPolicyTest extends TestCase
             ->with('user:create')
             ->andReturn(true);
 
-        $policy = new UserPolicy();
+        $policy = new UserPolicy;
         $this->assertTrue($policy->create($user));
     }
 
@@ -90,7 +90,7 @@ class UserPolicyTest extends TestCase
             ->with('user:updateany')
             ->andReturn(true);
 
-        $policy = new UserPolicy();
+        $policy = new UserPolicy;
         $this->assertTrue($policy->update($user, $model));
     }
 
@@ -103,8 +103,7 @@ class UserPolicyTest extends TestCase
             ->with('user:deleteany')
             ->andReturn(true);
 
-        $policy = new UserPolicy();
+        $policy = new UserPolicy;
         $this->assertTrue($policy->deleteAny($user, $model));
     }
 }
-

@@ -140,7 +140,6 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
                 break;
 
             case DatabaseScope::READ_WRITE:
-            case DatabaseScope::DML:
                 $this->connection->exec("GRANT CONNECT ON ALL DATABASES TO {$username}");
                 $this->connection->exec("GRANT USAGE ON ALL SCHEMAS TO {$username}");
                 $this->connection->exec("GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN ALL SCHEMAS TO {$username}");
@@ -179,7 +178,6 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
                 break;
 
             case DatabaseScope::READ_WRITE:
-            case DatabaseScope::DML:
                 $this->connection->exec("GRANT USAGE ON SCHEMA public TO {$username}");
                 $this->connection->exec("GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO {$username}");
                 $this->connection->exec("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {$username}");

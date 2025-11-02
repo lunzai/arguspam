@@ -29,9 +29,9 @@ class HandleSessionCreatedTest extends TestCase
         parent::setUp();
 
         $this->listener = new HandleSessionCreated;
-        $this->requester = new User();
+        $this->requester = new User;
         $this->requester->id = 1;
-        $this->approver = new User();
+        $this->approver = new User;
         $this->approver->id = 2;
         $this->session = \Mockery::mock(Session::class);
     }

@@ -44,14 +44,4 @@ class RequestController extends Controller
 
         return new RequestResource($request);
     }
-
-    // public function update(UpdateRequestRequest $request, string $id): RequestResource
-    // {
-    //     $request = RequestModel::findOrFail($id);
-    //     $this->authorize('update', $request);
-    //     $validated = $request->validated();
-    //     $request->update($validated);
-
-    //     return new RequestResource($request);
-    // }
 }

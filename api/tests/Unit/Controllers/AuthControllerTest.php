@@ -31,11 +31,9 @@ class AuthControllerTest extends TestCase
         $mockRequest = Mockery::mock(Request::class);
         $mockRequest->shouldReceive('user')->once()->andReturn($mockUser);
 
-        $controller = new AuthController();
+        $controller = new AuthController;
         $result = $controller->me($mockRequest);
 
         $this->assertInstanceOf(MeResource::class, $result);
     }
 }
-
-

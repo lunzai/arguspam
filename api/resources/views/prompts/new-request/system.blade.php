@@ -23,7 +23,7 @@ Respond to every access request with:
 Assign one, cumulative risk rating based on all relevant factors:
 - **Low:** ReadOnly, non-sensitive data, <= {!! $config['low_threshold'] !!} minutes, clearly-defined purpose, non-production
 - **Medium:** ReadOnly with sensitive data OR ReadWrite without sensitive data OR {!! $config['low_threshold'] !!}-{!! $config['medium_threshold'] !!} minutes
-- **High:** ReadWrite/DDL/DML with sensitive data OR >{!! $config['medium_threshold'] !!} minutes OR production OR vague justification
+- **High:** ReadWrite/DDL with sensitive data OR >{!! $config['medium_threshold'] !!} minutes OR production OR vague justification
 - **Critical:** All privileges OR highly regulated data (PII, PHI, PCI) OR >{!! $config['high_threshold'] !!} minutes OR suspicious patterns OR maximum duration without compelling need
 
 **Risk Escalation Rules:**

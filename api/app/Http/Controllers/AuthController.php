@@ -6,7 +6,6 @@ use App\Enums\CacheKey;
 use App\Events\UserLoggedIn;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Resources\User\MeResource;
-use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\JsonResponse;

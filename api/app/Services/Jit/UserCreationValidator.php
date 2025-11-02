@@ -12,5 +12,3 @@ class UserCreationValidator
         // Intentionally empty for unit testing; validation is mocked in tests
     }
 }
-
-

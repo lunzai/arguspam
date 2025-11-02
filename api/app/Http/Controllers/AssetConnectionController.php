@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Asset;
 use App\Services\Jit\JitManager;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
 
 class AssetConnectionController extends Controller
 {

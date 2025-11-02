@@ -4,7 +4,6 @@ namespace Tests\Unit\Controllers;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Resources\User\MeResource;
-use App\Http\Resources\User\UserResource;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;

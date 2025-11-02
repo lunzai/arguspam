@@ -3,13 +3,6 @@
 namespace App\Providers;
 
 use App\Models\User;
-use App\Policies\DashboardPolicy;
-use App\Policies\OrgUserPolicy;
-use App\Policies\PasswordPolicy;
-use App\Policies\RolePermissionPolicy;
-use App\Policies\UserGroupUserPolicy;
-use App\Policies\UserOrgPolicy;
-use App\Policies\UserRolePolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Telescope\TelescopeServiceProvider;

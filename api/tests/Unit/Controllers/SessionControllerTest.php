@@ -3,13 +3,7 @@
 namespace Tests\Unit\Controllers;
 
 use App\Http\Controllers\SessionController;
-use App\Http\Filters\SessionFilter;
-use App\Http\Resources\Session\SessionCollection;
-use App\Http\Resources\Session\SessionResource;
-use App\Models\Session;
 use App\Services\Jit\Secrets\SecretsManager;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Http\Request;
 use Mockery;
 use Tests\TestCase;
 
@@ -35,4 +29,3 @@ class SessionControllerTest extends TestCase
 
     // Further unit tests require refactoring to inject dependencies
 }
-

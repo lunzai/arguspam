@@ -103,7 +103,7 @@ class OpenAiService
     private function getResponse(string $systemPrompt, string $userPrompt, array $format = [], array $metadata = []): CreateResponse
     {
         $metadata = array_map(fn ($value) => e($value), array_merge(
-            $this->config['metadata'] ?? [], 
+            $this->config['metadata'] ?? [],
             $metadata
         ));
         $config = [

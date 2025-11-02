@@ -24,9 +24,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use PragmaRX\Google2FAQRCode\Google2FA;
-use App\Http\Resources\Permission\PermissionResource;
-use App\Http\Resources\Permission\PermissionsCollection;
-use Illuminate\Support\Facades\Log;
 use Staudenmeir\EloquentHasManyDeep\HasManyDeep;
 use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
@@ -34,8 +31,8 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasBlamable, HasFactory,
-        HasRbac, HasStatus, Notifiable, SoftDeletes,
-        HasRelationships;
+        HasRbac, HasRelationships, HasStatus, Notifiable,
+        SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -315,15 +312,15 @@ class User extends Authenticatable
     //         ->flatten()
     //         ->unique('id')
     //         ->select(['id', 'name', 'description'])
-    //         ->groupBy(function (array $item, string $key) { 
-    //             return explode(':', $item['name'])[0]; 
+    //         ->groupBy(function (array $item, string $key) {
+    //             return explode(':', $item['name'])[0];
     //         });
     // }
 
     public function permissions(): HasManyDeep
     {
         return $this->hasManyDeep(
-            Permission::class, 
+            Permission::class,
             ['role_user', Role::class, 'permission_role']
         )->distinct();
     }

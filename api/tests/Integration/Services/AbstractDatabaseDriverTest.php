@@ -239,7 +239,6 @@ class AbstractDatabaseDriverTest extends TestCase
         $this->assertTrue($driver->validateScope(DatabaseScope::READ_ONLY));
         $this->assertTrue($driver->validateScope(DatabaseScope::READ_WRITE));
         $this->assertTrue($driver->validateScope(DatabaseScope::DDL));
-        $this->assertTrue($driver->validateScope(DatabaseScope::DML));
         $this->assertTrue($driver->validateScope(DatabaseScope::ALL));
     }
 
@@ -258,7 +257,6 @@ class AbstractDatabaseDriverTest extends TestCase
         // Act & Assert - scopes not in the subset should be rejected
         $this->assertFalse($driver->validateScope(DatabaseScope::READ_WRITE));
         $this->assertFalse($driver->validateScope(DatabaseScope::DDL));
-        $this->assertFalse($driver->validateScope(DatabaseScope::DML));
         $this->assertFalse($driver->validateScope(DatabaseScope::ALL));
     }
 
@@ -418,7 +416,6 @@ class AbstractDatabaseDriverTest extends TestCase
             DatabaseScope::READ_ONLY,
             DatabaseScope::READ_WRITE,
             DatabaseScope::DDL,
-            DatabaseScope::DML,
             DatabaseScope::ALL,
         ], $scopes);
     }

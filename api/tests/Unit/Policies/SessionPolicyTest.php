@@ -25,7 +25,7 @@ class SessionPolicyTest extends TestCase
             ->with('session:view')
             ->andReturn(true);
 
-        $policy = new SessionPolicy();
+        $policy = new SessionPolicy;
         $this->assertTrue($policy->view($user, $session));
     }
 
@@ -37,7 +37,7 @@ class SessionPolicyTest extends TestCase
             ->with('session:terminateany')
             ->andReturn(true);
 
-        $policy = new SessionPolicy();
+        $policy = new SessionPolicy;
         $this->assertTrue($policy->terminateAny($user));
     }
 
@@ -47,7 +47,7 @@ class SessionPolicyTest extends TestCase
         $session = Mockery::mock(Session::class);
         $requester = Mockery::mock(User::class);
         $session->shouldReceive('getAttribute')->with('requester')->andReturn($requester);
-        
+
         $user->shouldReceive('hasPermissionTo')
             ->once()
             ->with('session:retrievesecret')
@@ -57,7 +57,7 @@ class SessionPolicyTest extends TestCase
             ->with($user)
             ->andReturn(true);
 
-        $policy = new SessionPolicy();
+        $policy = new SessionPolicy;
         $this->assertTrue($policy->retrieveSecret($user, $session));
     }
 
@@ -67,7 +67,7 @@ class SessionPolicyTest extends TestCase
         $session = Mockery::mock(Session::class);
         $requester = Mockery::mock(User::class);
         $session->shouldReceive('getAttribute')->with('requester')->andReturn($requester);
-        
+
         $user->shouldReceive('hasPermissionTo')
             ->once()
             ->with('session:start')
@@ -77,8 +77,7 @@ class SessionPolicyTest extends TestCase
             ->with($user)
             ->andReturn(true);
 
-        $policy = new SessionPolicy();
+        $policy = new SessionPolicy;
         $this->assertTrue($policy->start($user, $session));
     }
 }
-

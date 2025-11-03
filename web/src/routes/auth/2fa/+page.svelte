@@ -4,7 +4,7 @@
 	import { Button } from '$ui/button';
 	import { TwoFactorVerifySchema } from '$validations/auth';
 	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import { Loader2 } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
@@ -13,7 +13,7 @@
 	let { data } = $props();
 	data.form.data.temp_key = data.tempKey;
 	const form = superForm(data.form, {
-		validators: zodClient(TwoFactorVerifySchema),
+		validators: zod4Client(TwoFactorVerifySchema),
 		delayMs: 100,
 		resetForm: false,
 		onUpdate({ form, result }) {

@@ -6,6 +6,7 @@
 	import { page } from '$app/state';
 	import { toast } from 'svelte-sonner';
 	import { afterNavigate } from '$app/navigation';
+	import { layoutStore } from '$lib/stores/layout';
 
 	let { children } = $props();
 
@@ -38,7 +39,7 @@
 	};
 
 	afterNavigate(() => {
-		const user = page.data.user;
+		const user = $layoutStore.user;
 		if (user.two_factor_enabled && !user.two_factor_confirmed_at) {
 			toast.warning('Please verify your two-factor authentication to continue.');
 		}
@@ -79,7 +80,8 @@
 			// Handle dynamic segments like [id]
 			if (segment.startsWith('[') && segment.endsWith(']')) {
 				const paramName = segment.slice(1, -1);
-				const paramValue = params[paramName];
+				const paramKey = paramName as keyof typeof params;
+				const paramValue = params[paramKey];
 
 				if (paramValue) {
 					currentPath += `/${paramValue}`;
@@ -132,12 +134,6 @@
 		</header>
 		<div class="flex min-w-0 flex-1 flex-col gap-6 overflow-hidden px-6 py-4">
 			{@render children()}
-			<!-- <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-				<div class="bg-muted/50 aspect-video rounded-xl"></div>
-				<div class="bg-muted/50 aspect-video rounded-xl"></div>
-				<div class="bg-muted/50 aspect-video rounded-xl"></div>
-			</div> -->
-			<!-- <div class="bg-muted/50 min-h-[100vh] flex-1 rounded-xl md:min-h-min"></div> -->
 		</div>
 	</Sidebar.Inset>
 </Sidebar.Provider>

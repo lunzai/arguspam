@@ -3,12 +3,15 @@ import type { ApiSessionResource } from '$resources/session';
 import type { Actions } from '@sveltejs/kit';
 import { json } from '@sveltejs/kit';
 import { fail } from 'sveltekit-superforms/client';
+import { Rbac } from '$lib/rbac';
 
 export const load = async ({ params, locals, depends }) => {
 	depends('sessions:view');
 	const { id } = params;
-	const { authToken, currentOrgId, user } = locals;
-	const modelService = new SessionService(authToken as string, currentOrgId);
+	const { authToken, currentOrgId, me } = locals;
+	const rbac = new Rbac(me);
+	rbac.sessionView();
+	const modelService = new SessionService(authToken as string, currentOrgId as number);
 	const model = (await modelService.findById(id, {
 		include: [
 			'request',
@@ -25,17 +28,19 @@ export const load = async ({ params, locals, depends }) => {
 	return {
 		model,
 		permissions,
-		user,
-		title: `Session - #${model.data.attributes.id} - ${model.data.attributes.id}`
+		me,
+		title: `Session - #${model.data.attributes.id} - ${model.data.attributes.id}`,
+		canViewRequest: rbac.canRequestView()
 	};
 };
 
 export const actions = {
 	terminate: async ({ locals, params }) => {
 		const { id } = params;
-		const { authToken, currentOrgId } = locals;
+		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).sessionTerminate();
 		try {
-			const sessionService = new SessionService(authToken as string, currentOrgId);
+			const sessionService = new SessionService(authToken as string, currentOrgId as number);
 			const response = await sessionService.terminate(Number(id));
 			return {
 				success: true,
@@ -48,9 +53,10 @@ export const actions = {
 	},
 	cancel: async ({ locals, params }) => {
 		const { id } = params;
-		const { authToken, currentOrgId } = locals;
+		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).sessionCancel();
 		try {
-			const sessionService = new SessionService(authToken as string, currentOrgId);
+			const sessionService = new SessionService(authToken as string, currentOrgId as number);
 			const response = await sessionService.cancel(Number(id));
 			return {
 				success: true,
@@ -63,9 +69,10 @@ export const actions = {
 	},
 	start: async ({ locals, params }) => {
 		const { id } = params;
-		const { authToken, currentOrgId } = locals;
+		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).sessionStart();
 		try {
-			const sessionService = new SessionService(authToken as string, currentOrgId);
+			const sessionService = new SessionService(authToken as string, currentOrgId as number);
 			const response = await sessionService.start(Number(id));
 			return {
 				success: true,
@@ -78,9 +85,10 @@ export const actions = {
 	},
 	end: async ({ locals, params }) => {
 		const { id } = params;
-		const { authToken, currentOrgId } = locals;
+		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).sessionEnd();
 		try {
-			const sessionService = new SessionService(authToken as string, currentOrgId);
+			const sessionService = new SessionService(authToken as string, currentOrgId as number);
 			const response = await sessionService.end(Number(id));
 			return {
 				success: true,
@@ -93,9 +101,10 @@ export const actions = {
 	},
 	secret: async ({ locals, params }) => {
 		const { id } = params;
-		const { authToken, currentOrgId } = locals;
+		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).sessionRetrieveSecret();
 		try {
-			const sessionService = new SessionService(authToken as string, currentOrgId);
+			const sessionService = new SessionService(authToken as string, currentOrgId as number);
 			const response = await sessionService.retrieveSecret(Number(id));
 			return json({
 				success: true,

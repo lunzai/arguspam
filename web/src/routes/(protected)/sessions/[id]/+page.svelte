@@ -3,7 +3,7 @@
 	import type { ApiSessionResource } from '$resources/session';
 	import type { Session } from '$models/session';
 	import type { Asset } from '$models/asset';
-	import type { User } from '$models/user';
+	import type { Me, User } from '$models/user';
 	import type { Request } from '$models/request';
 	import type { SessionAuditCollection } from '$lib/resources/session-audit';
 	import Sidebar from './sidebar.svelte';
@@ -16,6 +16,7 @@
 
 	let { data } = $props();
 	const permissions = $derived(data.permissions);
+	const canViewRequest = $derived(data.canViewRequest);
 	const modelResource = $derived(data.model as ApiSessionResource);
 	const model = $derived(modelResource.data.attributes as Session);
 	const asset = $derived(modelResource.data.relationships?.asset?.attributes as Asset);
@@ -24,7 +25,7 @@
 	const approver = $derived(modelResource.data.relationships?.approver?.attributes as User);
 	const audits = $derived(modelResource.data.relationships?.audits as SessionAuditCollection);
 	const flags = $derived(modelResource.data.relationships?.flags as SessionFlagCollection);
-	const user = $derived(data.user as User);
+	const me = $derived(data.me as Me);
 </script>
 
 <div class="flex flex-col space-y-4">
@@ -37,7 +38,7 @@
 	<Separator />
 	<div class="mt-2 flex flex-col gap-6 lg:flex-row">
 		<aside class="flex w-full flex-col gap-6 lg:w-64">
-			<Sidebar {model} {asset} {requester} {permissions} {request} {approver} {user} />
+			<Sidebar {model} {asset} {requester} {permissions} {request} {approver} {me} />
 			<Progress {model} />
 		</aside>
 		<Separator orientation="vertical" class="hidden lg:block" />
@@ -55,7 +56,7 @@
 						>
 					</Tabs.List>
 					<Tabs.Content value="details">
-						<TabDetails {model} {asset} {requester} {request} {approver} {flags} />
+						<TabDetails {model} {asset} {requester} {request} {approver} {flags} {canViewRequest} />
 					</Tabs.Content>
 					<Tabs.Content value="audits">
 						<TabAudits {model} {audits} />

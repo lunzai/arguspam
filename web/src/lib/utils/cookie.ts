@@ -37,8 +37,8 @@ export function setCookie(
 	cookies.set(key, value, { ...defaultOptions, ...options });
 }
 
-export function getCookie(cookies: Cookies, key: string): string | undefined {
-	return cookies.get(key);
+export function getCookie(cookies: Cookies, key: string): string | null {
+	return cookies.get(key) || null;
 }
 
 export function clearCookie(cookies: Cookies, key: string, options: Partial<CookieOptions> = {}) {
@@ -50,7 +50,7 @@ export function setAuthToken(cookies: Cookies, token: string) {
 	setCookie(cookies, COOKIE_TOKEN_KEY, token);
 }
 
-export function getAuthToken(cookies: Cookies): string | undefined {
+export function getAuthToken(cookies: Cookies): string | null {
 	return getCookie(cookies, COOKIE_TOKEN_KEY);
 }
 
@@ -83,7 +83,7 @@ export function setTempKey(cookies: Cookies, tempKey: string, expiresAt: Date | 
 	});
 }
 
-export function getTempKey(cookies: Cookies): string | undefined {
+export function getTempKey(cookies: Cookies): string | null {
 	return getCookie(cookies, COOKIE_TEMP_KEY_KEY);
 }
 

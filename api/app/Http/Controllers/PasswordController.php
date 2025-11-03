@@ -17,7 +17,7 @@ class PasswordController extends Controller
      */
     public function store(ResetPasswordRequest $request, User $user): Response|JsonResponse
     {
-        $this->authorize('password:resetany');
+        $this->authorize('resetPasswordAny', $user);
         $validated = $request->validated();
         $user->password = Hash::make($validated['new_password']);
         $user->save();
@@ -29,11 +29,9 @@ class PasswordController extends Controller
      */
     public function update(ChangePasswordRequest $request): Response|JsonResponse
     {
-        $this->authorize('password:change');
         $validated = $request->validated();
-
-        /** @var User $user */
         $user = Auth::user();
+        $this->authorize('changePassword', $user);
 
         // Verify current password
         if (!Hash::check($validated['current_password'], $user->password)) {

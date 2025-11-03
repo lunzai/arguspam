@@ -1,11 +1,13 @@
 import type { LayoutLoad } from './$types';
-import { authStore } from '$stores/auth.js';
-import { orgStore } from '$stores/org';
+import { layoutStore } from '$lib/stores/layout';
+import { Rbac } from '$lib/rbac';
 
 export const load: LayoutLoad = async ({ data }) => {
-	const { user, currentOrgId, userOrgs } = data;
-	authStore.setUser(user);
-	orgStore.setOrgs(userOrgs);
-	orgStore.setCurrentOrgId(currentOrgId);
-	delete data.authToken;
+	const { me, currentOrgId } = data;
+	layoutStore.setMe(me);
+	layoutStore.setCurrentOrgId(currentOrgId);
+	const rbac = new Rbac(me);
+	return {
+		rbac
+	};
 };

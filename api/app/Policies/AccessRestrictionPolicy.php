@@ -7,48 +7,53 @@ use App\Models\User;
 
 class AccessRestrictionPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
-    {
-        return $user->hasAnyPermission('accessrestriction:viewany');
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, AccessRestriction $accessRestriction): bool
     {
         return $user->hasAnyPermission('accessrestriction:view');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user): bool
     {
         return $user->hasAnyPermission('accessrestriction:create');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
     public function update(User $user, AccessRestriction $accessRestriction): bool
     {
         return $user->hasAnyPermission('accessrestriction:update');
     }
 
-    public function updateAny(User $user): bool
-    {
-        return $user->hasAnyPermission('accessrestriction:updateany');
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
     public function delete(User $user, AccessRestriction $accessRestriction): bool
     {
-        return $user->hasAnyPermission('accessrestriction:delete');
+        return $user->hasAnyPermission('accessrestriction:deleteany');
+    }
+
+    public function listUsers(User $user, AccessRestriction $accessRestriction): bool
+    {
+        return $user->hasAnyPermission('accessrestriction:listusers');
+    }
+
+    public function addUser(User $user, AccessRestriction $accessRestriction): bool
+    {
+        return $user->hasAnyPermission('accessrestriction:adduser');
+    }
+
+    public function removeUser(User $user, AccessRestriction $accessRestriction): bool
+    {
+        return $user->hasAnyPermission('accessrestriction:removeuser');
+    }
+
+    public function listUserGroups(User $user, AccessRestriction $accessRestriction): bool
+    {
+        return $user->hasAnyPermission('accessrestriction:listusergroups');
+    }
+
+    public function addUserGroup(User $user, AccessRestriction $accessRestriction): bool
+    {
+        return $user->hasAnyPermission('accessrestriction:addusergroup');
+    }
+
+    public function removeUserGroup(User $user, AccessRestriction $accessRestriction): bool
+    {
+        return $user->hasAnyPermission('accessrestriction:removeusergroup');
     }
 }

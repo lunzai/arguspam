@@ -4,14 +4,14 @@
 	import { toast } from 'svelte-sonner';
 	import { ChangePasswordSchema } from '$validations/user';
 	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import Loader from '$components/loader.svelte';
 	import { Button } from '$ui/button';
 
 	let { data } = $props();
 
 	const form = superForm(data, {
-		validators: zodClient(ChangePasswordSchema),
+		validators: zod4Client(ChangePasswordSchema),
 		delayMs: 100,
 		resetForm: true,
 		onUpdate({ form, result }) {

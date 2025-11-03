@@ -6,7 +6,7 @@
 	import type { RoleResource } from '$resources/role';
 	import type { User } from '$models/user';
 	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import { Button } from '$ui/button';
 	import Loader from '$components/loader.svelte';
@@ -26,7 +26,7 @@
 	}: Props = $props();
 
 	const form = superForm(data, {
-		validators: zodClient(UserUpdateRolesSchema),
+		validators: zod4Client(UserUpdateRolesSchema),
 		delayMs: 100,
 		resetForm: false,
 		async onUpdate({ form, result }) {

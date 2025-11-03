@@ -9,9 +9,12 @@ use Illuminate\Support\Facades\DB;
 
 class AssetAccountController extends Controller
 {
+    /**
+     * Update admin account credentials
+     */
     public function update(UpdateAssetCredentialRequest $request, Asset $asset): AssetResource
     {
-        $this->authorize('update', $asset);
+        $this->authorize('updateAdminAccount', $asset);
         $validated = $request->validated();
         DB::transaction(function () use ($validated, $asset) {
             $asset->update($validated);

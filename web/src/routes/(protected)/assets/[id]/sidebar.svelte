@@ -16,7 +16,8 @@
 	import EditFormDialog from './edit-form-dialog.svelte';
 	import CredentialFormDialog from './credential-form-dialog.svelte';
 
-	let { model, accounts, editForm, credentialsForm } = $props();
+	let { model, accounts, editForm, credentialsForm, canUpdate, canUpdateAdminAccount, canDelete } =
+		$props();
 
 	let deleteAssetDialogIsOpen = $state(false);
 	let deleteAssetDialogIsLoading = $state(false);
@@ -63,30 +64,36 @@
 	</Card.Content>
 	<Separator />
 	<Card.Footer class="flex-col gap-2">
-		<Button
-			variant="outline"
-			class="w-full transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-			onclick={() => (editAssetDialogIsOpen = true)}
-		>
-			<Pencil class="h-4 w-4" />
-			Edit Information
-		</Button>
-		<Button
-			variant="outline"
-			class="w-full transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-			onclick={() => (editCredentialsDialogIsOpen = true)}
-		>
-			<RotateCcwKey class="h-4 w-4" />
-			Edit Credentials
-		</Button>
-		<Button
-			variant="outline"
-			class="text-destructive w-full border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
-			onclick={() => (deleteAssetDialogIsOpen = true)}
-		>
-			<Trash2 class="h-4 w-4" />
-			Delete
-		</Button>
+		{#if canUpdate}
+			<Button
+				variant="outline"
+				class="w-full transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
+				onclick={() => (editAssetDialogIsOpen = true)}
+			>
+				<Pencil class="h-4 w-4" />
+				Edit Information
+			</Button>
+		{/if}
+		{#if canUpdateAdminAccount}
+			<Button
+				variant="outline"
+				class="w-full transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
+				onclick={() => (editCredentialsDialogIsOpen = true)}
+			>
+				<RotateCcwKey class="h-4 w-4" />
+				Edit Credentials
+			</Button>
+		{/if}
+		{#if canDelete}
+			<Button
+				variant="outline"
+				class="text-destructive w-full border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
+				onclick={() => (deleteAssetDialogIsOpen = true)}
+			>
+				<Trash2 class="h-4 w-4" />
+				Delete
+			</Button>
+		{/if}
 	</Card.Footer>
 </Card.Root>
 

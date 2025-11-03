@@ -22,7 +22,7 @@ class SecretsManagerTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_account_with_admin_credentials_databases()
+    public function test_creates_account_with_admin_credentials_databases()
     {
         // Arrange
         $asset = $this->createTestAsset([
@@ -48,7 +48,7 @@ class SecretsManagerTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_account_with_request_databases()
+    public function test_creates_account_with_request_databases()
     {
         // Arrange
         $asset = $this->createTestAsset();
@@ -71,7 +71,7 @@ class SecretsManagerTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_account_with_asset_databases()
+    public function test_creates_account_with_asset_databases()
     {
         // Arrange
         $asset = $this->createTestAsset([
@@ -97,7 +97,7 @@ class SecretsManagerTest extends TestCase
     }
 
     /** @test */
-    public function it_creates_account_with_all_databases_access()
+    public function test_creates_account_with_all_databases_access()
     {
         // Arrange
         $asset = $this->createTestAsset();
@@ -120,7 +120,7 @@ class SecretsManagerTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_missing_admin_account()
+    public function test_handles_missing_admin_account()
     {
         // Arrange
         $asset = $this->createTestAsset();
@@ -140,7 +140,7 @@ class SecretsManagerTest extends TestCase
     }
 
     /** @test */
-    public function it_terminates_account_successfully()
+    public function test_terminates_account_successfully()
     {
         // Arrange
         $asset = $this->createTestAsset();
@@ -160,7 +160,7 @@ class SecretsManagerTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_termination_without_jit_account()
+    public function test_handles_termination_without_jit_account()
     {
         // Arrange
         $session = $this->createTestSession();

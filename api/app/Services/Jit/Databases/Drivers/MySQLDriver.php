@@ -120,7 +120,7 @@ class MySQLDriver extends AbstractDatabaseDriver
     {
         return match ($scope) {
             DatabaseScope::READ_ONLY => 'SELECT',
-            DatabaseScope::READ_WRITE, DatabaseScope::DML => 'SELECT, INSERT, UPDATE, DELETE',
+            DatabaseScope::READ_WRITE => 'SELECT, INSERT, UPDATE, DELETE',
             DatabaseScope::DDL => 'SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, ALTER, INDEX',
             DatabaseScope::ALL => 'ALL PRIVILEGES',
         };

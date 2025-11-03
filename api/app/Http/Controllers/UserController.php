@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\CacheKey;
 use App\Http\Filters\UserFilter;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
@@ -13,7 +12,6 @@ use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -23,13 +21,6 @@ class UserController extends Controller
     {
         $this->authorize('viewAny', User::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        // $users = Cache::remember(
-        //     CacheKey::USERS->key($request->get('page', 1)),
-        //     config('cache.default_ttl'),
-        //     function () use ($filter, $pagination) {
-        //         return User::filter($filter)->paginate($pagination);
-        //     }
-        // );
         $users = User::filter($filter)
             ->paginate($pagination);
         return new UserCollection($users);
@@ -65,7 +56,10 @@ class UserController extends Controller
 
     public function destroy(User $user): Response
     {
-        $this->authorize('delete', $user);
+        if ($user->id === Auth::id()) {
+            return $this->error('Cannot delete yourself', 400);
+        }
+        $this->authorize('deleteAny', $user);
         $user->deleted_by = Auth::id();
         $user->save();
         $user->delete();

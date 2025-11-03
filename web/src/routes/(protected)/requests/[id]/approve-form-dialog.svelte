@@ -4,7 +4,7 @@
 	import * as Form from '$ui/form';
 	import * as Dialog from '$ui/dialog';
 	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import { capitalizeWords } from '$utils/string';
 	import { Button } from '$ui/button';
@@ -38,7 +38,7 @@
 	}: Props = $props();
 
 	const form = superForm(data, {
-		validators: zodClient(ApproveSchema),
+		validators: zod4Client(ApproveSchema),
 		delayMs: 100,
 		async onUpdate({ form, result }) {
 			if (!form.valid && Object.keys(form.errors).length > 0) {
@@ -205,7 +205,6 @@
 								<Select.Item value="ReadOnly" label="ReadOnly" />
 								<Select.Item value="ReadWrite" label="ReadWrite" />
 								<Select.Item value="DDL" label="DDL" />
-								<Select.Item value="DML" label="DML" />
 								<Select.Item value="All" label="All" />
 							</Select.Content>
 						</Select.Root>

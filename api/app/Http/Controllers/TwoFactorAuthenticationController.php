@@ -9,12 +9,11 @@ use Illuminate\Http\Request;
 class TwoFactorAuthenticationController extends Controller
 {
     /**
-     * Store a newly created resource in storage.
+     * Enable two-factor authentication
      */
     public function store(User $user)
     {
-        // TODO: Re-evaluate authorization in all controllers
-        // $this->authorize('twofactorauthentication:create', $user);
+        $this->authorize('enrollTwoFactorAuthentication', $user);
         if ($user->two_factor_enabled) {
             return $this->unprocessableEntity('Two-factor authentication is already enabled.');
         }
@@ -32,10 +31,11 @@ class TwoFactorAuthenticationController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Enrollment: Show two-factor authentication QR code
      */
     public function show(User $user)
     {
+        $this->authorize('enrollTwoFactorAuthentication', $user);
         if (!$user->two_factor_enabled) {
             return $this->unprocessableEntity('Two-factor authentication is not enabled.');
         }
@@ -48,10 +48,11 @@ class TwoFactorAuthenticationController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Enrollment: Verify two-factor authentication code
      */
     public function update(Request $request, User $user)
     {
+        $this->authorize('enrollTwoFactorAuthentication', $user);
         if (!$user->two_factor_enabled) {
             return $this->unprocessableEntity('Two-factor authentication is not enabled.');
         }
@@ -78,10 +79,11 @@ class TwoFactorAuthenticationController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Disable two-factor authentication
      */
     public function destroy(User $user)
     {
+        $this->authorize('enrollTwoFactorAuthentication', $user);
         $user->two_factor_enabled = false;
         $user->two_factor_enabled_at = null;
         $user->two_factor_confirmed_at = null;

@@ -29,6 +29,7 @@
 	const hasEnded = $derived(isEnded || isTerminated || isCancelled || isExpired);
 	const hasStart = $derived(model.started_at !== null);
 	const isExpiredOrCancelled = $derived(isExpired || isCancelled);
+	const isEndedOrTerminated = $derived(isEnded || isTerminated);
 </script>
 
 <Card.Root class="w-full">
@@ -121,7 +122,7 @@
 					icon={Bot}
 					title={model.ai_reviewed_at ? 'AI Audited' : 'AI Audit'}
 					description={isExpiredOrCancelled ? '-' : relativeDateTime(model.ai_reviewed_at, false)}
-					color={model.ai_reviewed_at ? 'green' : 'gray'}
+					color={model.ai_reviewed_at ? 'green' : isEndedOrTerminated ? 'blue' : 'gray'}
 					disabled={isExpiredOrCancelled}
 				/>
 			</Progress.Root>

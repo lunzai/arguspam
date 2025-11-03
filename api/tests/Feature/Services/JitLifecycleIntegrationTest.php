@@ -24,7 +24,7 @@ class JitLifecycleIntegrationTest extends TestCase
     }
 
     /** @test */
-    public function it_completes_full_jit_lifecycle_with_mysql()
+    public function test_completes_full_jit_lifecycle_with_mysql()
     {
         // Skip if no MySQL test database configured
         if (!config('database.connections.testing_mysql')) {
@@ -78,7 +78,7 @@ class JitLifecycleIntegrationTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_all_databases_access()
+    public function test_handles_all_databases_access()
     {
         // Arrange
         $asset = Asset::factory()->create([
@@ -113,7 +113,7 @@ class JitLifecycleIntegrationTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_multiple_databases_access()
+    public function test_handles_multiple_databases_access()
     {
         // Arrange
         $asset = Asset::factory()->create([
@@ -148,7 +148,7 @@ class JitLifecycleIntegrationTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_encryption_and_decryption_correctly()
+    public function test_handles_encryption_and_decryption_correctly()
     {
         // Arrange
         $asset = Asset::factory()->create([

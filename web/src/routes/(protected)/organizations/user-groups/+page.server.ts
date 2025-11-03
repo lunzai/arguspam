@@ -2,13 +2,16 @@ import type { Actions, PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
 import { UserGroupService } from '$services/user-group';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
 import type { UserGroup } from '$models/user-group';
 import { UserGroupSchema } from '$validations/user-group';
+import { Rbac } from '$lib/rbac';
 
 export const load: PageServerLoad = async ({ locals, depends }) => {
 	depends('user-groups:list');
+	const rbac = new Rbac(locals.me);
+	rbac.userGroupView();
 	const { currentOrgId } = locals;
 	const model = {
 		org_id: Number(currentOrgId),
@@ -16,24 +19,26 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
 		description: '',
 		status: 'active'
 	} as UserGroup;
-	const form = await superValidate(zod(UserGroupSchema));
+	const form = await superValidate(zod4(UserGroupSchema));
 	return {
 		form,
 		model,
-		title: 'User Groups'
+		title: 'User Groups',
+		canCreate: rbac.canUserGroupCreate()
 	};
 };
 
 export const actions = {
 	save: async ({ request, locals, params }) => {
+		new Rbac(locals.me).userGroupCreate();
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(UserGroupSchema));
+		const form = await superValidate(request, zod4(UserGroupSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
 		const data = form.data;
 		try {
-			const userGroupService = new UserGroupService(authToken as string, currentOrgId);
+			const userGroupService = new UserGroupService(authToken as string, currentOrgId as number);
 			const response = await userGroupService.create(data);
 			return {
 				success: true,

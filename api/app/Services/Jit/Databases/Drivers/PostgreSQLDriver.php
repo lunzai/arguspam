@@ -79,7 +79,7 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
         }
     }
 
-    public function createUser(string $username, string $password, string|array|null $databases, DatabaseScope $scope, DateTime $expiresAt): bool
+    public function createUser(string $username, string $password, string|array $databases, DatabaseScope $scope, DateTime $expiresAt): bool
     {
         $normalizedDatabases = $this->normalizeDatabases($databases);
         try {
@@ -140,7 +140,6 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
                 break;
 
             case DatabaseScope::READ_WRITE:
-            case DatabaseScope::DML:
                 $this->connection->exec("GRANT CONNECT ON ALL DATABASES TO {$username}");
                 $this->connection->exec("GRANT USAGE ON ALL SCHEMAS TO {$username}");
                 $this->connection->exec("GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN ALL SCHEMAS TO {$username}");
@@ -179,7 +178,6 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
                 break;
 
             case DatabaseScope::READ_WRITE:
-            case DatabaseScope::DML:
                 $this->connection->exec("GRANT USAGE ON SCHEMA public TO {$username}");
                 $this->connection->exec("GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO {$username}");
                 $this->connection->exec("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO {$username}");
@@ -204,7 +202,7 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
         }
     }
 
-    public function terminateUser(string $username, string $database): bool
+    public function terminateUser(string $username, string|array $databases): bool
     {
         try {
             // Ensure we have a fresh connection
@@ -219,11 +217,21 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([':username' => $username]);
 
-            // Revoke all privileges
-            $this->connection->exec("REVOKE ALL PRIVILEGES ON DATABASE {$database} FROM {$username}");
-            $this->connection->exec("REVOKE ALL PRIVILEGES ON SCHEMA public FROM {$username}");
-            $this->connection->exec("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM {$username}");
-            $this->connection->exec("REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM {$username}");
+            // Revoke privileges for specified databases or all if empty
+            $dbList = is_array($databases) ? $databases : (empty($databases) ? [] : [$databases]);
+            if (empty($dbList)) {
+                // Best-effort revoke on public schema when databases are not specified
+                $this->connection->exec("REVOKE ALL PRIVILEGES ON SCHEMA public FROM {$username}");
+                $this->connection->exec("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM {$username}");
+                $this->connection->exec("REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM {$username}");
+            } else {
+                foreach ($dbList as $dbName) {
+                    $this->connection->exec("REVOKE ALL PRIVILEGES ON DATABASE {$dbName} FROM {$username}");
+                }
+                $this->connection->exec("REVOKE ALL PRIVILEGES ON SCHEMA public FROM {$username}");
+                $this->connection->exec("REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA public FROM {$username}");
+                $this->connection->exec("REVOKE ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public FROM {$username}");
+            }
 
             // Drop user
             $this->connection->exec("DROP USER IF EXISTS {$username}");
@@ -238,7 +246,7 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
         }
     }
 
-    public function retrieveUserQueryLogs(string $username, DateTime $fromTime, DateTime $toTime): array
+    public function retrieveUserQueryLogs(string $username): array
     {
         try {
             $sql = "SELECT 
@@ -248,7 +256,6 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
                         client_addr
                     FROM pg_stat_activity 
                     WHERE usename = :username 
-                    AND query_start BETWEEN :from_time AND :to_time
                     AND query NOT LIKE 'BEGIN%'
                     AND query NOT LIKE 'COMMIT%'
                     AND query NOT LIKE 'ROLLBACK%'
@@ -257,8 +264,6 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
             $stmt = $this->connection->prepare($sql);
             $stmt->execute([
                 ':username' => $username,
-                ':from_time' => $fromTime->format('Y-m-d H:i:s'),
-                ':to_time' => $toTime->format('Y-m-d H:i:s'),
             ]);
 
             $logs = $stmt->fetchAll();
@@ -285,7 +290,7 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
                     $statements = $statStmt->fetchAll();
                     foreach ($statements as $statement) {
                         $logs[] = [
-                            'timestamp' => $fromTime->format('Y-m-d H:i:s'),
+                            'timestamp' => date('Y-m-d H:i:s'),
                             'query_text' => $statement['query'],
                             'execution_count' => $statement['calls'],
                             'avg_execution_time' => $statement['mean_exec_time'],
@@ -301,5 +306,21 @@ class PostgreSQLDriver extends AbstractDatabaseDriver
             $this->handleError('retrieveUserQueryLogs', $e, ['username' => $username]);
             return [];
         }
+    }
+
+    public function isQueryLoggingEnabled(): bool
+    {
+        // PostgreSQL does not have a general log table like MySQL; return false by default
+        return false;
+    }
+
+    public function enableQueryLogging(): void
+    {
+        // No-op: enabling detailed query logging would require server config changes (superuser)
+    }
+
+    public function disableQueryLogging(): void
+    {
+        // No-op: see above
     }
 }

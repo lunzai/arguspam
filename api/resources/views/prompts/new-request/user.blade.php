@@ -2,19 +2,6 @@
     use App\Enums\RiskRating;
 @endphp
 
-Evaluate the following database access request:
-
-**Request Details:**
-- Database name: {!! $request->asset->name !!}
-- Start datetime: {!! $request->start_datetime->format('c') !!}
-- End datetime: {!! $request->end_datetime->format('c') !!}
-- Duration (minutes): {!! $request->duration !!}
-- Reason for access: {!! $request->reason !!}
-- Intended query: {!! $request->intended_query !!}
-- Access scope: {!! $request->scope->value !!}
-- Is accessing sensitive data: {!! $request->is_access_sensitive_data ? 'Yes' : 'No' !!}
-- Sensitive data note: {!! $request->sensitive_data_note !!}
-
 **Analysis Requirements:**
 - Provide a concise **ai_note** (50-200 words) with natural, flowing analysis that covers context evaluation, query review, and conclusion in a conversational manner.  
 - Convert all durations from minutes into human-readable units (e.g., "120 minutes → 2 hours)", "10080 minutes → 7 days").  
@@ -34,3 +21,16 @@ Evaluate the following database access request:
   "ai_note": "<natural, flowing analysis with human-readable durations and final recommendation. Use line breaks to improve readability.>",
   "ai_risk_rating": "<{!! RiskRating::toString('|') !!}>"
 }
+
+Evaluate the following database access request:
+
+**Request Details:**
+- Database name: {!! $request->asset->name !!}
+- Start datetime: {!! $request->start_datetime->format('c') !!}
+- End datetime: {!! $request->end_datetime->format('c') !!}
+- Duration (minutes): {!! $request->duration !!}
+- Reason for access: {!! $request->reason !!}
+- Intended query: {!! $request->intended_query !!}
+- Access scope: {!! $request->scope->value !!}
+- Is accessing sensitive data: {!! $request->is_access_sensitive_data ? 'Yes' : 'No' !!}
+- Sensitive data note: {!! $request->sensitive_data_note !!}

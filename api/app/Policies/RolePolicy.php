@@ -2,13 +2,14 @@
 
 namespace App\Policies;
 
+use App\Models\Role;
 use App\Models\User;
 
 class RolePolicy
 {
-    public function viewAny(User $user): bool
+    public function view(User $user): bool
     {
-        return $user->hasAnyPermission('role:viewany');
+        return $user->hasAnyPermission('role:view');
     }
 
     public function create(User $user): bool
@@ -16,18 +17,23 @@ class RolePolicy
         return $user->hasAnyPermission('role:create');
     }
 
-    public function updateAny(User $user): bool
+    public function update(User $user): bool
     {
-        return $user->hasAnyPermission('role:updateany');
+        return $user->hasAnyPermission('role:update');
     }
 
-    public function deleteAny(User $user): bool
+    public function delete(User $user): bool
     {
-        return $user->hasAnyPermission('role:deleteany');
+        return $user->hasAnyPermission('role:delete');
     }
 
-    public function restoreAny(User $user): bool
+    public function listPermissions(User $user, Role $role): bool
     {
-        return $user->hasAnyPermission('role:restoreany');
+        return $user->hasAnyPermission('role:listpermissions');
+    }
+
+    public function updatePermissions(User $user, Role $role): bool
+    {
+        return $user->hasAnyPermission('role:updatepermissions');
     }
 }

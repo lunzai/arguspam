@@ -29,7 +29,9 @@
 	let requesterUsers = $derived(modelResource.data.relationships?.requesterUsers as UserCollection);
 	let allUserGroups = $derived(data.userGroupCollection?.data as UserGroupCollection);
 	let allUsers = $derived(data.userCollection?.data as UserCollection);
-
+	const canAddAccessGrant = $derived(data.canAddAccessGrant);
+	const canRemoveAccessGrant = $derived(data.canRemoveAccessGrant);
+	const canTestConnection = $derived(data.canTestConnection);
 	onMount(() => {
 		if (page.url.hash !== '') {
 			defaultTab = page.url.hash.replace('#', '');
@@ -49,15 +51,15 @@
 		<Tabs.Trigger value="accounts" class="cursor-pointer px-5 py-1.5">Accounts</Tabs.Trigger>
 		<Tabs.Trigger value="requesters" class="cursor-pointer px-5 py-1.5">Requesters</Tabs.Trigger>
 		<Tabs.Trigger value="approvers" class="cursor-pointer px-5 py-1.5">Approvers</Tabs.Trigger>
-		<Tabs.Trigger disabled value="requests" class="px-5 py-1.5 hover:cursor-not-allowed"
+		<!-- <Tabs.Trigger disabled value="requests" class="px-5 py-1.5 hover:cursor-not-allowed"
 			>Requests</Tabs.Trigger
 		>
 		<Tabs.Trigger disabled value="sessions" class="cursor-not-allowed px-5 py-1.5"
 			>Sessions</Tabs.Trigger
-		>
+		> -->
 	</Tabs.List>
 	<Tabs.Content value="accounts">
-		<AccountsTab asset={model} list={accounts} />
+		<AccountsTab list={accounts} {canTestConnection} />
 	</Tabs.Content>
 	<Tabs.Content value="requesters">
 		<AccessTab
@@ -67,6 +69,8 @@
 			bind:allUsers
 			role="requester"
 			rolePural="requesters"
+			{canAddAccessGrant}
+			{canRemoveAccessGrant}
 		/>
 	</Tabs.Content>
 	<Tabs.Content value="approvers">
@@ -77,6 +81,8 @@
 			bind:allUsers
 			role="approver"
 			rolePural="approvers"
+			{canAddAccessGrant}
+			{canRemoveAccessGrant}
 		/>
 	</Tabs.Content>
 	<Tabs.Content value="requests">

@@ -20,11 +20,7 @@ trait HasRbac
 
     public function getAllRoles(): Collection
     {
-        return Cache::remember(
-            CacheKey::USER_ROLES->key($this->id),
-            config('cache.default_ttl'),
-            fn () => $this->roles
-        );
+        return $this->roles()->get();
     }
 
     public function isAdmin(): bool

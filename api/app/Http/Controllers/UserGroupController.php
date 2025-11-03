@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\CacheKey;
 use App\Http\Filters\UserGroupFilter;
 use App\Http\Requests\UserGroup\StoreUserGroupRequest;
 use App\Http\Requests\UserGroup\UpdateUserGroupRequest;
@@ -13,7 +12,6 @@ use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 
 class UserGroupController extends Controller
 {
@@ -21,15 +19,8 @@ class UserGroupController extends Controller
 
     public function index(UserGroupFilter $filter, Request $request): UserGroupCollection
     {
-        $this->authorize('viewAny', UserGroup::class);
+        $this->authorize('view', UserGroup::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        // $userGroups = Cache::remember(
-        //     CacheKey::USER_GROUPS->key($request->get(config('pam.org.request_attribute'))),
-        //     config('cache.default_ttl'),
-        //     function () use ($filter, $pagination) {
-        //         return UserGroup::filter($filter)->paginate($pagination);
-        //     }
-        // );
         $userGroups = UserGroup::filter($filter)
             ->paginate($pagination);
         return new UserGroupCollection($userGroups);

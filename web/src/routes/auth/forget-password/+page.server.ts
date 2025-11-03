@@ -1,5 +1,5 @@
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { ChangePasswordSchema } from '$validations/user';
 import { getAuthToken } from '$utils/cookie';
 import { redirect } from '@sveltejs/kit';
@@ -11,7 +11,7 @@ export const load = async ({ parent, cookies }: any) => {
 		return redirect(302, '/');
 	}
 	// const { user } = await parent();
-	const form = await superValidate(zod(ChangePasswordSchema));
+	const form = await superValidate(zod4(ChangePasswordSchema));
 
 	return {
 		form,
@@ -22,7 +22,7 @@ export const load = async ({ parent, cookies }: any) => {
 
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
-		const form = await superValidate(request, zod(ChangePasswordSchema));
+		const form = await superValidate(request, zod4(ChangePasswordSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

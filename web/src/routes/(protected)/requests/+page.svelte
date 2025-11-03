@@ -68,7 +68,6 @@
 			filterable: true,
 			type: 'badge',
 			componentProps: (value: string, row: Request) => {
-				//  "default" | "secondary" | "destructive" | "outline"
 				const wrapperClassName = 'text-sm';
 				let variant = 'default';
 				let className = '';
@@ -156,13 +155,6 @@
 							variant: 'link',
 							class: 'hover:text-blue-500'
 						}
-						// {
-						// 	label: 'Edit',
-						// 	icon: Pencil,
-						// 	href: `/${modelName}/${row.id}/edit`,
-						// 	variant: 'link',
-						// 	class: 'hover:text-blue-500'
-						// }
 					]
 				};
 			}

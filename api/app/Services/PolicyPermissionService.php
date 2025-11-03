@@ -21,11 +21,9 @@ class PolicyPermissionService
         return collect($policyFiles)->flatMap(function ($file) {
             $policyClass = 'App\\Policies\\'.basename($file, '.php');
             $modelName = Str::before(class_basename($file), 'Policy');
-
             if (!class_exists($policyClass)) {
                 return [];
             }
-
             return $this->getPermissionsFromPolicy($policyClass, $modelName);
         });
     }
@@ -37,22 +35,18 @@ class PolicyPermissionService
     {
         try {
             $reflection = new ReflectionClass($policyClass);
-
             return collect($reflection->getMethods(ReflectionMethod::IS_PUBLIC))
                 ->filter(function (ReflectionMethod $method) use ($policyClass) {
                     if ($method->getDeclaringClass()->getName() !== $policyClass) {
                         return false;
                     }
-
                     if (str_starts_with($method->getName(), '__')) {
                         return false;
                     }
-
                     return $method->getNumberOfParameters() >= 1;
                 })
                 ->map(function (ReflectionMethod $method) use ($modelName) {
                     $name = "{$modelName}:{$method->getName()}";
-
                     return [
                         'name' => strtolower($name),
                         'description' => Str::of($name)

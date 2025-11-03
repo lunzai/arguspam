@@ -12,6 +12,8 @@
 	import type { CellBadge } from '$components/data-table/types';
 	import { page } from '$app/state';
 	import { NotebookText } from '@lucide/svelte';
+	import type { Role } from '$lib/models/role';
+	import type { RoleResource } from '$lib/resources/role';
 
 	let initialSearchParams = page.url.searchParams;
 	const modelName = 'users';
@@ -40,6 +42,17 @@
 					`<div class="flex items-center gap-2">${value}` +
 					(!row.email_verified_at ? mailWarningIcon : '') +
 					'</div>'
+				);
+			}
+		},
+		{
+			key: 'roles',
+			title: 'Roles',
+			sortable: false,
+			filterable: false,
+			renderer: (value: string, row: User, relationships: any) => {
+				return (
+					relationships.roles?.map((role: RoleResource) => role.attributes.name).join(', ') || '-'
 				);
 			}
 		},
@@ -174,6 +187,7 @@
 	model={{} as User}
 	{config}
 	{initialSearchParams}
+	initialInclude={['roles']}
 	onDataChange={handleDataChange}
 	onPaginationChange={handlePaginationChange}
 	onFilterChange={handleFilterChange}

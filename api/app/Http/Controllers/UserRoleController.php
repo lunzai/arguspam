@@ -10,7 +10,7 @@ class UserRoleController extends Controller
 {
     public function store(Request $request, User $user): Response
     {
-        $this->authorize('userrole:create');
+        $this->authorize('updateAny', User::class);
         $validated = $request->validate([
             'role_ids' => ['required', 'array', 'min:1'],
             'role_ids.*' => ['required', 'exists:roles,id'],
@@ -23,7 +23,7 @@ class UserRoleController extends Controller
 
     public function destroy(User $user, Request $request): Response
     {
-        $this->authorize('userrole:delete');
+        $this->authorize('updateAny', User::class);
         $validated = $request->validate([
             'role_ids' => ['required', 'array', 'min:1'],
             'role_ids.*' => ['integer', 'exists:roles,id'],

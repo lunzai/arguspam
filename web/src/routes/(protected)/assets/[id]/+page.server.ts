@@ -3,7 +3,7 @@ import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { AssetService } from '$services/asset';
 import { OrgService } from '$services/org';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms';
 import { setFormErrors } from '$lib/utils/form';
 import {
@@ -12,18 +12,16 @@ import {
 	AssetRemoveAccessSchema,
 	AssetAddAccessSchema
 } from '$validations/asset';
-import type { Asset } from '$models/asset';
-import type { AssetAccount } from '$models/asset-account';
-import type { AssetAccountCollection, AssetAccountResource } from '$resources/asset-account';
 import type { ApiAssetResource } from '$resources/asset';
+import { Rbac } from '$lib/rbac';
 
 export const load: PageServerLoad = async ({ params, locals, parent, depends }) => {
 	depends('asset:view');
-	const { id } = params;
+	new Rbac(locals.me).assetView();
 	const { authToken, currentOrgId } = locals;
 	const { model, asset } = await parent();
 
-	const orgService = new OrgService(authToken as string, currentOrgId);
+	const orgService = new OrgService(authToken as string, currentOrgId as number);
 	const userCollection = await orgService.getUsers(currentOrgId as number);
 	const userGroupCollection = await orgService.getUserGroups(currentOrgId as number);
 	return {
@@ -36,10 +34,11 @@ export const load: PageServerLoad = async ({ params, locals, parent, depends }) 
 
 export const actions = {
 	testConnection: async ({ request, locals, params }) => {
+		new Rbac(locals.me).assetView();
 		try {
 			const { id } = params;
 			const { authToken, currentOrgId } = locals;
-			const assetService = new AssetService(authToken as string, currentOrgId);
+			const assetService = new AssetService(authToken as string, currentOrgId as number);
 			const response = await assetService.testConnection(Number(id));
 			return {
 				success: true,
@@ -50,10 +49,11 @@ export const actions = {
 		}
 	},
 	delete: async ({ locals, params }) => {
+		new Rbac(locals.me).assetDelete();
 		try {
 			const { id } = params;
 			const { authToken, currentOrgId } = locals;
-			const assetService = new AssetService(authToken as string, currentOrgId);
+			const assetService = new AssetService(authToken as string, currentOrgId as number);
 			await assetService.delete(Number(id));
 		} catch (error) {
 			return fail(400, {
@@ -63,15 +63,16 @@ export const actions = {
 		redirect(302, '/assets');
 	},
 	save: async ({ request, locals, params }) => {
+		new Rbac(locals.me).assetUpdate();
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(AssetUpdateSchema));
+		const form = await superValidate(request, zod4(AssetUpdateSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
 		const data = form.data;
 		try {
-			const assetService = new AssetService(authToken as string, currentOrgId);
+			const assetService = new AssetService(authToken as string, currentOrgId as number);
 			const response = await assetService.update(Number(id), data);
 			return {
 				success: true,
@@ -88,15 +89,16 @@ export const actions = {
 		}
 	},
 	updateCredentials: async ({ request, locals, params }) => {
+		new Rbac(locals.me).assetUpdateAdminAccount();
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(AssetCredentialsSchema));
+		const form = await superValidate(request, zod4(AssetCredentialsSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
 		const data = form.data;
 		try {
-			const assetService = new AssetService(authToken as string, currentOrgId);
+			const assetService = new AssetService(authToken as string, currentOrgId as number);
 			const response = (await assetService.updateCredentials(Number(id), data)) as ApiAssetResource;
 			return {
 				success: true,
@@ -113,13 +115,14 @@ export const actions = {
 		}
 	},
 	removeAccess: async ({ request, locals, params }) => {
+		new Rbac(locals.me).assetRemoveAccessGrant();
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(AssetRemoveAccessSchema));
+		const form = await superValidate(request, zod4(AssetRemoveAccessSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
-		const assetService = new AssetService(authToken as string, currentOrgId);
+		const assetService = new AssetService(authToken as string, currentOrgId as number);
 		try {
 			await assetService.removeUserOrGroup(
 				Number(id),
@@ -137,13 +140,14 @@ export const actions = {
 		}
 	},
 	addAccess: async ({ request, locals, params }) => {
+		new Rbac(locals.me).assetAddAccessGrant();
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(AssetAddAccessSchema));
+		const form = await superValidate(request, zod4(AssetAddAccessSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
-		const assetService = new AssetService(authToken as string, currentOrgId);
+		const assetService = new AssetService(authToken as string, currentOrgId as number);
 		try {
 			await assetService.addUserOrGroup(
 				Number(id),

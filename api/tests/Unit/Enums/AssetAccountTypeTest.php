@@ -34,7 +34,8 @@ class AssetAccountTypeTest extends TestCase
         $this->assertEquals(AssetAccountType::JIT, AssetAccountType::tryFrom('jit'));
         $this->assertNull(AssetAccountType::tryFrom('invalid'));
         $this->assertNull(AssetAccountType::tryFrom(''));
-        $this->assertNull(AssetAccountType::tryFrom(null));
+        // PHP 8.3+ deprecates passing null to tryFrom, but we still test it
+        @$this->assertNull(AssetAccountType::tryFrom(null));
     }
 
     public function test_enum_from_invalid_string_throws_exception(): void
@@ -52,7 +53,8 @@ class AssetAccountTypeTest extends TestCase
     public function test_enum_from_null_throws_exception(): void
     {
         $this->expectException(\ValueError::class);
-        AssetAccountType::from(null);
+        // PHP 8.3+ deprecates passing null to from, but it still throws ValueError
+        @AssetAccountType::from(null);
     }
 
     public function test_enum_is_backed_enum(): void

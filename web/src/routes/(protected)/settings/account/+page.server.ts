@@ -1,40 +1,41 @@
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { UserProfileSchema } from '$validations/user';
 import { fail, type Actions } from '@sveltejs/kit';
 import { UserService } from '$services/user';
-import { authStore } from '$stores/auth';
-import type { User } from '$models/user';
 import { setFormErrors } from '$utils/form';
+import type { UserProfile } from '$lib/models/user';
+import { Rbac } from '$lib/rbac';
+import { USER_VIEW_ANY } from '$lib/rbac/constants';
 
 export const load = async ({ locals }: any) => {
-	const { user } = locals;
+	const { me } = locals;
+	new Rbac(me).userView();
 	const form = await superValidate(
 		{
-			name: user?.name || '',
-			default_timezone: user?.default_timezone || ''
-		},
-		zod(UserProfileSchema)
+			name: me?.name || '',
+			default_timezone: me?.default_timezone || ''
+		} as UserProfile,
+		zod4(UserProfileSchema as any)
 	);
 	return {
 		form,
-		user,
+		me,
 		title: 'Settings - Account'
 	};
 };
 
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
-		const { authToken } = locals;
-		const form = await superValidate(request, zod(UserProfileSchema));
+		const { authToken, me } = locals;
+		new Rbac(me).userUpdate();
+		const form = await superValidate(request, zod4(UserProfileSchema as any));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
 		try {
 			const userService = new UserService(authToken as string);
-			const userResource = await userService.me();
-			const userResponse = await userService.update(userResource.data.attributes.id, form.data);
-			authStore.setUser(userResponse.data.attributes as User);
+			const userResponse = await userService.update(me.id, form.data);
 			return {
 				success: true,
 				message: 'Profile updated successfully',

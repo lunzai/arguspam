@@ -1,34 +1,21 @@
-// import { OrgService } from '$services/org';
-// import type { OrgResource } from '$lib/resources/org';
-
-// export const load = async ({ params, locals }) => {
-// 	const { id } = params;
-// 	const { authToken, currentOrgId } = locals;
-// 	const modelService = new OrgService(authToken as string, currentOrgId);
-// 	const model = (await modelService.findById(id, {
-// 		// include: ['account', 'accessGrants']
-// 	})) as OrgResource;
-// 	return {
-// 		model,
-// 		title: `Organization - #${model.data.attributes.id} - ${model.data.attributes.name}`
-// 	};
-// };
-
 import { fail, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 import { OrgService } from '$services/org';
 import type { ApiOrgResource } from '$resources/org';
 import { OrgSchema } from '$validations/org';
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$lib/utils/form';
 import { UserService } from '$services/user';
+import { Rbac } from '$lib/rbac';
 
 export const load = async ({ params, locals, depends }) => {
 	depends('organizations:view');
+	const rbac = new Rbac(locals.me);
+	rbac.orgView();
 	const { id } = params;
 	const { authToken, currentOrgId } = locals;
-	const orgService = new OrgService(authToken as string, currentOrgId);
+	const orgService = new OrgService(authToken as string, currentOrgId as number);
 	const userService = new UserService(authToken as string);
 	const model = (await orgService.findById(id, {
 		include: ['users']
@@ -42,27 +29,32 @@ export const load = async ({ params, locals, depends }) => {
 			description: model.data.attributes.description,
 			status: model.data.attributes.status
 		},
-		zod(OrgSchema)
+		zod4(OrgSchema)
 	);
 	return {
 		form,
 		model,
 		userCollection,
-		title: `Organization - #${model.data.attributes.id} - ${model.data.attributes.name}`
+		title: `Organization - #${model.data.attributes.id} - ${model.data.attributes.name}`,
+		canUpdate: rbac.canOrgUpdate(),
+		canDelete: rbac.canOrgDelete(),
+		canAddUser: rbac.canOrgAddUser(),
+		canRemoveUser: rbac.canOrgRemoveUser()
 	};
 };
 
 export const actions = {
 	save: async ({ request, locals, params }) => {
+		new Rbac(locals.me).orgUpdate();
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod(OrgSchema));
+		const form = await superValidate(request, zod4(OrgSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
 		const data = form.data;
 		try {
-			const orgService = new OrgService(authToken as string, currentOrgId);
+			const orgService = new OrgService(authToken as string, currentOrgId as number);
 			const response = await orgService.update(Number(id), data);
 			return {
 				success: true,
@@ -79,10 +71,11 @@ export const actions = {
 		}
 	},
 	delete: async ({ locals, params }) => {
+		new Rbac(locals.me).orgDelete();
 		try {
 			const { id } = params;
 			const { authToken, currentOrgId } = locals;
-			const orgService = new OrgService(authToken as string, currentOrgId);
+			const orgService = new OrgService(authToken as string, currentOrgId as number);
 			await orgService.delete(Number(id));
 		} catch (error) {
 			return fail(400, {
@@ -92,6 +85,7 @@ export const actions = {
 		redirect(302, '/organizations');
 	},
 	addUsers: async ({ request, locals, params }) => {
+		new Rbac(locals.me).orgAddUser();
 		try {
 			const { id } = params;
 			const { authToken, currentOrgId } = locals;
@@ -102,7 +96,7 @@ export const actions = {
 					message: 'No users selected'
 				});
 			}
-			const orgService = new OrgService(authToken as string, currentOrgId);
+			const orgService = new OrgService(authToken as string, currentOrgId as number);
 			const response = await orgService.addUsers(Number(id), userIds);
 			return;
 		} catch (error) {
@@ -112,12 +106,13 @@ export const actions = {
 		}
 	},
 	deleteUser: async ({ request, locals, params }) => {
+		new Rbac(locals.me).orgRemoveUser();
 		try {
 			const { id } = params;
 			const { authToken, currentOrgId } = locals;
 			const data = await request.formData();
 			const userIds = data.get('userIds')?.toString() ?? '';
-			const orgService = new OrgService(authToken as string, currentOrgId);
+			const orgService = new OrgService(authToken as string, currentOrgId as number);
 			await orgService.deleteUser(Number(id), userIds.split(','));
 			return;
 		} catch (error) {

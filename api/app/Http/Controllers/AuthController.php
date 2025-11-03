@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\CacheKey;
 use App\Events\UserLoggedIn;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Resources\User\UserResource;
+use App\Http\Resources\User\MeResource;
 use App\Models\User;
 use Closure;
 use Illuminate\Http\JsonResponse;
@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    public function me(Request $request): UserResource
+    public function me(Request $request): MeResource
     {
         $user = $request->user();
         $user
@@ -26,11 +26,9 @@ class AuthController extends Controller
                 'userGroups',
                 'restrictions',
                 'roles',
-                'permissions'
             )
             ->loadCount('scheduledSessions', 'submittedRequests');
-        $user->permissionNames = $user->permissions()->pluck('name')->unique();
-        return UserResource::make($user);
+        return MeResource::make($user);
     }
 
     public function login(LoginRequest $request): JsonResponse

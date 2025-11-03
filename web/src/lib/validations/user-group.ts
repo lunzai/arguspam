@@ -9,7 +9,7 @@ export const UserGroupSchema = z.object({
 	description: z.string().max(255, 'Description must be less than 255 characters').nullish(),
 	status: z
 		.enum(['active', 'inactive'], {
-			errorMap: () => ({ message: 'Invalid status' })
+			error: 'Invalid status'
 		})
 		.default('active')
 });

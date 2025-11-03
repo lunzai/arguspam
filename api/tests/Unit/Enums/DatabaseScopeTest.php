@@ -15,7 +15,6 @@ class DatabaseScopeTest extends TestCase
         $this->assertContains(DatabaseScope::READ_ONLY, $cases);
         $this->assertContains(DatabaseScope::READ_WRITE, $cases);
         $this->assertContains(DatabaseScope::DDL, $cases);
-        $this->assertContains(DatabaseScope::DML, $cases);
         $this->assertContains(DatabaseScope::ALL, $cases);
     }
 
@@ -24,7 +23,6 @@ class DatabaseScopeTest extends TestCase
         $this->assertEquals('ReadOnly', DatabaseScope::READ_ONLY->value);
         $this->assertEquals('ReadWrite', DatabaseScope::READ_WRITE->value);
         $this->assertEquals('DDL', DatabaseScope::DDL->value);
-        $this->assertEquals('DML', DatabaseScope::DML->value);
         $this->assertEquals('All', DatabaseScope::ALL->value);
     }
 
@@ -33,7 +31,6 @@ class DatabaseScopeTest extends TestCase
         $this->assertEquals(DatabaseScope::READ_ONLY, DatabaseScope::from('ReadOnly'));
         $this->assertEquals(DatabaseScope::READ_WRITE, DatabaseScope::from('ReadWrite'));
         $this->assertEquals(DatabaseScope::DDL, DatabaseScope::from('DDL'));
-        $this->assertEquals(DatabaseScope::DML, DatabaseScope::from('DML'));
         $this->assertEquals(DatabaseScope::ALL, DatabaseScope::from('All'));
     }
 

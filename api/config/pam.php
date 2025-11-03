@@ -75,6 +75,9 @@ return [
         'max_output_tokens' => (int) env('OPENAI_MAX_OUTPUT_TOKENS', 2048),
         'top_p' => (float) env('OPENAI_TOP_P', 1),
         'store' => (bool) env('OPENAI_STORE', true),
+        'metadata' => [
+            'app' => env('APP_NAME', 'ArgusPAM'),
+        ],
     ],
 
     /*
@@ -100,7 +103,25 @@ return [
     'rbac' => [
         'default_admin_role' => 'Admin',
         'default_user_role' => 'User',
-        'admin_bypass_gate' => env('RBAC_ADMIN_BYPASS_GATE', false),
+        'default_user_permissions' => [
+            'request:view',
+            'request:create',
+            'request:approve',
+            'request:reject',
+            'request:cancel',
+            'session:view',
+            'session:terminate',
+            'session:retrievesecret',
+            'session:start',
+            'session:end',
+            'session:cancel',
+            'user:view',
+            'asset:viewrequestable',
+            'session:permission',
+            'user:changepassword',
+            'user:enrolltwofactorauthenticationany',
+            'user:enrolltwofactorauthentication',
+        ],
     ],
 
     'notification' => [

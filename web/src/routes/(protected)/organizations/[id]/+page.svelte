@@ -21,7 +21,10 @@
 	import Loader from '$components/loader.svelte';
 
 	let { data } = $props();
-	const modelName = 'organizations';
+	const canUpdate = $derived(data.canUpdate);
+	const canDelete = $derived(data.canDelete);
+	const canAddUser = $derived(data.canAddUser);
+	const canRemoveUser = $derived(data.canRemoveUser);
 	const modelTitle = 'Organization';
 	const allUsers = $derived(data.userCollection.data.map((user) => user.attributes) as User[]);
 	const modelResource = $derived(data.model as ApiOrgResource);
@@ -100,13 +103,15 @@
 		{
 			accessorKey: 'email',
 			header: 'Email'
-		},
-		{
+		}
+	];
+	if (canRemoveUser) {
+		usersColumns.push({
 			id: 'actions',
 			cell: ({ row }) =>
 				renderSnippet(DataTableActions, { modelId: model.id, RelatedId: row.original.id })
-		}
-	];
+		});
+	}
 </script>
 
 <h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.name}</h1>
@@ -115,22 +120,26 @@
 		<Card.Title class="text-lg">{modelTitle}</Card.Title>
 		<Card.Description>View {modelTitle.toLowerCase()} details.</Card.Description>
 		<Card.Action>
-			<Button
-				variant="outline"
-				class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-				onclick={() => (editOrgDialogIsOpen = true)}
-			>
-				<Pencil class="h-4 w-4" />
-				Edit
-			</Button>
-			<Button
-				variant="outline"
-				class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
-				onclick={() => (deleteOrgDialogIsOpen = true)}
-			>
-				<Trash2 class="h-4 w-4" />
-				Delete
-			</Button>
+			{#if canUpdate}
+				<Button
+					variant="outline"
+					class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
+					onclick={() => (editOrgDialogIsOpen = true)}
+				>
+					<Pencil class="h-4 w-4" />
+					Edit
+				</Button>
+			{/if}
+			{#if canDelete}
+				<Button
+					variant="outline"
+					class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
+					onclick={() => (deleteOrgDialogIsOpen = true)}
+				>
+					<Trash2 class="h-4 w-4" />
+					Delete
+				</Button>
+			{/if}
 		</Card.Action>
 	</Card.Header>
 	<Card.Content>
@@ -193,15 +202,17 @@
 		<Card.Title>Users</Card.Title>
 		<Card.Description>View {modelTitle.toLowerCase()} users.</Card.Description>
 		<Card.Action>
-			<Button
-				variant="outline"
-				size="sm"
-				class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-				onclick={() => (addUserDialogIsOpen = true)}
-			>
-				<UserPlus class="h-4 w-4" />
-				Add User
-			</Button>
+			{#if canAddUser}
+				<Button
+					variant="outline"
+					size="sm"
+					class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
+					onclick={() => (addUserDialogIsOpen = true)}
+				>
+					<UserPlus class="h-4 w-4" />
+					Add User
+				</Button>
+			{/if}
 		</Card.Action>
 	</Card.Header>
 	<Card.Content>

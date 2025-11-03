@@ -13,8 +13,13 @@ class UserPolicy
 
     public function view(User $user, User $model): bool
     {
-        return $this->viewAny($user) ||
-            ($user->id === $model->id && $user->hasAnyPermission('user:view'));
+        if ($this->viewAny($user)) {
+            return true;
+        }
+        if (!$user->hasAnyPermission('user:view')) {
+            return false;
+        }
+        return $user->id === $model->id;
     }
 
     public function create(User $user): bool
@@ -29,20 +34,43 @@ class UserPolicy
 
     public function update(User $user, User $model): bool
     {
-        return $this->updateAny($user) ||
-            ($user->id === $model->id && $user->hasAnyPermission('user:update'));
+        if ($this->updateAny($user)) {
+            return true;
+        }
+        if (!$user->hasAnyPermission('user:update')) {
+            return false;
+        }
+        return $user->id === $model->id;
     }
 
     public function deleteAny(User $user, User $model): bool
     {
-        if ($user->id === $model->id) {
-            return false;
-        }
         return $user->hasAnyPermission('user:deleteany');
     }
 
-    public function restoreAny(User $user): bool
+    public function resetPasswordAny(User $user): bool
     {
-        return $user->hasAnyPermission('user:restoreany');
+        return $user->hasAnyPermission('user:resetpasswordany');
+    }
+
+    public function changePassword(User $user, User $model): bool
+    {
+        return $user->hasAnyPermission('user:changepassword') && $user->is($model);
+    }
+
+    public function enrollTwoFactorAuthenticationAny(User $user): bool
+    {
+        return $user->hasAnyPermission('user:enrolltwofactorauthenticationany');
+    }
+
+    public function enrollTwoFactorAuthentication(User $user, User $model): bool
+    {
+        if ($this->enrollTwoFactorAuthenticationAny($user)) {
+            return true;
+        }
+        if (!$user->hasPermissionTo('user:enrolltwofactorauthentication')) {
+            return false;
+        }
+        return $user->is($model);
     }
 }

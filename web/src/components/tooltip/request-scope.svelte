@@ -23,10 +23,7 @@
 					<span class="font-bold">ReadWrite:</span> View and modify data (SELECT, INSERT, UPDATE, DELETE)
 				</li>
 				<li>
-					<span class="font-bold">DDL:</span> Manage database structure (CREATE, ALTER, DROP tables/indexes)
-				</li>
-				<li>
-					<span class="font-bold">DML:</span> Manipulate data operations (INSERT, UPDATE, DELETE, SELECT)
+					<span class="font-bold">DDL:</span> Manage database structure (ReadWrite + ALTER, DROP tables/indexes)
 				</li>
 				<li>
 					<span class="font-bold">All:</span> Full database access (all operations and administrative

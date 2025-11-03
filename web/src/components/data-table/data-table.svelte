@@ -22,6 +22,7 @@
 	import ResultSummary from './components/result-summary.svelte';
 	import { replaceState } from '$app/navigation';
 	import { Skeleton } from '$ui/skeleton';
+	import { error } from '@sveltejs/kit';
 
 	interface Props<T extends BaseModel> extends DataTableProps<T> {
 		class?: string;
@@ -130,17 +131,13 @@
 		if (params.count && params.count.length > 0) {
 			url.searchParams.set('count', params.count.join(','));
 		}
-		try {
-			const response = await fetch(url.toString());
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
-			}
-			const result: ApiResponse<T> = await response.json();
-			replaceState(window.location.pathname + '?' + url.searchParams.toString(), {});
-			return result;
-		} catch (error) {
-			throw error;
+		const response = await fetch(url.toString());
+		if (!response.ok) {
+			throw error(response.status, response.statusText);
 		}
+		const result: ApiResponse<T> = await response.json();
+		replaceState(window.location.pathname + '?' + url.searchParams.toString(), {});
+		return result;
 	}
 
 	// Load data function
@@ -167,8 +164,8 @@
 			};
 			onDataChange?.(state.data);
 			onPaginationChange?.(state.pagination);
-		} catch (error) {
-			// Keep existing data on error
+		} catch (e: any) {
+			//
 		} finally {
 			state.loading = false;
 		}

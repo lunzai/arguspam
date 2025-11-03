@@ -6,7 +6,7 @@ export const UserProfileSchema = z.object({
 		.string()
 		.min(2, 'Name must be at least 2 characters')
 		.max(100, 'Name must be less than 100 characters'),
-	default_timezone: z.enum(TIMEZONES, { message: 'Invalid timezone' }).default('UTC')
+	default_timezone: z.enum(TIMEZONES, { error: 'Invalid timezone' }).default('UTC')
 });
 
 export const ChangePasswordSchema = z
@@ -55,15 +55,13 @@ export const UserSchema = z.object({
 		.min(2, 'Name must be at least 2 characters')
 		.max(100, 'Name must be less than 100 characters'),
 	email: z
-		.string()
 		.email('Please enter a valid email address')
 		.max(100, 'Email must be less than 100 characters'),
 	status: z.enum(['active', 'inactive']).default('active'),
-	default_timezone: z.enum(TIMEZONES, { message: 'Invalid timezone' }).default('UTC')
+	default_timezone: z.enum(TIMEZONES, { error: 'Invalid timezone' }).default('UTC')
 });
 
 export const UserUpdateRolesSchema = z.object({
-	// roleIds: z.array(z.coerce.number().int().positive()).min(1)
 	roleIds: z.array(z.string()).min(1, 'Please select at least one role')
 });
 

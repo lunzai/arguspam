@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\CacheKey;
 use App\Http\Resources\Org\OrgCollection;
 use App\Models\Org;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 
 class UserOrgController extends Controller
 {
@@ -16,18 +14,9 @@ class UserOrgController extends Controller
      */
     public function index(): OrgCollection
     {
-        $this->authorize('userorg:viewany');
-        // $orgs = Cache::remember(
-        //     CacheKey::USER_ORG->key(Auth::user()->id),
-        //     config('cache.default_ttl'),
-        //     function () {
-        //         return Auth::user()
-        //             ->orgs()
-        //             ->get();
-        //     },
-        // );
-        $orgs = Auth::user()->orgs()->get();
-        return new OrgCollection($orgs);
+        $user = Auth::user();
+        $this->authorize('view', $user);
+        return new OrgCollection($user->orgs()->get());
     }
 
     /**
@@ -35,7 +24,8 @@ class UserOrgController extends Controller
      */
     public function show(Org $org): Response
     {
-        $this->authorize('userorg:view', $org);
+        $user = Auth::user();
+        $this->authorize('view', $user);
         Auth::user()
             ->orgs()
             ->findOrFail($org->id);

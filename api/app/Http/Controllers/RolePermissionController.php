@@ -2,54 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\CacheKey;
 use App\Http\Resources\Permission\PermissionCollection;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Cache;
 
 class RolePermissionController extends Controller
 {
     public function index(Role $role, Request $request): PermissionCollection
     {
-        $this->authorize('rolepermission:index');
+        $this->authorize('listPermissions', $role);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        // $permissions = Cache::remember(
-        //     CacheKey::ROLE_PERMISSIONS->key($role->id),
-        //     config('cache.default_ttl'),
-        //     function () use ($role, $pagination) {
-        //         return $role->permissions()->paginate($pagination);
-        //     }
-        // );
         $permissions = $role->permissions()
             ->paginate($pagination);
         return new PermissionCollection($permissions);
     }
 
+    /**
+     * Update & sync role permissions
+     */
     public function update(Request $request, Role $role): Response
     {
-        $this->authorize('rolepermission:update', $role);
+        $this->authorize('updatePermissions', $role);
         $validated = $request->validate([
             'permission_ids' => ['array'],
             'permission_ids.*' => ['required', 'integer', 'exists:permissions,id'],
         ]);
-
         $role->permissions()->sync($validated['permission_ids']);
-        Cache::forget(CacheKey::ROLE_PERMISSIONS->key($role->id));
         return $this->noContent();
     }
-
-    // public function destroy(Role $role, Request $request): Response
-    // {
-    //     $this->authorize('rolepermission:delete', $role);
-    //     $validated = $request->validate([
-    //         'permission_ids' => ['required', 'array', 'min:1'],
-    //         'permission_ids.*' => ['integer', 'exists:permissions,id'],
-    //     ]);
-
-    //     $role->permissions()->detach($validated['permission_ids']);
-
-    //     return $this->noContent();
-    // }
 }

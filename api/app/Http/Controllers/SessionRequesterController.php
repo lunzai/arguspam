@@ -4,20 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\Session\SessionResource;
 use App\Models\Session;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SessionRequesterController extends Controller
 {
     /**
      * Check if user can start/end/cancel session
-     *
-     * @param  Request  $request
-     * @return void
      */
     public function show(Session $session)
     {
-        $this->authorize('view', $session);
+        $this->authorize('permission', $session);
         $isOwner = $session->requester->is(Auth::user());
         return [
             'data' => [
@@ -31,35 +27,41 @@ class SessionRequesterController extends Controller
     }
 
     /**
-     * Start session
+     * Requester: Start session
      */
     public function store(Session $session): SessionResource
     {
+        if (!$session->canStart()) {
+            return $this->unprocessableEntity('Session is not eligible for starting');
+        }
         $this->authorize('start', $session);
         $session->start();
-
         return new SessionResource($session);
     }
 
     /**
-     * End session
+     * Requester: End session
      */
     public function update(Session $session): SessionResource
     {
+        if (!$session->canEnd()) {
+            return $this->unprocessableEntity('Session is not eligible for ending');
+        }
         $this->authorize('end', $session);
         $session->end();
-
         return new SessionResource($session);
     }
 
     /**
-     * Cancel session
+     * Requester: Cancel session
      */
     public function delete(Session $session): SessionResource
     {
+        if (!$session->canCancel()) {
+            return $this->unprocessableEntity('Session is not eligible for cancellation');
+        }
         $this->authorize('cancel', $session);
         $session->cancel();
-
         return new SessionResource($session);
     }
 }

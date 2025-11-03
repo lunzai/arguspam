@@ -4,7 +4,7 @@ import { UserService } from '$services/user';
 import type { PageServerLoad } from './$types';
 import { superValidate, message, setError } from 'sveltekit-superforms';
 import { TwoFactorVerifySchema } from '$validations/auth';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import {
 	getAuthToken,
 	setAuthToken,
@@ -22,14 +22,14 @@ export const load: PageServerLoad = async ({ cookies }) => {
 		return redirect(302, '/');
 	}
 	return {
-		form: await superValidate(zod(TwoFactorVerifySchema)),
+		form: await superValidate(zod4(TwoFactorVerifySchema)),
 		tempKey
 	};
 };
 
 export const actions: Actions = {
 	default: async ({ request, cookies }) => {
-		const form = await superValidate(request, zod(TwoFactorVerifySchema));
+		const form = await superValidate(request, zod4(TwoFactorVerifySchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}

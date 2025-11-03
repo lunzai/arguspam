@@ -28,7 +28,6 @@ abstract class AbstractDatabaseDriver implements DatabaseDriverInterface
         DatabaseScope::READ_ONLY,
         DatabaseScope::READ_WRITE,
         DatabaseScope::DDL,
-        DatabaseScope::DML,
         DatabaseScope::ALL,
     ];
 

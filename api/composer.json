@@ -22,6 +22,7 @@
         "openai-php/laravel": "^0.17.1",
         "pragmarx/google2fa-qrcode": "^3.0",
         "predis/predis": "^3.0",
+        "staudenmeir/eloquent-has-many-deep": "^1.7",
         "torann/geoip": "^3.0"
     },
     "require-dev": {
@@ -54,8 +55,11 @@
         "test-safe": "php verify-test-safety.php && php artisan test",
         "test-stop": "php -d memory_limit=1G artisan test --testsuite=Unit --stop-on-failure",
         "test-profile": "php -d memory_limit=1G artisan test --profile",
-        "coverage": " XDEBUG_MODE=coverage php -d memory_limit=512M  artisan test --parallel --coverage --coverage-html=coverage-report  --recreate-databases",
-        "test": "XDEBUG_MODE=coverage php -d memory_limit=512M  artisan test --parallel --coverage  --recreate-databases",
+        "unit-coverage": [
+            "Composer\\Config::disableProcessTimeout",
+            "XDEBUG_MODE=coverage php -d memory_limit=1G vendor/bin/paratest --testsuite=Unit --configuration=phpunit.xml --coverage-html=coverage-report --processes=auto"
+        ],
+        "test": "XDEBUG_MODE=coverage php -d memory_limit=512M artisan test --parallel --coverage --testsuite=Unit",
         "verify-test-db": "php verify-test-safety.php",
         "pint": "vendor/bin/pint --parallel",
         "post-autoload-dump": [

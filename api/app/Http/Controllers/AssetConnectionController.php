@@ -20,6 +20,7 @@ class AssetConnectionController extends Controller
      */
     public function show(Asset $asset): Response
     {
+        $this->authorize('view', $asset);
         $adminCredentials = $this->jitManager->getAdminCredentials($asset);
         $testResult = $this->jitManager
             ->testConnection($asset, [
@@ -32,8 +33,12 @@ class AssetConnectionController extends Controller
         return $this->ok();
     }
 
+    /**
+     * List databases in asset
+     */
     public function index(Asset $asset)
     {
+        $this->authorize('view', $asset);
         $databases = $this->jitManager->getAllDatabases($asset);
         return [
             'data' => $databases,

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Enums\AssetAccountType;
-use App\Enums\CacheKey;
 use App\Http\Filters\AssetFilter;
 use App\Http\Requests\Asset\StoreAssetRequest;
 use App\Http\Requests\Asset\UpdateAssetRequest;
@@ -15,7 +14,6 @@ use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class AssetController extends Controller
@@ -24,15 +22,8 @@ class AssetController extends Controller
 
     public function index(AssetFilter $filter, Request $request): AssetCollection
     {
-        $this->authorize('viewAny', Asset::class);
+        $this->authorize('view', Asset::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        // $assets = Cache::remember(
-        //     CacheKey::ASSETS->value,
-        //     config('cache.default_ttl'),
-        //     function () use ($filter, $pagination) {
-        //         return Asset::filter($filter)->paginate($pagination);
-        //     }
-        // );
         $assets = Asset::filter($filter)
             ->paginate($pagination);
         return new AssetCollection($assets);

@@ -5,14 +5,12 @@
          colors="true"
          cacheDirectory=".phpunit.cache"
 >
-    <coverage>
-        <report>
-            <html outputDirectory="coverage-report" lowUpperBound="40" highLowerBound="80" />
-        </report>
-    </coverage>
     <testsuites>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration">
+            <directory>tests/Integration</directory>
         </testsuite>
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
@@ -20,9 +18,14 @@
     </testsuites>
     <source>
         <include>
-            <directory>app</directory>
+            <directory suffix=".php">app</directory>
         </include>
     </source>
+    <coverage>
+        <report>
+            <html outputDirectory="coverage-report" lowUpperBound="40" highLowerBound="70"/>
+        </report>
+    </coverage>
     <php>
         <ini name="memory_limit" value="2G"/>
         <env name="APP_ENV" value="testing"/>

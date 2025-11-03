@@ -1,38 +1,41 @@
 import { superValidate } from 'sveltekit-superforms';
-import { zod } from 'sveltekit-superforms/adapters';
+import { zod4 } from 'sveltekit-superforms/adapters';
 import { ChangePasswordSchema } from '$validations/user';
 import { fail, type Actions } from '@sveltejs/kit';
 import { UserService } from '$services/user';
 import { setFormErrors } from '$lib/utils/form';
 import type { PageServerLoad } from './$types';
 import { TwoFactorCodeSchema } from '$lib/validations/auth';
+import { Rbac } from '$lib/rbac';
 
 export const load: PageServerLoad = async ({ locals, depends }) => {
 	depends('settings:security');
+	new Rbac(locals.me).userView();
 	let qrCode = null;
-	const { authToken, currentOrgId, user } = locals;
+	const { authToken, currentOrgId, me } = locals;
 
-	const userService = new UserService(authToken as string, currentOrgId);
-	if (user.two_factor_enabled && !user.two_factor_confirmed_at) {
-		qrCode = await userService.getTwoFactorQrCode(Number(user.id)).then((result) => {
+	const userService = new UserService(authToken as string, currentOrgId as number);
+	if (me.two_factor_enabled && !me.two_factor_confirmed_at) {
+		qrCode = await userService.getTwoFactorQrCode(Number(me.id)).then((result) => {
 			return result.data.qr_code;
 		});
 	}
-	const changePasswordForm = await superValidate(zod(ChangePasswordSchema));
-	const twoFactorVerifyForm = await superValidate(zod(TwoFactorCodeSchema));
+	const changePasswordForm = await superValidate(zod4(ChangePasswordSchema));
+	const twoFactorVerifyForm = await superValidate(zod4(TwoFactorCodeSchema));
 	return {
 		changePasswordForm,
 		twoFactorVerifyForm,
 		qrCode,
-		user,
+		me,
 		title: 'Settings - Security'
 	};
 };
 
 export const actions: Actions = {
 	changePassword: async ({ request, locals }) => {
-		const { authToken } = locals;
-		const changePasswordForm = await superValidate(request, zod(ChangePasswordSchema));
+		const { authToken, me } = locals;
+		new Rbac(me).userChangePassword();
+		const changePasswordForm = await superValidate(request, zod4(ChangePasswordSchema));
 		if (!changePasswordForm.valid) {
 			return fail(422, { changePasswordForm });
 		}
@@ -57,12 +60,13 @@ export const actions: Actions = {
 		}
 	},
 	updateTwoFactor: async ({ request, locals }) => {
-		const { authToken, currentOrgId, user } = locals;
+		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).userEnrollTwoFactorAuthentication();
 		const formData = await request.formData();
 		const enabled = formData.get('enabled') === '1';
 		try {
-			const userService = new UserService(authToken as string, currentOrgId);
-			await userService.updateTwoFactor(Number(user.id), enabled);
+			const userService = new UserService(authToken as string, currentOrgId as number);
+			await userService.updateTwoFactor(Number(me.id), enabled);
 			return {
 				success: true
 			};
@@ -71,11 +75,11 @@ export const actions: Actions = {
 		}
 	},
 	removeTwoFactor: async ({ request, locals }) => {
-		const { authToken, currentOrgId, user } = locals;
-
+		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).userEnrollTwoFactorAuthentication();
 		try {
-			const userService = new UserService(authToken as string, currentOrgId);
-			await userService.disableTwoFactor(Number(user.id));
+			const userService = new UserService(authToken as string, currentOrgId as number);
+			await userService.disableTwoFactor(Number(me.id));
 			return {
 				success: true
 			};
@@ -84,15 +88,16 @@ export const actions: Actions = {
 		}
 	},
 	verifyTwoFactor: async ({ request, locals }) => {
-		const { authToken, currentOrgId, user } = locals;
-		const form = await superValidate(request, zod(TwoFactorCodeSchema));
+		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).userEnrollTwoFactorAuthentication();
+		const form = await superValidate(request, zod4(TwoFactorCodeSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
 		const data = form.data;
 		try {
-			const userService = new UserService(authToken as string, currentOrgId);
-			await userService.verifyTwoFactor(Number(user.id), data.code);
+			const userService = new UserService(authToken as string, currentOrgId as number);
+			await userService.verifyTwoFactor(Number(me.id), data.code);
 			return {
 				success: true,
 				message: `Two-factor authentication verified successfully`,

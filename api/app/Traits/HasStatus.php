@@ -16,11 +16,10 @@ trait HasStatus
 
     public function isActive(): bool
     {
-        $status = $this->{$this->statusColumn};
+        $status = $this->status;
         if ($status instanceof Status) {
             return $status === Status::ACTIVE;
         }
-
         return $status === Status::ACTIVE->value;
     }
 
@@ -30,7 +29,6 @@ trait HasStatus
         if ($status instanceof Status) {
             return $status === Status::INACTIVE;
         }
-
         return $status === Status::INACTIVE->value;
     }
 }

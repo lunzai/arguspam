@@ -2,7 +2,7 @@
 	import * as Form from '$ui/form';
 	import * as Dialog from '$ui/dialog';
 	import { superForm } from 'sveltekit-superforms';
-	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { zod4Client } from 'sveltekit-superforms/adapters';
 	import { toast } from 'svelte-sonner';
 	import { Button } from '$ui/button';
 	import type { Request } from '$models/request';
@@ -23,7 +23,7 @@
 	}: Props = $props();
 
 	const form = superForm(data, {
-		validators: zodClient(RejectSchema),
+		validators: zod4Client(RejectSchema),
 		delayMs: 100,
 		async onUpdate({ form, result }) {
 			if (!form.valid && Object.keys(form.errors).length > 0) {

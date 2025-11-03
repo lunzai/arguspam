@@ -34,6 +34,7 @@
 
 	let { data } = $props();
 	const permissions = $derived(data.permissions);
+	const canViewSession = $derived(data.canViewSession);
 	const modelResource = $derived(data.model as ApiRequestResource);
 	const model = $derived(modelResource.data.attributes as Request);
 	const asset = $derived(modelResource.data.relationships?.asset?.attributes as Asset);
@@ -232,10 +233,10 @@
 				{/if}
 			</DL.Root>
 		</Card.Content>
-		{#if permissions.canApprove || permissions.canCancel || model.status == 'approved'}
+		{#if permissions.canApprove || permissions.canCancel || model.status == 'approved' || (canViewSession && session)}
 			<Separator />
 			<Card.Footer class="flex-col gap-2">
-				{#if session}
+				{#if canViewSession && session}
 					<Button
 						variant="outline"
 						class="flex w-full justify-between transition-all duration-200 hover:cursor-pointer hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"

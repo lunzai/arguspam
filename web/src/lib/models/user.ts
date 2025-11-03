@@ -1,7 +1,6 @@
 import type { BaseModel } from '$models/base-model.js';
 import type { Role } from '$models/role';
 import type { Permission } from '$models/permission';
-import type { GroupedPermission } from '$resources/permission';
 import type { UserGroup } from '$models/user-group';
 import type { Org } from '$models/org';
 
@@ -18,7 +17,7 @@ export interface User extends BaseModel {
 
 export interface Me extends User {
 	roles: Role[];
-	permissions: GroupedPermission;
+	permissions: Permission[];
 	user_groups: UserGroup[];
 	scheduled_sessions_count: number;
 	submitted_requests_count: number;

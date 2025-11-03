@@ -257,12 +257,8 @@
 												UPDATE, DELETE)
 											</li>
 											<li>
-												<span class="font-bold">DDL:</span> Manage database structure (CREATE, ALTER,
+												<span class="font-bold">DDL:</span> Manage database structure (ReadWrite + ALTER,
 												DROP tables/indexes)
-											</li>
-											<li>
-												<span class="font-bold">DML:</span> Manipulate data operations (INSERT, UPDATE,
-												DELETE, SELECT)
 											</li>
 											<li>
 												<span class="font-bold">All:</span> Full database access (all operations and
@@ -286,7 +282,6 @@
 								<Select.Item value="ReadOnly" label="ReadOnly" />
 								<Select.Item value="ReadWrite" label="ReadWrite" />
 								<Select.Item value="DDL" label="DDL" />
-								<Select.Item value="DML" label="DML" />
 								<Select.Item value="All" label="All" />
 							</Select.Content>
 						</Select.Root>

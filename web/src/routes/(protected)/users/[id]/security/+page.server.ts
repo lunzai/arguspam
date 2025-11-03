@@ -9,15 +9,18 @@ import type { PageServerLoad } from './$types';
 import { TwoFactorCodeSchema } from '$validations/auth';
 import { setFormErrors } from '$utils/form';
 import { ResetPasswordSchema } from '$validations/user';
+import { Rbac } from '$lib/rbac';
 
 export const load: PageServerLoad = async ({ params, locals, depends, parent }) => {
 	depends('user:view:security');
 	const { id } = params;
-	const { authToken, currentOrgId } = locals;
+	const { authToken, currentOrgId, me } = locals;
+	const rbac = new Rbac(me);
+	rbac.userViewAny();
 	const data = await parent();
 	const model = data.model as ApiUserResource;
 	const user = model.data.attributes as User;
-	const userService = new UserService(authToken as string, currentOrgId);
+	const userService = new UserService(authToken as string, currentOrgId as number);
 	let qrCode = null;
 	if (user.two_factor_enabled && !user.two_factor_confirmed_at) {
 		qrCode = await userService.getTwoFactorQrCode(Number(id)).then((result) => {
@@ -29,16 +32,19 @@ export const load: PageServerLoad = async ({ params, locals, depends, parent }) 
 	return {
 		twoFactorVerifyForm,
 		resetPasswordForm,
-		authUser: data.user,
+		authUser: data.me,
 		model,
 		qrCode,
+		canUserResetPasswordAny: rbac.canUserResetPasswordAny(),
+		canUserEnrollTwoFactorAuthenticationAny: rbac.canUserEnrollTwoFactorAuthenticationAny(),
 		title: `User - #${model.data.attributes.id} - ${model.data.attributes.name}`
 	};
 };
 
 export const actions = {
 	resetPassword: async ({ request, locals, params }) => {
-		const { authToken, currentOrgId } = locals;
+		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).userResetPasswordAny();
 		const { id } = params;
 		const form = await superValidate(request, zod4(ResetPasswordSchema));
 		if (!form.valid) {
@@ -46,7 +52,7 @@ export const actions = {
 		}
 		const data = form.data;
 		try {
-			const userService = new UserService(authToken as string, currentOrgId);
+			const userService = new UserService(authToken as string, currentOrgId as number);
 			await userService.resetPassword(Number(id), data.newPassword, data.confirmNewPassword);
 			return {
 				success: true,
@@ -58,12 +64,13 @@ export const actions = {
 		}
 	},
 	updateTwoFactor: async ({ request, locals, params }) => {
-		const { authToken, currentOrgId } = locals;
+		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).userEnrollTwoFactorAuthenticationAny();
 		const { id } = params;
 		const formData = await request.formData();
 		const enabled = formData.get('enabled') === '1';
 		try {
-			const userService = new UserService(authToken as string, currentOrgId);
+			const userService = new UserService(authToken as string, currentOrgId as number);
 			await userService.updateTwoFactor(Number(id), enabled);
 			return {
 				success: true
@@ -73,10 +80,11 @@ export const actions = {
 		}
 	},
 	removeTwoFactor: async ({ request, locals, params }) => {
-		const { authToken, currentOrgId } = locals;
+		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).userEnrollTwoFactorAuthenticationAny();
 		const { id } = params;
 		try {
-			const userService = new UserService(authToken as string, currentOrgId);
+			const userService = new UserService(authToken as string, currentOrgId as number);
 			await userService.disableTwoFactor(Number(id));
 			return {
 				success: true
@@ -86,7 +94,8 @@ export const actions = {
 		}
 	},
 	verifyTwoFactor: async ({ request, locals, params }) => {
-		const { authToken, currentOrgId } = locals;
+		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).userEnrollTwoFactorAuthenticationAny();
 		const { id } = params;
 		const form = await superValidate(request, zod4(TwoFactorCodeSchema));
 		if (!form.valid) {
@@ -94,7 +103,7 @@ export const actions = {
 		}
 		const data = form.data;
 		try {
-			const userService = new UserService(authToken as string, currentOrgId);
+			const userService = new UserService(authToken as string, currentOrgId as number);
 			await userService.verifyTwoFactor(Number(id), data.code);
 			return {
 				success: true,

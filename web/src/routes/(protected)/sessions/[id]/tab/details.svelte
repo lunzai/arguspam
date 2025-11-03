@@ -14,7 +14,7 @@
 	import { StatusBadge } from '$components/badge';
 	import Badge from '$lib/components/ui/badge/badge.svelte';
 
-	let { model, asset, requester, request, approver, flags } = $props();
+	let { model, asset, requester, request, approver, flags, canViewRequest } = $props();
 
 	let showDetails = $state(true);
 	let showRequest = $state(true);
@@ -260,15 +260,17 @@
 							</DL.Row>
 						{/if}
 					</DL.Root>
-					<div>
-						<Button
-							variant="outline"
-							class="transition-all duration-200 hover:cursor-pointer hover:bg-blue-50 hover:text-blue-500"
-							href={`/requests/${request.id}`}
-						>
-							Go To Request
-						</Button>
-					</div>
+					{#if canViewRequest}
+						<div>
+							<Button
+								variant="outline"
+								class="transition-all duration-200 hover:cursor-pointer hover:bg-blue-50 hover:text-blue-500"
+								href={`/requests/${request.id}`}
+							>
+								Go To Request
+							</Button>
+						</div>
+					{/if}
 					<div class="flex flex-col gap-3 rounded-md bg-gray-50 p-6 text-sm text-gray-500">
 						<div class="flex items-center gap-2">
 							<ClipboardCopy class="h-4 w-4" /> Requested By

@@ -5,10 +5,12 @@ import { fail, type Actions } from '@sveltejs/kit';
 import { UserService } from '$services/user';
 import { setFormErrors } from '$utils/form';
 import type { UserProfile } from '$lib/models/user';
+import { Rbac } from '$lib/rbac';
+import { USER_VIEW_ANY } from '$lib/rbac/constants';
 
 export const load = async ({ locals }: any) => {
 	const { me } = locals;
-	console.log('load', locals);
+	new Rbac(me).userView();
 	const form = await superValidate(
 		{
 			name: me?.name || '',
@@ -26,6 +28,7 @@ export const load = async ({ locals }: any) => {
 export const actions: Actions = {
 	default: async ({ request, locals }) => {
 		const { authToken, me } = locals;
+		new Rbac(me).userUpdate();
 		const form = await superValidate(request, zod4(UserProfileSchema as any));
 		if (!form.valid) {
 			return fail(422, { form });

@@ -205,7 +205,6 @@
 								<Select.Item value="ReadOnly" label="ReadOnly" />
 								<Select.Item value="ReadWrite" label="ReadWrite" />
 								<Select.Item value="DDL" label="DDL" />
-								<Select.Item value="DML" label="DML" />
 								<Select.Item value="All" label="All" />
 							</Select.Content>
 						</Select.Root>

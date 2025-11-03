@@ -10,7 +10,7 @@ export interface Request extends BaseModel {
 	duration: number;
 	reason: string;
 	intended_query: string;
-	scope: 'ReadOnly' | 'ReadWrite' | 'DDL' | 'DML' | 'All';
+	scope: 'ReadOnly' | 'ReadWrite' | 'DDL' | 'All';
 	is_access_sensitive_data: boolean;
 	sensitive_data_note: string;
 	approver_note: string;

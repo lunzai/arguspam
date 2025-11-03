@@ -17,7 +17,7 @@
 	import { goto } from '$app/navigation';
 
 	let { data }: { data: any } = $props();
-
+	const canCreate = $derived(data.canCreate);
 	let initialSearchParams = page.url.searchParams;
 	const modelName = 'organizations';
 
@@ -132,16 +132,18 @@
 
 <div class="flex items-center justify-between">
 	<h1 class="text-2xl font-medium capitalize">{modelName}</h1>
-	<Button
-		variant="outline"
-		class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
-		onclick={() => {
-			addOrgDialogIsOpen = true;
-		}}
-	>
-		<PlusIcon class="h-4 w-4" />
-		<span>Add Organization</span>
-	</Button>
+	{#if canCreate}
+		<Button
+			variant="outline"
+			class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
+			onclick={() => {
+				addOrgDialogIsOpen = true;
+			}}
+		>
+			<PlusIcon class="h-4 w-4" />
+			<span>Add Organization</span>
+		</Button>
+	{/if}
 </div>
 
 <FormDialog

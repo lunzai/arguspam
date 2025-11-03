@@ -11,10 +11,12 @@
 
 	let { data } = $props();
 	let twoFactorIsLoading = $state(false);
-	let me = $derived(data.me);
+	const me = $derived(data.me);
 	let require2faSetup = $derived(me.two_factor_enabled && !me.two_factor_confirmed_at);
 	let is2faConfirmed = $derived(me.two_factor_confirmed_at !== null);
 	let is2faEnabled = $derived(me.two_factor_enabled);
+	const canChangePassword = $derived(data.canChangePassword);
+	const canEnrollTwoFactor = $derived(data.canEnrollTwoFactor);
 
 	async function handleTwoFactorChange(checked: boolean) {
 		try {
@@ -49,60 +51,63 @@
 </script>
 
 <div class="space-y-6">
-	<Card.Root class="relative w-full">
-		<Card.Header class="">
-			<Card.Title class="text-lg">Password</Card.Title>
-			<Card.Description>Change your password.</Card.Description>
-			<Card.Action></Card.Action>
-		</Card.Header>
-		<Card.Content>
-			<ChangePasswordForm data={data.changePasswordForm} />
-		</Card.Content>
-	</Card.Root>
-
-	<Card.Root class="relative w-full" id="2fa">
-		<Loader show={twoFactorIsLoading} />
-		<Card.Header>
-			<Card.Title class="text-lg">Two-Factor Authentication</Card.Title>
-			<Card.Description>Enable or disable two-factor authentication.</Card.Description>
-			<Card.Action>
-				<Switch
-					disabled={is2faConfirmed}
-					class="data-[state=checked]:bg-green-500"
-					checked={is2faEnabled}
-					onCheckedChange={handleTwoFactorChange}
-				/>
-			</Card.Action>
-		</Card.Header>
-		{#if is2faEnabled}
-			<Card.Content id="2fa">
-				<div class="space-y-6">
-					{#if !is2faConfirmed}
-						{#if require2faSetup}
-							<TwoFactorFormDialog
-								data={data.twoFactorVerifyForm}
-								qrCode={data.qrCode}
-								isCurrentUser={true}
-								bind:isSubmitting={twoFactorIsLoading}
-								bind:showTwoFactorSetup={require2faSetup}
-								onSuccess={handleVerifyTwoFactor}
-							/>
-						{/if}
-					{:else}
-						<blockquote
-							class="space-y-1 border-l-4 border-green-300 bg-green-50 py-3 pl-4 text-green-500"
-						>
-							<p>
-								You have already setup two-factor authentication on {shortDateTime(
-									me?.two_factor_confirmed_at ?? ''
-								)}.
-							</p>
-							<p>To remove two-factor authentication, please click the button below.</p>
-						</blockquote>
-						<TwoFactorDisableDialog bind:twoFactorIsLoading />
-					{/if}
-				</div>
+	{#if canChangePassword}
+		<Card.Root class="relative w-full">
+			<Card.Header class="">
+				<Card.Title class="text-lg">Password</Card.Title>
+				<Card.Description>Change your password.</Card.Description>
+				<Card.Action></Card.Action>
+			</Card.Header>
+			<Card.Content>
+				<ChangePasswordForm data={data.changePasswordForm} />
 			</Card.Content>
-		{/if}
-	</Card.Root>
+		</Card.Root>
+	{/if}
+	{#if canEnrollTwoFactor}
+		<Card.Root class="relative w-full" id="2fa">
+			<Loader show={twoFactorIsLoading} />
+			<Card.Header>
+				<Card.Title class="text-lg">Two-Factor Authentication</Card.Title>
+				<Card.Description>Enable or disable two-factor authentication.</Card.Description>
+				<Card.Action>
+					<Switch
+						disabled={is2faConfirmed}
+						class="data-[state=checked]:bg-green-500"
+						checked={is2faEnabled}
+						onCheckedChange={handleTwoFactorChange}
+					/>
+				</Card.Action>
+			</Card.Header>
+			{#if is2faEnabled}
+				<Card.Content id="2fa">
+					<div class="space-y-6">
+						{#if !is2faConfirmed}
+							{#if require2faSetup}
+								<TwoFactorFormDialog
+									data={data.twoFactorVerifyForm}
+									qrCode={data.qrCode}
+									isCurrentUser={true}
+									bind:isSubmitting={twoFactorIsLoading}
+									bind:showTwoFactorSetup={require2faSetup}
+									onSuccess={handleVerifyTwoFactor}
+								/>
+							{/if}
+						{:else}
+							<blockquote
+								class="space-y-1 border-l-4 border-green-300 bg-green-50 py-3 pl-4 text-green-500"
+							>
+								<p>
+									You have already setup two-factor authentication on {shortDateTime(
+										me?.two_factor_confirmed_at ?? ''
+									)}.
+								</p>
+								<p>To remove two-factor authentication, please click the button below.</p>
+							</blockquote>
+							<TwoFactorDisableDialog bind:twoFactorIsLoading />
+						{/if}
+					</div>
+				</Card.Content>
+			{/if}
+		</Card.Root>
+	{/if}
 </div>

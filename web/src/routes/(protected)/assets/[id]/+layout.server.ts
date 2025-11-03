@@ -6,11 +6,15 @@ import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { AssetUpdateSchema, AssetCredentialsSchema } from '$validations/asset';
 import type { AssetAccountCollection, AssetAccountResource } from '$resources/asset-account';
+import { Rbac } from '$lib/rbac';
 
-export const load: LayoutServerLoad = async ({ params, locals }) => {
+export const load: LayoutServerLoad = async ({ params, locals, depends }) => {
+	depends('asset:view');
+	const rbac = new Rbac(locals.me);
+	rbac.assetView();
 	const { id } = params;
 	const { authToken, currentOrgId } = locals;
-	const modelService = new AssetService(authToken as string, currentOrgId);
+	const modelService = new AssetService(authToken as string, currentOrgId as number);
 	const model = (await modelService.findById(id, {
 		include: [
 			'accounts',
@@ -48,6 +52,12 @@ export const load: LayoutServerLoad = async ({ params, locals }) => {
 		model,
 		asset,
 		editForm,
-		credentialsForm
+		credentialsForm,
+		canUpdate: rbac.canAssetUpdate(),
+		canUpdateAdminAccount: rbac.canAssetUpdateAdminAccount(),
+		canDelete: rbac.canAssetDelete(),
+		canAddAccessGrant: rbac.canAssetAddAccessGrant(),
+		canRemoveAccessGrant: rbac.canAssetRemoveAccessGrant(),
+		canTestConnection: rbac.canAssetUpdateAdminAccount()
 	};
 };

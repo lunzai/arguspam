@@ -9,3 +9,8 @@ export interface Asset extends BaseModel {
 	port: number;
 	dbms: 'mysql' | 'postgresql' | 'sqlserver' | 'oracle' | 'mongodb' | 'redis' | 'mariadb';
 }
+
+export interface AssetCreateRequest extends Asset {
+	username: string;
+	password: string;
+}

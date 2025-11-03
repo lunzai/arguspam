@@ -2,18 +2,23 @@
 	import { Separator } from '$ui/separator';
 	import SidebarNav from '$components/page-sidebar/sidebar.svelte';
 
-	let { children } = $props();
+	let { children, data } = $props();
 
-	const sidebarNavItems = [
-		{
+	const { canUpdateProfile, canChangePassword, canEnrollTwoFactor } = data;
+
+	let sidebarNavItems = [];
+	if (canUpdateProfile) {
+		sidebarNavItems.push({
 			title: 'Account',
 			href: '/settings/account'
-		},
-		{
+		});
+	}
+	if (canChangePassword || canEnrollTwoFactor) {
+		sidebarNavItems.push({
 			title: 'Security',
 			href: '/settings/security'
-		}
-	];
+		});
+	}
 </script>
 
 <div class="flex flex-col space-y-4">

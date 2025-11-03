@@ -6,9 +6,11 @@ import { UserService } from '$services/user';
 import { setFormErrors } from '$lib/utils/form';
 import type { PageServerLoad } from './$types';
 import { TwoFactorCodeSchema } from '$lib/validations/auth';
+import { Rbac } from '$lib/rbac';
 
 export const load: PageServerLoad = async ({ locals, depends }) => {
 	depends('settings:security');
+	new Rbac(locals.me).userView();
 	let qrCode = null;
 	const { authToken, currentOrgId, me } = locals;
 
@@ -31,7 +33,8 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
 
 export const actions: Actions = {
 	changePassword: async ({ request, locals }) => {
-		const { authToken } = locals;
+		const { authToken, me } = locals;
+		new Rbac(me).userChangePassword();
 		const changePasswordForm = await superValidate(request, zod4(ChangePasswordSchema));
 		if (!changePasswordForm.valid) {
 			return fail(422, { changePasswordForm });
@@ -58,6 +61,7 @@ export const actions: Actions = {
 	},
 	updateTwoFactor: async ({ request, locals }) => {
 		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).userEnrollTwoFactorAuthentication();
 		const formData = await request.formData();
 		const enabled = formData.get('enabled') === '1';
 		try {
@@ -72,7 +76,7 @@ export const actions: Actions = {
 	},
 	removeTwoFactor: async ({ request, locals }) => {
 		const { authToken, currentOrgId, me } = locals;
-
+		new Rbac(me).userEnrollTwoFactorAuthentication();
 		try {
 			const userService = new UserService(authToken as string, currentOrgId as number);
 			await userService.disableTwoFactor(Number(me.id));
@@ -85,6 +89,7 @@ export const actions: Actions = {
 	},
 	verifyTwoFactor: async ({ request, locals }) => {
 		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).userEnrollTwoFactorAuthentication();
 		const form = await superValidate(request, zod4(TwoFactorCodeSchema));
 		if (!form.valid) {
 			return fail(422, { form });

@@ -1,9 +1,9 @@
 import { writable } from 'svelte/store';
 import type { Org } from '$models/org';
-import type { GroupedPermission } from '$lib/resources/permission';
 import type { UserGroup } from '$lib/models/user-group';
 import type { Role } from '$models/role';
 import type { Me, User } from '$models/user';
+import type { Permission } from '$models/permission';
 
 export interface LayoutState {
 	user: User;
@@ -11,7 +11,7 @@ export interface LayoutState {
 	currentOrgId: number | null;
 	currentOrg: Org | null;
 	orgs: Org[];
-	permissions: GroupedPermission;
+	permissions: Permission[];
 	roles: Role[];
 	groups: UserGroup[];
 	scheduledSessionsCount: number;
@@ -55,8 +55,7 @@ function createLayoutStore() {
 				currentOrg: state.orgs.find((org) => org.id === currentOrgId) || null
 			})),
 		setOrgs: (orgs: Org[]) => update((state) => ({ ...state, orgs })),
-		setPermissions: (permissions: GroupedPermission) =>
-			update((state) => ({ ...state, permissions })),
+		setPermissions: (permissions: Permission[]) => update((state) => ({ ...state, permissions })),
 		setRoles: (roles: Role[]) => update((state) => ({ ...state, roles })),
 		setGroups: (groups: UserGroup[]) => update((state) => ({ ...state, groups })),
 		setScheduledSessionsCount: (scheduledSessionsCount: number) =>

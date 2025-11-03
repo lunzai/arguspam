@@ -6,9 +6,12 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
 import type { Org } from '$models/org';
 import { OrgSchema } from '$validations/org';
+import { Rbac } from '$lib/rbac';
 
 export const load: PageServerLoad = async ({ locals, depends }) => {
 	depends('organizations:list');
+	const rbac = new Rbac(locals.me);
+	rbac.orgView();
 	const model = {
 		name: '',
 		description: '',
@@ -18,12 +21,14 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
 	return {
 		form,
 		model,
-		title: 'Organizations'
+		title: 'Organizations',
+		canCreate: rbac.canOrgCreate()
 	};
 };
 
 export const actions = {
 	save: async ({ request, locals, params }) => {
+		new Rbac(locals.me).orgCreate();
 		const { authToken, currentOrgId } = locals;
 		const form = await superValidate(request, zod4(OrgSchema));
 		if (!form.valid) {
@@ -31,7 +36,7 @@ export const actions = {
 		}
 		const data = form.data;
 		try {
-			const orgService = new OrgService(authToken as string, currentOrgId);
+			const orgService = new OrgService(authToken as string, currentOrgId as number);
 			const response = await orgService.create(data);
 			return {
 				success: true,

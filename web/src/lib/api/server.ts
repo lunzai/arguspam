@@ -3,6 +3,7 @@ import { PUBLIC_API_REQUEST_TIMEOUT, PUBLIC_ORG_ID_HEADER } from '$env/static/pu
 import { dev } from '$app/environment';
 import axios, { type AxiosInstance } from 'axios';
 import https from 'https';
+import { error } from '@sveltejs/kit';
 
 export class ServerApi {
 	private baseUrl: string;
@@ -93,7 +94,7 @@ export class ServerApi {
 		if (this.token) {
 			requestHeaders['Authorization'] = `Bearer ${this.token}`;
 		}
-		console.log(`API ${method}`, endpoint, `orgId: ${this.currentOrgId}`);
+		// console.log(`API ${method}`, endpoint, `orgId: ${this.currentOrgId}`);
 		try {
 			const response = await this.axiosInstance({
 				url: endpoint,
@@ -105,9 +106,21 @@ export class ServerApi {
 				return {} as T;
 			}
 			return response.data;
-		} catch (error) {
-			console.log('API Error', error);
-			throw error;
+		} catch (axiosError: any) {
+			const status = axiosError.response?.status;
+			if (status === 403) {
+				throw error(403, 'You are not authorized to view this resource');
+			}
+			if (status === 404) {
+				throw error(404, 'The resource you are looking for does not exist');
+			}
+			if (status === 500) {
+				throw error(500, 'An error occurred while processing your request');
+			}
+			throw error(
+				status || 500,
+				axiosError.message || 'An error occurred while processing your request'
+			);
 		}
 	}
 }

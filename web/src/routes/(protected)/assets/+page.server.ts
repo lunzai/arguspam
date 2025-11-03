@@ -2,25 +2,20 @@ import type { PageServerLoad, Actions } from './$types';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
-import { fail } from '@sveltejs/kit';
+import { error, fail } from '@sveltejs/kit';
 import { AssetSchema } from '$lib/validations/asset';
 import { AssetService } from '$lib/services/asset';
-import type { Asset } from '$lib/models/asset';
+import type { AssetCreateRequest } from '$lib/models/asset';
+import { Rbac } from '$lib/rbac';
 
 export const load: PageServerLoad = async ({ locals, depends }) => {
 	depends('assets:list');
+	new Rbac(locals.me).assetView();
 	const { currentOrgId } = locals;
-	const model = {
+	const model: Partial<AssetCreateRequest> = {
 		org_id: Number(currentOrgId),
-		name: '',
-		description: '',
-		status: 'active',
-		host: '',
-		port: null,
-		dbms: '',
-		username: '',
-		password: ''
-	} as Partial<Asset>;
+		status: 'active'
+	};
 	const form = await superValidate(zod4(AssetSchema));
 	return {
 		title: 'Assets',
@@ -31,14 +26,15 @@ export const load: PageServerLoad = async ({ locals, depends }) => {
 
 export const actions = {
 	save: async ({ request, locals, params }) => {
+		new Rbac(locals.me).assetCreate();
 		const { authToken, currentOrgId } = locals;
-		const form = await superValidate(request, zod4(AssetSchema));
+		const form = await superValidate(request, zod4(AssetSchema), { errors: false });
 		if (!form.valid) {
 			return fail(422, { form });
 		}
 		const data = form.data;
 		try {
-			const assetService = new AssetService(authToken as string, currentOrgId);
+			const assetService = new AssetService(authToken as string, currentOrgId as number);
 			const response = await assetService.create(data);
 			return {
 				success: true,

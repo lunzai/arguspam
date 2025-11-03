@@ -33,6 +33,8 @@
 	const userRoles = $derived(modelResource.data.relationships?.roles as RoleResource[]);
 	let editUserDialogIsOpen = $state(false);
 	let updateRolesDialogIsOpen = $state(false);
+	const canUserUpdateAny = $derived(data.canUserUpdateAny);
+	const canUserDeleteAny = $derived(data.canUserDeleteAny);
 </script>
 
 <Card.Root class="w-full">
@@ -40,40 +42,38 @@
 		<Card.Title class="text-lg">Profile</Card.Title>
 		<Card.Description>View user profile.</Card.Description>
 		<Card.Action>
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger>
-					<Button variant="outline">
-						<MoreHorizontal class="h-4 w-4" />
-					</Button>
-				</DropdownMenu.Trigger>
-				<DropdownMenu.Content align="end">
-					<DropdownMenu.Group>
-						<!-- <DropdownMenu.Item>
-							<Mail class="h-4 w-4" />
-							Change Email
-						</DropdownMenu.Item> -->
-						<DropdownMenu.Item onclick={() => (editUserDialogIsOpen = true)}>
-							<UserRoundPen class="h-4 w-4" />
-							Edit User
-						</DropdownMenu.Item>
-						<DropdownMenu.Item onclick={() => (updateRolesDialogIsOpen = true)}>
-							<ContactRound class="h-4 w-4" />
-							Update Roles
-						</DropdownMenu.Item>
-						<!-- <DropdownMenu.Item>
-							<UserLock class="h-4 w-4" />
-							Deactivate User
-						</DropdownMenu.Item> -->
-					</DropdownMenu.Group>
-					<DropdownMenu.Separator />
-					<DropdownMenu.Group>
-						<DropdownMenu.Item>
-							<UserRoundX class="text-destructive h-4 w-4" />
-							<span class="text-destructive">Delete User</span>
-						</DropdownMenu.Item>
-					</DropdownMenu.Group>
-				</DropdownMenu.Content>
-			</DropdownMenu.Root>
+			{#if canUserUpdateAny || canUserDeleteAny}
+				<DropdownMenu.Root>
+					<DropdownMenu.Trigger>
+						<Button variant="outline">
+							<MoreHorizontal class="h-4 w-4" />
+						</Button>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Content align="end">
+						{#if canUserUpdateAny}
+							<DropdownMenu.Group>
+								<DropdownMenu.Item onclick={() => (editUserDialogIsOpen = true)}>
+									<UserRoundPen class="h-4 w-4" />
+									Edit User
+								</DropdownMenu.Item>
+								<DropdownMenu.Item onclick={() => (updateRolesDialogIsOpen = true)}>
+									<ContactRound class="h-4 w-4" />
+									Update Roles
+								</DropdownMenu.Item>
+							</DropdownMenu.Group>
+						{/if}
+						{#if canUserDeleteAny}
+							<DropdownMenu.Separator />
+							<DropdownMenu.Group>
+								<DropdownMenu.Item>
+									<UserRoundX class="text-destructive h-4 w-4" />
+									<span class="text-destructive">Delete User</span>
+								</DropdownMenu.Item>
+							</DropdownMenu.Group>
+						{/if}
+					</DropdownMenu.Content>
+				</DropdownMenu.Root>
+			{/if}
 		</Card.Action>
 	</Card.Header>
 	<Card.Content>

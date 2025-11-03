@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { cubicInOut } from 'svelte/easing';
 	import { crossfade } from 'svelte/transition';
-	import { page } from '$app/stores';
+	import { page } from '$app/state';
 	import { Button } from '$ui/button';
 	import { cn } from '$lib/utils';
 
@@ -16,7 +16,7 @@
 
 <nav class={cn('flex space-x-2 lg:flex-col lg:space-y-1 lg:space-x-0')}>
 	{#each items as item}
-		{@const isActive = $page.url.pathname === item.href}
+		{@const isActive = page.url.pathname === item.href}
 		<Button
 			href={item.href}
 			variant="ghost"

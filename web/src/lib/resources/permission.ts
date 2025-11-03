@@ -10,8 +10,3 @@ export interface ApiPermissionCollection extends ApiCollectionResponse<Permissio
 export interface ApiPermissionResource extends ApiResourceResponse<Permission> {}
 export interface PermissionResource extends Resource<Permission> {}
 export interface PermissionCollection extends Collection<Permission> {}
-
-export type GroupedPermission = Array<{
-	group: string;
-	permissions: Partial<Permission>[];
-}>;

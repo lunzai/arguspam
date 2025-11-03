@@ -20,7 +20,7 @@ export const RequesterSchema = z
 		duration: z.number().nullish(),
 		reason: z.string().trim().min(1, 'Reason is required'),
 		intended_query: z.string().trim().min(1, 'Intended query is required'),
-		scope: z.enum(['ReadOnly', 'ReadWrite', 'DDL', 'DML', 'All']),
+		scope: z.enum(['ReadOnly', 'ReadWrite', 'DDL', 'All']),
 		is_access_sensitive_data: z.boolean(),
 		sensitive_data_note: z.string().trim().nullish()
 	})
@@ -76,7 +76,7 @@ export const ApproveSchema = z
 			})
 			.min(new Date(), { error: 'End datetime must be in the future' }),
 		duration: z.number().nullish(),
-		scope: z.enum(['ReadOnly', 'ReadWrite', 'DDL', 'DML', 'All']),
+		scope: z.enum(['ReadOnly', 'ReadWrite', 'DDL', 'All']),
 		approver_risk_rating: z.enum(['low', 'medium', 'high', 'critical']),
 		approver_note: z.string().trim().min(2, 'Approver note is required')
 	})

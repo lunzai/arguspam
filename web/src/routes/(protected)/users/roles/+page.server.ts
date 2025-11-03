@@ -6,8 +6,10 @@ import { setFormErrors } from '$utils/form';
 import type { Role } from '$models/role';
 import { RoleSchema } from '$validations/role';
 import { RoleService } from '$services/role';
+import { Rbac } from '$lib/rbac';
 
-export const load: PageServerLoad = async ({ depends }) => {
+export const load: PageServerLoad = async ({ depends, locals }) => {
+	new Rbac(locals.me).roleView();
 	depends('roles:list');
 	const model = {
 		name: '',
@@ -24,14 +26,15 @@ export const load: PageServerLoad = async ({ depends }) => {
 
 export const actions = {
 	save: async ({ request, locals }) => {
-		const { authToken, currentOrgId } = locals;
+		const { authToken, currentOrgId, me } = locals;
+		new Rbac(me).roleCreate();
 		const form = await superValidate(request, zod4(RoleSchema));
 		if (!form.valid) {
 			return fail(422, { form });
 		}
 		const data = form.data;
 		try {
-			const roleService = new RoleService(authToken as string, currentOrgId);
+			const roleService = new RoleService(authToken as string, currentOrgId as number);
 			const response = await roleService.create(data);
 			return {
 				success: true,

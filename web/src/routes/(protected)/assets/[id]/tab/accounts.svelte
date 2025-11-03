@@ -1,32 +1,19 @@
 <script lang="ts">
 	import * as Card from '$ui/card';
 	import { Button } from '$ui/button';
-	import {
-		Pencil,
-		Trash2,
-		Plus,
-		CheckCircle,
-		Link2,
-		LoaderCircle,
-		ClockFading,
-		Crown,
-		Unplug
-	} from '@lucide/svelte';
+	import { Link2, LoaderCircle, ClockFading, Crown, Unplug } from '@lucide/svelte';
 	import type { AssetAccountCollection } from '$resources/asset-account';
 	import type { Asset } from '$models/asset';
-	import { Badge } from '$ui/badge';
 	import { relativeDateTime } from '$utils/date';
-	import { StatusBadge } from '$components/badge';
 	import * as Avatar from '$ui/avatar';
-	import { generateAvatar, getInitials } from '$utils/avatar';
 	import * as AlertDialog from '$ui/alert-dialog';
 
 	interface Props {
-		asset: Asset;
 		list: AssetAccountCollection;
+		canTestConnection: boolean;
 	}
 
-	let { asset, list }: Props = $props();
+	let { list, canTestConnection }: Props = $props();
 	let testConnectionDialogIsOpen = $state(false);
 	let testConnectionIsLoading = $state(false);
 	let testConnectionIsSuccess = $state(false);
@@ -105,7 +92,7 @@
 						</span>
 					</div>
 					<div>
-						{#if row.type == 'admin'}
+						{#if row.type == 'admin' && canTestConnection}
 							<Button
 								variant="outline"
 								class="transition-all duration-200 hover:cursor-pointer {testConnectionIsSuccess

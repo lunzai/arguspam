@@ -22,6 +22,8 @@
 		allUsers: UserCollection;
 		role: string;
 		rolePural: string;
+		canAddAccessGrant: boolean;
+		canRemoveAccessGrant: boolean;
 	}
 
 	interface RowItem {
@@ -38,7 +40,9 @@
 		allUserGroups = $bindable(),
 		allUsers = $bindable(),
 		role = '',
-		rolePural = ''
+		rolePural = '',
+		canAddAccessGrant = false,
+		canRemoveAccessGrant = false
 	}: Props = $props();
 
 	let addDialogIsOpen = $state(false);
@@ -154,16 +158,18 @@
 		<Card.Title class="text-lg">{capitalizeWords(rolePural)}</Card.Title>
 		<Card.Description>Asset's {rolePural}.</Card.Description>
 		<Card.Action>
-			<Button
-				variant="outline"
-				class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-				onclick={() => {
-					addDialogIsOpen = true;
-				}}
-			>
-				<Plus class="h-4 w-4" />
-				Add {capitalizeWords(role)}
-			</Button>
+			{#if canAddAccessGrant}
+				<Button
+					variant="outline"
+					class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
+					onclick={() => {
+						addDialogIsOpen = true;
+					}}
+				>
+					<Plus class="h-4 w-4" />
+					Add {capitalizeWords(role)}
+				</Button>
+			{/if}
 		</Card.Action>
 	</Card.Header>
 	<Card.Content>
@@ -196,15 +202,17 @@
 						>
 							<SquareArrowOutUpRight class="h-4 w-4" />
 						</Button>
-						<Button
-							variant="outline"
-							class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
-							onclick={() => {
-								handleDelete(item);
-							}}
-						>
-							<Trash2 class="h-4 w-4" />
-						</Button>
+						{#if canRemoveAccessGrant}
+							<Button
+								variant="outline"
+								class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
+								onclick={() => {
+									handleDelete(item);
+								}}
+							>
+								<Trash2 class="h-4 w-4" />
+							</Button>
+						{/if}
 					</div>
 				</div>
 			{:else}

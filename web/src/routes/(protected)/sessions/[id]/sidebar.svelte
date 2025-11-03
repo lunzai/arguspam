@@ -17,7 +17,7 @@
 	} from '@lucide/svelte';
 	import type { Session } from '$models/session';
 	import type { SessionPermission } from '$resources/session';
-	import type { User } from '$models/user';
+	import type { Me, User } from '$models/user';
 	import type { Asset } from '$models/asset';
 	import type { Request } from '$models/request';
 	import { slide } from 'svelte/transition';
@@ -34,27 +34,21 @@
 		asset: Asset;
 		request: Request;
 		approver: User;
-		user: User;
+		me: Me;
 	}
 
-	let { model, permissions, requester, asset, request, approver, user }: Props = $props();
+	let { model, permissions, requester, asset, request, approver, me }: Props = $props();
 
 	const canStart = $derived(permissions.canStart && model.status == 'scheduled');
 	const canCancel = $derived(permissions.canCancel && model.status == 'scheduled');
 	const canEnd = $derived(permissions.canEnd && model.status == 'started');
 	const canTerminate = $derived(
-		permissions.canTerminate && model.status == 'started' && user.id != model.requester_id
+		permissions.canTerminate && model.status == 'started' && me.id != model.requester_id
 	);
 	const canRetrieveSecret = $derived(
-		permissions.canRetrieveSecret && model.status == 'started' && user.id == model.requester_id
+		permissions.canRetrieveSecret && model.status == 'started' && me.id == model.requester_id
 	);
 	const showActions = $derived(canStart || canCancel || canEnd || canTerminate);
-
-	// const canStart = true;
-	// const canCancel = true;
-	// const canEnd = true;
-	// const canTerminate = true;
-	// const showActions = $derived(canStart || canCancel || canEnd || canTerminate);
 
 	let startDialogIsOpen = $state(false);
 	let startDialogIsLoading = $state(false);

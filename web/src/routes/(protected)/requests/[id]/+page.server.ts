@@ -5,12 +5,15 @@ import { fail, superValidate } from 'sveltekit-superforms/client';
 import { ApproveSchema, RejectSchema } from '$lib/validations/request';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
+import { Rbac } from '$lib/rbac';
 
 export const load = async ({ params, locals, depends }) => {
 	depends('requests:view');
+	const rbac = new Rbac(locals.me);
+	rbac.requestView();
 	const { id } = params;
 	const { authToken, currentOrgId } = locals;
-	const modelService = new RequestService(authToken as string, currentOrgId);
+	const modelService = new RequestService(authToken as string, currentOrgId as number);
 	const model = (await modelService.findById(id, {
 		include: ['account', 'accessGrants', 'asset', 'requester', 'approver', 'rejecter', 'session']
 	})) as ApiRequestResource;
@@ -33,12 +36,14 @@ export const load = async ({ params, locals, depends }) => {
 		rejectForm,
 		model,
 		permissions,
+		canViewSession: rbac.canSessionView(),
 		title: `Request - #${model.data.attributes.id} - ${model.data.attributes.id}`
 	};
 };
 
 export const actions = {
 	approve: async ({ request, locals, params }) => {
+		new Rbac(locals.me).requestApprove();
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
 		const form = await superValidate(request, zod4(ApproveSchema));
@@ -47,7 +52,7 @@ export const actions = {
 		}
 		const data = form.data;
 		try {
-			const requestService = new RequestService(authToken as string, currentOrgId);
+			const requestService = new RequestService(authToken as string, currentOrgId as number);
 			const response = await requestService.approve(Number(id), data);
 			return {
 				success: true,
@@ -64,6 +69,7 @@ export const actions = {
 		}
 	},
 	reject: async ({ request, locals, params }) => {
+		new Rbac(locals.me).requestReject();
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
 		const form = await superValidate(request, zod4(RejectSchema));
@@ -72,7 +78,7 @@ export const actions = {
 		}
 		const data = form.data;
 		try {
-			const requestService = new RequestService(authToken as string, currentOrgId);
+			const requestService = new RequestService(authToken as string, currentOrgId as number);
 			const response = await requestService.reject(Number(id), data);
 			return {
 				success: true,
@@ -89,10 +95,11 @@ export const actions = {
 		}
 	},
 	cancel: async ({ locals, params }) => {
+		new Rbac(locals.me).requestCancel();
 		try {
 			const { id } = params;
 			const { authToken, currentOrgId } = locals;
-			const requestService = new RequestService(authToken as string, currentOrgId);
+			const requestService = new RequestService(authToken as string, currentOrgId as number);
 			await requestService.cancel(Number(id));
 		} catch (error) {
 			return fail(400, {

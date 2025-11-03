@@ -1,4 +1,4 @@
-import { redirect, type Handle } from '@sveltejs/kit';
+import { redirect, type Handle, type HandleFetch, type HandleServerError } from '@sveltejs/kit';
 import {
 	clearAuthCookie,
 	clearCurrentOrgId,
@@ -42,3 +42,12 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 	return await resolve(event);
 };
+
+// export const handleError: HandleServerError = async ({  error, event, status, message }) => {
+// 	// Extract status from error object if status parameter is not correct
+// 	const errorStatus = (error as any)?.status || status;
+// 	return {
+// 		message: 'An error occurred while processing your request',
+// 		status: errorStatus
+// 	};
+// };

@@ -8,10 +8,13 @@ import { RequesterSchema } from '$lib/validations/request';
 import type { Actions } from '@sveltejs/kit';
 import { fail } from '@sveltejs/kit';
 import { setFormErrors } from '$lib/utils/form';
+import { Rbac } from '$lib/rbac';
 
-export const load = async ({ params, locals }) => {
+export const load = async ({ params, locals, depends }) => {
+	depends('requests:create');
+	new Rbac(locals.me).assetViewRequestable();
 	const { authToken, currentOrgId } = locals;
-	const userService = new UserService(authToken as string, currentOrgId);
+	const userService = new UserService(authToken as string, currentOrgId as number);
 	const assetCollection = (await userService.getRequesterAssets()) as ApiAssetCollection;
 	const form = await superValidate(zod4(RequesterSchema));
 	return {
@@ -23,6 +26,7 @@ export const load = async ({ params, locals }) => {
 
 export const actions = {
 	default: async ({ request, locals, params }) => {
+		new Rbac(locals.me).requestCreate();
 		const { id } = params;
 		const { authToken, currentOrgId } = locals;
 		const form = await superValidate(request, zod4(RequesterSchema));
@@ -31,7 +35,7 @@ export const actions = {
 		}
 		const data = form.data;
 		try {
-			const requestService = new RequestService(authToken as string, currentOrgId);
+			const requestService = new RequestService(authToken as string, currentOrgId as number);
 			const response = await requestService.create(data);
 			return {
 				success: true,

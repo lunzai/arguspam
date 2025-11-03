@@ -22,10 +22,7 @@ export class ServerApi {
 			timeout: Number(PUBLIC_API_REQUEST_TIMEOUT),
 			httpsAgent: new https.Agent({
 				// Only disable SSL verification in development
-				// TODO: REMOVE THIS
-				// rejectUnauthorized: !dev
-				// CORS SSL CSRF
-				rejectUnauthorized: false
+				rejectUnauthorized: !dev
 			})
 		});
 	}
@@ -94,7 +91,7 @@ export class ServerApi {
 		if (this.token) {
 			requestHeaders['Authorization'] = `Bearer ${this.token}`;
 		}
-		// console.log(`API ${method}`, endpoint, `orgId: ${this.currentOrgId}`);
+		console.log(`API ${method}`, endpoint, `orgId: ${this.currentOrgId}`);
 		try {
 			const response = await this.axiosInstance({
 				url: endpoint,
@@ -107,6 +104,7 @@ export class ServerApi {
 			}
 			return response.data;
 		} catch (axiosError: any) {
+			console.log('api server error', axiosError);
 			const status = axiosError.response?.status;
 			if (status === 403) {
 				throw error(403, 'You are not authorized to view this resource');

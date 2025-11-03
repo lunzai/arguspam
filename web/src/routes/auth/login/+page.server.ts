@@ -7,7 +7,7 @@ import { LoginSchema } from '$validations/auth';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { getAuthToken, setAuthToken, setCurrentOrgId, setTempKey } from '$utils/cookie';
 import { redirect, isRedirect } from '@sveltejs/kit';
-import { ADMIN_EMAIL, ADMIN_PASSWORD } from '$env/static/private';
+import type { User } from '$models/user';
 
 export const load: PageServerLoad = async ({ cookies }) => {
 	const token = getAuthToken(cookies);
@@ -15,13 +15,7 @@ export const load: PageServerLoad = async ({ cookies }) => {
 		return redirect(302, '/');
 	}
 	return {
-		form: await superValidate(
-			{
-				email: ADMIN_EMAIL,
-				password: ADMIN_PASSWORD
-			},
-			zod4(LoginSchema)
-		)
+		form: await superValidate(zod4(LoginSchema))
 	};
 };
 
@@ -44,10 +38,10 @@ export const actions: Actions = {
 				temp_key_expires_at
 			}: {
 				user: User;
-				requires_2fa: boolean;
+				requires_2fa: boolean | null;
 				token: string | null;
 				temp_key: string | null;
-				temp_key_expires_at: Date | null;
+				temp_key_expires_at: string | null;
 			} = loginResponse.data;
 			if (requires_2fa) {
 				if (!temp_key || !temp_key_expires_at) {
@@ -56,15 +50,17 @@ export const actions: Actions = {
 				setTempKey(cookies, temp_key, temp_key_expires_at);
 				return redirect(302, '/auth/2fa');
 			} else {
-				setAuthToken(cookies, loginResponse.data.token);
-				const userService = new UserService(loginResponse.data.token);
+                if (!token) {
+                    return fail(401, { form, error: 'Invalid credentials' });
+                }
+				setAuthToken(cookies, token);
+				const userService = new UserService(token);
 				const orgCollection = await userService.getOrgs();
 				if (orgCollection.data.length > 0) {
 					setCurrentOrgId(cookies, orgCollection.data[0].attributes.id);
 				}
 				return message(form, 'Login successful');
 			}
-			return fail(401, { form, error: 'Debugging' });
 		} catch (error) {
 			if (isRedirect(error)) {
 				throw error;

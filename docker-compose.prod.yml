@@ -1,0 +1,121 @@
+# Production overrides
+# Usage: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+  mysql:
+    ports:
+      - "${MYSQL_HOST_PORT:-3307}:3306"  # Expose on port 3307 to avoid conflict
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    restart: ${MYSQL_RESTART_POLICY:-always}
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    # No resource limits - MySQL can use available server resources
+    logging:
+      driver: ${MYSQL_LOG_DRIVER:-json-file}
+      options:
+        max-size: ${MYSQL_LOG_MAX_SIZE:-10m}
+        max-file: "${MYSQL_LOG_MAX_FILE:-3}"
+
+  redis:
+    restart: ${REDIS_RESTART_POLICY:-always}
+    command: redis-server --appendonly yes --maxmemory ${REDIS_MAXMEMORY:-512mb} --maxmemory-policy ${REDIS_MAXMEMORY_POLICY:-allkeys-lru}
+    deploy:
+      resources:
+        limits:
+          cpus: '${REDIS_CPU_LIMIT:-1}'
+          memory: ${REDIS_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: '${REDIS_CPU_RESERVATION:-0.25}'
+          memory: ${REDIS_MEMORY_RESERVATION:-128M}
+    logging:
+      driver: ${REDIS_LOG_DRIVER:-json-file}
+      options:
+        max-size: ${REDIS_LOG_MAX_SIZE:-10m}
+        max-file: "${REDIS_LOG_MAX_FILE:-3}"
+
+  api:
+    restart: ${API_RESTART_POLICY:-always}
+    # No resource limits - API can use available server resources
+    logging:
+      driver: ${API_LOG_DRIVER:-json-file}
+      options:
+        max-size: ${API_LOG_MAX_SIZE:-50m}
+        max-file: "${API_LOG_MAX_FILE:-5}"
+    labels:
+      # Traefik labels (if using Traefik as reverse proxy)
+      - "traefik.enable=true"
+      - "traefik.http.routers.arguspam-api.rule=Host(`api.yourdomain.com`)"
+      - "traefik.http.routers.arguspam-api.entrypoints=websecure"
+      - "traefik.http.routers.arguspam-api.tls=true"
+      - "traefik.http.routers.arguspam-api.tls.certresolver=letsencrypt"
+      - "traefik.http.services.arguspam-api.loadbalancer.server.port=80"
+
+      # Nginx Proxy Manager (if using NPM, these labels are just for reference)
+      - "npm.enable=true"
+      - "npm.host=api.yourdomain.com"
+      - "npm.port=80"
+
+  horizon:
+    restart: ${HORIZON_RESTART_POLICY:-always}
+    deploy:
+      resources:
+        limits:
+          cpus: '${HORIZON_CPU_LIMIT:-1}'
+          memory: ${HORIZON_MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: '${HORIZON_CPU_RESERVATION:-0.25}'
+          memory: ${HORIZON_MEMORY_RESERVATION:-128M}
+    logging:
+      driver: ${HORIZON_LOG_DRIVER:-json-file}
+      options:
+        max-size: ${HORIZON_LOG_MAX_SIZE:-50m}
+        max-file: "${HORIZON_LOG_MAX_FILE:-5}"
+
+  web:
+    ports:
+      - "${WEB_HOST_PORT:-3000}:3000"  # Expose web interface
+    restart: ${WEB_RESTART_POLICY:-always}
+    # No resource limits - Web can use available server resources
+    logging:
+      driver: ${WEB_LOG_DRIVER:-json-file}
+      options:
+        max-size: ${WEB_LOG_MAX_SIZE:-50m}
+        max-file: "${WEB_LOG_MAX_FILE:-5}"
+    labels:
+      # Traefik labels (if using Traefik as reverse proxy)
+      - "traefik.enable=true"
+      - "traefik.http.routers.arguspam-web.rule=Host(`yourdomain.com`) || Host(`www.yourdomain.com`)"
+      - "traefik.http.routers.arguspam-web.entrypoints=websecure"
+      - "traefik.http.routers.arguspam-web.tls=true"
+      - "traefik.http.routers.arguspam-web.tls.certresolver=letsencrypt"
+      - "traefik.http.services.arguspam-web.loadbalancer.server.port=3000"
+
+      # Redirect www to non-www (optional)
+      - "traefik.http.middlewares.redirect-www.redirectregex.regex=^https://www\\.(.+)"
+      - "traefik.http.middlewares.redirect-www.redirectregex.replacement=https://$${1}"
+      - "traefik.http.middlewares.redirect-www.redirectregex.permanent=true"
+
+      # Nginx Proxy Manager (if using NPM, these labels are just for reference)
+      - "npm.enable=true"
+      - "npm.host=yourdomain.com,www.yourdomain.com"
+      - "npm.port=3000"
+
+networks:
+  arguspam-network:
+    # Connect to external reverse proxy network if needed
+    # external: true
+    # name: traefik-network
+    driver: ${NETWORK_DRIVER:-bridge}
+
+volumes:
+  mysql-data:
+    driver: ${VOLUME_DRIVER:-local}
+  redis-data:
+    driver: ${VOLUME_DRIVER:-local}
+  api-storage:
+    driver: ${VOLUME_DRIVER:-local}
+  api-bootstrap-cache:
+    driver: ${VOLUME_DRIVER:-local}

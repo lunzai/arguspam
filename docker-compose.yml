@@ -1,0 +1,282 @@
+name: ArgusPAM
+
+services:
+  # MySQL Database
+  mysql:
+    image: ${MYSQL_IMAGE:-mysql:8.0}
+    container_name: ${MYSQL_CONTAINER_NAME:-arguspam-mysql}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - arguspam-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD}"]
+      interval: ${MYSQL_HEALTHCHECK_INTERVAL:-10s}
+      timeout: ${MYSQL_HEALTHCHECK_TIMEOUT:-5s}
+      retries: ${MYSQL_HEALTHCHECK_RETRIES:-5}
+      start_period: ${MYSQL_HEALTHCHECK_START_PERIOD:-30s}
+
+  # Redis Cache & Queue
+  redis:
+    image: ${REDIS_IMAGE:-redis:7-alpine}
+    container_name: ${REDIS_CONTAINER_NAME:-arguspam-redis}
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - arguspam-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: ${REDIS_HEALTHCHECK_INTERVAL:-10s}
+      timeout: ${REDIS_HEALTHCHECK_TIMEOUT:-3s}
+      retries: ${REDIS_HEALTHCHECK_RETRIES:-5}
+      start_period: ${REDIS_HEALTHCHECK_START_PERIOD:-10s}
+
+  # Laravel API
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+      target: ${API_BUILD_TARGET:-production}
+      args:
+        PHP_VERSION: ${DOCKER_PHP_VERSION:-8.3-fpm-alpine}
+        COMPOSER_VERSION: ${DOCKER_COMPOSER_VERSION:-2}
+        WORKDIR: ${DOCKER_API_WORKDIR:-/var/www/html}
+        API_PORT: ${DOCKER_API_PORT:-80}
+    container_name: ${API_CONTAINER_NAME:-arguspam-api}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      # App
+      APP_NAME: ${APP_NAME:-ArgusPAM}
+      APP_ENV: ${APP_ENV:-production}
+      APP_KEY: ${APP_KEY}
+      APP_DEBUG: ${APP_DEBUG:-false}
+      APP_URL: ${APP_URL}
+      APP_WEB_URL: ${APP_WEB_URL}
+
+      # Database
+      DB_CONNECTION: ${DB_CONNECTION:-mysql}
+      DB_HOST: ${DB_HOST:-mysql}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      # Redis
+      REDIS_CLIENT: ${REDIS_CLIENT:-predis}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PREFIX: ${REDIS_PREFIX:-argus_db_}
+      REDIS_DEFAULT_DB: ${REDIS_DEFAULT_DB:-0}
+      REDIS_CACHE_DB: ${REDIS_CACHE_DB:-1}
+      REDIS_QUEUE_DB: ${REDIS_QUEUE_DB:-2}
+      REDIS_SESSION_DB: ${REDIS_SESSION_DB:-3}
+
+      # Session, Cache, Queue
+      SESSION_DRIVER: ${SESSION_DRIVER:-redis}
+      CACHE_STORE: ${CACHE_STORE:-redis}
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
+      BROADCAST_CONNECTION: ${BROADCAST_CONNECTION:-redis}
+
+      # Laravel Horizon
+      TELESCOPE_ENABLED: ${TELESCOPE_ENABLED:-false}
+
+      # Mail
+      MAIL_MAILER: ${MAIL_MAILER:-smtp}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-${APP_NAME}}
+
+      # Security
+      SANCTUM_TOKEN_EXPIRATION: ${SANCTUM_TOKEN_EXPIRATION:-3600}
+      SANCTUM_RATE_LIMIT: ${SANCTUM_RATE_LIMIT:-60}
+      SANCTUM_STATEFUL_DOMAINS: ${SANCTUM_STATEFUL_DOMAINS}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+      AUTH_TEMP_KEY_EXPIRATION: ${AUTH_TEMP_KEY_EXPIRATION:-5}
+      AUTH_BYPASS_2FA: ${AUTH_BYPASS_2FA:-false}
+
+      # OpenAI
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_ORGANIZATION: ${OPENAI_ORGANIZATION}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+
+      # Notifications
+      EMAIL_DEFAULT: ${EMAIL_DEFAULT}
+      EMAIL_SUPPORT: ${EMAIL_SUPPORT}
+
+      # Optional Services
+      SLACK_BOT_USER_OAUTH_TOKEN: ${SLACK_BOT_USER_OAUTH_TOKEN:-}
+      MAXMIND_USER_ID: ${MAXMIND_USER_ID:-}
+      MAXMIND_LICENSE_KEY: ${MAXMIND_LICENSE_KEY:-}
+    volumes:
+      - api-storage:/var/www/html/storage
+      - api-bootstrap-cache:/var/www/html/bootstrap/cache
+    networks:
+      - arguspam-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/up"]
+      interval: ${API_HEALTHCHECK_INTERVAL:-30s}
+      timeout: ${API_HEALTHCHECK_TIMEOUT:-10s}
+      retries: ${API_HEALTHCHECK_RETRIES:-3}
+      start_period: ${API_HEALTHCHECK_START_PERIOD:-40s}
+
+  # Laravel Horizon (Queue Worker)
+  horizon:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+      target: ${HORIZON_BUILD_TARGET:-production}
+      args:
+        PHP_VERSION: ${DOCKER_PHP_VERSION:-8.3-fpm-alpine}
+        COMPOSER_VERSION: ${DOCKER_COMPOSER_VERSION:-2}
+        WORKDIR: ${DOCKER_API_WORKDIR:-/var/www/html}
+    container_name: ${HORIZON_CONTAINER_NAME:-arguspam-horizon}
+    command: php artisan horizon
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_started
+    environment:
+      # App
+      APP_NAME: ${APP_NAME:-ArgusPAM}
+      APP_ENV: ${APP_ENV:-production}
+      APP_KEY: ${APP_KEY}
+      APP_DEBUG: ${HORIZON_APP_DEBUG:-false}
+      APP_URL: ${APP_URL}
+
+      # Database
+      DB_CONNECTION: ${DB_CONNECTION:-mysql}
+      DB_HOST: ${DB_HOST:-mysql}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      # Redis
+      REDIS_CLIENT: ${REDIS_CLIENT:-predis}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_PREFIX: ${REDIS_PREFIX:-argus_db_}
+      REDIS_DEFAULT_DB: ${REDIS_DEFAULT_DB:-0}
+      REDIS_CACHE_DB: ${REDIS_CACHE_DB:-1}
+      REDIS_QUEUE_DB: ${REDIS_QUEUE_DB:-2}
+      REDIS_SESSION_DB: ${REDIS_SESSION_DB:-3}
+
+      # Queue
+      QUEUE_CONNECTION: ${QUEUE_CONNECTION:-redis}
+
+      # Mail (for queue jobs)
+      MAIL_MAILER: ${MAIL_MAILER:-smtp}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-${APP_NAME}}
+
+      # OpenAI (for queue jobs)
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENAI_ORGANIZATION: ${OPENAI_ORGANIZATION}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+
+      # Notifications
+      EMAIL_DEFAULT: ${EMAIL_DEFAULT}
+      EMAIL_SUPPORT: ${EMAIL_SUPPORT}
+    volumes:
+      - api-storage:/var/www/html/storage
+      - api-bootstrap-cache:/var/www/html/bootstrap/cache
+    networks:
+      - arguspam-network
+    restart: unless-stopped
+
+  # SvelteKit Frontend
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      target: ${WEB_BUILD_TARGET:-production}
+      args:
+        NODE_VERSION: ${DOCKER_NODE_VERSION:-20-alpine}
+        WORKDIR: ${DOCKER_WEB_WORKDIR:-/app}
+        WEB_PORT: ${WEB_PORT:-3000}
+        VITE_HMR_PORT: ${DOCKER_VITE_HMR_PORT:-5173}
+        NODEJS_GROUP_ID: ${DOCKER_NODEJS_GROUP_ID:-1001}
+        NODEJS_USER_ID: ${DOCKER_NODEJS_USER_ID:-1001}
+        # Build-time PUBLIC_ variables for SvelteKit
+        PUBLIC_API_URL: ${PUBLIC_API_URL}
+        PUBLIC_API_REQUEST_TIMEOUT: ${PUBLIC_API_REQUEST_TIMEOUT:-60000}
+        PUBLIC_AUTH_LOGIN_PATH: ${PUBLIC_AUTH_LOGIN_PATH:-/auth/login}
+        PUBLIC_AUTH_LOGOUT_PATH: ${PUBLIC_AUTH_LOGOUT_PATH:-/auth/logout}
+        PUBLIC_ORG_ID_HEADER: ${PUBLIC_ORG_ID_HEADER:-X-Organization-ID}
+        PUBLIC_ACCESS_REQUEST_MIN_DURATION: ${PUBLIC_ACCESS_REQUEST_MIN_DURATION:-10}
+        PUBLIC_ACCESS_REQUEST_MAX_DURATION: ${PUBLIC_ACCESS_REQUEST_MAX_DURATION:-43200}
+        # Build-time private variables for SvelteKit
+        COOKIE_EXPIRY: ${COOKIE_EXPIRY:-86400}
+        COOKIE_SAME_SITE: ${COOKIE_SAME_SITE:-lax}
+        COOKIE_TOKEN_KEY: ${COOKIE_TOKEN_KEY:-auth_token}
+        COOKIE_CURRENT_ORG_KEY: ${COOKIE_CURRENT_ORG_KEY:-current_org_id}
+        COOKIE_TEMP_KEY_KEY: ${COOKIE_TEMP_KEY_KEY:-temp_key}
+    container_name: ${WEB_CONTAINER_NAME:-arguspam-web}
+    depends_on:
+      api:
+        condition: service_healthy
+    environment:
+      # Build
+      ORIGIN: ${WEB_ORIGIN}
+
+      # Public (exposed to browser)
+      PUBLIC_API_URL: ${PUBLIC_API_URL}
+      PUBLIC_API_REQUEST_TIMEOUT: ${PUBLIC_API_REQUEST_TIMEOUT:-60000}
+      PUBLIC_AUTH_LOGIN_PATH: ${PUBLIC_AUTH_LOGIN_PATH:-/auth/login}
+      PUBLIC_AUTH_LOGOUT_PATH: ${PUBLIC_AUTH_LOGOUT_PATH:-/auth/logout}
+      PUBLIC_ORG_ID_HEADER: ${PUBLIC_ORG_ID_HEADER:-X-Organization-ID}
+      PUBLIC_ACCESS_REQUEST_MIN_DURATION: ${PUBLIC_ACCESS_REQUEST_MIN_DURATION:-10}
+      PUBLIC_ACCESS_REQUEST_MAX_DURATION: ${PUBLIC_ACCESS_REQUEST_MAX_DURATION:-43200}
+
+      # Private (server-only)
+      COOKIE_EXPIRY: ${COOKIE_EXPIRY:-86400}
+      COOKIE_SAME_SITE: ${COOKIE_SAME_SITE:-lax}
+      COOKIE_TOKEN_KEY: ${COOKIE_TOKEN_KEY:-auth_token}
+      COOKIE_CURRENT_ORG_KEY: ${COOKIE_CURRENT_ORG_KEY:-current_org_id}
+      COOKIE_TEMP_KEY_KEY: ${COOKIE_TEMP_KEY_KEY:-temp_key}
+
+      # Node
+      NODE_ENV: ${WEB_NODE_ENV:-production}
+      PORT: ${WEB_PORT:-3000}
+    networks:
+      - arguspam-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:${WEB_PORT:-3000}', (r) => process.exit(r.statusCode >= 200 && r.statusCode < 400 ? 0 : 1))"]
+      interval: ${WEB_HEALTHCHECK_INTERVAL:-30s}
+      timeout: ${WEB_HEALTHCHECK_TIMEOUT:-10s}
+      retries: ${WEB_HEALTHCHECK_RETRIES:-3}
+      start_period: ${WEB_HEALTHCHECK_START_PERIOD:-40s}
+
+networks:
+  arguspam-network:
+    driver: ${NETWORK_DRIVER:-bridge}
+
+volumes:
+  mysql-data:
+    driver: ${VOLUME_DRIVER:-local}
+  redis-data:
+    driver: ${VOLUME_DRIVER:-local}
+  api-storage:
+    driver: ${VOLUME_DRIVER:-local}
+  api-bootstrap-cache:
+    driver: ${VOLUME_DRIVER:-local}

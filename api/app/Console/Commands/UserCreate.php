@@ -3,9 +3,13 @@
 namespace App\Console\Commands;
 
 use App\Enums\Status;
+use App\Models\Org;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Console\Command;
+
+use function Laravel\Prompts\form;
+use function Laravel\Prompts\info;
 
 class UserCreate extends Command
 {
@@ -29,44 +33,77 @@ class UserCreate extends Command
     public function handle()
     {
         $roles = Role::all();
-        $roleOptions = $roles->pluck('name', 'id')->toArray();
-        $defaultRole = config('pam.rbac.default_user_role');
+        $orgs = Org::all();
+        $timezoneList = collect(\DateTimeZone::listIdentifiers());
 
-        $searchResult = array_search($defaultRole, $roleOptions);
-        $defaultRoleIndex = $searchResult === false ? null : $searchResult;
-
-        $name = $this->ask('Name');
-        $email = $this->ask('Email');
-        $password = $this->secret('Password');
-        $defaultTimezone = $this->anticipate('Default Timezone', \DateTimeZone::listIdentifiers());
-
-        $selectedRoles = [];
-        if (!empty($roleOptions)) {
-            $selectedRoles = $this->choice('Roles (Multiple choice)', $roleOptions, $defaultRoleIndex, null, true);
-        } else {
-            $this->warn('No roles available. User will be created without roles.');
-        }
-
-        if (!$this->confirm('Are you sure you want to create user?')) {
-            return;
-        }
+        $response = form()
+            ->text(
+                label: 'Name', 
+                required: true, 
+                name: 'name',
+                validate: ['string', 'min:2', 'max:100']
+            )
+            ->text(
+                label: 'Email', 
+                required: true, 
+                name: 'email',
+                validate: ['email', 'unique:users,email']
+            )
+            ->password(
+                label: 'Password', 
+                required: true, 
+                hint: 'Password must be at least 8 characters long', 
+                validate: ['string', 'min:8'],
+                name: 'password'
+            )
+            ->search(
+                label: 'Default Timezone (autocomplete)', 
+                options: fn (string $value) => strlen($value) > 0
+                ? $timezoneList->filter(fn ($tz) => str_contains(strtolower($tz), strtolower($value)))
+                    ->take(5)->values()->all()
+                : [], 
+                required: true,
+                name: 'default_timezone'
+            )
+            ->multiselect('Roles (Multiple choice)', $roles->mapWithKeys(fn($item) => [$item['id'] => $item['name']])
+                ->all(), 
+                required: true,
+                name: 'roles'
+            )
+            ->multiselect('Orgs (Multiple choice)', $orgs->mapWithKeys(fn($item) => [$item['id'] => $item['name']])
+                ->all(), 
+                required: true,
+                name: 'orgs'
+            )
+            ->confirm(
+                label: 'Are you sure you want to create user?', 
+                required: true,
+                name: 'confirm'
+            )
+            ->submit();
 
         $user = new User;
-        $user->name = $name;
-        $user->email = $email;
+        $user->name = $response['name'];
+        $user->email = $response['email'];
         $user->status = Status::ACTIVE;
-        $user->default_timezone = $defaultTimezone;
-        $user->password = $password;
+        $user->default_timezone = $response['default_timezone'];
+        $user->password = $response['password'];
         $user->save();
 
-        if (!empty($selectedRoles)) {
-            $userRoles = $roles->filter(fn ($role) => in_array($role->name, $selectedRoles));
-            $user->roles()->attach($userRoles);
+        if (!empty($response['roles'])) {
+            $user->roles()->attach($response['roles']);
         }
 
-        $this->info('User created successfully');
-        $this->info('Name: '.$user->name);
-        $this->info('Email: '.$user->email);
-        $this->info('Default Timezone: '.$user->default_timezone);
+        if (!empty($response['orgs'])) {
+            $user->orgs()->attach($response['orgs']);
+        }
+
+        info('User created successfully');
+        info('User ID: ' . $user->id);
+        info('Name: ' . $user->name);
+        info('Email: ' . $user->email);
+        info('Default Timezone: ' . $user->default_timezone);
+        info('Roles: ' . $user->roles->pluck('name')->implode(', '));
+        info('Orgs: ' . $user->orgs->pluck('name')->implode(', '));
     }
 }

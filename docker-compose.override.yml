@@ -1,0 +1,115 @@
+# Development overrides
+# This file is automatically loaded by `docker compose up`
+# For production, use: docker compose -f docker-compose.yml -f docker-compose.prod.yml up
+
+services:
+  mysql:
+    ports:
+      - "${MYSQL_HOST_PORT:-3306}:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DEV_DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DEV_DB_DATABASE:-arguspam}
+      MYSQL_USER: ${DEV_DB_USERNAME:-arguspam}
+      MYSQL_PASSWORD: ${DEV_DB_PASSWORD:-secret}
+
+  redis:
+    ports:
+      - "${REDIS_HOST_PORT:-6379}:6379"
+
+  api:
+    build:
+      target: ${DEV_API_BUILD_TARGET:-development}
+      args:
+        PHP_VERSION: ${DOCKER_PHP_VERSION:-8.3-fpm-alpine}
+        COMPOSER_VERSION: ${DOCKER_COMPOSER_VERSION:-2}
+        WORKDIR: ${DOCKER_API_WORKDIR:-/var/www/html}
+        API_PORT: ${DOCKER_API_PORT:-80}
+    ports:
+      - "${DEV_API_HOST_PORT:-8000}:80"
+    volumes:
+      # Mount source code for hot reload (HOST_API_PATH is relative to docker-compose.yml)
+      - ${HOST_API_PATH:-./api}:/var/www/html:cached
+      # Preserve vendor and node_modules (anonymous volumes prevent overwriting)
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    environment:
+      APP_ENV: ${DEV_APP_ENV:-local}
+      APP_DEBUG: ${DEV_APP_DEBUG:-true}
+      APP_URL: ${DEV_APP_URL:-http://localhost:8000}
+      APP_WEB_URL: ${DEV_APP_WEB_URL:-http://localhost:3000}
+
+      # Development database
+      DB_HOST: ${DEV_DB_HOST:-mysql}
+      DB_DATABASE: ${DEV_DB_DATABASE:-arguspam}
+      DB_USERNAME: ${DEV_DB_USERNAME:-arguspam}
+      DB_PASSWORD: ${DEV_DB_PASSWORD:-secret}
+
+      # Enable Telescope in development
+      TELESCOPE_ENABLED: ${DEV_TELESCOPE_ENABLED:-true}
+
+      # Development mail (use Mailpit/MailHog if needed)
+      MAIL_MAILER: ${DEV_MAIL_MAILER:-log}
+
+      # CORS for local development
+      SANCTUM_STATEFUL_DOMAINS: ${DEV_SANCTUM_STATEFUL_DOMAINS:-localhost:3000}
+      CORS_ALLOWED_ORIGINS: ${DEV_CORS_ALLOWED_ORIGINS:-http://localhost:3000}
+    command: >
+      sh -c "
+        composer install &&
+        php artisan key:generate --force &&
+        php artisan migrate --force &&
+        php artisan storage:link &&
+        php artisan config:clear &&
+        php artisan serve --host=0.0.0.0 --port=80
+      "
+
+  horizon:
+    build:
+      target: ${DEV_HORIZON_BUILD_TARGET:-development}
+      args:
+        PHP_VERSION: ${DOCKER_PHP_VERSION:-8.3-fpm-alpine}
+        COMPOSER_VERSION: ${DOCKER_COMPOSER_VERSION:-2}
+        WORKDIR: ${DOCKER_API_WORKDIR:-/var/www/html}
+    volumes:
+      - ${HOST_API_PATH:-./api}:/var/www/html:cached
+      - /var/www/html/vendor
+      - /var/www/html/node_modules
+    environment:
+      APP_ENV: ${DEV_APP_ENV:-local}
+      APP_DEBUG: ${DEV_APP_DEBUG:-true}
+
+  web:
+    build:
+      target: ${DEV_WEB_BUILD_TARGET:-development}
+      args:
+        NODE_VERSION: ${DOCKER_NODE_VERSION:-20-alpine}
+        WORKDIR: ${DOCKER_WEB_WORKDIR:-/app}
+        WEB_PORT: ${WEB_PORT:-3000}
+        VITE_HMR_PORT: ${DOCKER_VITE_HMR_PORT:-5173}
+        # Build-time PUBLIC_ variables for SvelteKit
+        PUBLIC_API_URL: ${DEV_PUBLIC_API_URL:-http://localhost:8000}
+        PUBLIC_API_REQUEST_TIMEOUT: ${PUBLIC_API_REQUEST_TIMEOUT:-60000}
+        PUBLIC_AUTH_LOGIN_PATH: ${PUBLIC_AUTH_LOGIN_PATH:-/auth/login}
+        PUBLIC_AUTH_LOGOUT_PATH: ${PUBLIC_AUTH_LOGOUT_PATH:-/auth/logout}
+        PUBLIC_ORG_ID_HEADER: ${PUBLIC_ORG_ID_HEADER:-X-Organization-ID}
+        PUBLIC_ACCESS_REQUEST_MIN_DURATION: ${PUBLIC_ACCESS_REQUEST_MIN_DURATION:-10}
+        PUBLIC_ACCESS_REQUEST_MAX_DURATION: ${PUBLIC_ACCESS_REQUEST_MAX_DURATION:-43200}
+    ports:
+      - "${DEV_WEB_HOST_PORT:-3000}:3000"
+      - "${DEV_VITE_HMR_PORT:-5173}:5173"  # Vite HMR port
+    volumes:
+      # Mount source code for hot reload (HOST_WEB_PATH is relative to docker-compose.yml)
+      - ${HOST_WEB_PATH:-./web}:/app:cached
+      # Preserve node_modules (anonymous volume prevents overwriting)
+      - /app/node_modules
+    environment:
+      NODE_ENV: ${DEV_WEB_NODE_ENV:-development}
+      ORIGIN: ${DEV_WEB_ORIGIN:-http://localhost:3000}
+      VITE_PORT: ${DEV_VITE_PORT:-5173}
+      PUBLIC_API_URL: ${DEV_PUBLIC_API_URL:-http://localhost:8000}
+      COOKIE_SAME_SITE: ${DEV_COOKIE_SAME_SITE:-lax}
+    command: >
+      sh -c "
+        npm install &&
+        npm run dev -- --host 0.0.0.0 --port 3000
+      "

@@ -53,25 +53,6 @@ return new class extends Migration
             $table->unique(['role_id', 'user_id']);
             $table->timestamps();
         });
-
-        // seed permissions
-        app(PolicyPermissionService::class)->syncPermissions();
-
-        // TODO: move to seeder
-        // create default admin role
-        $adminRole = new Role([
-            'name' => config('pam.rbac.default_admin_role'),
-            'description' => 'Default admin role',
-        ]);
-        $adminRole->is_default = true;
-        $adminRole->save();
-
-        $userRole = new Role([
-            'name' => config('pam.rbac.default_user_role'),
-            'description' => 'Default user role',
-        ]);
-        $userRole->is_default = true;
-        $userRole->save();
     }
 
     /**

@@ -116,6 +116,7 @@ return [
             'session:end',
             'session:cancel',
             'user:view',
+            'user:update',
             'asset:viewrequestable',
             'session:permission',
             'user:changepassword',

@@ -32,15 +32,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(PermissionSeeder::class);
+        // $this->call(PermissionSeeder::class);
         $defaultAdminRole = Role::where('name', config('pam.rbac.default_admin_role'))
             ->first();
         $defaultUserRole = Role::where('name', config('pam.rbac.default_user_role'))
             ->first();
 
-        $defaultUser = User::factory(2)
+        $defaultUser = User::factory(1)
             ->sequence(
-                ['name' => 'Admin', 'email' => 'admin@admin.com', 'default_timezone' => 'Asia/Singapore'],
+                // ['name' => 'Admin', 'email' => 'admin@admin.com', 'default_timezone' => 'Asia/Singapore'],
                 ['name' => 'Hean Luen', 'email' => 'heanluen@gmail.com', 'default_timezone' => 'Asia/Singapore'],
             )
             ->hasAttached($defaultAdminRole)

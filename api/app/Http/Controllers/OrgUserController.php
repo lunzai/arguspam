@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\user\UserCollection;
+use App\Http\Resources\User\UserCollection;
 use App\Models\Org;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

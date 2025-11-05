@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\OpenAI;
+namespace App\Services\OpenAi;
 
 use App\Models\Request;
 use App\Models\Session;

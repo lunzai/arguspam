@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Enums\RiskRating;
 use App\Models\Request;
-use App\Services\OpenAI\OpenAiService;
+use App\Services\OpenAI\OpenAIService;
 use Illuminate\Console\Command;
 
 class AiTestNewRequest extends Command

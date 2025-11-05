@@ -14,6 +14,7 @@ use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class AssetController extends Controller
@@ -23,10 +24,12 @@ class AssetController extends Controller
     public function index(AssetFilter $filter, Request $request): AssetCollection
     {
         $this->authorize('view', Asset::class);
-        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        $assets = Asset::filter($filter)
-            ->paginate($pagination);
-        return new AssetCollection($assets);
+        return Cache::remember('assets-' . $request->get(config('pam.org.request_attribute')), config('cache.default_ttl'), function () use ($filter, $request) {
+            $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+            $assets = Asset::filter($filter)
+                ->paginate($pagination);
+            return new AssetCollection($assets);
+        });
     }
 
     public function store(StoreAssetRequest $request): AssetResource
@@ -52,11 +55,12 @@ class AssetController extends Controller
 
     public function show(string $id): AssetResource
     {
-        $assetQuery = Asset::query();
-        $this->applyIncludes($assetQuery, request());
-        $asset = $assetQuery->findOrFail($id);
+        $asset = Cache::remember('asset-' . $id, config('cache.default_ttl'), function () use ($id) {
+            $assetQuery = Asset::query();
+            $this->applyIncludes($assetQuery, request());
+            $asset = $assetQuery->findOrFail($id);
+        });
         $this->authorize('view', $asset);
-
         return new AssetResource($asset);
     }
 

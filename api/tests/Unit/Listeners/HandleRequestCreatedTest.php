@@ -5,7 +5,7 @@ namespace Tests\Unit\Listeners;
 use App\Events\RequestCreated;
 use App\Listeners\HandleRequestCreated;
 use App\Models\Request;
-use App\Services\OpenAI\OpenAiService;
+use App\Services\OpenAi\OpenAiService;
 use Mockery;
 use Tests\TestCase;
 

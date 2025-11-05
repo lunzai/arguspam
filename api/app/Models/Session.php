@@ -14,7 +14,7 @@ use App\Events\SessionJitTerminated;
 use App\Events\SessionStarted;
 use App\Events\SessionTerminated;
 use App\Services\Jit\JitManager;
-use App\Services\OpenAI\OpenAiService;
+use App\Services\OpenAi\OpenAiService;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
 use Carbon\CarbonInterval;

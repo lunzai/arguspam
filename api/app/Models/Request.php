@@ -11,7 +11,7 @@ use App\Events\RequestCreated;
 use App\Events\RequestExpired;
 use App\Events\RequestRejected;
 use App\Events\RequestSubmitted;
-use App\Services\OpenAI\OpenAiService;
+use App\Services\OpenAi\OpenAiService;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
 use Carbon\CarbonInterval;

@@ -3,7 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\SessionJitTerminated;
-use App\Services\OpenAI\OpenAiService;
+use App\Services\OpenAi\OpenAiService;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;

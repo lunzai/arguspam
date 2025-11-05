@@ -7,7 +7,7 @@ use App\Models\Org;
 use App\Models\Request;
 use App\Models\Session;
 use App\Models\User;
-use App\Services\OpenAI\OpenAIService;
+use App\Services\OpenAi\OpenAiService;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Config;
@@ -19,11 +19,11 @@ use OpenAI\Laravel\Facades\OpenAI;
 use OpenAI\Responses\Responses\CreateResponse;
 use Tests\TestCase;
 
-class OpenAIServiceTest extends TestCase
+class OpenAiServiceTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected OpenAIService $service;
+    protected OpenAiService $service;
 
     protected Org $org;
 
@@ -54,7 +54,7 @@ class OpenAIServiceTest extends TestCase
             'high_threshold' => 10080,
         ]);
 
-        $this->service = new OpenAIService;
+        $this->service = new OpenAiService;
 
         // Create test data
         $this->org = Org::factory()->create();
@@ -111,10 +111,10 @@ class OpenAIServiceTest extends TestCase
     public function it_constructs_with_config(): void
     {
         // Arrange & Act
-        $service = new OpenAIService;
+        $service = new OpenAiService;
 
         // Assert
-        $this->assertInstanceOf(OpenAIService::class, $service);
+        $this->assertInstanceOf(OpenAiService::class, $service);
 
         // Verify config is loaded
         $reflection = new \ReflectionClass($service);
@@ -150,7 +150,7 @@ class OpenAIServiceTest extends TestCase
         View::shouldReceive('render')->andReturn('mocked prompt');
 
         // Act
-        $result = $this->service->reviewSession($session);
+        $result = $this->service->auditSession($session);
 
         // Assert
         $this->assertIsArray($result);

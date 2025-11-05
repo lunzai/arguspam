@@ -4,8 +4,8 @@ namespace App\Services\OpenAi;
 
 use App\Models\Request;
 use App\Models\Session;
-use App\Services\OpenAI\Responses\RequestEvaluation;
-use App\Services\OpenAI\Responses\SessionAudit;
+use App\Services\OpenAi\Responses\RequestEvaluation;
+use App\Services\OpenAi\Responses\SessionAudit;
 use Exception;
 use File;
 use Illuminate\Support\Facades\Log;
@@ -125,7 +125,6 @@ class OpenAiService
             'store' => $this->config['store'],
             'metadata' => $metadata,
         ];
-        Log::info('OpenAI config', ['config' => $config]);
         if (str_starts_with($config['model'], 'gpt-5')) {
             unset($config['temperature'], $config['top_p']);
             $config['service_tier'] = 'flex';

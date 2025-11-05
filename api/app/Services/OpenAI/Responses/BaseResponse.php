@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\OpenAI\Responses;
+namespace App\Services\OpenAi\Responses;
 
 abstract class BaseResponse
 {

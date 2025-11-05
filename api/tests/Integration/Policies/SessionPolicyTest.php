@@ -12,7 +12,7 @@ use App\Models\Role;
 use App\Models\Session;
 use App\Models\User;
 use App\Policies\SessionPolicy;
-use App\Services\OpenAI\OpenAiService;
+use App\Services\OpenAi\OpenAiService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\TestCase;

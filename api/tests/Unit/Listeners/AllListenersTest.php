@@ -44,7 +44,7 @@ class AllListenersTest extends TestCase
         }
 
         // Test HandleRequestCreated separately as it requires constructor parameter
-        $handleRequestCreated = new HandleRequestCreated(\Mockery::mock(\App\Services\OpenAI\OpenAiService::class));
+        $handleRequestCreated = new HandleRequestCreated(\Mockery::mock(\App\Services\OpenAi\OpenAiService::class));
         $this->assertInstanceOf(HandleRequestCreated::class, $handleRequestCreated);
     }
 

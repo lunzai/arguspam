@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Requests\Asset;
+namespace Tests\Integration\Requests\Asset;
 
 use App\Enums\Dbms;
 use App\Http\Requests\Asset\UpdateAssetCredentialRequest;

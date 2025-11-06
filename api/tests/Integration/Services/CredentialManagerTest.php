@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Services;
+namespace Tests\Integration\Services;
 
 use App\Models\AssetAccount;
 use App\Services\Jit\CredentialManager;

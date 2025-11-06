@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Traits;
+namespace Tests\Integration\Traits;
 
 use App\Models\Asset;
 use App\Models\Org;

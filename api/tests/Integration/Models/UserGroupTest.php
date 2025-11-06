@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Models;
+namespace Tests\Integration\Models;
 
 use App\Enums\AssetAccessRole;
 use App\Enums\Status;

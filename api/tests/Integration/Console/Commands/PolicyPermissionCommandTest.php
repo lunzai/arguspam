@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Console\Commands;
+namespace Tests\Integration\Console\Commands;
 
 use App\Console\Commands\PolicyPermission;
 use App\Services\PolicyPermissionService;

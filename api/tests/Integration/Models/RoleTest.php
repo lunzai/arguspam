@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Models;
+namespace Tests\Integration\Models;
 
 use App\Models\Permission;
 use App\Models\Role;

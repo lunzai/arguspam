@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Requests\User;
+namespace Tests\Integration\Requests\User;
 
 use App\Http\Requests\User\UpdateUserRequest;
 use App\Models\User;

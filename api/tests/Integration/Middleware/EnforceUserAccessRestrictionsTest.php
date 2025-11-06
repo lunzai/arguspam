@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Middleware;
+namespace Tests\Integration\Middleware;
 
 use App\Enums\AccessRestrictionType;
 use App\Enums\Status;

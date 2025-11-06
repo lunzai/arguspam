@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Rules;
+namespace Tests\Integration\Rules;
 
 use App\Models\Org;
 use App\Models\UserGroup;

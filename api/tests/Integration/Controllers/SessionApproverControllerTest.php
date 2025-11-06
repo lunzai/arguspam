@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Controllers;
+namespace Tests\Integration\Controllers;
 
 use App\Enums\SessionStatus;
 use App\Http\Controllers\SessionApproverController;

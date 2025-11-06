@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Filters;
+namespace Tests\Integration\Filters;
 
 use App\Http\Filters\AssetFilter;
 use App\Models\Asset;

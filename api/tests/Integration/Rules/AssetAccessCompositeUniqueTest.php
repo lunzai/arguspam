@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Rules;
+namespace Tests\Integration\Rules;
 
 use App\Rules\AssetAccessCompositeUnique;
 use Illuminate\Foundation\Testing\RefreshDatabase;

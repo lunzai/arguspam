@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Models;
+namespace Tests\Integration\Models;
 
 use App\Http\Filters\QueryFilter;
 use App\Models\Model;

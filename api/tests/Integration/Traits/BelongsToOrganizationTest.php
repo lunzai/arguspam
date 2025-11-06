@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Traits;
+namespace Tests\Integration\Traits;
 
 use App\Enums\Dbms;
 use App\Enums\Status;

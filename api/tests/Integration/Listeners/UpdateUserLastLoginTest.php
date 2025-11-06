@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Listeners;
+namespace Tests\Integration\Listeners;
 
 use App\Events\UserLoggedIn;
 use App\Listeners\UpdateUserLastLogin;

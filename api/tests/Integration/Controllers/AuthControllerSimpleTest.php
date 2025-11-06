@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Controllers;
+namespace Tests\Integration\Controllers;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Resources\User\MeResource;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Services;
+namespace Tests\Integration\Services;
 
 use App\Enums\DatabaseScope;
 use App\Services\Jit\Database\Drivers\AbstractDatabaseDriver;

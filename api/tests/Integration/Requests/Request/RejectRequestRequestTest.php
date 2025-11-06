@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Requests\Request;
+namespace Tests\Integration\Requests\Request;
 
 use App\Http\Requests\Request\RejectRequestRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;

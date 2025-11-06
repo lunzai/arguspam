@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Requests\Request;
+namespace Tests\Integration\Requests\Request;
 
 use App\Enums\DatabaseScope;
 use App\Enums\RiskRating;

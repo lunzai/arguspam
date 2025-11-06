@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Requests\Session;
+namespace Tests\Integration\Requests\Session;
 
 use App\Http\Requests\Session\UpdateSessionRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;

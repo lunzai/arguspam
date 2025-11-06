@@ -1,13 +1,12 @@
 import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { generateRandomString } from 'src/lib/utils/string';
 
 const config = {
 	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter(),
         version: {
-            name: process.env.npm_package_version + '-' + generateRandomString(5),
+            name: process.env.VITE_APP_VERSION || process.env.npm_package_version || Date.now().toString(),
 			pollInterval: 300000
         },
 		csrf: {
@@ -30,7 +29,7 @@ const config = {
 				'base-uri': ['self'],
 				'form-action': ['self'],
 				'object-src': ['none'],
-                'upgrade-insecure-requests': true,
+                'upgrade-insecure-requests': true, // Force HTTPS
             }
         },
         output: {

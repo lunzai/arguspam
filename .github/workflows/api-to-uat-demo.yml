@@ -2,8 +2,8 @@ name: Deploy API to UAT
 
 on:
   push:
-    branches:
-      - uat/demo
+    branches: [ 'uat/demo' ]
+    paths: [ 'api/**' ]
 
 jobs:
   deploy:

@@ -19,18 +19,16 @@ class AuthController extends Controller
 {
     public function me(Request $request): MeResource
     {
-        return Cache::remember('me-' . $request->user()->id, config('cache.default_ttl'), function () use ($request) {  
-            $user = $request->user();
-            $user
-                ->loadMissing(
-                    'orgs',
-                    'userGroups',
-                    'restrictions',
-                    'roles',
-                )
-                ->loadCount('scheduledSessions', 'submittedRequests');
-            return MeResource::make($user);
-        });
+        $user = $request->user();
+        $user
+            ->loadMissing(
+                'orgs',
+                'userGroups',
+                'restrictions',
+                'roles',
+            )
+            ->loadCount('scheduledSessions', 'submittedRequests');
+        return MeResource::make($user);
     }
 
     public function login(LoginRequest $request): JsonResponse

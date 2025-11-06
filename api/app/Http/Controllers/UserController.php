@@ -12,7 +12,6 @@ use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 
 class UserController extends Controller
 {
@@ -21,12 +20,10 @@ class UserController extends Controller
     public function index(UserFilter $filter, Request $request): UserCollection
     {
         $this->authorize('viewAny', User::class);
-        return Cache::remember('users', config('cache.default_ttl'), function () use ($filter, $request) {
-            $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-            $users = User::filter($filter)
-                ->paginate($pagination);
-            return new UserCollection($users);
-        });
+        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $users = User::filter($filter)
+            ->paginate($pagination);
+        return new UserCollection($users);
     }
 
     public function store(StoreUserRequest $request): UserResource

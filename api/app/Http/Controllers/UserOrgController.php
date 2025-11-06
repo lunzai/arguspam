@@ -6,7 +6,6 @@ use App\Http\Resources\Org\OrgCollection;
 use App\Models\Org;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 
 class UserOrgController extends Controller
 {
@@ -17,9 +16,7 @@ class UserOrgController extends Controller
     {
         $user = Auth::user();
         $this->authorize('view', $user);
-        return Cache::remember('user-orgs-' . $user->id, config('cache.default_ttl'), function () use ($user) { 
-            return new OrgCollection($user->orgs()->get());
-        });
+        return new OrgCollection($user->orgs()->get());
     }
 
     /**

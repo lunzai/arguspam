@@ -12,7 +12,6 @@ use App\Traits\IncludeRelationships;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 
 class OrgController extends Controller
 {
@@ -22,11 +21,9 @@ class OrgController extends Controller
     {
         $this->authorize('view', Org::class);
         $pagination = $request->get('per_page', config('pam.pagination.per_page'));
-        return Cache::remember('orgs-' . $request->get(config('pam.org.request_attribute')), config('cache.default_ttl'), function () use ($filter, $pagination) {        
-            $orgs = Org::filter($filter)
-                ->paginate($pagination);
-            return new OrgCollection($orgs);
-        });
+        $orgs = Org::filter($filter)
+            ->paginate($pagination);
+        return new OrgCollection($orgs);
     }
 
     public function store(StoreOrgRequest $request): OrgResource

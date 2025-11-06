@@ -9,7 +9,7 @@ Note: This application has no /api prefix in routes (apiPrefix: '' in bootstrap/
 import json
 import random
 import logging
-from locust import HttpUser, task, between
+from locust import HttpUser, task, between, constant_throughput
 from locust import LoadTestShape
 
 # Configure logging
@@ -24,9 +24,9 @@ class StagesShape(LoadTestShape):
     - Ramp down to 0 over 1 minute
     """
     stages = [
-        {"duration": 60, "users": 250, "spawn_rate": 5},
-        {"duration": 120, "users": 250, "spawn_rate": 15},
-        {"duration": 180, "users": 0, "spawn_rate": 5},
+        {"duration": 30, "users": 250, "spawn_rate": 25},
+        {"duration": 120, "users": 250, "spawn_rate": 1},
+        {"duration": 150, "users": 0, "spawn_rate": 25},
     ]
 
     def tick(self):
@@ -49,14 +49,15 @@ class ArgusPAMAPIUser(HttpUser):
     5. Logout on stop
     """
 
-    wait_time = between(1, 2)
+    wait_time = between(1.5, 3)
+    #wait_time = constant_throughput(0.5)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.token = None
-        self.org_id = None
+        self.token = '1467|BuI0ieHDIdns4quaiLe2QV9lHaqBuXiELjXMLEwse62c49cf'
+        self.org_id = 1
         self.temp_key = None
-        self.authenticated = False
+        self.authenticated = True
         self.asset_ids = []  # Cache valid asset IDs
         self.requires_2fa = True
 
@@ -65,39 +66,39 @@ class ArgusPAMAPIUser(HttpUser):
         Initialize user session with full authentication flow.
         If any step fails, stop the user from executing tasks.
         """
-        self.client.verify = False  # Disable SSL verification for self-signed certs
+        self.client.verify = True  # Disable SSL verification for self-signed certs
 
-        logger.info("Starting authentication flow...")
+        # logger.info("Starting authentication flow...")
 
-        # Step 1: Login
-        if not self._login():
-            logger.error("Authentication failed at step 1: Login")
-            self.environment.runner.quit()
-            return
+        # # Step 1: Login
+        # if not self._login():
+        #     logger.error("Authentication failed at step 1: Login")
+        #     self.environment.runner.quit()
+        #     return
 
-        # Step 2: 2FA Verification (only if token not provided by login)
-        if self.token is None:
-            if not self._verify_2fa():
-                logger.error("Authentication failed at step 2: 2FA Verification")
-                self.environment.runner.quit()
-                return
+        # # Step 2: 2FA Verification (only if token not provided by login)
+        # if self.token is None:
+        #     if not self._verify_2fa():
+        #         logger.error("Authentication failed at step 2: 2FA Verification")
+        #         self.environment.runner.quit()
+        #         return
 
-        # Step 3: Fetch Organization ID
-        if not self._fetch_org_id():
-            logger.error("Authentication failed at step 3: Fetch Organization ID")
-            self.environment.runner.quit()
-            return
+        # # Step 3: Fetch Organization ID
+        # if not self._fetch_org_id():
+        #     logger.error("Authentication failed at step 3: Fetch Organization ID")
+        #     self.environment.runner.quit()
+        #     return
 
-        # Authentication successful
-        self.authenticated = True
-        logger.info(f"Authentication successful! User ready with org_id={self.org_id}")
+        # # Authentication successful
+        # self.authenticated = True
+        # logger.info(f"Authentication successful! User ready with org_id={self.org_id}")
 
     def _login(self):
         """Step 1: Authenticate and get temporary key"""
         with self.client.post(
             "/auth/login",
             json={
-                "email": "admin@admin.com",
+                "email": "heanluen@gmail.com",
                 "password": "password"
             },
             headers=self._get_base_headers(),
@@ -379,17 +380,17 @@ class ArgusPAMAPIUser(HttpUser):
             name="14. GET /permissions"
         )
 
-    # @task(1)
-    # def list_sessions(self):
-    #     """Get list of sessions"""
-    #     if not self._check_auth():
-    #         return
+    @task(1)
+    def list_sessions(self):
+        """Get list of sessions"""
+        if not self._check_auth():
+            return
 
-    #     self.client.get(
-    #         "/sessions?page=1&sort=-created_at",
-    #         headers=self._get_auth_headers(),
-    #         name="15. GET /sessions"
-    #     )
+        self.client.get(
+            "/sessions?page=1&sort=-created_at",
+            headers=self._get_auth_headers(),
+            name="15. GET /sessions"
+        )
 
     @task(1)
     def get_settings(self):
@@ -423,12 +424,12 @@ class ArgusPAMAPIUser(HttpUser):
                 name=f"17. {name}"
             )
 
-    def on_stop(self):
-        """Called when a simulated user stops - perform logout"""
-        if self.token and self.authenticated:
-            self.client.post(
-                "/auth/logout",
-                headers=self._get_auth_headers(),
-                name="18. POST /auth/logout"
-            )
-            logger.info("User logged out successfully")
+    # def on_stop(self):
+    #     """Called when a simulated user stops - perform logout"""
+    #     if self.token and self.authenticated:
+    #         self.client.post(
+    #             "/auth/logout",
+    #             headers=self._get_auth_headers(),
+    #             name="18. POST /auth/logout"
+    #         )
+    #         logger.info("User logged out successfully")

@@ -34,18 +34,25 @@ trait HasRbac
             ->pluck('id')
             ->toArray();
 
-        return Cache::remember(
-            CacheKey::USER_PERMISSIONS->key($this->id),
-            config('cache.default_ttl'),
-            function () use ($roleIds) {
-                if (empty($roleIds)) {
-                    return Permission::query()->whereRaw('1 = 0')->get();
-                }
-                return Permission::whereHas('roles', function ($query) use ($roleIds) {
-                    $query->whereIn('roles.id', $roleIds);
-                })->get();
-            }
-        );
+        if (empty($roleIds)) {
+            return Permission::query()->whereRaw('1 = 0')->get();
+        }
+        return Permission::whereHas('roles', function ($query) use ($roleIds) {
+            $query->whereIn('roles.id', $roleIds);
+        })->get();
+
+        // return Cache::remember(
+        //     CacheKey::USER_PERMISSIONS->key($this->id),
+        //     config('cache.default_ttl'),
+        //     function () use ($roleIds) {
+        //         if (empty($roleIds)) {
+        //             return Permission::query()->whereRaw('1 = 0')->get();
+        //         }
+        //         return Permission::whereHas('roles', function ($query) use ($roleIds) {
+        //             $query->whereIn('roles.id', $roleIds);
+        //         })->get();
+        //     }
+        // );
     }
 
     public function hasAnyPermission(array|string $permissions): bool

@@ -1,0 +1,25 @@
+name: Deploy API to UAT
+
+on:
+  push:
+    branches:
+      - uat/demo
+
+jobs:
+  deploy:
+    name: Deploy to AWS EC2
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.UAT_EC2_HOST }}
+          username: ${{ secrets.UAT_EC2_USERNAME }}
+          key: ${{ secrets.UAT_EC2_SSH_KEY }}
+          script: |
+            cd /var/www/arguspam/api
+            git reset --hard origin/uat/demo
+            git pull
+            php artisan optimize
+            sudo systemctl reload php8.3-fpm

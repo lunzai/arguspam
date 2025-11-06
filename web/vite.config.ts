@@ -8,6 +8,11 @@ export default defineConfig(({ mode }) => {
 
 	return {
 		plugins: [tailwindcss(), sveltekit()],
+        build: {
+			// Minification automatically removes comments in production
+			minify: mode === 'production' ? 'esbuild' : false,
+			reportCompressedSize: false
+		},
 		server: {
 			allowedHosts: env.VITE_ALLOWED_HOSTS?.split(','),
 			port: Number(env.VITE_PORT) || 5173,

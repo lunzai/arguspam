@@ -1,15 +1,17 @@
 import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import { generateRandomString } from '$lib/utils/string';
 
 const config = {
 	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter(),
         version: {
-            name: process.env.npm_package_version || Date.now().toString(),
-            pollInterval: 300000 // Poll every 5 minutes for new versions
+            name: process.env.npm_package_version + '-' + generateRandomString(5),
+			pollInterval: 300000
         },
 		csrf: {
+            checkOrigin: true,
 			trustedOrigins: [
                 process.env.PUBLIC_API_URL,
                 process.env.ORIGIN
@@ -19,14 +21,16 @@ const config = {
             mode: 'auto', // or 'hash' depending on your needs
             directives: {
                 'default-src': ['self'],
-                'script-src': ['self'], // Add nonce handling
-                'style-src': ['self', 'unsafe-inline'], // May need unsafe-inline for Svelte
-                'img-src': ['self', 'data:', 'https:'],
-                'font-src': ['self', 'data:'],
-                'connect-src': ['self', process.env.PUBLIC_API_URL].filter(Boolean),
-                'frame-ancestors': ['none'], // Prevent clickjacking
-                'base-uri': ['self'],
-                'form-action': ['self']
+				'script-src': ['self'],
+				'style-src': ['self', 'unsafe-inline', 'https://fonts.googleapis.com'],
+				'font-src': ['self', 'data:', 'https://fonts.gstatic.com'],
+				'img-src': ['self', 'data:', 'https:'],
+				'connect-src': ['self', process.env.PUBLIC_API_URL].filter(Boolean),
+				'frame-ancestors': ['none'],
+				'base-uri': ['self'],
+				'form-action': ['self'],
+				'object-src': ['none'],
+                'upgrade-insecure-requests': true,
             }
         },
         output: {

@@ -1,6 +1,6 @@
 import adapter from '@sveltejs/adapter-node';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
-import { generateRandomString } from '$lib/utils/string';
+import { generateRandomString } from 'src/lib/utils/string';
 
 const config = {
 	preprocess: vitePreprocess(),

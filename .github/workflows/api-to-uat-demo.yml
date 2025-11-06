@@ -22,5 +22,6 @@ jobs:
             cd /var/www/arguspam/api
             git reset --hard origin/uat/demo
             git pull
+            sudo chown -R ubuntu:www-data . 
             php artisan optimize
             sudo systemctl reload php8.3-fpm

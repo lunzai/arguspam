@@ -5,9 +5,33 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter(),
+        version: {
+            name: process.env.npm_package_version || Date.now().toString(),
+            pollInterval: 300000 // Poll every 5 minutes for new versions
+        },
 		csrf: {
-			checkOrigin: false
+			trustedOrigins: [
+                process.env.PUBLIC_API_URL,
+                process.env.ORIGIN
+            ].filter(Boolean)
 		},
+        csp: {
+            mode: 'auto', // or 'hash' depending on your needs
+            directives: {
+                'default-src': ['self'],
+                'script-src': ['self'], // Add nonce handling
+                'style-src': ['self', 'unsafe-inline'], // May need unsafe-inline for Svelte
+                'img-src': ['self', 'data:', 'https:'],
+                'font-src': ['self', 'data:'],
+                'connect-src': ['self', process.env.PUBLIC_API_URL].filter(Boolean),
+                'frame-ancestors': ['none'], // Prevent clickjacking
+                'base-uri': ['self'],
+                'form-action': ['self']
+            }
+        },
+        output: {
+            preloadStrategy: 'modulepreload' // Better performance for modern browsers
+        },
 		alias: {
 			$components: 'src/components',
 			$lib: 'src/lib',

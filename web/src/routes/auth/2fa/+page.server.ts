@@ -38,7 +38,7 @@ export const actions: Actions = {
 			const loginResponse = await authService.verify2fa(form.data.code, form.data.temp_key);
 			const {
 				user,
-				token,
+				token
 			}: {
 				user: User;
 				token: string | null;

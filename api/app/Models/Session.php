@@ -334,6 +334,12 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
     }
 
     #[Scope]
+    protected function started(Builder $query): Builder
+    {
+        return $query->where('status', SessionStatus::STARTED->value);
+    }
+
+    #[Scope]
     protected function scheduledEndDateNowOrPast(Builder $query): Builder
     {
         return $query->where('scheduled_end_datetime', '<=', now());

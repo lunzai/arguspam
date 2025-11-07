@@ -26,16 +26,28 @@ class SessionExpired extends Command
      */
     public function handle()
     {
-        $sessions = Session::scheduled()
+        $scheduledSessions = Session::scheduled()
             ->scheduledEndDateNowOrPast()
             ->get();
-        $this->info("Found {$sessions->count()} expired sessions.");
-        foreach ($sessions as $session) {
+        $this->info("Found {$scheduledSessions->count()} expired scheduled sessions.");
+        foreach ($scheduledSessions as $session) {
             try {
                 $session->expire();
                 $this->info("Expired session ID#{$session->id}.");
             } catch (\Exception $e) {
                 $this->error("Failed to expire session ID#{$session->id}: {$e->getMessage()}");
+            }
+        }
+        $startedSessions = Session::started()
+            ->scheduledEndDateNowOrPast()
+            ->get();
+        $this->info("Found {$startedSessions->count()} expired started sessions.");
+        foreach ($startedSessions as $session) {
+            try {
+                $session->terminate();
+                $this->info("Terminated session ID#{$session->id}.");
+            } catch (\Exception $e) {
+                $this->error("Failed to terminate session ID#{$session->id}: {$e->getMessage()}");
             }
         }
     }

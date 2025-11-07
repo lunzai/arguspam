@@ -32,16 +32,16 @@ class UserExistedInOrg implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        #$cacheKey = CacheKey::ORG_USERS->key($this->orgId);
+        // $cacheKey = CacheKey::ORG_USERS->key($this->orgId);
 
         // Try to get cached users first
-        #$orgUsers = Cache::get($cacheKey);
+        // $orgUsers = Cache::get($cacheKey);
 
-        #if ($orgUsers === null) {
-            // Cache miss - fetch from database and cache
-            $orgUsers = Org::find($this->orgId)->users()->get();
-            #Cache::put($cacheKey, $orgUsers, 3600); // Cache for 1 hour
-        #}
+        // if ($orgUsers === null) {
+        // Cache miss - fetch from database and cache
+        $orgUsers = Org::find($this->orgId)->users()->get();
+        // Cache::put($cacheKey, $orgUsers, 3600); // Cache for 1 hour
+        // }
 
         $existed = $orgUsers->contains('id', $value);
 

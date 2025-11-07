@@ -5,21 +5,19 @@ const config = {
 	preprocess: vitePreprocess(),
 	kit: {
 		adapter: adapter(),
-        version: {
-            name: process.env.VITE_APP_VERSION || process.env.npm_package_version || Date.now().toString(),
+		version: {
+			name:
+				process.env.VITE_APP_VERSION || process.env.npm_package_version || Date.now().toString(),
 			pollInterval: 300000
-        },
-		csrf: {
-            checkOrigin: true,
-			trustedOrigins: [
-                process.env.PUBLIC_API_URL,
-                process.env.ORIGIN
-            ].filter(Boolean)
 		},
-        csp: {
-            mode: 'auto', // or 'hash' depending on your needs
-            directives: {
-                'default-src': ['self'],
+		csrf: {
+			checkOrigin: true,
+			trustedOrigins: [process.env.PUBLIC_API_URL, process.env.ORIGIN].filter(Boolean)
+		},
+		csp: {
+			mode: 'auto', // or 'hash' depending on your needs
+			directives: {
+				'default-src': ['self'],
 				'script-src': ['self'],
 				'style-src': ['self', 'unsafe-inline', 'https://fonts.googleapis.com'],
 				'font-src': ['self', 'data:', 'https://fonts.gstatic.com'],
@@ -29,12 +27,12 @@ const config = {
 				'base-uri': ['self'],
 				'form-action': ['self'],
 				'object-src': ['none'],
-                'upgrade-insecure-requests': true, // Force HTTPS
-            }
-        },
-        output: {
-            preloadStrategy: 'modulepreload' // Better performance for modern browsers
-        },
+				'upgrade-insecure-requests': true // Force HTTPS
+			}
+		},
+		output: {
+			preloadStrategy: 'modulepreload' // Better performance for modern browsers
+		},
 		alias: {
 			$components: 'src/components',
 			$lib: 'src/lib',

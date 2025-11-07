@@ -157,7 +157,8 @@ class User extends Authenticatable
 
     public function verifyTwoFactorCode(string $code): bool
     {
-        if (config('pam.auth.bypass_2fa')) {
+        // TODO: To remove
+        if (config('app.env') == 'local' && config('pam.auth.bypass_2fa')) {
             return true;
         }
         return (new Google2FA)->verifyKey($this->two_factor_secret, $code);

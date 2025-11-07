@@ -6,7 +6,9 @@
 	let { data, children } = $props();
 
 	const model = $derived(data.asset);
-	const accounts = $derived(data.model.data.relationships?.accounts as AssetAccountCollection);
+	const accounts = $derived(
+		data.model.data.relationships?.activeAccounts as AssetAccountCollection
+	);
 	const editForm = $derived(data.editForm);
 	const credentialsForm = $derived(data.credentialsForm);
 	const canUpdate = $derived(data.canUpdate);

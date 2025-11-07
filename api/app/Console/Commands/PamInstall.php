@@ -2,14 +2,12 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-use App\Console\Commands\UserCreate;
-use App\Models\Role;
-use App\Models\User;
+use App\Enums\Status;
 use App\Models\Org;
 use App\Models\Permission;
-use App\Enums\Status;
+use App\Models\Role;
 use App\Services\PolicyPermissionService;
+use Illuminate\Console\Command;
 
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\note;
@@ -35,7 +33,7 @@ class PamInstall extends Command
     {
         parent::__construct();
     }
-    
+
     /**
      * Execute the console command.
      */
@@ -47,17 +45,17 @@ class PamInstall extends Command
             note('php artisan user:create');
             return;
         }
-        
+
         $progress = progress(
             label: 'Setting up ArgusPAM...',
             steps: 10,
         );
         $progress->start();
-        
+
         $progress->label('Running database migrations...');
         $this->call('migrate', ['--force' => true]);
         $progress->advance();
-        
+
         $progress->label('Seeding permissions...');
         $this->policyPermissionService->syncPermissions(true);
         $progress->advance();
@@ -72,7 +70,7 @@ class PamInstall extends Command
             $adminRole->is_default = true;
             $adminRole->save();
             $progress->advance();
-        }        
+        }
 
         if (!$existingRoles->firstWhere('name', config('pam.rbac.default_user_role'))) {
             $userRole = new Role([

@@ -50,9 +50,9 @@ export const actions: Actions = {
 				setTempKey(cookies, temp_key, temp_key_expires_at);
 				return redirect(302, '/auth/2fa');
 			} else {
-                if (!token) {
-                    return fail(401, { form, error: 'Invalid credentials' });
-                }
+				if (!token) {
+					return fail(401, { form, error: 'Invalid credentials' });
+				}
 				setAuthToken(cookies, token);
 				const userService = new UserService(token);
 				const orgCollection = await userService.getOrgs();

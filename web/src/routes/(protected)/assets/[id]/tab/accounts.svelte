@@ -3,8 +3,7 @@
 	import { Button } from '$ui/button';
 	import { Link2, LoaderCircle, ClockFading, Crown, Unplug } from '@lucide/svelte';
 	import type { AssetAccountCollection } from '$resources/asset-account';
-	import type { Asset } from '$models/asset';
-	import { relativeDateTime } from '$utils/date';
+	import { relativeDateTime, shortDateTime } from '$utils/date';
 	import * as Avatar from '$ui/avatar';
 	import * as AlertDialog from '$ui/alert-dialog';
 
@@ -87,7 +86,11 @@
 						<span class="text-muted-foreground truncate text-xs">
 							{row.type == 'admin' ? 'Administrator Account' : 'Temporary Account'}
 							{#if row.type == 'jit'}
-								| Expires in {relativeDateTime(row.expires_at)}
+								{#if row.expires_at}
+									| Expires in {shortDateTime(row.expires_at)}
+								{:else}
+									| Expired {relativeDateTime(row.expires_at)}
+								{/if}
 							{/if}
 						</span>
 					</div>

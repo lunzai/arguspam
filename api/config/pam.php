@@ -4,8 +4,6 @@ return [
 
     'app' => [
         'web_url' => env('APP_WEB_URL', 'http://localhost'),
-        'site_url' => 'https://arguspam.com/',
-        'github_url' => 'https://github.com/lunzai/arguspam',
     ],
 
     'user' => [
@@ -65,8 +63,6 @@ return [
             'medium_threshold' => 1440, // 24 hours
             'high_threshold' => 10080, // 7 days
         ],
-        // 'approval_required' => true,
-        // 'max_active_requests' => 5,
     ],
 
     'openai' => [
@@ -127,11 +123,11 @@ return [
 
     'notification' => [
         'email' => [
-            'support' => env('EMAIL_SUPPORT', 'support@arguspam.com'),
+            'support' => env('EMAIL_SUPPORT'),
         ],
         'slack' => [
             'enabled' => env('SLACK_NOTIFICATION', false),
-            'horizon_webhook' => env('SLACK_HORIZON_WEBHOOK'),
+            // 'horizon_webhook' => env('SLACK_HORIZON_WEBHOOK'),
             'channel' => [
                 'alerts' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
                 'requests' => env('SLACK_BOT_USER_REQUEST_CHANNEL'),
@@ -161,37 +157,37 @@ return [
         'generate_password_symbols' => env('PAM_JIT_PASSWORD_SYMBOLS', true),
         'generate_password_spaces' => env('PAM_JIT_PASSWORD_SPACES', false),
     ],
-    'database' => [
+    // 'database' => [
 
-        // Database connection settings
-        'connection' => [
-            'mysql_port' => env('PAM_MYSQL_PORT', 3306),
-            'postgresql_port' => env('PAM_POSTGRESQL_PORT', 5432),
-            'mysql_charset' => env('PAM_MYSQL_CHARSET', 'utf8mb4'),
-        ],
+    //     // Database connection settings
+    //     'connection' => [
+    //         'mysql_port' => env('PAM_MYSQL_PORT', 3306),
+    //         'postgresql_port' => env('PAM_POSTGRESQL_PORT', 5432),
+    //         'mysql_charset' => env('PAM_MYSQL_CHARSET', 'utf8mb4'),
+    //     ],
 
-        // Account expiration
-        'expiration' => [
-            'default_days' => env('PAM_ACCOUNT_EXPIRY_DAYS', 1),
-            'max_days' => env('PAM_MAX_ACCOUNT_EXPIRY_DAYS', 30),
-        ],
+    //     // Account expiration
+    //     'expiration' => [
+    //         'default_days' => env('PAM_ACCOUNT_EXPIRY_DAYS', 1),
+    //         'max_days' => env('PAM_MAX_ACCOUNT_EXPIRY_DAYS', 30),
+    //     ],
 
-        // Validation rules
-        'validation' => [
-            'username' => [
-                'min_length' => env('PAM_USERNAME_MIN_LENGTH', 3),
-                'max_length' => env('PAM_USERNAME_MAX_LENGTH', 32),
-            ],
-            'password' => [
-                'min_length' => env('PAM_PASSWORD_MIN_LENGTH', 8),
-                'max_length' => env('PAM_PASSWORD_MAX_LENGTH', 128),
-            ],
-        ],
+    //     // Validation rules
+    //     'validation' => [
+    //         'username' => [
+    //             'min_length' => env('PAM_USERNAME_MIN_LENGTH', 3),
+    //             'max_length' => env('PAM_USERNAME_MAX_LENGTH', 32),
+    //         ],
+    //         'password' => [
+    //             'min_length' => env('PAM_PASSWORD_MIN_LENGTH', 8),
+    //             'max_length' => env('PAM_PASSWORD_MAX_LENGTH', 128),
+    //         ],
+    //     ],
 
-        // Database access patterns
-        'access' => [
-            'all_databases_indicator' => null,
-            'empty_databases_indicator' => [],
-        ],
-    ],
+    //     // Database access patterns
+    //     'access' => [
+    //         'all_databases_indicator' => null,
+    //         'empty_databases_indicator' => [],
+    //     ],
+    // ],
 ];

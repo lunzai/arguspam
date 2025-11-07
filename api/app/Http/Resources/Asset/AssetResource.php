@@ -42,6 +42,9 @@ class AssetResource extends Resource
                     'accounts' => AssetAccountResource::collection(
                         $this->whenLoaded('accounts')
                     ),
+                    'activeAccounts' => AssetAccountResource::collection(
+                        $this->whenLoaded('activeAccounts')
+                    ),
                     'accessGrants' => AssetAccessGrantResource::collection(
                         $this->whenLoaded('accessGrants')
                     ),

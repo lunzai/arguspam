@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
 
 	return {
 		plugins: [tailwindcss(), sveltekit()],
-        build: {
+		build: {
 			// Minification automatically removes comments in production
 			minify: mode === 'production' ? 'esbuild' : false,
 			reportCompressedSize: false

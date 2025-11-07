@@ -50,6 +50,7 @@ class Asset extends Model
         'org',
         'adminAccount',
         'accounts',
+        'activeAccounts',
         'accessGrants',
         'requests',
         'sessions',
@@ -87,7 +88,14 @@ class Asset extends Model
 
     public function jitAccount(): HasMany
     {
-        return $this->accounts()->jit();
+        return $this->accounts()
+            ->jit();
+    }
+
+    public function activeAccounts(): HasMany
+    {
+        return $this->accounts()
+            ->active();
     }
 
     public function accounts(): HasMany

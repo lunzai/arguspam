@@ -52,7 +52,10 @@ const securityHeaders: Handle = async ({ event, resolve }) => {
 		const url = new URL(event.request.url);
 		if (url.pathname.startsWith('/api') || url.pathname.includes('login')) {
 			// No caching for API and sensitive pages
-			response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+			response.headers.set(
+				'Cache-Control',
+				'no-store, no-cache, must-revalidate, proxy-revalidate'
+			);
 			response.headers.set('Pragma', 'no-cache');
 			response.headers.set('Expires', '0');
 		} else if (url.pathname.startsWith('/_app/') || url.pathname.match(/\.(js|css|woff2?)$/)) {

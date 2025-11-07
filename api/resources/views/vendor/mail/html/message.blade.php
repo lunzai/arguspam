@@ -21,7 +21,7 @@
 {{-- Footer --}}
 <x-slot:footer>
 <x-mail::footer>
-{{ __('Powered by') }} <a href="{{ config('pam.app.site_url') }}" style="color: #3869D4;">{{ config('app.name') }}</a> © {{ date('Y') }} {{ __('All rights reserved.') }}
+{{ __('Powered by') }} <a href="{{ config('pam.app.web_url') }}" style="color: #3869D4;">{{ config('app.name') }}</a> © {{ date('Y') }} {{ __('All rights reserved.') }}
 </x-mail::footer>
 </x-slot:footer>
 </x-mail::layout>

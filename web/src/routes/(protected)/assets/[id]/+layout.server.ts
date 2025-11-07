@@ -17,7 +17,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends }) => {
 	const modelService = new AssetService(authToken as string, currentOrgId as number);
 	const model = (await modelService.findById(id, {
 		include: [
-			'accounts',
+			'activeAccounts',
 			'approverUserGroups',
 			'requesterUserGroups',
 			'approverUsers',
@@ -25,7 +25,7 @@ export const load: LayoutServerLoad = async ({ params, locals, depends }) => {
 		]
 	})) as ApiAssetResource;
 	const asset = model.data.attributes as Asset;
-	const assetAccounts = model.data.relationships?.accounts as AssetAccountCollection;
+	const assetAccounts = model.data.relationships?.activeAccounts as AssetAccountCollection;
 	const adminAccount = assetAccounts.find(
 		(account) => account.attributes.type === 'admin'
 	) as AssetAccountResource;

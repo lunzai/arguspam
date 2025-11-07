@@ -38,45 +38,45 @@ class UserCreate extends Command
 
         $response = form()
             ->text(
-                label: 'Name', 
-                required: true, 
+                label: 'Name',
+                required: true,
                 name: 'name',
                 validate: ['string', 'min:2', 'max:100']
             )
             ->text(
-                label: 'Email', 
-                required: true, 
+                label: 'Email',
+                required: true,
                 name: 'email',
                 validate: ['email', 'unique:users,email']
             )
             ->password(
-                label: 'Password', 
-                required: true, 
-                hint: 'Password must be at least 8 characters long', 
+                label: 'Password',
+                required: true,
+                hint: 'Password must be at least 8 characters long',
                 validate: ['string', 'min:8'],
                 name: 'password'
             )
             ->search(
-                label: 'Default Timezone (autocomplete)', 
+                label: 'Default Timezone (autocomplete)',
                 options: fn (string $value) => strlen($value) > 0
                 ? $timezoneList->filter(fn ($tz) => str_contains(strtolower($tz), strtolower($value)))
                     ->take(5)->values()->all()
-                : [], 
+                : [],
                 required: true,
                 name: 'default_timezone'
             )
-            ->multiselect('Roles (Multiple choice)', $roles->mapWithKeys(fn($item) => [$item['id'] => $item['name']])
-                ->all(), 
+            ->multiselect('Roles (Multiple choice)', $roles->mapWithKeys(fn ($item) => [$item['id'] => $item['name']])
+                ->all(),
                 required: true,
                 name: 'roles'
             )
-            ->multiselect('Orgs (Multiple choice)', $orgs->mapWithKeys(fn($item) => [$item['id'] => $item['name']])
-                ->all(), 
+            ->multiselect('Orgs (Multiple choice)', $orgs->mapWithKeys(fn ($item) => [$item['id'] => $item['name']])
+                ->all(),
                 required: true,
                 name: 'orgs'
             )
             ->confirm(
-                label: 'Are you sure you want to create user?', 
+                label: 'Are you sure you want to create user?',
                 required: true,
                 name: 'confirm'
             )
@@ -99,11 +99,11 @@ class UserCreate extends Command
         }
 
         info('User created successfully');
-        info('User ID: ' . $user->id);
-        info('Name: ' . $user->name);
-        info('Email: ' . $user->email);
-        info('Default Timezone: ' . $user->default_timezone);
-        info('Roles: ' . $user->roles->pluck('name')->implode(', '));
-        info('Orgs: ' . $user->orgs->pluck('name')->implode(', '));
+        info('User ID: '.$user->id);
+        info('Name: '.$user->name);
+        info('Email: '.$user->email);
+        info('Default Timezone: '.$user->default_timezone);
+        info('Roles: '.$user->roles->pluck('name')->implode(', '));
+        info('Orgs: '.$user->orgs->pluck('name')->implode(', '));
     }
 }

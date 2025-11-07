@@ -18,7 +18,9 @@
 	let defaultTab = $state('accounts');
 	const modelResource = $derived(data.model as ApiAssetResource);
 	const model = $derived(modelResource.data.attributes as Asset);
-	const accounts = $derived(modelResource.data.relationships?.accounts as AssetAccountCollection);
+	const accounts = $derived(
+		modelResource.data.relationships?.activeAccounts as AssetAccountCollection
+	);
 	let approverUserGroups = $derived(
 		modelResource.data.relationships?.approverUserGroups as UserGroupCollection
 	);

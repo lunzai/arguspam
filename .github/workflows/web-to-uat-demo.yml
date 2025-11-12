@@ -23,6 +23,6 @@ jobs:
             git reset --hard origin/uat/demo
             git pull
             sudo chown -R ubuntu:www-data . 
-            npm ci --production
+            npm ci
             npm run build
             sudo systemctl restart arguspam-web     

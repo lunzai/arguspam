@@ -1,0 +1,108 @@
+<!-- =========================
+Footer v3
+===========================-->
+<footer
+  class="footer footer-three bg-white dark:bg-background-8 {=$class} relative overflow-hidden"
+>
+  <div class="main-container">
+    <!-- footer bg-img  -->
+
+    <figure
+      data-ns-animate
+      data-delay="0.7"
+      data-offset="100"
+      data-direction="right"
+      class="footer-gradient-visible absolute overflow-hidden hidden {=$bg-gradient-class}"
+    >
+      <img src="{=$bg-gradient-img}" alt="gradient-img" class="w-full h-full object-cover" />
+    </figure>
+
+    <div
+      class="grid grid-cols-12 lg:gap-x-8 xl:gap-x-0 gap-x-0 gap-y-16 xl:pt-[100px] pt-16 pb-16 justify-between"
+    >
+      <div class="lg:col-span-4 col-span-12">
+        <div data-ns-animate data-delay="0.3" class="xl:max-w-[306px]">
+          <figure class="max-h-[44px] max-w-[44px]">
+            <img src="/images/logo.png" alt="ArgusPAM" class="h-full w-full object-contain" />
+          </figure>
+          <p class="mt-4 mb-7 text-secondary dark:text-accent">
+            Secure your databases with AI-powered, Zero Standing Privilege access.
+          </p>
+        </div>
+      </div>
+      <div class="lg:col-span-8 col-span-12 grid grid-cols-12 gap-x-0 gap-y-8">
+        <div class="col-span-12 md:col-span-4">
+          <div data-ns-animate data-delay="0.4" class="space-y-8">
+            <p class="sm:text-heading-6 text-tagline-1 font-normal text-secondary dark:text-accent">
+              ArgusPAM
+            </p>
+            <ul class="space-y-5">
+              <li>
+                <a href="#" class="footer-link-v2"> Home </a>
+              </li>
+              <li>
+                <a href="#why" class="footer-link-v2"> Why ArgusPAM </a>
+              </li>
+              <li>
+                <a href="#features" class="footer-link-v2"> Features </a>
+              </li>
+              <li>
+                <a href="#use-cases" class="footer-link-v2"> Use Cases </a>
+              </li>
+              <li>
+                <a href="#how-it-works" class="footer-link-v2"> How It Works </a>
+              </li>
+              <li>
+                <a href="#faq" class="footer-link-v2"> FAQ </a>
+              </li>
+              <li>
+                <a href="#early-access" class="footer-link-v2"> Get Early Access </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-span-12 md:col-span-4">
+          <div data-ns-animate data-delay="0.6" class="space-y-8">
+            <p class="sm:text-heading-6 text-tagline-1 font-normal text-secondary dark:text-accent">
+              Legal Policies
+            </p>
+            <ul class="space-y-5">
+              <li>
+                <a href="./terms-conditions-page.html" class="footer-link-v2">
+                  Terms & Conditions
+                </a>
+              </li>
+              <li>
+                <a href="./privacy-page.html" class="footer-link-v2"> Privacy Policy </a>
+              </li>
+              <li>
+                <a href="./gdpr-page.html" class="footer-link-v2"> GDPR Compliance </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="pt-6 pb-[60px] text-center relative overflow-hidden">
+      <div
+        class="footer-divider absolute top-0 left-0 right-0 w-0 origin-center mx-auto h-px bg-stroke-2 dark:bg-accent/5"
+      ></div>
+      <p
+        data-ns-animate
+        data-delay="0.7"
+        data-offset="10"
+        data-start="top 105%"
+        class="text-secondary dark:text-accent/60"
+      >
+        Copyright &copy;ArgusPAM - No standing privileges. No excuses. Just secure, smart access.
+      </p>
+    </div>
+  </div>
+  <div class="{=$hide-theme-toggle}">
+    <Component src="src/components/shared/theme-toggle.htm" />
+  </div>
+  <Component src="src/components/shared/package-link.htm" />
+
+  <!-- SCRIPT -->
+  <script type="module" src="./src/main.js"></script>
+</footer>

@@ -9,7 +9,6 @@ import './js/animation/marquee';
 import './js/animation/modal';
 import './js/animation/sidebar';
 import './js/animation/slider';
-import './js/animation/svg-draw';
 import './js/animation/swiper';
 import './js/animation/tab';
 import './js/animation/tab-filter';

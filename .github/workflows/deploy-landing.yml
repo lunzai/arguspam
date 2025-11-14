@@ -34,6 +34,7 @@ jobs:
         else
           npm ci --production
           npm run build
+          sed -e "s/GTM_ID/${{ vars.GTM_ID }}/g" dist/index.html > dist/index.html
         fi
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4

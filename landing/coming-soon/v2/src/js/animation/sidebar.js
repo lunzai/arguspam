@@ -23,7 +23,7 @@ const sidebarAnimation = {
   },
 
   bindEvents() {
-    const { navHamburger, navHamburgerClose, subMenu } = this.elements;
+    const { navHamburger, navHamburgerClose, subMenu, sidebar } = this.elements;
 
     if (navHamburger) {
       navHamburger.addEventListener('click', () => {
@@ -34,8 +34,18 @@ const sidebarAnimation = {
 
     if (navHamburgerClose) {
       navHamburgerClose.addEventListener('click', () => {
-        this.elements.sidebar.classList.remove('show-sidebar');
-        document.body.classList.remove('overflow-hidden');
+        this.closeSidebar();
+      });
+    }
+
+    // Close sidebar when clicking on navigation links
+    if (sidebar) {
+      const sidebarLinks = sidebar.querySelectorAll('a[href]');
+      sidebarLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          // Close sidebar when any link is clicked
+          this.closeSidebar();
+        });
       });
     }
 
@@ -54,6 +64,11 @@ const sidebarAnimation = {
         });
       });
     });
+  },
+
+  closeSidebar() {
+    this.elements.sidebar.classList.remove('show-sidebar');
+    document.body.classList.remove('overflow-hidden');
   },
 };
 

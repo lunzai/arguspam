@@ -11,6 +11,10 @@ use App\Http\Filters\QueryFilter;
 use App\Traits\HasBlamable;
 use App\Traits\HasRbac;
 use App\Traits\HasStatus;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
+use BaconQrCode\Writer;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Database\Eloquent\Builder;
@@ -138,12 +142,19 @@ class User extends Authenticatable
                 if (!$this->twoFactorPendingConfirmation) {
                     return null;
                 }
-                $inlineQr = (new Google2FA)->getQRCodeInline(
+                $google2fa = new Google2FA();
+                $qrCodeUrl = $google2fa->getQRCodeUrl(
                     $appName,
                     $this->email,
                     $this->two_factor_secret,
                 );
-                return 'data:image/svg+xml;base64,'.base64_encode($inlineQr);
+                $renderer = new ImageRenderer(
+                    new RendererStyle(256, 0),
+                    new SvgImageBackEnd
+                );
+                $writer = new Writer($renderer);
+                $svgString = $writer->writeString($qrCodeUrl);
+                return 'data:image/svg+xml;base64,'.base64_encode($svgString);
             }
         );
     }

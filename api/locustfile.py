@@ -24,8 +24,8 @@ class StagesShape(LoadTestShape):
     - Ramp down to 0 over 1 minute
     """
     stages = [
-        {"duration": 30, "users": 250, "spawn_rate": 25},
-        {"duration": 120, "users": 250, "spawn_rate": 1},
+        {"duration": 30, "users": 100, "spawn_rate": 25},
+        {"duration": 120, "users": 100, "spawn_rate": 1},
         {"duration": 150, "users": 0, "spawn_rate": 25},
     ]
 
@@ -49,12 +49,12 @@ class ArgusPAMAPIUser(HttpUser):
     5. Logout on stop
     """
 
-    wait_time = between(1.5, 3)
-    #wait_time = constant_throughput(0.5)
+    wait_time = between(0.25, 1.5)
+    #wait_time = constant_throughput(1)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.token = '1467|BuI0ieHDIdns4quaiLe2QV9lHaqBuXiELjXMLEwse62c49cf'
+        self.token = '1472|nVodH683qZPgbL2s8u3HiYTDTv68zlaFo1PXA8Sn9b91de17'
         self.org_id = 1
         self.temp_key = None
         self.authenticated = True
@@ -392,17 +392,17 @@ class ArgusPAMAPIUser(HttpUser):
             name="15. GET /sessions"
         )
 
-    @task(1)
-    def get_settings(self):
-        """Get application settings"""
-        if not self._check_auth():
-            return
+    # @task(1)
+    # def get_settings(self):
+    #     """Get application settings"""
+    #     if not self._check_auth():
+    #         return
 
-        self.client.get(
-            "/settings",
-            headers=self._get_auth_headers(),
-            name="16. GET /settings"
-        )
+    #     self.client.get(
+    #         "/settings",
+    #         headers=self._get_auth_headers(),
+    #         name="16. GET /settings"
+    #     )
 
     @task(1)
     def search_multiple_resources(self):

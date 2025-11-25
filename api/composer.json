@@ -15,6 +15,7 @@
         "geoip2/geoip2": "~2.0",
         "laravel/framework": "^12.0",
         "laravel/horizon": "^5.36",
+        "laravel/nightwatch": "^1.19",
         "laravel/prompts": "^0.3.5",
         "laravel/sanctum": "^4.0",
         "laravel/slack-notification-channel": "^3.6",

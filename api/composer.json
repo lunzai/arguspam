@@ -21,6 +21,7 @@
         "laravel/slack-notification-channel": "^3.6",
         "laravel/telescope": "^5.15",
         "laravel/tinker": "^2.10.1",
+        "lunzai/laravel-cache-dependency": "^0.9.0",
         "openai-php/laravel": "^0.17.1",
         "pragmarx/google2fa-qrcode": "^3.0",
         "predis/predis": "^3.0",

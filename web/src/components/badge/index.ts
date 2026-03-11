@@ -4,5 +4,6 @@ import GrayBadge from './gray.svelte';
 import GreenBadge from './green.svelte';
 import BlueBadge from './blue.svelte';
 import YellowBadge from './yellow.svelte';
+import MultipleBadge from './multiple.svelte';
 
-export { StatusBadge, RedBadge, GrayBadge, GreenBadge, BlueBadge, YellowBadge };
+export { StatusBadge, RedBadge, GrayBadge, GreenBadge, BlueBadge, YellowBadge, MultipleBadge };

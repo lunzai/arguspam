@@ -1,86 +1,23 @@
 <script lang="ts">
 	import type { User } from '$models/user';
 	import { shortDateTime } from '$utils/date';
-	import { page } from '$app/state';
     import type { ColumnDef } from "@tanstack/table-core";
 	import type { UserResource } from '$lib/resources/user';
 	import type { RoleResource } from '$lib/resources/role';
-    import { renderComponent, renderSnippet } from "$ui/data-table";
-    import DataTable from './data-table.svelte';
-    import type { ApiMeta, Resource } from '$components/data-table/types';
-    import type { User as UserModel } from '$models/user';
+    import { renderComponent } from "$ui/data-table";
+    import { Table, tableStateToUrlParams } from '$components/datatable';
+    import type { ApiMeta } from '$components/data-table/types';
     import { Status } from '$components/status';
 	import { MultipleBadge } from '$components/badge';
     import DatatableButton from '$components/datatable/button.svelte';
     import { NotebookText } from '@lucide/svelte';
+    import type { Table as TableType, VisibilityState } from '@tanstack/table-core';
+    import { goto } from '$app/navigation';
 
     const { data } = $props();
-    const {
-        list,
-        meta
-    } = data;
+    const list = $derived(data?.list as UserResource[]);
+    const meta = $derived(data?.meta as ApiMeta);
 
-    const columnsFilterType = [
-        {
-            id: 'id',
-            type: 'number',
-        },
-        {
-            id: 'name',
-            type: 'text',
-        },
-        {
-            id: 'email',
-            type: 'text',
-        },
-        {
-            id: 'roles',
-            type: 'select',
-            options: [
-                {
-                    label: 'Admin',
-                    value: 'admin',
-                },
-                {
-                    label: 'User',
-                    value: 'user',
-                },
-            ],
-        },
-        {
-            id: 'mfa',
-            type: 'select',
-            options: [
-                {
-                    label: 'Enrolled',
-                    value: 'enrolled',
-                },
-                {
-                    label: 'Pending',
-                    value: 'pending',
-                },
-                {
-                    label: 'Off',
-                    value: 'off',
-                },
-            ],
-        },
-        {
-            id: 'status',
-            type: 'select',
-            options: [
-                {
-                    label: 'Active',
-                    value: 'active',
-                },
-                {
-                    label: 'Inactive',
-                    value: 'inactive',
-                },
-            ],
-        },
-    ];
-    
     const columns: ColumnDef<UserResource>[] = [
         {
             id: 'id',
@@ -150,7 +87,6 @@
             enableHiding: false,
             enableColumnFilter: false,
             cell: ({ row }) => {
-                // You can pass whatever you need from `row.original` to the component
                 return renderComponent(DatatableButton, {
                     href: `/users/${row.original.attributes.id}`,
                     label: 'View',
@@ -159,6 +95,36 @@
 			}
 		}
 	];
+
+    const basePath = '/user2';
+    const baseParams = {};
+
+    function handlePaginationChange(table: TableType<UserResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
+
+    function handleSortChange(table: TableType<UserResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
+
+    function handleFilterChange(table: TableType<UserResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
+
+    function handleColumnVisibilityChange(table: TableType<UserResource>) {
+        // Column visibility is local-only; no server round-trip
+    }
 </script>
 
-<DataTable {columns} data={list as UserResource[]} meta={meta as ApiMeta} />
+<Table 
+    columns={columns} 
+    data={list as UserResource[]} 
+    meta={meta as ApiMeta} 
+    onPaginationChange={handlePaginationChange} 
+    onSortingChange={handleSortChange} 
+    onColumnFiltersChange={handleFilterChange} 
+    onColumnVisibilityChange={handleColumnVisibilityChange} 
+/>

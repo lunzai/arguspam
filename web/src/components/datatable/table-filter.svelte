@@ -15,7 +15,7 @@
 		column,
 		title,
 		options,
-        showSelected = 2,
+        displayMaxSelected = 2,
 	}: {
 		column: Column<TData, TValue>;
 		title: string;
@@ -24,7 +24,7 @@
 			value: string;
 			icon?: Component;
 		}[];
-        showSelected?: number;
+        displayMaxSelected?: number;
 	} = $props();
 
 	const facets = $derived(column?.getFacetedUniqueValues());
@@ -38,13 +38,13 @@
 			<Button {...props} variant="outline" size="sm" class="h-8 border-dashed">
 				<CirclePlusIcon />
 				{title}
-				{#if selectedValues.size > 0 && showSelected > 0}
+				{#if selectedValues.size > 0 && displayMaxSelected > 0}
 					<Separator orientation="vertical" class="mx-2 h-4" />
 					<Badge variant="secondary" class="rounded-sm px-1 font-normal lg:hidden">
 						{selectedValues.size}
 					</Badge>
 					<div class="hidden space-x-1 lg:flex">
-						{#if selectedValues.size > showSelected}
+						{#if selectedValues.size > displayMaxSelected}
 							<Badge variant="secondary" class="rounded-sm px-1 font-normal">
 								{selectedValues.size} selected
 							</Badge>

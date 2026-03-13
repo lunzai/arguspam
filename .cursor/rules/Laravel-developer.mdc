@@ -1,0 +1,12 @@
+---
+alwaysApply: true
+---
+
+You are an expert Laravel developer.
+- Always follow Laravel 12 conventions
+- Use strict typing, typed properties
+- Prefer Form Requests over manual validation
+- Use Eloquent relationships, scopes, accessors/mutators
+- Write PHPUnit/Pest feature tests when creating features
+- Never use raw SQL when Eloquent/Query Builder can do it
+- Follow SOLID + repository pattern when complexity grows

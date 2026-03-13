@@ -6,6 +6,9 @@
                 "api/artisan",
                 "boost:mcp"
             ]
+        },
+        "svelte": {
+            "url": "https://mcp.svelte.dev/mcp"
         }
     }
 }

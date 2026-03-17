@@ -10,15 +10,20 @@
 	import { Separator } from "$ui/separator";
 	import { Badge } from "$ui/badge";
 	import type { Component } from "svelte";
+    import type { Table as TableType } from "@tanstack/table-core";
 
 	let {
-		column,
+		table,
+		attribute,
 		title,
-		options,
+        placeholder,
+        options,
         displayMaxSelected = 2,
 	}: {
-		column: Column<TData, TValue>;
+        table: TableType<TData>;
+		attribute: string;
 		title: string;
+        placeholder?: string;
 		options: {
 			label: string;
 			value: string;
@@ -26,10 +31,22 @@
 		}[];
         displayMaxSelected?: number;
 	} = $props();
+    const column = $derived(table.getColumn(attribute) as Column<TData, TValue>);
+    const selectedValues = new SvelteSet<string>();
 
-	const facets = $derived(column?.getFacetedUniqueValues());
-	const selectedValues = $derived(new SvelteSet(column?.getFilterValue() as string[]));
-    $inspect(selectedValues)
+    $effect(() => {
+        const filterValue = column.getFilterValue();
+        selectedValues.clear();
+        if (filterValue !== undefined && filterValue !== null) {
+            const values = Array.isArray(filterValue) ? filterValue : [filterValue];
+            values.forEach((v) => selectedValues.add(String(v)));
+        }
+    });
+
+    function clearFilters() {
+        selectedValues.clear();
+        column.setFilterValue(undefined);
+    }
 </script>
 
 <Popover.Root>
@@ -49,7 +66,7 @@
 								{selectedValues.size} selected
 							</Badge>
 						{:else}
-							{#each options.filter( (opt) => selectedValues.has(opt.value) ) as option (option)}
+							{#each options?.filter( (opt) => selectedValues.has(opt.value) ) as option (option)}
 								<Badge variant="secondary" class="rounded-sm px-1 font-normal">
 									{option.label}
 								</Badge>
@@ -62,7 +79,7 @@
 	</Popover.Trigger>
 	<Popover.Content class="w-[200px] p-0" align="start">
 		<Command.Root>
-			<Command.Input placeholder={title} />
+			<Command.Input placeholder={placeholder ? placeholder : title} />
 			<Command.List>
 				<Command.Empty>No results found.</Command.Empty>
 				<Command.Group>
@@ -76,7 +93,7 @@
 									selectedValues.add(option.value);
 								}
 								const filterValues = Array.from(selectedValues);
-								column?.setFilterValue(
+								column.setFilterValue(
 									filterValues.length ? filterValues : undefined
 								);
 							}}
@@ -97,13 +114,6 @@
 							{/if}
 
 							<span>{option.label}</span>
-							{#if facets?.get(option.value)}
-								<span
-									class="ms-auto flex size-4 items-center justify-center font-mono text-xs"
-								>
-									{facets.get(option.value)}
-								</span>
-							{/if}
 						</Command.Item>
 					{/each}
 				</Command.Group>
@@ -111,7 +121,7 @@
 					<Command.Separator />
 					<Command.Group>
 						<Command.Item
-							onSelect={() => column?.setFilterValue(undefined)}
+							onSelect={clearFilters}
 							class="justify-center text-center"
 						>
 							Clear filters

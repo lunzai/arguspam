@@ -14,11 +14,13 @@
     import * as Table from "$ui/table";
     import type { ApiMeta } from "$components/data-table/types";
     import * as DataTable from "$components/datatable/index";
+    import type { Snippet } from "svelte";
 
     type DataTableProps<TData> = {
         columns: ColumnDef<TData>[];
         data: TData[];
         meta: ApiMeta;
+        filters?: Snippet<[TableType<TData>]>;
         onPaginationChange: (table: TableType<TData>) => void;
         onSortingChange: (table: TableType<TData>) => void;
         onColumnFiltersChange: (table: TableType<TData>) => void;
@@ -29,6 +31,7 @@
         data, 
         columns, 
         meta, 
+        filters,
         onPaginationChange, 
         onSortingChange, 
         onColumnFiltersChange, 
@@ -42,8 +45,6 @@
     let sorting = $state<SortingState>([]);
     let columnFilters = $state<ColumnFiltersState>([]);
     let columnVisibility = $state<VisibilityState>({});
-
-    $inspect('meta', meta);
 
     const table = createSvelteTable({
         get data() {
@@ -111,9 +112,11 @@
 </script>
 
 <div class="flex items-center justify-between">
-    <div>
-        <!-- <Input type="text" placeholder="Search..." /> -->
-    </div>
+    {#if filters}
+        <div>
+            {@render filters(table)}
+        </div>
+    {/if}
     <div>
         <DataTable.ColumnSelector table={table} />
     </div>

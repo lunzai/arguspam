@@ -11,8 +11,9 @@
 	import { MultipleBadge } from '$components/badge';
     import DatatableButton from '$components/datatable/button.svelte';
     import { NotebookText } from '@lucide/svelte';
-    import type { Table as TableType, VisibilityState } from '@tanstack/table-core';
+    import type { Table as TableType, VisibilityState, Column } from '@tanstack/table-core';
     import { goto } from '$app/navigation';
+    import { Filter, Search, FilterReset } from '$components/datatable';
 
     const { data } = $props();
     const list = $derived(data?.list as UserResource[]);
@@ -45,7 +46,7 @@
             }
         },
         {
-            id: 'mfa',
+            id: 'two_factor_enabled',
             header: 'MFA',
             accessorKey: 'attributes.two_factor_enabled',
             cell: ({ row }) => {
@@ -127,4 +128,56 @@
     onSortingChange={handleSortChange} 
     onColumnFiltersChange={handleFilterChange} 
     onColumnVisibilityChange={handleColumnVisibilityChange} 
-/>
+>
+    {#snippet filters(table: TableType<UserResource>)}
+        <div class="flex gap-2">
+            <Search 
+                table={table}
+                attribute="name"
+                title="Name"
+            />
+
+            <Search 
+                table={table}
+                attribute="email"
+                title="Email"
+            />
+            <Filter 
+                table={table}
+                attribute="status"
+                title="Status"
+                options={[
+                    {
+                        label: 'Active',
+                        value: 'active',
+                    },
+                    {
+                        label: 'Inactive',
+                        value: 'inactive',
+                    }
+                ]}
+            />
+
+            <Filter 
+                table={table}
+                attribute="two_factor_enabled"
+                title="MFA"
+                options={[
+                    {
+                        label: 'Active',
+                        value: 'active',
+                    },
+                    {
+                        label: 'Pending',
+                        value: 'pending',
+                    },
+                    {
+                        label: 'Off',
+                        value: 'off',
+                    }
+                ]}
+            />
+            <FilterReset table={table} />
+        </div>
+    {/snippet}
+</Table>

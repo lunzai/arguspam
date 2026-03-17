@@ -29,7 +29,6 @@
 
 	const facets = $derived(column?.getFacetedUniqueValues());
 	const selectedValues = $derived(new SvelteSet(column?.getFilterValue() as string[]));
-    $inspect(selectedValues)
 </script>
 
 <Popover.Root>

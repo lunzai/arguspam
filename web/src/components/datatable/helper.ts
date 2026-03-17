@@ -44,7 +44,16 @@ export function tableStateToUrlParams(table: Table<any>, base: Partial<ListUrlPa
 	params.set('page', String(table.getState().pagination.pageIndex + 1));
 	params.set('per_page', String(table.getState().pagination.pageSize));
 	params.set('sort', sort.length ? sort.join(',') : base.sort?.join(',') || '');
-	//params.set('filter', Object.keys(filter).length ? Object.fromEntries(Object.entries(filter).map(([key, value]) => [key, String(value)])) : base.filter ? Object.fromEntries(Object.entries(base.filter).map(([key, value]) => [key, String(value)])) : undefined);
+	const filterToUse: Record<string, string> = Object.keys(filter).length
+		? filter
+		: base.filter
+			? Object.fromEntries(
+					Object.entries(base.filter).map(([k, v]) => [k, String(Array.isArray(v) ? v.join(',') : v)])
+				)
+			: {};
+	for (const [key, value] of Object.entries(filterToUse)) {
+		params.set(`filter[${key}]`, value);
+	}
 
 	return params;
 }

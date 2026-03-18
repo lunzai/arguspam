@@ -16,7 +16,7 @@ class AuditController extends Controller
     public function index(ActionAuditFilter $filter, Request $request): ActionAuditCollection
     {
         $this->authorize('view', ActionAudit::class);
-        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $pagination = $request->input('per_page', config('pam.pagination.per_page'));
         $actionAudits = ActionAudit::filter($filter)
             ->paginate($pagination);
         return new ActionAuditCollection($actionAudits);

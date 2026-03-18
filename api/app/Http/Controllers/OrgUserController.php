@@ -15,7 +15,7 @@ class OrgUserController extends Controller
     public function index(Org $org, Request $request): UserCollection
     {
         $this->authorize('listUsers', $org);
-        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $pagination = $request->input('per_page', config('pam.pagination.per_page'));
         $users = $org->users()
             ->paginate($pagination);
         return new UserCollection($users);

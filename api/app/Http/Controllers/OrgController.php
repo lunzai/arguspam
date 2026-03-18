@@ -20,7 +20,7 @@ class OrgController extends Controller
     public function index(OrgFilter $filter, Request $request): OrgCollection
     {
         $this->authorize('view', Org::class);
-        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $pagination = $request->input('per_page', config('pam.pagination.per_page'));
         $orgs = Org::filter($filter)
             ->paginate($pagination);
         return new OrgCollection($orgs);

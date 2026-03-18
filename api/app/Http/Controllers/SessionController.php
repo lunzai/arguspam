@@ -23,7 +23,7 @@ class SessionController extends Controller
     public function index(SessionFilter $filter, Request $request): SessionCollection
     {
         $this->authorize('view', Session::class);
-        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $pagination = $request->input('per_page', config('pam.pagination.per_page'));
         $sessions = Session::filter($filter)
             ->paginate($pagination);
         return new SessionCollection($sessions);

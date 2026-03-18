@@ -19,7 +19,7 @@ class RoleController extends Controller
     public function index(RoleFilter $filter, Request $request): RoleCollection
     {
         $this->authorize('view', Role::class);
-        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $pagination = $request->input('per_page', config('pam.pagination.per_page'));
         $roles = Role::filter($filter)
             ->paginate($pagination);
         return new RoleCollection($roles);

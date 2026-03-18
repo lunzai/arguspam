@@ -1,0 +1,41 @@
+{
+    "$schema": "https://getcomposer.org/schema.json",
+    "name": "lunzai/laravel-query-search",
+    "description": "Yii2-inspired declarative query filtering, sorting, and including for Laravel 12.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "laravel",
+        "query",
+        "filter",
+        "search",
+        "yii2"
+    ],
+    "require": {
+        "php": "^8.3",
+        "laravel/framework": "^12.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.0",
+        "phpunit/phpunit": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lunzai\\QuerySearch\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lunzai\\QuerySearch\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Lunzai\\QuerySearch\\QuerySearchServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

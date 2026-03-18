@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "354701e078c5c13bc214389ecdcd7d0e",
+    "content-hash": "93cf2e9ba4e165c3e9f7fc916265cdd2",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2770,6 +2770,56 @@
                 "source": "https://github.com/lunzai/laravel-cache-dependency/tree/0.9.0"
             },
             "time": "2025-11-26T05:32:40+00:00"
+        },
+        {
+            "name": "lunzai/laravel-query-search",
+            "version": "dev-claude/laravel-query-filter-package-9X1Xa",
+            "dist": {
+                "type": "path",
+                "url": "../packages/lunzai/laravel-query-search",
+                "reference": "85b6c8ae6da95467537ae52a95f21dec34c0a2e1"
+            },
+            "require": {
+                "laravel/framework": "^12.0",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^10.0",
+                "phpunit/phpunit": "^12.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Lunzai\\QuerySearch\\QuerySearchServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Lunzai\\QuerySearch\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Lunzai\\QuerySearch\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Yii2-inspired declarative query filtering, sorting, and including for Laravel 12.",
+            "keywords": [
+                "filter",
+                "laravel",
+                "query",
+                "search",
+                "yii2"
+            ],
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            }
         },
         {
             "name": "maxmind-db/reader",
@@ -10898,7 +10948,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "lunzai/laravel-query-search": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

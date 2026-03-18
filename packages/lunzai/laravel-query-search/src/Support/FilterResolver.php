@@ -45,6 +45,16 @@ class FilterResolver
         $filter = $this->container->make($filterClass);
 
         if ($relation !== null) {
+            // Probe the filter on an isolated query to check if it would add any
+            // constraints. If the value is effectively empty (e.g. ",,,") the inner
+            // filter is a no-op — applying whereHas anyway would incorrectly restrict
+            // results to records that have at least one related row.
+            $probe = $filter->apply($query->getModel()->newQuery(), $column, $value);
+
+            if (empty($probe->getQuery()->wheres)) {
+                return $query;
+            }
+
             return $query->whereHas(
                 $relation,
                 fn (Builder $q) => $filter->apply($q, $column, $value)

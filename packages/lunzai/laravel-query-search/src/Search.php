@@ -89,6 +89,7 @@ abstract class Search
     public function for(Builder $query): static
     {
         $this->query = $query;
+        $this->applied = false;
 
         return $this;
     }

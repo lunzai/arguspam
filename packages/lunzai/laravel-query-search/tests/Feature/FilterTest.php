@@ -206,4 +206,22 @@ class FilterTest extends TestCase
 
         $this->assertCount(2, $result);
     }
+
+    public function test_relation_filter_with_empty_value_does_not_apply_where_has(): void
+    {
+        // Alice has a role; Bob has none.
+        $role = Role::create(['name' => 'Admin']);
+        $alice = User::create(['name' => 'Alice', 'email' => 'alice@example.com', 'status' => 'active']);
+        User::create(['name' => 'Bob', 'email' => 'bob@example.com', 'status' => 'active']);
+        $alice->roles()->attach($role);
+
+        // Sending only commas — InFilter produces no values, inner filter is a no-op.
+        // whereHas must NOT be applied, so both users are returned.
+        $result = (new UserSearch)
+            ->for(User::query())
+            ->fromRequest(Request::create('/', 'GET', ['filter' => ['role_id' => ',,,']]))
+            ->paginate(10);
+
+        $this->assertCount(2, $result);
+    }
 }

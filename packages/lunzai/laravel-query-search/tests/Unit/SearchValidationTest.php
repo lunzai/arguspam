@@ -63,4 +63,31 @@ class SearchValidationTest extends TestCase
         $this->assertCount(1, $result);
         $this->assertEquals('alice@example.com', $result->first()->email);
     }
+
+    public function test_reusing_instance_with_new_for_re_applies_filters(): void
+    {
+        User::create(['name' => 'Alice', 'email' => 'alice@example.com', 'status' => 'active']);
+        User::create(['name' => 'Bob', 'email' => 'bob@example.com', 'status' => 'inactive']);
+
+        $search = new UserSearch;
+
+        // First use — filter to active only.
+        $result1 = $search
+            ->for(User::query())
+            ->fromRequest(Request::create('/', 'GET', ['filter' => ['status' => 'active']]))
+            ->paginate(10);
+
+        $this->assertCount(1, $result1);
+        $this->assertEquals('alice@example.com', $result1->first()->email);
+
+        // Second use — same instance, different query and filter.
+        // for() must reset $applied so the new filter is actually applied.
+        $result2 = $search
+            ->for(User::query())
+            ->fromRequest(Request::create('/', 'GET', ['filter' => ['status' => 'inactive']]))
+            ->paginate(10);
+
+        $this->assertCount(1, $result2);
+        $this->assertEquals('bob@example.com', $result2->first()->email);
+    }
 }

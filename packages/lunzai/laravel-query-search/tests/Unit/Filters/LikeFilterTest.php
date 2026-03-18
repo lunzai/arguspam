@@ -44,4 +44,43 @@ class LikeFilterTest extends TestCase
 
         $this->assertSame($builder, $result);
     }
+
+    public function test_escapes_percent_wildcard_in_user_input(): void
+    {
+        $filter = new LikeFilter;
+
+        $builder = $this->createMock(Builder::class);
+        $builder->expects($this->once())
+            ->method('where')
+            ->with('email', 'like', '%100\%%')
+            ->willReturnSelf();
+
+        $filter->apply($builder, 'email', '100%');
+    }
+
+    public function test_escapes_underscore_wildcard_in_user_input(): void
+    {
+        $filter = new LikeFilter;
+
+        $builder = $this->createMock(Builder::class);
+        $builder->expects($this->once())
+            ->method('where')
+            ->with('email', 'like', '%a\_b%')
+            ->willReturnSelf();
+
+        $filter->apply($builder, 'email', 'a_b');
+    }
+
+    public function test_escapes_backslash_in_user_input(): void
+    {
+        $filter = new LikeFilter;
+
+        $builder = $this->createMock(Builder::class);
+        $builder->expects($this->once())
+            ->method('where')
+            ->with('email', 'like', '%foo\\\\bar%')
+            ->willReturnSelf();
+
+        $filter->apply($builder, 'email', 'foo\\bar');
+    }
 }

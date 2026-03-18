@@ -62,7 +62,6 @@ class FilterResolver
         $handlerClass = $definition['handler']
             ?? throw new RuntimeException('Custom filter missing [handler] key.');
 
-        /** @var FilterHandler $handler */
         $handler = $this->container->make($handlerClass);
 
         if (!$handler instanceof FilterHandler) {

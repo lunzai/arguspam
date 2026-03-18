@@ -40,6 +40,7 @@ abstract class Search
 
     private int $page = 1;
     private ?int $perPage = null;
+    private bool $applied = false;
 
     // -------------------------------------------------------------------------
     // Abstract API — concrete Search classes must implement these
@@ -136,6 +137,16 @@ abstract class Search
      */
     public function apply(): Builder
     {
+        if (!isset($this->query)) {
+            throw new \LogicException('Call for() before apply() or paginate().');
+        }
+
+        if ($this->applied) {
+            return $this->query;
+        }
+
+        $this->applied = true;
+
         $resolver = app(FilterResolver::class);
         $definitions = $this->filters();
 

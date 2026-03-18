@@ -12,6 +12,8 @@ class LikeFilter
             return $query;
         }
 
-        return $query->where($column, 'like', '%'.$value.'%');
+        $escaped = addcslashes($value, '\\%_');
+
+        return $query->where($column, 'like', '%'.$escaped.'%');
     }
 }

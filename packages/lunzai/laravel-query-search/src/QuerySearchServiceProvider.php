@@ -14,9 +14,7 @@ class QuerySearchServiceProvider extends ServiceProvider
             'query-search'
         );
 
-        $this->app->singleton(FilterResolver::class, function ($app) {
-            return new FilterResolver($app);
-        });
+        $this->app->singleton(FilterResolver::class);
     }
 
     public function boot(): void

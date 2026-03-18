@@ -39,7 +39,9 @@ abstract class Search
     private array $validatedCount = [];
 
     private int $page = 1;
+
     private ?int $perPage = null;
+
     private bool $applied = false;
 
     // -------------------------------------------------------------------------
@@ -112,7 +114,7 @@ abstract class Search
         ];
 
         // Ensure filter is always an array.
-        if (!is_array($raw['filter'])) {
+        if (! is_array($raw['filter'])) {
             $raw['filter'] = [];
         }
 
@@ -138,7 +140,7 @@ abstract class Search
      */
     public function apply(): Builder
     {
-        if (!isset($this->query)) {
+        if (! isset($this->query)) {
             throw new \LogicException('Call for() before apply() or paginate().');
         }
 
@@ -153,7 +155,7 @@ abstract class Search
 
         // Filters
         foreach ($this->validatedFilters as $key => $value) {
-            if (!isset($definitions[$key])) {
+            if (! isset($definitions[$key])) {
                 continue;
             }
 
@@ -161,18 +163,18 @@ abstract class Search
         }
 
         // Includes
-        if (!empty($this->validatedInclude)) {
-            $this->query->with($this->validatedInclude);
+        if (! empty($this->validatedInclude)) {
+            $this->query = $this->query->with($this->validatedInclude);
         }
 
         // Counts
-        if (!empty($this->validatedCount)) {
-            $this->query->withCount($this->validatedCount);
+        if (! empty($this->validatedCount)) {
+            $this->query = $this->query->withCount($this->validatedCount);
         }
 
         // Sorts
         foreach ($this->validatedSort as ['field' => $field, 'direction' => $direction]) {
-            $this->query->orderBy($field, $direction);
+            $this->query = $this->query->orderBy($field, $direction);
         }
 
         return $this->query;
@@ -234,7 +236,7 @@ abstract class Search
 
         // Validate top-level scalar fields independently.
         foreach (['sort', 'include', 'count', 'page', 'per_page'] as $field) {
-            if (!isset($raw[$field]) || $raw[$field] === '' || $raw[$field] === null) {
+            if (! isset($raw[$field]) || $raw[$field] === '' || $raw[$field] === null) {
                 continue;
             }
 
@@ -246,7 +248,7 @@ abstract class Search
 
             $v = Validator::make([$field => $raw[$field]], $fieldRules);
 
-            if (!$v->fails()) {
+            if (! $v->fails()) {
                 $valid[$field] = $raw[$field];
             }
         }
@@ -258,7 +260,7 @@ abstract class Search
             foreach ($raw['filter'] as $key => $value) {
                 $ruleKey = 'filter.'.$key;
 
-                if (!isset($rules[$ruleKey])) {
+                if (! isset($rules[$ruleKey])) {
                     // Not declared in filters() — always drop.
                     continue;
                 }
@@ -268,7 +270,7 @@ abstract class Search
                     [$ruleKey => $rules[$ruleKey]]
                 );
 
-                if (!$v->fails()) {
+                if (! $v->fails()) {
                     $valid['filter'][$key] = $value;
                 }
             }
@@ -292,7 +294,7 @@ abstract class Search
         // Sort — parse "field1,-field2"
         $this->validatedSort = [];
 
-        if (!empty($validated['sort'])) {
+        if (! empty($validated['sort'])) {
             foreach (explode(',', (string) $validated['sort']) as $segment) {
                 $segment = trim($segment);
 
@@ -315,7 +317,7 @@ abstract class Search
         // Include — whitelist against $includeable
         $this->validatedInclude = [];
 
-        if (!empty($validated['include'])) {
+        if (! empty($validated['include'])) {
             foreach (explode(',', (string) $validated['include']) as $relation) {
                 $relation = trim($relation);
 
@@ -328,7 +330,7 @@ abstract class Search
         // Count — whitelist against $countable
         $this->validatedCount = [];
 
-        if (!empty($validated['count'])) {
+        if (! empty($validated['count'])) {
             foreach (explode(',', (string) $validated['count']) as $relation) {
                 $relation = trim($relation);
 

@@ -2,6 +2,7 @@ import type { BaseModel } from '$lib/models/base-model';
 import type { BaseService, BaseFilterParams } from '$lib/services/base';
 import type { ApiMeta } from '$lib/resources/api';
 import { parseListParams } from './helper';
+import type { SuperValidated } from 'sveltekit-superforms';
 
 export interface CreateListLoadOptions<T extends BaseModel = BaseModel> {
 	/** Factory to create the service instance. Receives authToken and currentOrgId from locals. */
@@ -14,6 +15,10 @@ export interface CreateListLoadOptions<T extends BaseModel = BaseModel> {
 	depends?: string;
 	/** Page title. */
 	title?: string;
+	/** Forms to pre-populate. */
+	forms?: {
+		[key: string]: SuperValidated<any>;
+	};
 }
 
 /**
@@ -22,12 +27,12 @@ export interface CreateListLoadOptions<T extends BaseModel = BaseModel> {
  * Return type is compatible with PageServerLoad when assigned in +page.server.ts.
  */
 export function createListLoad<T extends BaseModel = BaseModel>(options: CreateListLoadOptions<T>) {
-	const { serviceFactory, rbacCheck, defaultParams = {}, depends, title = '' } = options;
+	const { serviceFactory, rbacCheck, defaultParams = {}, depends, title = '', forms = [] } = options;
 
 	return async ({
 		url,
 		locals,
-		depends: dependsFn
+		depends: dependsFn,
 	}: {
 		url: URL;
 		locals: App.Locals;
@@ -58,6 +63,7 @@ export function createListLoad<T extends BaseModel = BaseModel>(options: CreateL
 		return {
 			title,
 			list: response.data,
+			forms,
 			meta: (response.meta ?? {
 				current_page: 1,
 				from: 0,

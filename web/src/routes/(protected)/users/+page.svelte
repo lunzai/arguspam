@@ -13,12 +13,15 @@
     import type { Table as TableType } from '@tanstack/table-core';
     import { goto } from '$app/navigation';
     import { Filter, Search, FilterReset } from '$components/datatable';
+    import { page } from '$app/state';
+    import { getInitialStateFromUrlParams } from '$components/datatable/helper';
 
     const { data } = $props();
     const list = $derived(data?.list as UserResource[]);
     const meta = $derived(data?.meta as ApiMeta);
     const basePath = '/users';
     const baseParams = {};
+    const { initialSorting, initialFilters } = getInitialStateFromUrlParams(page.url, ['status', 'two_factor_enabled']);
 
     const columns: ColumnDef<UserResource>[] = [
         {
@@ -128,6 +131,8 @@
     onSortingChange={handleSortChange} 
     onColumnFiltersChange={handleFilterChange} 
     onColumnVisibilityChange={handleColumnVisibilityChange} 
+    {initialFilters}
+    {initialSorting}
 >
     {#snippet filters(table: TableType<UserResource>)}
         <div class="flex gap-2">

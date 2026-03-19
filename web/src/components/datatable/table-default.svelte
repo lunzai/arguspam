@@ -25,6 +25,8 @@
         onSortingChange: (table: TableType<TData>) => void;
         onColumnFiltersChange: (table: TableType<TData>) => void;
         onColumnVisibilityChange: (table: TableType<TData>) => void;
+        initialSorting?: SortingState;
+        initialFilters?: ColumnFiltersState;
     };
 
     let { 
@@ -35,15 +37,17 @@
         onPaginationChange, 
         onSortingChange, 
         onColumnFiltersChange, 
-        onColumnVisibilityChange 
+        onColumnVisibilityChange,
+        initialSorting,
+        initialFilters
     }: DataTableProps<TData> = $props();
-    
+
     let pagination = $state<PaginationState>({ 
         pageIndex: meta?.current_page ? meta?.current_page - 1 : 0, 
         pageSize: meta?.per_page ?? 20 
     });
-    let sorting = $state<SortingState>([]);
-    let columnFilters = $state<ColumnFiltersState>([]);
+    let sorting = $state<SortingState>(initialSorting ?? []);
+    let columnFilters = $state<ColumnFiltersState>(initialFilters ?? []);
     let columnVisibility = $state<VisibilityState>({});
 
     const table = createSvelteTable({
@@ -96,6 +100,7 @@
             } else {
                 columnFilters = updater;
             }
+            table.resetPageIndex();
             onColumnFiltersChange(table);
         },
         onColumnVisibilityChange: (updater) => {

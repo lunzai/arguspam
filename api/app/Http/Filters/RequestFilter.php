@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 class RequestFilter extends QueryFilter
 {
     protected array $sortable = [
+        'id',
         'org_id',
         'asset_id',
         'asset_account_id',

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 class AccessRestrictionFilter extends QueryFilter
 {
     protected array $sortable = [
+        'id',
         'name',
         'description',
         'type',

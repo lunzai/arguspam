@@ -1,4 +1,4 @@
-import type { Table } from '@tanstack/table-core';
+import type { ColumnFiltersState, SortingState, Table } from '@tanstack/table-core';
 import type { BaseFilterParams } from '$lib/services/base';
 
 export interface ListUrlParams {
@@ -56,5 +56,20 @@ export function tableStateToUrlParams(table: Table<any>, base: Partial<ListUrlPa
 	}
 
 	return params;
+}
+
+export function getInitialStateFromUrlParams(url: URL, arrayFilters: string[]): { initialSorting: SortingState, initialFilters: ColumnFiltersState } {
+    const urlParams = parseListParams(url);
+    const initialFilters = Object
+        .entries(urlParams.filter ?? {})
+        .map(([id, value]) => ({ 
+            id, 
+            value: arrayFilters.includes(id) ? value.split(',') : value
+        }));
+    const initialSorting = urlParams.sort?.map((s) => ({ id: s.startsWith('-') ? s.slice(1) : s, desc: s.startsWith('-') })) ?? [];
+    return {
+        initialSorting,
+        initialFilters,
+    };
 }
 

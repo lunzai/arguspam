@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 class AssetAccessGrantFilter extends QueryFilter
 {
     protected array $sortable = [
+        'id',
         'asset_id',
         'user_id',
         'user_group_id',

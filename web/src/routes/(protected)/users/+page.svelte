@@ -1,196 +1,183 @@
 <script lang="ts">
-	import { DataTable } from '$components/data-table/index';
-	import type { User } from '$models/user';
-	import type {
-		DataTableConfig,
-		PaginationConfig,
-		FilterConfig,
-		SortConfig
-	} from '$components/data-table/types';
 	import { shortDateTime } from '$utils/date';
-	import type { ColumnDefinition } from '$components/data-table/types';
-	import type { CellBadge } from '$components/data-table/types';
-	import { page } from '$app/state';
-	import { NotebookText } from '@lucide/svelte';
-	import type { Role } from '$lib/models/role';
+    import type { ColumnDef } from "@tanstack/table-core";
+	import type { UserResource } from '$lib/resources/user';
 	import type { RoleResource } from '$lib/resources/role';
+    import { renderComponent } from "$ui/data-table";
+    import { Table, tableStateToUrlParams } from '$components/datatable';
+    import type { ApiMeta } from '$components/data-table/types';
+    import { Status } from '$components/status';
+	import { MultipleBadge } from '$components/badge';
+    import DatatableButton from '$components/datatable/button.svelte';
+    import { NotebookText } from '@lucide/svelte';
+    import type { Table as TableType } from '@tanstack/table-core';
+    import { goto } from '$app/navigation';
+    import { Filter, Search, FilterReset } from '$components/datatable';
 
-	let initialSearchParams = page.url.searchParams;
-	const modelName = 'users';
+    const { data } = $props();
+    const list = $derived(data?.list as UserResource[]);
+    const meta = $derived(data?.meta as ApiMeta);
+    const basePath = '/users';
+    const baseParams = {};
 
-	export const columns: ColumnDefinition<User>[] = [
-		{
-			key: 'id',
-			title: 'ID',
-			sortable: true
-		},
-		{
-			key: 'name',
-			title: 'Name',
-			sortable: true,
-			filterable: true
-		},
-		{
-			key: 'email',
-			title: 'Email',
-			sortable: true,
-			filterable: true,
-			renderer: (value: string, row: User) => {
-				const mailWarningIcon =
-					'<svg class="text-red-500" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-warning-icon lucide-mail-warning"><path d="M22 10.5V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h12.5"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/><path d="M20 14v4"/><path d="M20 22v.01"/></svg>';
-				return (
-					`<div class="flex items-center gap-2">${value}` +
-					(!row.email_verified_at ? mailWarningIcon : '') +
-					'</div>'
-				);
-			}
-		},
-		{
-			key: 'roles',
-			title: 'Roles',
-			sortable: false,
-			filterable: false,
-			renderer: (value: string, row: User, relationships: any) => {
-				return (
-					relationships.roles?.map((role: RoleResource) => role.attributes.name).join(', ') || '-'
-				);
-			}
-		},
-		{
-			key: 'two_factor_enabled',
-			title: '2FA',
-			sortable: true,
-			filterable: true,
-			type: 'badge',
-			componentProps: (value: string, row: User) => {
-				let values: CellBadge[] = [];
-				if (row.two_factor_enabled) {
-					values.push({
-						value: 'Enabled',
-						variant: 'outline'
-					});
-					values.push({
-						value: row.two_factor_confirmed_at ? 'Enrolled' : 'Not Enrolled',
-						variant: row.two_factor_confirmed_at ? 'outline' : 'destructive'
-					});
-				} else {
-					values.push({
-						value: 'Not Enabled',
-						variant: 'secondary'
-					});
-				}
-				return { values };
-			}
-		},
-		{
-			key: 'last_login_at',
-			title: 'Last Login At',
-			sortable: true,
-			filterable: true,
-			visible: true,
-			renderer: (value: string) => {
-				return value ? shortDateTime(value) : '-';
-			}
-		},
-		{
-			key: 'status',
-			title: 'Status',
-			sortable: true,
-			filterable: true,
-			type: 'badge',
-			componentProps: (value: string, row: User) => {
-				let values: CellBadge[] = [
-					{
-						value: value === 'active' ? 'Active' : 'Inactive',
-						variant: value === 'active' ? 'default' : 'secondary'
-					}
-				];
-				return { values };
-			}
-		},
-		{
-			key: 'created_at',
-			title: 'Created At',
-			sortable: true,
-			filterable: false,
-			visible: true,
-			renderer: (value: string) => {
-				return value ? shortDateTime(value) : '-';
-			}
-		},
-		{
-			key: 'updated_at',
-			title: 'Updated At',
-			sortable: true,
-			filterable: false,
-			visible: false,
-			renderer: (value: string) => {
-				return value ? shortDateTime(value) : '';
-			}
-		},
-		{
-			key: 'actions',
-			title: 'Actions',
-			type: 'actions',
-			sortable: false,
-			componentProps: (value: string, row: User) => {
-				return {
-					actions: [
-						{
-							label: 'View',
-							icon: NotebookText,
-							href: `/${modelName}/${row.id}`,
-							variant: 'link',
-							class: 'hover:text-blue-500'
-						}
-					]
-				};
+    const columns: ColumnDef<UserResource>[] = [
+        {
+            id: 'id',
+            header: 'ID',
+            accessorKey: 'attributes.id',
+        },
+        {
+            id: 'name',
+            header: 'Name',
+            accessorKey: 'attributes.name',
+        },
+        {
+            id: 'email',
+            header: 'Email',
+            accessorKey: 'attributes.email',
+        },
+        {
+            id: 'roles',
+            header: 'Roles',
+            cell: ({ row }) => {
+                return renderComponent(MultipleBadge, { 
+                    values: row.original.relationships?.roles?.map((role: RoleResource) => role.attributes.name) || [],
+                    class: 'bg-transparent text-gray-700',
+                });
+            }
+        },
+        {
+            id: 'two_factor_enabled',
+            header: 'MFA',
+            accessorKey: 'attributes.two_factor_enabled',
+            cell: ({ row }) => {
+                return renderComponent(Status, { 
+                    status: row.original.attributes.two_factor_enabled ? 
+                        row.original.attributes.two_factor_confirmed_at ? 'Active' : 'Pending' : 'Off'
+                });
+            }
+        },
+        {
+            id: 'status',
+            header: 'Status',
+            accessorKey: 'attributes.status',
+            cell: ({ row }) => {
+                return renderComponent(Status, { status: row.original.attributes.status });
+            }
+        },
+        {
+            id: 'last_login_at',
+            header: 'Last Login At',
+            accessorKey: 'attributes.last_login_at',
+            enableColumnFilter: false,
+            cell: ({ row }) => {
+                return row.original.attributes.last_login_at ? shortDateTime(row.original.attributes.last_login_at) : '-';
+            }
+        },
+        {
+            id: 'created_at',
+            header: 'Created At',
+            accessorKey: 'attributes.created_at',
+            enableColumnFilter: false,
+            cell: ({ row }) => {
+                return row.original.attributes.created_at ? shortDateTime(row.original.attributes.created_at) : '-';
+            }
+        },
+        {
+            id: 'actions',
+            header: 'Actions',
+            enableHiding: false,
+            enableColumnFilter: false,
+            cell: ({ row }) => {
+                return renderComponent(DatatableButton, {
+                    href: `/${basePath}/${row.original.attributes.id}`,
+                    label: 'View',
+                    icon: NotebookText,
+				});
 			}
 		}
 	];
 
-	// Data table configuration
-	const config: DataTableConfig<User> = {
-		model: {} as User,
-		columns: columns,
-		apiEndpoint: `/api/search/${modelName}`,
-		paginationSiblingCount: { desktop: 3, mobile: 1 },
-		sortable: true,
-		filterable: true,
-		selectable: false,
-		loading: false,
-		emptyMessage: `No ${modelName} found`,
-		className: 'border rounded-lg',
-		headerClassName: 'bg-muted/50',
-		bodyClassName: 'divide-y',
-		rowClassName: 'hover:bg-muted/50 transition-colors',
-		cellClassName: 'p-3',
-		headerCellClassName: 'p-3 font-medium'
-	};
+    function handlePaginationChange(table: TableType<UserResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	// Event handlers
-	function handleDataChange(data: User[]) {}
+    function handleSortChange(table: TableType<UserResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	function handlePaginationChange(pagination: PaginationConfig) {}
+    function handleFilterChange(table: TableType<UserResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	function handleFilterChange(filters: FilterConfig) {}
-
-	function handleSortChange(sort: SortConfig) {}
-
-	function handleRowSelect(selectedRows: Set<string | number>) {}
+    function handleColumnVisibilityChange(table: TableType<UserResource>) {
+        // Column visibility is local-only; no server round-trip
+    }
 </script>
 
-<h1 class="text-2xl font-medium capitalize">{modelName}</h1>
+<h1 class="text-2xl font-medium capitalize">Users</h1>
 
-<!-- Data Table Component -->
-<DataTable
-	model={{} as User}
-	{config}
-	{initialSearchParams}
-	initialInclude={['roles']}
-	onDataChange={handleDataChange}
-	onPaginationChange={handlePaginationChange}
-	onFilterChange={handleFilterChange}
-	onSortChange={handleSortChange}
-	onRowSelect={handleRowSelect}
-/>
+<Table 
+    columns={columns} 
+    data={list as UserResource[]} 
+    meta={meta as ApiMeta} 
+    onPaginationChange={handlePaginationChange} 
+    onSortingChange={handleSortChange} 
+    onColumnFiltersChange={handleFilterChange} 
+    onColumnVisibilityChange={handleColumnVisibilityChange} 
+>
+    {#snippet filters(table: TableType<UserResource>)}
+        <div class="flex gap-2">
+            <Search 
+                table={table}
+                attribute="name"
+                title="Name"
+            />
+
+            <Search 
+                table={table}
+                attribute="email"
+                title="Email"
+            />
+            <Filter 
+                table={table}
+                attribute="status"
+                title="Status"
+                options={[
+                    {
+                        label: 'Active',
+                        value: 'active',
+                    },
+                    {
+                        label: 'Inactive',
+                        value: 'inactive',
+                    }
+                ]}
+            />
+
+            <Filter 
+                table={table}
+                attribute="two_factor_enabled"
+                title="MFA"
+                options={[
+                    {
+                        label: 'Active',
+                        value: 'active',
+                    },
+                    {
+                        label: 'Pending',
+                        value: 'pending',
+                    },
+                    {
+                        label: 'Off',
+                        value: 'off',
+                    }
+                ]}
+            />
+            <FilterReset table={table} />
+        </div>
+    {/snippet}
+</Table>

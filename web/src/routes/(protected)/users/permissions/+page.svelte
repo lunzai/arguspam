@@ -1,23 +1,25 @@
 <script lang="ts">
     import { shortDateTime } from '$utils/date';
     import type { ColumnDef } from "@tanstack/table-core";
-    import type { PermissionResource } from '$lib/resources/permission';
+    import type { PermissionResource as ModelResource } from '$lib/resources/permission';
     import { renderComponent } from "$ui/data-table";
-    import { Table, tableStateToUrlParams } from '$components/datatable';
-    import type { ApiMeta } from '$components/data-table/types';
-    import DatatableButton from '$components/datatable/button.svelte';
+    import { Table, tableStateToUrlParams, ButtonCell } from '$components/datatable';
+    import type { ApiMeta } from '$lib/resources/api';
     import { NotebookText } from '@lucide/svelte';
     import type { Table as TableType } from '@tanstack/table-core';
     import { goto } from '$app/navigation';
     import { Search, FilterReset } from '$components/datatable';
+    import { getInitialStateFromUrlParams } from '$components/datatable';
+    import { page } from '$app/state';
 
     const { data } = $props();
-    const list = $derived(data?.list as PermissionResource[]);
+    const list = $derived(data?.list as ModelResource[]);
     const meta = $derived(data?.meta as ApiMeta);
     const basePath = '/users/permissions';
     const baseParams = {};
+    const { initialSorting, initialFilters } = getInitialStateFromUrlParams(page.url, []);
 
-    const columns: ColumnDef<PermissionResource>[] = [
+    const columns: ColumnDef<ModelResource>[] = [
         {
             id: 'id',
             header: 'ID',
@@ -48,8 +50,8 @@
             enableHiding: false,
             enableColumnFilter: false,
             cell: ({ row }) => {
-                return renderComponent(DatatableButton, {
-                    href: `/${basePath}/${row.original.attributes.id}`,
+                return renderComponent(ButtonCell, {
+                    href: `${basePath}/${row.original.attributes.id}`,
                     label: 'View',
                     icon: NotebookText,
                 });
@@ -57,22 +59,22 @@
         }
     ];
 
-    function handlePaginationChange(table: TableType<PermissionResource>) {
+    function handlePaginationChange(table: TableType<ModelResource>) {
         const params = tableStateToUrlParams(table, baseParams);
         goto(`${basePath}?${params.toString()}`);
     }
 
-    function handleSortChange(table: TableType<PermissionResource>) {
+    function handleSortChange(table: TableType<ModelResource>) {
         const params = tableStateToUrlParams(table, baseParams);
         goto(`${basePath}?${params.toString()}`);
     }
 
-    function handleFilterChange(table: TableType<PermissionResource>) {
+    function handleFilterChange(table: TableType<ModelResource>) {
         const params = tableStateToUrlParams(table, baseParams);
         goto(`${basePath}?${params.toString()}`);
     }
 
-    function handleColumnVisibilityChange(table: TableType<PermissionResource>) {
+    function handleColumnVisibilityChange(table: TableType<ModelResource>) {
         // Column visibility is local-only; no server round-trip
     }
 </script>
@@ -81,14 +83,16 @@
 
 <Table 
     columns={columns} 
-    data={list as PermissionResource[]} 
+    data={list as ModelResource[]} 
     meta={meta as ApiMeta} 
     onPaginationChange={handlePaginationChange} 
     onSortingChange={handleSortChange} 
     onColumnFiltersChange={handleFilterChange} 
     onColumnVisibilityChange={handleColumnVisibilityChange} 
+    {initialSorting}
+    {initialFilters}
 >
-    {#snippet filters(table: TableType<PermissionResource>)}
+    {#snippet filters(table: TableType<ModelResource>)}
         <div class="flex gap-2">
             <Search 
                 table={table}

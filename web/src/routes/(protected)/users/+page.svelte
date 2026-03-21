@@ -1,14 +1,13 @@
 <script lang="ts">
 	import { shortDateTime } from '$utils/date';
     import type { ColumnDef } from "@tanstack/table-core";
-	import type { UserResource } from '$lib/resources/user';
+	import type { UserResource as ModelResource } from '$lib/resources/user';
 	import type { RoleResource } from '$lib/resources/role';
     import { renderComponent } from "$ui/data-table";
-    import { Table, tableStateToUrlParams } from '$components/datatable';
-    import type { ApiMeta } from '$components/data-table/types';
+    import { Table, tableStateToUrlParams, ButtonCell } from '$components/datatable';
+    import type { ApiMeta } from '$lib/resources/api';
     import { Status } from '$components/status';
 	import { MultipleBadge } from '$components/badge';
-    import DatatableButton from '$components/datatable/button.svelte';
     import { NotebookText } from '@lucide/svelte';
     import type { Table as TableType } from '@tanstack/table-core';
     import { goto } from '$app/navigation';
@@ -17,13 +16,13 @@
     import { getInitialStateFromUrlParams } from '$components/datatable/helper';
 
     const { data } = $props();
-    const list = $derived(data?.list as UserResource[]);
+    const list = $derived(data?.list as ModelResource[]);
     const meta = $derived(data?.meta as ApiMeta);
     const basePath = '/users';
     const baseParams = {};
     const { initialSorting, initialFilters } = getInitialStateFromUrlParams(page.url, ['status', 'two_factor_enabled']);
 
-    const columns: ColumnDef<UserResource>[] = [
+    const columns: ColumnDef<ModelResource>[] = [
         {
             id: 'id',
             header: 'ID',
@@ -92,8 +91,8 @@
             enableHiding: false,
             enableColumnFilter: false,
             cell: ({ row }) => {
-                return renderComponent(DatatableButton, {
-                    href: `/${basePath}/${row.original.attributes.id}`,
+                return renderComponent(ButtonCell, {
+                    href: `${basePath}/${row.original.attributes.id}`,
                     label: 'View',
                     icon: NotebookText,
 				});
@@ -101,22 +100,22 @@
 		}
 	];
 
-    function handlePaginationChange(table: TableType<UserResource>) {
+    function handlePaginationChange(table: TableType<ModelResource>) {
         const params = tableStateToUrlParams(table, baseParams);
         goto(`${basePath}?${params.toString()}`);
     }
 
-    function handleSortChange(table: TableType<UserResource>) {
+    function handleSortChange(table: TableType<ModelResource>) {
         const params = tableStateToUrlParams(table, baseParams);
         goto(`${basePath}?${params.toString()}`);
     }
 
-    function handleFilterChange(table: TableType<UserResource>) {
+    function handleFilterChange(table: TableType<ModelResource>) {
         const params = tableStateToUrlParams(table, baseParams);
         goto(`${basePath}?${params.toString()}`);
     }
 
-    function handleColumnVisibilityChange(table: TableType<UserResource>) {
+    function handleColumnVisibilityChange(table: TableType<ModelResource>) {
         // Column visibility is local-only; no server round-trip
     }
 </script>
@@ -125,7 +124,7 @@
 
 <Table 
     columns={columns} 
-    data={list as UserResource[]} 
+    data={list as ModelResource[]} 
     meta={meta as ApiMeta} 
     onPaginationChange={handlePaginationChange} 
     onSortingChange={handleSortChange} 
@@ -134,7 +133,7 @@
     {initialFilters}
     {initialSorting}
 >
-    {#snippet filters(table: TableType<UserResource>)}
+    {#snippet filters(table: TableType<ModelResource>)}
         <div class="flex gap-2">
             <Search 
                 table={table}

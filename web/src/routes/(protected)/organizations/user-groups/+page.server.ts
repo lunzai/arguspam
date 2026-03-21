@@ -1,30 +1,39 @@
 import type { Actions, PageServerLoad } from './$types';
 import { fail } from '@sveltejs/kit';
-import { UserGroupService } from '$services/user-group';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
 import type { UserGroup } from '$models/user-group';
 import { UserGroupSchema } from '$validations/user-group';
 import { Rbac } from '$lib/rbac';
+import { UserGroupService as ModelService } from '$lib/services/user-group';
+import { mergeParams } from '$components/datatable';
+import type { ApiMeta } from '$lib/resources/api';
 
-export const load: PageServerLoad = async ({ locals, depends }) => {
+export const load: PageServerLoad = async ({ locals, depends, url }) => {
 	depends('user-groups:list');
-	const rbac = new Rbac(locals.me);
+    const { authToken, currentOrgId, me } = locals;
+    const rbac = new Rbac(me);
 	rbac.userGroupView();
-	const { currentOrgId } = locals;
-	const model = {
+	const model: Partial<UserGroup> = {
 		org_id: Number(currentOrgId),
 		name: '',
 		description: '',
 		status: 'active'
-	} as UserGroup;
+	};
 	const form = await superValidate(zod4(UserGroupSchema));
+    const modelService = new ModelService(authToken as string, currentOrgId as number);
+    const response = await modelService.findAll(mergeParams({
+        perPage: 20,
+        count: ['users'],
+    }, url));
 	return {
 		form,
 		model,
 		title: 'User Groups',
-		canCreate: rbac.canUserGroupCreate()
+		canCreate: rbac.canUserGroupCreate(),
+        list: response.data,
+        meta: response.meta as ApiMeta,
 	};
 };
 
@@ -38,7 +47,7 @@ export const actions = {
 		}
 		const data = form.data;
 		try {
-			const userGroupService = new UserGroupService(authToken as string, currentOrgId as number);
+			const userGroupService = new ModelService(authToken as string, currentOrgId as number);
 			const response = await userGroupService.create(data);
 			return {
 				success: true,

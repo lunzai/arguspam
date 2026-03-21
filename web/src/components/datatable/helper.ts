@@ -73,3 +73,14 @@ export function getInitialStateFromUrlParams(url: URL, arrayFilters: string[]): 
     };
 }
 
+export function mergeParams(defaultParams: Partial<BaseFilterParams>, url: URL): Partial<BaseFilterParams> {
+    const urlParams = parseListParams(url);
+    return {
+        ...defaultParams,
+        ...urlParams,
+        filter: {
+            ...(defaultParams.filter ?? {}),
+            ...(urlParams.filter ?? {})
+        }
+    };
+}

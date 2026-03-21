@@ -5,5 +5,5 @@ export interface UserGroup extends BaseModel {
 	name: string;
 	description: string;
 	status: 'active' | 'inactive';
-	user_count?: number;
+	users_count?: number;
 }

@@ -5,22 +5,31 @@ import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
 import type { Role } from '$models/role';
 import { RoleSchema } from '$validations/role';
-import { RoleService } from '$services/role';
 import { Rbac } from '$lib/rbac';
+import { RoleService as ModelService } from '$lib/services/role';
+import { mergeParams } from '$components/datatable';
+import type { ApiMeta } from '$lib/resources/api';
 
-export const load: PageServerLoad = async ({ depends, locals }) => {
-	new Rbac(locals.me).roleView();
+export const load: PageServerLoad = async ({ depends, locals, url }) => {
 	depends('roles:list');
-	const model = {
+    const { authToken, currentOrgId, me } = locals;
+	new Rbac(me).roleView();
+	const model: Partial<Role> = {
 		name: '',
 		description: '',
 		is_default: false
-	} as Role;
+	};
 	const form = await superValidate(zod4(RoleSchema));
+    const modelService = new ModelService(authToken as string, currentOrgId as number);
+    const response = await modelService.findAll(mergeParams({
+        perPage: 20,
+    }, url));
 	return {
 		form,
 		model,
-		title: 'Roles'
+		title: 'Roles',
+        list: response.data,
+        meta: response.meta as ApiMeta
 	};
 };
 
@@ -34,7 +43,7 @@ export const actions = {
 		}
 		const data = form.data;
 		try {
-			const roleService = new RoleService(authToken as string, currentOrgId as number);
+			const roleService = new ModelService(authToken as string, currentOrgId as number);
 			const response = await roleService.create(data);
 			return {
 				success: true,

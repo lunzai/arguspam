@@ -1,187 +1,170 @@
-<script lang="ts">
-	import { DataTable } from '$components/data-table/index';
-	import type { Session } from '$models/session';
-	import type {
-		DataTableConfig,
-		PaginationConfig,
-		FilterConfig,
-		SortConfig
-	} from '$components/data-table/types';
-	import { shortDateTime, relativeDateTime } from '$lib/utils/date';
-	import type { ColumnDefinition } from '$components/data-table/types';
-	import { page } from '$app/state';
-	import { Pencil, NotebookText } from '@lucide/svelte';
-	import type { Asset } from '$models/asset';
-	import { formatDistanceStrict } from 'date-fns';
-	import type { CellBadge } from '$components/data-table/types';
-	import { capitalizeWords } from '$lib/utils/string';
-	import type { User } from '$models/user';
+<script lang="ts" >
+    import type { ColumnDef } from "@tanstack/table-core";
+    import { renderComponent } from "$ui/data-table";
+    import { 
+        Table, 
+        tableStateToUrlParams, 
+        AssetNameCell, 
+        StartEndDurationCell, 
+        SubtitleCell,
+        ButtonCell
+    } from '$components/datatable';
+    import type { ApiMeta } from '$lib/resources/api';
+    import { Status } from '$components/status';
+    import { NotebookText } from '@lucide/svelte';
+    import type { Table as TableType } from '@tanstack/table-core';
+    import { goto } from '$app/navigation';
+    import { Filter, FilterReset } from '$components/datatable';
+    import { getInitialStateFromUrlParams } from '$components/datatable/helper';
+    import type { SessionResource as ModelResource } from '$lib/resources/session';
+    import type { Asset } from '$lib/models/asset';
+    import type { User } from '$lib/models/user';
+    import { page } from '$app/state';
 
-	let initialSearchParams = page.url.searchParams;
-	const modelName = 'sessions';
+    const { data } = $props();
+    const list = $derived(data?.list as ModelResource[]);
+    const meta = $derived(data?.meta as ApiMeta);
+    const basePath = '/sessions';
+    const baseParams = {};
+    const { initialSorting, initialFilters } = getInitialStateFromUrlParams(page.url, ['status']);
 
-	export const columns: ColumnDefinition<Session>[] = [
-		{
-			key: 'id',
-			title: 'ID',
-			sortable: true
-		},
-		{
-			key: 'asset_id',
-			title: 'Asset',
-			sortable: true,
-			filterable: true,
-			renderer: (value: string, row: Session, relationships) => {
-				const asset = relationships.asset?.attributes as Asset;
-				return `<div>${asset?.name}</div>
-                <div class="text-muted-foreground text-xs truncate">${asset?.host}:${asset?.port}</div>
-                `;
-			}
-		},
-		{
-			key: 'scheduled_start_datetime',
-			title: 'Start/End',
-			sortable: true,
-			filterable: true,
-			renderer: (value: string, row: Session) => {
-				const startDatetime = row.scheduled_start_datetime;
-				const endDatetime = row.scheduled_end_datetime;
-				return `<div>${shortDateTime(startDatetime)} -</div>
-                <div>${shortDateTime(endDatetime)}</div>
-                <div class="text-muted-foreground text-xs">${formatDistanceStrict(startDatetime, endDatetime)}</div>
-                `;
-			}
-		},
-		{
-			key: 'status',
-			title: 'Status',
-			sortable: true,
-			filterable: true,
-			type: 'badge',
-			componentProps: (value: string, row: Session) => {
-				const wrapperClassName = 'text-sm';
-				let variant = 'default';
-				let className = '';
-				switch (value) {
-					case 'pending':
-						variant = 'default';
-						break;
-					case 'started':
-						variant = 'secondary';
-						className = 'bg-green-500 text-white';
-						break;
-					case 'ended':
-						variant = 'secondary';
-						className = 'bg-blue-500 text-white';
-						break;
-					case 'terminated':
-						variant = 'destructive';
-						break;
-					case 'cancelled':
-					case 'expired':
-						variant = 'outline';
-						break;
-				}
-				let values: CellBadge[] = [
-					{
-						value: capitalizeWords(value),
-						variant,
-						className
-					}
-				];
-				return { values, className: wrapperClassName };
-			}
-		},
-		{
-			key: 'requester_id',
-			title: 'Requester',
-			sortable: false,
-			filterable: false,
-			renderer: (value: string, row: Session, relationships) => {
-				const user = relationships.requester?.attributes as User;
-				return `
-                <div>${user?.name}</div>
-                <div class="text-muted-foreground text-xs truncate">${user?.email}</div>
-                `;
-			}
-		},
-		{
-			key: 'approver_id',
-			title: 'Approver',
-			sortable: false,
-			filterable: false,
-			renderer: (value: string, row: Session, relationships) => {
-				const user = relationships.approver?.attributes as User;
-				return `
-                <div>${user?.name || '-'}</div>
-                <div class="text-muted-foreground text-xs truncate">${user?.email || '-'}</div>
-                `;
-			}
-		},
-		{
-			key: 'actions',
-			title: 'Actions',
-			type: 'actions',
-			sortable: false,
-			componentProps: (value: string, row: Session) => {
-				return {
-					actions: [
-						{
-							label: 'View',
-							icon: NotebookText,
-							href: `/${modelName}/${row.id}`,
-							variant: 'link',
-							class: 'hover:text-blue-500'
-						}
-					]
-				};
+    const columns: ColumnDef<ModelResource>[] = [
+        {
+            id: 'id',
+            header: 'ID',
+            accessorKey: 'attributes.id',
+        },
+        {
+            id: 'asset_id',
+            header: 'Asset',
+            cell: ({ row }) => {
+				return renderComponent(AssetNameCell, {
+					asset: row.original.relationships?.asset?.attributes as Asset,
+				});
+			},
+        },
+        {
+            id: 'scheduled_start_datetime',
+            header: 'Start/End',
+            cell: ({ row }) => {
+                return renderComponent(StartEndDurationCell, {
+                    startDatetime: row.original.attributes.scheduled_start_datetime,
+                    endDatetime: row.original.attributes.scheduled_end_datetime,
+                });
+            }
+        },
+        {
+            id: 'status',
+            header: 'Status',
+            accessorKey: 'attributes.status',
+            cell: ({ row }) => {
+                return renderComponent(Status, { status: row.original.attributes.status });
+            }
+        },
+        {
+            id: 'requester_id',
+            header: 'Requester',
+            cell: ({ row }) => {
+                const user = row.original.relationships?.requester?.attributes as User;
+                return renderComponent(SubtitleCell, {
+                    title: user?.name,
+                    subtitles: [user?.email],
+                });
+            }
+        },
+        {
+            id: 'approver_id',
+            header: 'Approver',
+            cell: ({ row }) => {
+                const user = row.original.relationships?.approver?.attributes as User;
+                return renderComponent(SubtitleCell, {
+                    title: user?.name,
+                    subtitles: [user?.email],
+                });
+            }
+        },
+        {
+            id: 'actions',
+            header: 'Actions',
+            enableHiding: false,
+            enableColumnFilter: false,
+            cell: ({ row }) => {
+                return renderComponent(ButtonCell, {
+                    href: `${basePath}/${row.original.attributes.id}`,
+                    label: 'View',
+                    icon: NotebookText,
+				});
 			}
 		}
 	];
 
-	// Data table configuration
-	const config: DataTableConfig<Session> = {
-		model: {} as Session,
-		columns: columns,
-		apiEndpoint: `/api/search/${modelName}`,
-		paginationSiblingCount: { desktop: 3, mobile: 1 },
-		sortable: true,
-		filterable: true,
-		selectable: false,
-		loading: false,
-		emptyMessage: `No ${modelName} found`,
-		className: 'border rounded-lg',
-		headerClassName: 'bg-muted/50',
-		bodyClassName: 'divide-y',
-		rowClassName: 'hover:bg-muted/50 transition-colors',
-		cellClassName: 'p-3',
-		headerCellClassName: 'p-3 font-medium'
-	};
+    function handlePaginationChange(table: TableType<ModelResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	// Event handlers
-	function handleDataChange(data: Session[]) {}
+    function handleSortChange(table: TableType<ModelResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	function handlePaginationChange(pagination: PaginationConfig) {}
+    function handleFilterChange(table: TableType<ModelResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	function handleFilterChange(filters: FilterConfig) {}
-
-	function handleSortChange(sort: SortConfig) {}
-
-	function handleRowSelect(selectedRows: Set<string | number>) {}
+    function handleColumnVisibilityChange(table: TableType<ModelResource>) {
+        // Column visibility is local-only; no server round-trip
+    }
 </script>
 
-<h1 class="text-2xl font-medium capitalize">{modelName}</h1>
+<h1 class="text-2xl font-medium capitalize">Sessions</h1>
 
-<!-- Data Table Component -->
-<DataTable
-	model={{} as Session}
-	{config}
-	{initialSearchParams}
-	initialInclude={['asset', 'requester', 'approver', 'request']}
-	initialSort={{ column: 'created_at', direction: 'desc' }}
-	onDataChange={handleDataChange}
-	onPaginationChange={handlePaginationChange}
-	onFilterChange={handleFilterChange}
-	onSortChange={handleSortChange}
-	onRowSelect={handleRowSelect}
-/>
+<Table 
+    columns={columns} 
+    data={list as ModelResource[]} 
+    meta={meta as ApiMeta} 
+    onPaginationChange={handlePaginationChange} 
+    onSortingChange={handleSortChange} 
+    onColumnFiltersChange={handleFilterChange} 
+    onColumnVisibilityChange={handleColumnVisibilityChange} 
+    {initialFilters}
+    {initialSorting}
+>
+    {#snippet filters(table: TableType<ModelResource>)}
+        <div class="flex gap-2">
+            <Filter 
+                table={table}
+                attribute="status"
+                title="Status"
+                options={[
+                    {
+                        label: 'Scheduled',
+                        value: 'scheduled',
+                    },
+                    {
+                        label: 'Cancelled',
+                        value: 'cancelled',
+                    },
+                    {
+                        label: 'Started',
+                        value: 'started',
+                    },
+                    {
+                        label: 'Ended',
+                        value: 'ended',
+                    },
+                    {
+                        label: 'Expired',
+                        value: 'expired',
+                    },
+                    {
+                        label: 'Terminated',
+                        value: 'terminated',
+                    }
+                ]}
+            />
+            <FilterReset table={table} />
+        </div>
+    {/snippet}
+</Table>

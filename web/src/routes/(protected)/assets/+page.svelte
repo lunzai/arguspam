@@ -1,144 +1,123 @@
 <script lang="ts">
-	import { DataTable } from '$components/data-table/index';
 	import type { Asset } from '$models/asset';
-	import type {
-		DataTableConfig,
-		PaginationConfig,
-		FilterConfig,
-		SortConfig
-	} from '$components/data-table/types';
 	import { shortDateTime } from '$lib/utils/date';
-	import type { ColumnDefinition } from '$components/data-table/types';
 	import { page } from '$app/state';
 	import { NotebookText, PlusIcon } from '@lucide/svelte';
-	import type { CellBadge } from '$components/data-table/types';
 	import { Button } from '$ui/button';
 	import FormDialog from './form-dialog.svelte';
 	import { goto } from '$app/navigation';
+    import type { ColumnDef } from "@tanstack/table-core";
+    import { renderComponent } from "$ui/data-table";
+    import { 
+        Table, 
+        tableStateToUrlParams, 
+        Search,
+        ButtonCell,
+    } from '$components/datatable';
+    import type { ApiMeta } from '$lib/resources/api';
+    import { Status } from '$components/status';
+    import type { Table as TableType } from '@tanstack/table-core';
+    import { Filter, FilterReset } from '$components/datatable';
+    import { getInitialStateFromUrlParams } from '$components/datatable/helper';
+    import type { AssetResource as ModelResource } from '$lib/resources/asset';
+    import { HoverCardCell } from '$components/datatable';
 
-	let { data }: { data: any } = $props();
-	let initialSearchParams = page.url.searchParams;
-	const modelName = 'assets';
-	let addAssetDialogIsOpen = $state(false);
+    const { data } = $props();
+    const list = $derived(data?.list as ModelResource[]);
+    const meta = $derived(data?.meta as ApiMeta);
+    const basePath = '/assets';
+    const baseParams = {};
+    const { initialSorting, initialFilters } = getInitialStateFromUrlParams(page.url, ['status']);
+    let addAssetDialogIsOpen = $state(false);
 
-	export const columns: ColumnDefinition<Asset>[] = [
-		{
-			key: 'id',
-			title: 'ID',
-			sortable: true
-		},
-		{
-			key: 'name',
-			title: 'Name',
-			sortable: true,
-			filterable: true,
-			type: 'hover-card',
-			componentProps: (value: string, row: Asset) => {
-				return {
-					triggerLabel: value,
-					hoverContent: row.description
-				};
-			}
-		},
-		{
-			key: 'status',
-			title: 'Status',
-			sortable: true,
-			filterable: true,
-			type: 'badge',
-			componentProps: (value: string, row: Asset) => {
-				let values: CellBadge[] = [
-					{
-						value: value === 'active' ? 'Active' : 'Inactive',
-						variant: value === 'active' ? 'default' : 'secondary'
-					}
-				];
-				return { values };
-			}
-		},
-		{
-			key: 'dbms',
-			title: 'DBMS',
-			sortable: true,
-			filterable: true,
-			renderer: (value: string) => {
-				return value ? value.toUpperCase() : '-';
-			}
-		},
-		{
-			key: 'created_at',
-			title: 'Created At',
-			sortable: true,
-			filterable: false,
-			visible: true,
-			renderer: (value: string) => {
-				return value ? shortDateTime(value) : '-';
-			}
-		},
-		{
-			key: 'updated_at',
-			title: 'Updated At',
-			sortable: true,
-			filterable: false,
-			visible: true,
-			renderer: (value: string) => {
-				return value ? shortDateTime(value) : '';
-			}
-		},
-		{
-			key: 'actions',
-			title: 'Actions',
-			type: 'actions',
-			sortable: false,
-			componentProps: (value: string, row: Asset) => {
-				return {
-					actions: [
-						{
-							label: 'View',
-							icon: NotebookText,
-							href: `/${modelName}/${row.id}`,
-							variant: 'link',
-							class: 'hover:text-blue-500'
-						}
-					]
-				};
+    const columns: ColumnDef<ModelResource>[] = [
+        {
+            id: 'id',
+            header: 'ID',
+            accessorKey: 'attributes.id',
+        },
+        {
+            id: 'name',
+            header: 'Name',
+            accessorKey: 'attributes.name',
+            cell: ({ row }) => {
+                return renderComponent(HoverCardCell, {
+                    triggerLabel: row.original.attributes.name,
+                    hoverContent: row.original.attributes.description,
+                });
+            }
+        },
+        {
+            id: 'status',
+            header: 'Status',
+            accessorKey: 'attributes.status',
+            cell: ({ row }) => {
+                return renderComponent(Status, { status: row.original.attributes.status });
+            }
+        },
+        {
+            id: 'dbms',
+            header: 'DBMS',
+            accessorKey: 'attributes.dbms',
+            cell: ({ row }) => {
+                return row.original.attributes.dbms ? row.original.attributes.dbms.toUpperCase() : '-';
+            }
+        },
+        {
+            id: 'created_at',
+            header: 'Created At',
+            accessorKey: 'attributes.created_at',
+            enableColumnFilter: false,
+            cell: ({ row }) => {
+                return row.original.attributes.created_at ? shortDateTime(row.original.attributes.created_at) : '-';
+            }
+        },
+        {
+            id: 'updated_at',
+            header: 'Updated At',
+            accessorKey: 'attributes.updated_at',
+            enableColumnFilter: false,
+            cell: ({ row }) => {
+                return row.original.attributes.updated_at ? shortDateTime(row.original.attributes.updated_at) : '-';
+            }
+        },
+        {
+            id: 'actions',
+            header: 'Actions',
+            enableHiding: false,
+            enableColumnFilter: false,
+            cell: ({ row }) => {
+                return renderComponent(ButtonCell, {
+                    href: `${basePath}/${row.original.attributes.id}`,
+                    label: 'View',
+                    icon: NotebookText,
+				});
 			}
 		}
 	];
 
-	// Data table configuration
-	const config: DataTableConfig<Asset> = {
-		model: {} as Asset,
-		columns: columns,
-		apiEndpoint: `/api/search/${modelName}`,
-		paginationSiblingCount: { desktop: 3, mobile: 1 },
-		sortable: true,
-		filterable: true,
-		selectable: false,
-		loading: false,
-		emptyMessage: `No ${modelName} found`,
-		className: 'border rounded-lg',
-		headerClassName: 'bg-muted/50',
-		bodyClassName: 'divide-y',
-		rowClassName: 'hover:bg-muted/50 transition-colors',
-		cellClassName: 'p-3',
-		headerCellClassName: 'p-3 font-medium'
-	};
+    function handlePaginationChange(table: TableType<ModelResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	// Event handlers
-	function handleDataChange(data: Asset[]) {}
+    function handleSortChange(table: TableType<ModelResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	function handlePaginationChange(pagination: PaginationConfig) {}
+    function handleFilterChange(table: TableType<ModelResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	function handleFilterChange(filters: FilterConfig) {}
-
-	function handleSortChange(sort: SortConfig) {}
-
-	function handleRowSelect(selectedRows: Set<string | number>) {}
+    function handleColumnVisibilityChange(table: TableType<ModelResource>) {
+        // Column visibility is local-only; no server round-trip
+    }
 </script>
 
 <div class="flex items-center justify-between">
-	<h1 class="text-2xl font-medium capitalize">{modelName}</h1>
+	<h1 class="text-2xl font-medium capitalize">Assets</h1>
 	<Button
 		variant="outline"
 		class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
@@ -153,22 +132,83 @@
 
 <FormDialog
 	bind:isOpen={addAssetDialogIsOpen}
-	model={data.model}
+	model={data.model as Asset}
 	data={data.form}
 	onSuccess={async (data: Asset) => {
-		await goto(`/${modelName}/${data.id}`);
+		await goto(`${basePath}/${data.id}`);
 		addAssetDialogIsOpen = false;
 	}}
 />
 
-<!-- Data Table Component -->
-<DataTable
-	model={{} as Asset}
-	{config}
-	{initialSearchParams}
-	onDataChange={handleDataChange}
-	onPaginationChange={handlePaginationChange}
-	onFilterChange={handleFilterChange}
-	onSortChange={handleSortChange}
-	onRowSelect={handleRowSelect}
-/>
+<Table 
+    columns={columns} 
+    data={list as ModelResource[]} 
+    meta={meta as ApiMeta} 
+    onPaginationChange={handlePaginationChange} 
+    onSortingChange={handleSortChange} 
+    onColumnFiltersChange={handleFilterChange} 
+    onColumnVisibilityChange={handleColumnVisibilityChange} 
+    {initialFilters}
+    {initialSorting}
+>
+    {#snippet filters(table: TableType<ModelResource>)}
+        <div class="flex gap-2">
+            <Search 
+                table={table}
+                attribute="name"
+                title="Name"
+            />
+            <Filter 
+                table={table}
+                attribute="status"
+                title="Status"
+                options={[
+                    {
+                        label: 'Active',
+                        value: 'active',
+                    },
+                    {
+                        label: 'Inactive',
+                        value: 'inactive',
+                    }
+                ]}
+            />
+            <Filter 
+                table={table}
+                attribute="dbms"
+                title="DBMS"
+                options={[
+                    {
+                        label: 'MySQL',
+                        value: 'mysql',
+                    },
+                    {
+                        label: 'PostgreSQL',
+                        value: 'postgresql',
+                    },
+                    {
+                        label: 'SQL Server',
+                        value: 'sqlserver',
+                    },
+                    {
+                        label: 'Oracle',
+                        value: 'oracle',
+                    },
+                    {
+                        label: 'MongoDB',
+                        value: 'mongodb',
+                    },
+                    {
+                        label: 'Redis',
+                        value: 'redis',
+                    },
+                    {
+                        label: 'MariaDB',
+                        value: 'mariadb',
+                    }
+                ]}
+            />
+            <FilterReset table={table} />
+        </div>
+    {/snippet}
+</Table>

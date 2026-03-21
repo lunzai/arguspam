@@ -1,209 +1,194 @@
 <script lang="ts">
-	import { DataTable } from '$components/data-table/index';
-	import type { Request } from '$models/request';
-	import type {
-		DataTableConfig,
-		PaginationConfig,
-		FilterConfig,
-		SortConfig
-	} from '$components/data-table/types';
-	import { shortDateTime } from '$lib/utils/date';
-	import type { ColumnDefinition } from '$components/data-table/types';
-	import { page } from '$app/state';
-	import { Pencil, NotebookText } from '@lucide/svelte';
-	import type { Asset } from '$models/asset';
-	import type { User } from '$models/user';
-	import type { CellBadge } from '$components/data-table/types';
-	import { capitalizeWords } from '$lib/utils/string';
-	import { formatDistanceStrict } from 'date-fns';
+	import { shortDateTime } from '$utils/date';
+    import type { ColumnDef } from "@tanstack/table-core";
+    import { renderComponent } from "$ui/data-table";
+    import { 
+        Table, 
+        tableStateToUrlParams, 
+        AssetNameCell, 
+        StartEndDurationCell, 
+        TextWrapCell,
+        SubtitleCell,
+        ButtonCell
+    } from '$components/datatable';
+    import type { ApiMeta } from '$lib/resources/api';
+    import { Status } from '$components/status';
+    import { NotebookText } from '@lucide/svelte';
+    import type { Table as TableType } from '@tanstack/table-core';
+    import { goto } from '$app/navigation';
+    import { Filter, FilterReset } from '$components/datatable';
+    import { page } from '$app/state';
+    import { getInitialStateFromUrlParams } from '$components/datatable/helper';
+    import type { RequestResource as ModelResource } from '$lib/resources/request';
+    import type { Asset } from '$lib/models/asset';
+    import type { User } from '$lib/models/user';
 
-	let initialSearchParams = page.url.searchParams;
-	const modelName = 'requests';
+    const { data } = $props();
+    const list = $derived(data?.list as ModelResource[]);
+    const meta = $derived(data?.meta as ApiMeta);
+    const basePath = '/requests';
+    const baseParams = {};
+    const { initialSorting, initialFilters } = getInitialStateFromUrlParams(page.url, ['status']);
 
-	export const columns: ColumnDefinition<Request>[] = [
-		{
-			key: 'id',
-			title: 'ID',
-			sortable: true
-		},
-		{
-			key: 'asset_id',
-			title: 'Asset',
-			sortable: true,
-			filterable: true,
-			renderer: (value: string, row: Request, relationships) => {
-				const asset = relationships.asset?.attributes as Asset;
-				return `<div>${asset?.name}</div>
-                <div class="text-muted-foreground text-xs truncate">${asset?.host}:${asset?.port}</div>
-                `;
-			}
-		},
-		{
-			key: 'start_datetime',
-			title: 'Start/End',
-			sortable: true,
-			filterable: true,
-			renderer: (value: string, row: Request) => {
-				const startDatetime = row.start_datetime;
-				const endDatetime = row.end_datetime;
-				return `<div>${shortDateTime(startDatetime)} -</div>
-                <div>${shortDateTime(endDatetime)}</div>
-                <div class="text-muted-foreground text-xs">${formatDistanceStrict(startDatetime, endDatetime)}</div>
-                `;
-			}
-		},
-		{
-			key: 'reason',
-			title: 'Reason',
-			sortable: true,
-			filterable: true,
-			renderer: (value: string, row: Request, relationships) => {
-				return `<div class="max-w-80 wrap-break-word whitespace-break-spaces">${value}</div>`;
-			}
-		},
-		{
-			key: 'status',
-			title: 'Status',
-			sortable: true,
-			filterable: true,
-			type: 'badge',
-			componentProps: (value: string, row: Request) => {
-				const wrapperClassName = 'text-sm';
-				let variant = 'default';
-				let className = '';
-				switch (value) {
-					case 'pending':
-						variant = 'default';
-						break;
-					case 'submitted':
-						variant = 'secondary';
-						className = 'bg-blue-500 text-white';
-						break;
-					case 'approved':
-						variant = 'secondary';
-						className = 'bg-green-500 text-white';
-						break;
-					case 'rejected':
-						variant = 'destructive';
-						break;
-					case 'expired':
-						variant = 'outline';
-						break;
-				}
-				let values: CellBadge[] = [
-					{
-						value: capitalizeWords(value),
-						variant,
-						className
-					}
-				];
-				return { values, className: wrapperClassName };
-			}
-		},
-		{
-			key: 'requester_id',
-			title: 'Requester',
-			sortable: false,
-			filterable: false,
-			renderer: (value: string, row: Request, relationships) => {
-				const user = relationships.requester?.attributes as User;
-				return `
-                <div>${user?.name}</div>
-                <div class="text-muted-foreground text-xs truncate">${user?.email}</div>
-                <div class="text-muted-foreground text-xs truncate">${row.created_at ? shortDateTime(row.created_at) : '-'}</div>
-                `;
-			}
-		},
-		{
-			key: 'approver_id',
-			title: 'Approver',
-			sortable: false,
-			filterable: false,
-			renderer: (value: string, row: Request, relationships) => {
-				let user: User | null = null;
-				let datetime: Date | null = null;
-				if (row.approved_at) {
-					user = relationships.approver?.attributes as User;
-					datetime = row.approved_at;
-				}
-				if (row.rejected_at) {
-					user = relationships.rejecter?.attributes as User;
-					datetime = row.rejected_at;
-				}
-				if (!user) {
-					return '-';
-				}
-				return `
-                <div>${user?.name || '-'}</div>
-                <div class="text-muted-foreground text-xs truncate">${user?.email || '-'}</div>
-                <div class="text-muted-foreground text-xs truncate">${datetime ? shortDateTime(datetime) : '-'}</div>
-                `;
-			}
-		},
-		{
-			key: 'actions',
-			title: 'Actions',
-			type: 'actions',
-			sortable: false,
-			componentProps: (value: string, row: Request) => {
-				return {
-					actions: [
-						{
-							label: 'View',
-							icon: NotebookText,
-							href: `/${modelName}/${row.id}`,
-							variant: 'link',
-							class: 'hover:text-blue-500'
-						}
-					]
-				};
+    const columns: ColumnDef<ModelResource>[] = [
+        {
+            id: 'id',
+            header: 'ID',
+            accessorKey: 'attributes.id',
+        },
+        {
+            id: 'asset_id',
+            header: 'Asset',
+            cell: ({ row }) => {
+				return renderComponent(AssetNameCell, {
+					asset: row.original.relationships?.asset?.attributes as Asset,
+				});
+			},
+        },
+        {
+            id: 'start_datetime',
+            header: 'Start/End',
+            cell: ({ row }) => {
+                return renderComponent(StartEndDurationCell, {
+                    startDatetime: row.original.attributes.start_datetime,
+                    endDatetime: row.original.attributes.end_datetime,
+                });
+            }
+        },
+        {
+            id: 'reason',
+            header: 'Reason',
+            accessorKey: 'attributes.reason',
+            cell: ({ row }) => {
+                return renderComponent(TextWrapCell, {
+                    text: row.original.attributes.reason,
+                });
+            }
+        },
+        {
+            id: 'status',
+            header: 'Status',
+            accessorKey: 'attributes.status',
+            cell: ({ row }) => {
+                return renderComponent(Status, { status: row.original.attributes.status });
+            }
+        },
+        {
+            id: 'requester_id',
+            header: 'Requester',
+            cell: ({ row }) => {
+                const user = row.original.relationships?.requester?.attributes as User;
+                return renderComponent(SubtitleCell, {
+                    title: user?.name,
+                    subtitles: [user?.email, row.original.attributes.created_at ? shortDateTime(row.original.attributes.created_at) : '-'],
+                });
+            }
+        },
+        {
+            id: 'approver_id',
+            header: 'Approver',
+            cell: ({ row }) => {
+                let user: User | null = null;
+                let datetime: Date | null = null;
+                if (row.original.attributes.approved_at) {
+                    user = row.original.relationships?.approver?.attributes as User;
+                    datetime = row.original.attributes.approved_at;
+                }
+                if (row.original.attributes.rejected_at) {
+                    user = row.original.relationships?.rejecter?.attributes as User;
+                    datetime = row.original.attributes.rejected_at;
+                }
+                if (!user) {
+                    return '-';
+                }
+                return renderComponent(SubtitleCell, {
+                    title: user?.name,
+                    subtitles: [user?.email, datetime ? shortDateTime(datetime) : '-'],
+                });
+            }
+        },
+        {
+            id: 'actions',
+            header: 'Actions',
+            enableHiding: false,
+            enableColumnFilter: false,
+            cell: ({ row }) => {
+                return renderComponent(ButtonCell, {
+                    href: `${basePath}/${row.original.attributes.id}`,
+                    label: 'View',
+                    icon: NotebookText,
+				});
 			}
 		}
 	];
 
-	// Data table configuration
-	const config: DataTableConfig<Request> = {
-		model: {} as Request,
-		columns: columns,
-		apiEndpoint: `/api/search/${modelName}`,
-		paginationSiblingCount: { desktop: 3, mobile: 1 },
-		sortable: true,
-		filterable: true,
-		selectable: false,
-		loading: false,
-		emptyMessage: `No ${modelName} found`,
-		className: 'border rounded-lg',
-		headerClassName: 'bg-muted/50',
-		bodyClassName: 'divide-y',
-		rowClassName: 'hover:bg-muted/50 transition-colors',
-		cellClassName: 'p-3',
-		headerCellClassName: 'p-3 font-medium'
-	};
+    function handlePaginationChange(table: TableType<ModelResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	// Event handlers
-	function handleDataChange(data: Request[]) {}
+    function handleSortChange(table: TableType<ModelResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	function handlePaginationChange(pagination: PaginationConfig) {}
+    function handleFilterChange(table: TableType<ModelResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	function handleFilterChange(filters: FilterConfig) {}
-
-	function handleSortChange(sort: SortConfig) {}
-
-	function handleRowSelect(selectedRows: Set<string | number>) {}
+    function handleColumnVisibilityChange(table: TableType<ModelResource>) {
+        // Column visibility is local-only; no server round-trip
+    }
 </script>
 
-<h1 class="text-2xl font-medium capitalize">{modelName}</h1>
+<h1 class="text-2xl font-medium capitalize">Requests</h1>
 
-<!-- Data Table Component -->
-<DataTable
-	model={{} as Request}
-	{config}
-	{initialSearchParams}
-	initialInclude={['asset', 'requester', 'approver', 'rejecter']}
-	initialSort={{ column: 'created_at', direction: 'desc' }}
-	onDataChange={handleDataChange}
-	onPaginationChange={handlePaginationChange}
-	onFilterChange={handleFilterChange}
-	onSortChange={handleSortChange}
-	onRowSelect={handleRowSelect}
-/>
+<Table 
+    columns={columns} 
+    data={list as ModelResource[]} 
+    meta={meta as ApiMeta} 
+    onPaginationChange={handlePaginationChange} 
+    onSortingChange={handleSortChange} 
+    onColumnFiltersChange={handleFilterChange} 
+    onColumnVisibilityChange={handleColumnVisibilityChange} 
+    {initialFilters}
+    {initialSorting}
+>
+    {#snippet filters(table: TableType<ModelResource>)}
+        <div class="flex gap-2">
+            <Filter 
+                table={table}
+                attribute="status"
+                title="Status"
+                options={[
+                    {
+                        label: 'Pending',
+                        value: 'pending',
+                    },
+                    {
+                        label: 'Submitted',
+                        value: 'submitted',
+                    },
+                    {
+                        label: 'Approved',
+                        value: 'approved',
+                    },
+                    {
+                        label: 'Rejected',
+                        value: 'rejected',
+                    },
+                    {
+                        label: 'Expired',
+                        value: 'expired',
+                    },
+                    {
+                        label: 'Cancelled',
+                        value: 'cancelled',
+                    }
+                ]}
+            />
+            <FilterReset table={table} />
+        </div>
+    {/snippet}
+</Table>

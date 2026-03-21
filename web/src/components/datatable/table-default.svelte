@@ -12,7 +12,7 @@
         createSvelteTable,
     } from "$ui/data-table";
     import * as Table from "$ui/table";
-    import type { ApiMeta } from "$components/data-table/types";
+    import type { ApiMeta } from "$lib/resources/api";
     import * as DataTable from "$components/datatable/index";
     import type { Snippet } from "svelte";
 

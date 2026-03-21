@@ -2,23 +2,31 @@ import type { PageServerLoad, Actions } from './$types';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { setFormErrors } from '$utils/form';
-import { error, fail } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import { AssetSchema } from '$lib/validations/asset';
-import { AssetService } from '$lib/services/asset';
+import { AssetService as ModelService } from '$lib/services/asset';
 import type { AssetCreateRequest } from '$lib/models/asset';
 import { Rbac } from '$lib/rbac';
+import { mergeParams } from '$components/datatable';
+import type { ApiMeta } from '$lib/resources/api';
 
-export const load: PageServerLoad = async ({ locals, depends }) => {
+export const load: PageServerLoad = async ({ locals, depends, url }) => {
 	depends('assets:list');
-	new Rbac(locals.me).assetView();
-	const { currentOrgId } = locals;
+    const { authToken, currentOrgId, me } = locals;
+    new Rbac(me).assetView();
 	const model: Partial<AssetCreateRequest> = {
 		org_id: Number(currentOrgId),
 		status: 'active'
 	};
 	const form = await superValidate(zod4(AssetSchema));
+    const modelService = new ModelService(authToken as string, currentOrgId as number);
+    const response = await modelService.findAll(mergeParams({
+        perPage: 20,
+    }, url));
 	return {
 		title: 'Assets',
+        list: response.data,
+        meta: response.meta as ApiMeta,
 		form,
 		model
 	};
@@ -34,7 +42,7 @@ export const actions = {
 		}
 		const data = form.data;
 		try {
-			const assetService = new AssetService(authToken as string, currentOrgId as number);
+			const assetService = new ModelService(authToken as string, currentOrgId as number);
 			const response = await assetService.create(data);
 			return {
 				success: true,

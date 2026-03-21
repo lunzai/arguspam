@@ -1,99 +1,112 @@
 <script lang="ts">
-	import { DataTable } from '$components/data-table/index';
-	import type { Permission } from '$models/permission';
-	import type {
-		DataTableConfig,
-		PaginationConfig,
-		FilterConfig,
-		SortConfig
-	} from '$components/data-table/types';
-	import type { ColumnDefinition } from '$components/data-table/types';
-	import { page } from '$app/state';
-	import { NotebookText } from '@lucide/svelte';
+    import { shortDateTime } from '$utils/date';
+    import type { ColumnDef } from "@tanstack/table-core";
+    import type { PermissionResource as ModelResource } from '$lib/resources/permission';
+    import { renderComponent } from "$ui/data-table";
+    import { Table, tableStateToUrlParams, ButtonCell } from '$components/datatable';
+    import type { ApiMeta } from '$lib/resources/api';
+    import { NotebookText } from '@lucide/svelte';
+    import type { Table as TableType } from '@tanstack/table-core';
+    import { goto } from '$app/navigation';
+    import { Search, FilterReset } from '$components/datatable';
+    import { getInitialStateFromUrlParams } from '$components/datatable';
+    import { page } from '$app/state';
 
-	let initialSearchParams = page.url.searchParams;
-	const modelName = 'permissions';
+    const { data } = $props();
+    const list = $derived(data?.list as ModelResource[]);
+    const meta = $derived(data?.meta as ApiMeta);
+    const basePath = '/users/permissions';
+    const baseParams = {};
+    const { initialSorting, initialFilters } = getInitialStateFromUrlParams(page.url, []);
 
-	export const columns: ColumnDefinition<Permission>[] = [
-		{
-			key: 'id',
-			title: 'ID',
-			sortable: true
-		},
-		{
-			key: 'name',
-			title: 'Name',
-			sortable: true,
-			filterable: true
-		},
-		{
-			key: 'description',
-			title: 'Description',
-			sortable: true,
-			filterable: true
-		},
-		{
-			key: 'actions',
-			title: 'Actions',
-			type: 'actions',
-			sortable: false,
-			componentProps: (value: string, row: Permission) => {
-				return {
-					actions: [
-						{
-							label: 'View',
-							icon: NotebookText,
-							href: `/users/${modelName}/${row.id}`,
-							variant: 'link',
-							class: 'hover:text-blue-500'
-						}
-					]
-				};
-			}
-		}
-	];
+    const columns: ColumnDef<ModelResource>[] = [
+        {
+            id: 'id',
+            header: 'ID',
+            accessorKey: 'attributes.id',
+        },
+        {
+            id: 'name',
+            header: 'Name',
+            accessorKey: 'attributes.name',
+        },
+        {
+            id: 'description',
+            header: 'Description',
+            accessorKey: 'attributes.description',
+        },
+        {
+            id: 'created_at',
+            header: 'Created At',
+            accessorKey: 'attributes.created_at',
+            enableColumnFilter: false,
+            cell: ({ row }) => {
+                return row.original.attributes.created_at ? shortDateTime(row.original.attributes.created_at) : '-';
+            }
+        },
+        {
+            id: 'actions',
+            header: 'Actions',
+            enableHiding: false,
+            enableColumnFilter: false,
+            cell: ({ row }) => {
+                return renderComponent(ButtonCell, {
+                    href: `${basePath}/${row.original.attributes.id}`,
+                    label: 'View',
+                    icon: NotebookText,
+                });
+            }
+        }
+    ];
 
-	// Data table configuration
-	const config: DataTableConfig<Permission> = {
-		model: {} as Permission,
-		columns: columns,
-		apiEndpoint: `/api/search/${modelName}`,
-		paginationSiblingCount: { desktop: 3, mobile: 1 },
-		sortable: true,
-		filterable: true,
-		selectable: false,
-		loading: false,
-		emptyMessage: `No ${modelName} found`,
-		className: 'border rounded-lg',
-		headerClassName: 'bg-muted/50',
-		bodyClassName: 'divide-y',
-		rowClassName: 'hover:bg-muted/50 transition-colors',
-		cellClassName: 'p-3',
-		headerCellClassName: 'p-3 font-medium'
-	};
+    function handlePaginationChange(table: TableType<ModelResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	// Event handlers
-	function handleDataChange(data: Permission[]) {}
+    function handleSortChange(table: TableType<ModelResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	function handlePaginationChange(pagination: PaginationConfig) {}
+    function handleFilterChange(table: TableType<ModelResource>) {
+        const params = tableStateToUrlParams(table, baseParams);
+        goto(`${basePath}?${params.toString()}`);
+    }
 
-	function handleFilterChange(filters: FilterConfig) {}
-
-	function handleSortChange(sort: SortConfig) {}
-
-	function handleRowSelect(selectedRows: Set<string | number>) {}
+    function handleColumnVisibilityChange(table: TableType<ModelResource>) {
+        // Column visibility is local-only; no server round-trip
+    }
 </script>
 
-<h1 class="text-2xl font-medium capitalize">{modelName}</h1>
+<h1 class="text-2xl font-medium capitalize">Permissions</h1>
 
-<!-- Data Table Component -->
-<DataTable
-	model={{} as Permission}
-	{config}
-	{initialSearchParams}
-	onDataChange={handleDataChange}
-	onPaginationChange={handlePaginationChange}
-	onFilterChange={handleFilterChange}
-	onSortChange={handleSortChange}
-	onRowSelect={handleRowSelect}
-/>
+<Table 
+    columns={columns} 
+    data={list as ModelResource[]} 
+    meta={meta as ApiMeta} 
+    onPaginationChange={handlePaginationChange} 
+    onSortingChange={handleSortChange} 
+    onColumnFiltersChange={handleFilterChange} 
+    onColumnVisibilityChange={handleColumnVisibilityChange} 
+    {initialSorting}
+    {initialFilters}
+>
+    {#snippet filters(table: TableType<ModelResource>)}
+        <div class="flex gap-2">
+            <Search 
+                table={table}
+                attribute="name"
+                title="Name"
+            />
+
+            <Search 
+                table={table}
+                attribute="description"
+                title="description"
+            />
+            
+            <FilterReset table={table} />
+        </div>
+    {/snippet}
+</Table>

@@ -17,7 +17,7 @@ class SessionAuditController extends Controller
     // public function index(Request $request): SessionAuditCollection
     // {
     //     $this->authorize('viewAny', SessionAudit::class);
-    //     $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+    //     $pagination = $request->input('per_page', config('pam.pagination.per_page'));
     //     $sessionAudits = SessionAudit::paginate($pagination);
     //     return new SessionAuditCollection($sessionAudits);
     // }

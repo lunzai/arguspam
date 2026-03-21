@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 class RoleFilter extends QueryFilter
 {
     protected array $sortable = [
+        'id',
         'name',
         'description',
         'created_at',

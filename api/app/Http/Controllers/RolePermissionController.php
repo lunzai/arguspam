@@ -12,7 +12,7 @@ class RolePermissionController extends Controller
     public function index(Role $role, Request $request): PermissionCollection
     {
         $this->authorize('listPermissions', $role);
-        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $pagination = $request->input('per_page', config('pam.pagination.per_page'));
         $permissions = $role->permissions()
             ->paginate($pagination);
         return new PermissionCollection($permissions);

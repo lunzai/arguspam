@@ -18,7 +18,7 @@ class RequestController extends Controller
     public function index(RequestFilter $filter, Request $request): RequestCollection
     {
         $this->authorize('view', RequestModel::class);
-        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $pagination = $request->input('per_page', config('pam.pagination.per_page'));
         $requests = RequestModel::filter($filter)
             ->paginate($pagination);
         return new RequestCollection($requests);

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 class AssetAccountFilter extends QueryFilter
 {
     protected array $sortable = [
+        'id',
         'asset_id',
         'name',
         'vault_path',

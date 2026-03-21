@@ -23,7 +23,7 @@ class AssetController extends Controller
     public function index(AssetFilter $filter, Request $request): AssetCollection
     {
         $this->authorize('view', Asset::class);
-        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $pagination = $request->input('per_page', config('pam.pagination.per_page'));
         $assets = Asset::filter($filter)
             ->paginate($pagination);
         return new AssetCollection($assets);

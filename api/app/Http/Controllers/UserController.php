@@ -20,7 +20,7 @@ class UserController extends Controller
     public function index(UserFilter $filter, Request $request): UserCollection
     {
         $this->authorize('viewAny', User::class);
-        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $pagination = $request->input('per_page', config('pam.pagination.per_page'));
         $users = User::filter($filter)
             ->paginate($pagination);
         return new UserCollection($users);

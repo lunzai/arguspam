@@ -16,7 +16,7 @@ class Resource extends JsonResource
 
     protected function selectedFields($request, $availableFields)
     {
-        $selectedFields = $request->get('fields');
+        $selectedFields = $request->input('fields');
         if (!$selectedFields) {
             return $availableFields;
         }

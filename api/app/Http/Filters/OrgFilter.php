@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 class OrgFilter extends QueryFilter
 {
     protected array $sortable = [
+        'id',
         'name',
         'description',
         'status',

@@ -104,7 +104,6 @@ export class ServerApi {
 			}
 			return response.data;
 		} catch (axiosError: any) {
-			console.log('api server error', axiosError);
 			const status = axiosError.response?.status;
 			if (status === 403) {
 				throw error(403, 'You are not authorized to view this resource');

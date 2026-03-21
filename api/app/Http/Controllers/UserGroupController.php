@@ -20,7 +20,7 @@ class UserGroupController extends Controller
     public function index(UserGroupFilter $filter, Request $request): UserGroupCollection
     {
         $this->authorize('view', UserGroup::class);
-        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $pagination = $request->input('per_page', config('pam.pagination.per_page'));
         $userGroups = UserGroup::filter($filter)
             ->paginate($pagination);
         return new UserGroupCollection($userGroups);

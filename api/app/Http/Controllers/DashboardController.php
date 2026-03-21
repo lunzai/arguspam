@@ -12,7 +12,7 @@ class DashboardController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $currentOrgId = $request->get(config('pam.org.request_attribute'));
+        $currentOrgId = $request->input(config('pam.org.request_attribute'));
         $dashboardService = new DashboardService($currentOrgId);
         $cacheFlexibleDuration = [5, 3600];
 

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 class ActionAuditFilter extends QueryFilter
 {
     protected array $sortable = [
+        'id',
         'org_id',
         'user_id',
         'action_type',

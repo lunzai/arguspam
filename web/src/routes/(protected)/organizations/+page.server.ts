@@ -7,22 +7,31 @@ import { setFormErrors } from '$utils/form';
 import type { Org } from '$models/org';
 import { OrgSchema } from '$validations/org';
 import { Rbac } from '$lib/rbac';
+import { mergeParams } from '$components/datatable';
+import type { ApiMeta } from '$lib/resources/api';
 
-export const load: PageServerLoad = async ({ locals, depends }) => {
+export const load: PageServerLoad = async ({ locals, depends, url }) => {
 	depends('organizations:list');
-	const rbac = new Rbac(locals.me);
-	rbac.orgView();
-	const model = {
+    const { authToken, currentOrgId, me } = locals;
+    const rbac = new Rbac(me);
+    rbac.orgView();
+	const model: Partial<Org> = {
 		name: '',
 		description: '',
 		status: 'active'
-	} as Org;
+	};
 	const form = await superValidate(zod4(OrgSchema));
+    const modelService = new OrgService(authToken as string, currentOrgId as number);
+    const response = await modelService.findAll(mergeParams({
+        perPage: 20,
+    }, url));
 	return {
 		form,
 		model,
 		title: 'Organizations',
-		canCreate: rbac.canOrgCreate()
+		canCreate: rbac.canOrgCreate(),
+        list: response.data,
+        meta: response.meta as ApiMeta,
 	};
 };
 

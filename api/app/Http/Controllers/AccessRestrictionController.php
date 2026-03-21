@@ -18,7 +18,7 @@ class AccessRestrictionController extends Controller
     public function index(AccessRestrictionFilter $filter, Request $request): AccessRestrictionCollection
     {
         $this->authorize('view', AccessRestriction::class);
-        $pagination = $request->get('per_page', config('pam.pagination.per_page'));
+        $pagination = $request->input('per_page', config('pam.pagination.per_page'));
         $accessRestrictions = AccessRestriction::filter($filter)
             ->paginate($pagination);
         return new AccessRestrictionCollection($accessRestrictions);

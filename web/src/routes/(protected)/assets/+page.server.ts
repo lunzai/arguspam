@@ -22,6 +22,7 @@ export const load: PageServerLoad = async ({ locals, depends, url }) => {
     const modelService = new ModelService(authToken as string, currentOrgId as number);
     const response = await modelService.findAll(mergeParams({
         perPage: 20,
+        sort: ['-created_at']
     }, url));
 	return {
 		title: 'Assets',

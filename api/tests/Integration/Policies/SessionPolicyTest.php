@@ -12,7 +12,6 @@ use App\Models\Role;
 use App\Models\Session;
 use App\Models\User;
 use App\Policies\SessionPolicy;
-use App\Services\OpenAi\OpenAiService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\TestCase;
@@ -34,23 +33,13 @@ class SessionPolicyTest extends TestCase
     {
         parent::setUp();
 
-        // Mock the OpenAI service to prevent API calls during tests
-        $this->mock(OpenAiService::class, function ($mock) {
-            $mock->shouldReceive('evaluateAccessRequest')->andReturn([
-                'output_object' => (object) [
-                    'aiNote' => 'Test AI evaluation',
-                    'aiRiskRating' => 'low',
-                ],
-            ]);
-        });
-
         $this->policy = new SessionPolicy;
         $this->user = User::factory()->create();
         $this->requester = User::factory()->create();
         $this->approver = User::factory()->create();
         $this->org = Org::factory()->create();
         $this->asset = Asset::factory()->create();
-        $this->request = RequestModel::factory()->create();
+        $this->request = RequestModel::withoutEvents(fn () => RequestModel::factory()->create());
         $this->session = Session::factory()->create([
             'org_id' => $this->org->id,
             'asset_id' => $this->asset->id,

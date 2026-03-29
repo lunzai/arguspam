@@ -11,7 +11,8 @@ export const load: PageServerLoad = async ({ depends, locals, url }) => {
     const modelService = new SessionService(authToken as string, currentOrgId as number);
     const response = await modelService.findAll(mergeParams({
         perPage: 20, 
-        include: ['asset', 'requester', 'approver', 'request']
+        include: ['asset', 'requester', 'approver', 'request'],
+        sort: ['-created_at']
     }, url));
     return {
         title: 'Sessions',

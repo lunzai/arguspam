@@ -2,56 +2,48 @@
 
 namespace App\Console\Commands;
 
+use App\Ai\Agents\AccessRequestEvaluator;
 use App\Enums\RiskRating;
 use App\Models\Request;
-use App\Services\OpenAi\OpenAiService;
 use Illuminate\Console\Command;
 
 class AiTestNewRequest extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'ai:test:new-request {request : The request ID} {--save=false : Save the AI evaluation to the database}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Test AI evaluation for a request';
 
-    /**
-     * Execute the console command.
-     */
-    public function handle(OpenAiService $openAiService)
+    public function handle(): int
     {
         $requestId = $this->argument('request');
-        $save = $this->option('save');
-
-        // Convert string values to boolean
-        $shouldSave = in_array($save, ['true', '1', 'yes'], true);
+        $shouldSave = in_array($this->option('save'), ['true', '1', 'yes'], true);
 
         $request = Request::find($requestId);
 
         if (!$request) {
             $this->error("Request with ID {$requestId} not found.");
+
             return 1;
         }
 
         $this->info("Testing AI evaluation for Request ID#{$request->id}");
 
-        // Get AI evaluation
-        $evaluation = $openAiService->evaluateAccessRequest($request);
+        $config = array_merge(config('pam.openai', []), config('pam.access_request.duration', []));
+        $agent = new AccessRequestEvaluator($request, $config);
+        $userPrompt = view('prompts.new-request.user', [
+            'config' => $config,
+            'request' => $request,
+        ])->render();
 
-        // Convert AI risk rating to enum and validate
+        $response = $agent->prompt($userPrompt);
+        $evaluation = $response->toArray();
+
         try {
-            $riskRatingEnum = RiskRating::from($evaluation['output']['ai_risk_rating']);
+            $riskRatingEnum = RiskRating::from($evaluation['ai_risk_rating']);
         } catch (\ValueError $e) {
-            $this->error('Invalid AI risk rating value: '.$evaluation['output']['ai_risk_rating']);
+            $this->error('Invalid AI risk rating value: '.$evaluation['ai_risk_rating']);
             $this->error('Expected one of: '.implode(', ', array_column(RiskRating::cases(), 'value')));
+
             return 1;
         }
 
@@ -59,17 +51,14 @@ class AiTestNewRequest extends Command
         $this->info('AI Evaluation Results:');
         $this->newLine();
         $this->info('AI Note:');
-        $this->info($evaluation['output']['ai_note']);
+        $this->info($evaluation['ai_note']);
         $this->newLine();
         $this->info('AI Risk Rating:');
         $this->info($riskRatingEnum->value);
         $this->newLine();
 
         if ($shouldSave) {
-            // Save the evaluation results we just obtained
-            $request->ai_note = $evaluation['output']['ai_note'];
-            $request->ai_risk_rating = $riskRatingEnum;
-            $request->save();
+            $request->applyAiEvaluation($evaluation);
             $this->info('AI evaluation saved to database.');
         } else {
             $this->info('AI evaluation not saved (use --save=true to save).');

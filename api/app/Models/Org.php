@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\Status;
 use App\Traits\HasBlamable;
 use App\Traits\HasStatus;
+use Database\Factories\OrgFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Org extends Model
 {
-    /** @use HasFactory<\Database\Factories\OrgFactory> */
+    /** @use HasFactory<OrgFactory> */
     use HasBlamable, HasFactory, HasStatus, SoftDeletes;
 
     protected $fillable = [
@@ -79,5 +80,20 @@ class Org extends Model
     public function actionAudits(): HasMany
     {
         return $this->hasMany(ActionAudit::class);
+    }
+
+    public function settings(): HasMany
+    {
+        return $this->hasMany(OrgSetting::class);
+    }
+
+    public function aiProviders(): HasMany
+    {
+        return $this->hasMany(OrgAiProvider::class);
+    }
+
+    public function aiAgents(): HasMany
+    {
+        return $this->hasMany(OrgAiAgent::class);
     }
 }

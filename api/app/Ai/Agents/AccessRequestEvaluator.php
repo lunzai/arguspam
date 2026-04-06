@@ -21,21 +21,6 @@ class AccessRequestEvaluator implements Agent, HasProviderOptions, HasStructured
         public array $config,
     ) {}
 
-    public function model() : ?string 
-    {
-        return null;
-    }
-
-    public function provider() : ?string 
-    {
-        return null;
-    }
-
-    public function timeout() : ?int 
-    {
-        return null;
-    }
-
     /**
      * @return array<string, mixed>
      */
@@ -45,7 +30,7 @@ class AccessRequestEvaluator implements Agent, HasProviderOptions, HasStructured
             return [];
         }
 
-        $metadata = config('pam.openai.metadata');
+        $metadata = $this->config['openai_metadata'] ?? [];
 
         return is_array($metadata) && $metadata !== []
             ? ['metadata' => $metadata]

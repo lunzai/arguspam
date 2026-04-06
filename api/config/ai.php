@@ -23,6 +23,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Defaults (non-tenant fallback when org AI is not configured in the DB)
+    |--------------------------------------------------------------------------
+    |
+    | Used by TenantAiRuntime when no org_ai_agents / org_ai_providers rows exist.
+    | Tenant-specific AI settings are stored in the database per organization.
+    |
+    */
+
+    'defaults' => [
+        'generation' => [
+            'model' => env('OPENAI_MODEL', 'gpt-5-nano'),
+            'temperature' => (float) env('OPENAI_TEMPERATURE', 0.2),
+            'max_output_tokens' => (int) env('OPENAI_MAX_OUTPUT_TOKENS', 2048),
+            'request_timeout_seconds' => (int) env('OPENAI_REQUEST_TIMEOUT', 120),
+        ],
+        'openai_metadata' => [
+            'app' => env('APP_NAME', 'ArgusPAM'),
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Caching
     |--------------------------------------------------------------------------
     |

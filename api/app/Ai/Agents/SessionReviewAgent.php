@@ -17,7 +17,13 @@ class SessionReviewAgent implements Agent, HasProviderOptions, HasStructuredOutp
 {
     use Promptable;
 
-    public function __construct(public Session $session) {}
+    /**
+     * @param  array<string, mixed>  $config
+     */
+    public function __construct(
+        public Session $session,
+        public array $config = [],
+    ) {}
 
     /**
      * @return array<string, mixed>
@@ -28,7 +34,7 @@ class SessionReviewAgent implements Agent, HasProviderOptions, HasStructuredOutp
             return [];
         }
 
-        $metadata = config('pam.openai.metadata');
+        $metadata = $this->config['openai_metadata'] ?? [];
 
         return is_array($metadata) && $metadata !== []
             ? ['metadata' => $metadata]

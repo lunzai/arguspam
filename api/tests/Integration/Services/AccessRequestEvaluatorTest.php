@@ -27,10 +27,14 @@ class AccessRequestEvaluatorTest extends TestCase
     {
         parent::setUp();
 
-        Config::set('pam.openai', [
-            'model' => 'gpt-4o-mini',
-            'temperature' => 0.7,
-            'metadata' => [
+        Config::set('ai.defaults', [
+            'generation' => [
+                'model' => 'gpt-4o-mini',
+                'temperature' => 0.7,
+                'max_output_tokens' => 2048,
+                'request_timeout_seconds' => 120,
+            ],
+            'openai_metadata' => [
                 'app' => 'ArgusPAM',
             ],
         ]);
@@ -67,7 +71,10 @@ class AccessRequestEvaluatorTest extends TestCase
             'asset_id' => $this->asset->id,
         ]));
 
-        $config = array_merge(config('pam.openai', []), config('pam.access_request.duration', []));
+        $config = array_merge(
+            config('pam.access_request.duration', []),
+            ['openai_metadata' => config('ai.defaults.openai_metadata', [])],
+        );
         $agent = new AccessRequestEvaluator($request, $config);
         $userPrompt = view('prompts.new-request.user', [
             'config' => $config,
@@ -83,7 +90,7 @@ class AccessRequestEvaluatorTest extends TestCase
     }
 
     #[Test]
-    public function it_includes_pam_openai_metadata_in_provider_options_for_openai(): void
+    public function it_includes_openai_metadata_in_provider_options_for_openai(): void
     {
         $request = Request::factory()->create([
             'org_id' => $this->org->id,
@@ -91,7 +98,9 @@ class AccessRequestEvaluatorTest extends TestCase
             'asset_id' => $this->asset->id,
         ]);
 
-        $agent = new AccessRequestEvaluator($request, []);
+        $agent = new AccessRequestEvaluator($request, [
+            'openai_metadata' => ['app' => 'ArgusPAM'],
+        ]);
 
         $this->assertSame(
             ['metadata' => ['app' => 'ArgusPAM']],

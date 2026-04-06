@@ -9,7 +9,6 @@ use App\Models\Request;
 use App\Models\Session;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Config;
 use Laravel\Ai\Enums\Lab;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
@@ -32,12 +31,6 @@ class SessionReviewAgentTest extends TestCase
         $this->user = User::factory()->create();
         $this->org->users()->attach($this->user->id);
         $this->asset = Asset::factory()->create(['org_id' => $this->org->id]);
-
-        Config::set('pam.openai', array_merge(config('pam.openai', []), [
-            'metadata' => [
-                'app' => 'ArgusPAM',
-            ],
-        ]));
     }
 
     #[Test]
@@ -68,7 +61,9 @@ class SessionReviewAgentTest extends TestCase
             'requester_id' => $this->user->id,
         ]);
 
-        $agent = new SessionReviewAgent($session);
+        $agent = new SessionReviewAgent($session, [
+            'openai_metadata' => ['app' => 'ArgusPAM'],
+        ]);
         $userPrompt = view('prompts.session-review.user', [
             'session' => $session,
         ])->render();
@@ -84,7 +79,7 @@ class SessionReviewAgentTest extends TestCase
     }
 
     #[Test]
-    public function it_includes_pam_openai_metadata_in_provider_options_for_openai(): void
+    public function it_includes_openai_metadata_in_provider_options_for_openai(): void
     {
         $request = Request::factory()->create([
             'org_id' => $this->org->id,
@@ -99,7 +94,9 @@ class SessionReviewAgentTest extends TestCase
             'requester_id' => $this->user->id,
         ]);
 
-        $agent = new SessionReviewAgent($session);
+        $agent = new SessionReviewAgent($session, [
+            'openai_metadata' => ['app' => 'ArgusPAM'],
+        ]);
 
         $this->assertSame(
             ['metadata' => ['app' => 'ArgusPAM']],

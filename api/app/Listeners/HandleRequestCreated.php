@@ -3,7 +3,9 @@
 namespace App\Listeners;
 
 use App\Ai\Agents\AccessRequestEvaluator;
+use App\Enums\AiAgentRole;
 use App\Events\RequestCreated;
+use App\Services\Ai\TenantAiRuntime;
 use Illuminate\Contracts\Queue\ShouldBeEncrypted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -22,7 +24,11 @@ class HandleRequestCreated implements ShouldBeEncrypted, ShouldQueue
     public function handle(RequestCreated $event): void
     {
         $request = $event->request;
-        $config = array_merge(config('pam.openai', []), config('pam.access_request.duration', []));
+        $runtime = app(TenantAiRuntime::class)->forOrgAndRole(
+            (int) $request->org_id,
+            AiAgentRole::AccessRequestEvaluation,
+        );
+        $config = $runtime->promptViewConfig;
 
         $agent = new AccessRequestEvaluator($request, $config);
         $userPrompt = view('prompts.new-request.user', [
@@ -32,8 +38,9 @@ class HandleRequestCreated implements ShouldBeEncrypted, ShouldQueue
 
         $response = $agent->prompt(
             $userPrompt,
-            model: $config['model'] ?? 'gpt-4o-mini',
-            timeout: 120,
+            provider: $runtime->providerChain,
+            model: null,
+            timeout: $runtime->timeout,
         );
         $request->applyAiEvaluation($response->toArray());
         $request->submit();

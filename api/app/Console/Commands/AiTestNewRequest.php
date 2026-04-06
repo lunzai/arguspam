@@ -3,8 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Ai\Agents\AccessRequestEvaluator;
+use App\Enums\AiAgentRole;
 use App\Enums\RiskRating;
 use App\Models\Request;
+use App\Services\Ai\TenantAiRuntime;
 use Illuminate\Console\Command;
 
 class AiTestNewRequest extends Command
@@ -28,14 +30,23 @@ class AiTestNewRequest extends Command
 
         $this->info("Testing AI evaluation for Request ID#{$request->id}");
 
-        $config = array_merge(config('pam.openai', []), config('pam.access_request.duration', []));
+        $runtime = app(TenantAiRuntime::class)->forOrgAndRole(
+            (int) $request->org_id,
+            AiAgentRole::AccessRequestEvaluation,
+        );
+        $config = $runtime->promptViewConfig;
         $agent = new AccessRequestEvaluator($request, $config);
         $userPrompt = view('prompts.new-request.user', [
             'config' => $config,
             'request' => $request,
         ])->render();
 
-        $response = $agent->prompt($userPrompt);
+        $response = $agent->prompt(
+            $userPrompt,
+            provider: $runtime->providerChain,
+            model: null,
+            timeout: $runtime->timeout,
+        );
         $evaluation = $response->toArray();
 
         try {

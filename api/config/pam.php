@@ -65,15 +65,6 @@ return [
         ],
     ],
 
-    'openai' => [
-        'model' => env('OPENAI_MODEL', 'gpt-4o-mini'),
-        'temperature' => (float) env('OPENAI_TEMPERATURE', 0.2),
-        'max_output_tokens' => (int) env('OPENAI_MAX_OUTPUT_TOKENS', 2048),
-        'metadata' => [
-            'app' => env('APP_NAME', 'ArgusPAM'),
-        ],
-    ],
-
     /*
     |--------------------------------------------------------------------------
     | Pagination

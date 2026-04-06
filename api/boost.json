@@ -3,10 +3,17 @@
         "claude_code",
         "cursor"
     ],
-    "editors": [
-        "claude_code",
-        "cursor",
-        "vscode"
+    "guidelines": true,
+    "mcp": true,
+    "nightwatch_mcp": true,
+    "packages": [
+        "laravel/ai"
     ],
-    "guidelines": []
+    "sail": false,
+    "skills": [
+        "laravel-best-practices",
+        "configuring-horizon",
+        "tailwindcss-development",
+        "ai-sdk-development"
+    ]
 }

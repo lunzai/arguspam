@@ -11,10 +11,10 @@ use App\Events\RequestCreated;
 use App\Events\RequestExpired;
 use App\Events\RequestRejected;
 use App\Events\RequestSubmitted;
-use App\Services\OpenAi\OpenAiService;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
 use Carbon\CarbonInterval;
+use Database\Factories\RequestFactory;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Request extends Model implements ShouldHandleEventsAfterCommit
 {
-    /** @use HasFactory<\Database\Factories\RequestFactory> */
+    /** @use HasFactory<RequestFactory> */
     use BelongsToOrganization, HasBlamable, HasFactory;
 
     protected $fillable = [
@@ -134,13 +134,10 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         );
     }
 
-    public function getAiEvaluation(OpenAiService $openAiService): void
+    public function applyAiEvaluation(array $data): void
     {
-        $evaluation = $openAiService->evaluateAccessRequest($this);
-        $result = $evaluation['output_object'];
-
-        $this->ai_note = $result->aiNote;
-        $this->ai_risk_rating = $result->aiRiskRating;
+        $this->ai_note = $data['ai_note'];
+        $this->ai_risk_rating = RiskRating::from($data['ai_risk_rating']);
         $this->save();
     }
 

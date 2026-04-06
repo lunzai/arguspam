@@ -10,6 +10,8 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrgAiAgentController;
+use App\Http\Controllers\OrgAiProviderController;
 use App\Http\Controllers\OrgController;
 use App\Http\Controllers\OrgUserController;
 use App\Http\Controllers\OrgUserGroupController;
@@ -103,6 +105,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::get('dashboard', [DashboardController::class, 'index'])
             ->name('dashboard.index');
+
+        Route::apiResource('org-ai-providers', OrgAiProviderController::class);
+        Route::apiResource('org-ai-agents', OrgAiAgentController::class);
     });
 
     Route::apiResources([

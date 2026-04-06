@@ -33,5 +33,7 @@ return [
 
     'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'argus'), '_').'_cache_'),
 
+    'serializable_classes' => false,
+
     'default_ttl' => 86400,
 ];

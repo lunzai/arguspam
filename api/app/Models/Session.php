@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\RiskRating;
+use App\Enums\SessionFlag as SessionFlagEnum;
 use App\Enums\SessionStatus;
 use App\Events\SessionAiAudited;
 use App\Events\SessionCancelled;
@@ -14,10 +15,10 @@ use App\Events\SessionJitTerminated;
 use App\Events\SessionStarted;
 use App\Events\SessionTerminated;
 use App\Services\Jit\JitManager;
-use App\Services\OpenAi\OpenAiService;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
 use Carbon\CarbonInterval;
+use Database\Factories\SessionFactory;
 use DB;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -31,7 +32,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Session extends Model implements ShouldHandleEventsAfterCommit
 {
-    /** @use HasFactory<\Database\Factories\SessionFactory> */
+    /** @use HasFactory<SessionFactory> */
     use BelongsToOrganization, HasBlamable, HasFactory;
 
     protected $fillable = [
@@ -159,22 +160,20 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         );
     }
 
-    public function getAiAudit(OpenAiService $openAiService): void
+    public function applyAiAudit(array $data): void
     {
-        $evaluation = $openAiService->auditSession($this);
-        $result = $evaluation['output_object'];
-        $this->ai_note = $result->aiNote;
-        $this->session_activity_risk = $result->sessionActivityRisk;
-        $this->deviation_risk = $result->deviationRisk;
-        $this->overall_risk = $result->overallRisk;
-        $this->human_audit_confidence = $result->humanAuditConfidence;
-        $this->human_audit_required = $result->humanAuditRequired;
+        $this->ai_note = $data['ai_note'];
+        $this->session_activity_risk = RiskRating::from($data['session_activity_risk']);
+        $this->deviation_risk = RiskRating::from($data['deviation_risk']);
+        $this->overall_risk = RiskRating::from($data['overall_risk']);
+        $this->human_audit_confidence = (int) $data['human_audit_confidence'];
+        $this->human_audit_required = (bool) $data['human_audit_required'];
         $this->ai_reviewed_at = now();
         $this->flags()->createMany(
-            array_map(fn ($flag) => [
+            array_map(fn (string $flag) => [
                 'session_id' => $this->id,
-                'flag' => $flag->value,
-            ], $result->flags),
+                'flag' => SessionFlagEnum::from($flag)->value,
+            ], $data['flags'] ?? []),
         );
         SessionAiAudited::dispatchIf($this->save(), $this);
     }
@@ -350,7 +349,7 @@ class Session extends Model implements ShouldHandleEventsAfterCommit
         return $this->belongsTo(Org::class);
     }
 
-    public function request(): belongsTo
+    public function request(): BelongsTo
     {
         return $this->belongsTo(Request::class);
     }

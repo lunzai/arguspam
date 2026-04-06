@@ -13,6 +13,7 @@ use App\Listeners\HandleSessionCancelled;
 use App\Listeners\HandleSessionCreated;
 use App\Listeners\HandleSessionEnded;
 use App\Listeners\HandleSessionExpired;
+use App\Listeners\HandleSessionJitTerminated;
 use App\Listeners\HandleSessionStarted;
 use App\Listeners\HandleSessionTerminated;
 use App\Listeners\UpdateUserLastLogin;
@@ -25,6 +26,7 @@ class AllListenersTest extends TestCase
         $listeners = [
             HandleRequestApproved::class,
             HandleRequestCancelled::class,
+            HandleRequestCreated::class,
             HandleRequestExpired::class,
             HandleRequestRejected::class,
             HandleRequestSubmitted::class,
@@ -33,6 +35,7 @@ class AllListenersTest extends TestCase
             HandleSessionCreated::class,
             HandleSessionEnded::class,
             HandleSessionExpired::class,
+            HandleSessionJitTerminated::class,
             HandleSessionStarted::class,
             HandleSessionTerminated::class,
             UpdateUserLastLogin::class,
@@ -42,10 +45,6 @@ class AllListenersTest extends TestCase
             $listener = new $listenerClass;
             $this->assertInstanceOf($listenerClass, $listener);
         }
-
-        // Test HandleRequestCreated separately as it requires constructor parameter
-        $handleRequestCreated = new HandleRequestCreated(\Mockery::mock(\App\Services\OpenAi\OpenAiService::class));
-        $this->assertInstanceOf(HandleRequestCreated::class, $handleRequestCreated);
     }
 
     public function test_all_listeners_have_handle_method(): void
@@ -62,6 +61,7 @@ class AllListenersTest extends TestCase
             HandleSessionCreated::class,
             HandleSessionEnded::class,
             HandleSessionExpired::class,
+            HandleSessionJitTerminated::class,
             HandleSessionStarted::class,
             HandleSessionTerminated::class,
             UpdateUserLastLogin::class,
@@ -86,6 +86,7 @@ class AllListenersTest extends TestCase
             HandleSessionCreated::class,
             HandleSessionEnded::class,
             HandleSessionExpired::class,
+            HandleSessionJitTerminated::class,
             HandleSessionStarted::class,
             HandleSessionTerminated::class,
             UpdateUserLastLogin::class,
@@ -140,6 +141,7 @@ class AllListenersTest extends TestCase
             HandleSessionCreated::class => 'App\Events\SessionCreated',
             HandleSessionEnded::class => 'App\Events\SessionEnded',
             HandleSessionExpired::class => 'App\Events\SessionExpired',
+            HandleSessionJitTerminated::class => 'App\Events\SessionJitTerminated',
             HandleSessionStarted::class => 'App\Events\SessionStarted',
             HandleSessionTerminated::class => 'App\Events\SessionTerminated',
             UpdateUserLastLogin::class => 'App\Events\UserLoggedIn',
@@ -160,6 +162,7 @@ class AllListenersTest extends TestCase
     {
         $queuedListeners = [
             HandleRequestCreated::class,
+            HandleSessionJitTerminated::class,
             HandleSessionStarted::class,
             HandleSessionEnded::class,
             HandleSessionCancelled::class,
@@ -181,6 +184,7 @@ class AllListenersTest extends TestCase
     {
         $encryptedListeners = [
             HandleRequestCreated::class,
+            HandleSessionJitTerminated::class,
         ];
 
         foreach ($encryptedListeners as $listenerClass) {
@@ -195,6 +199,7 @@ class AllListenersTest extends TestCase
     {
         $queuedListeners = [
             HandleRequestCreated::class,
+            HandleSessionJitTerminated::class,
             HandleSessionStarted::class,
             HandleSessionEnded::class,
             HandleSessionCancelled::class,
@@ -226,6 +231,7 @@ class AllListenersTest extends TestCase
             HandleSessionCreated::class,
             HandleSessionEnded::class,
             HandleSessionExpired::class,
+            HandleSessionJitTerminated::class,
             HandleSessionStarted::class,
             HandleSessionTerminated::class,
             UpdateUserLastLogin::class,
@@ -241,6 +247,7 @@ class AllListenersTest extends TestCase
         $listeners = [
             new HandleRequestApproved,
             new HandleRequestCancelled,
+            new HandleRequestCreated,
             new HandleRequestExpired,
             new HandleRequestRejected,
             new HandleRequestSubmitted,
@@ -248,6 +255,7 @@ class AllListenersTest extends TestCase
             new HandleSessionCancelled,
             new HandleSessionCreated,
             new HandleSessionEnded,
+            new HandleSessionJitTerminated,
             new HandleSessionExpired,
             new HandleSessionStarted,
             new HandleSessionTerminated,
@@ -275,6 +283,7 @@ class AllListenersTest extends TestCase
             HandleSessionCreated::class,
             HandleSessionEnded::class,
             HandleSessionExpired::class,
+            HandleSessionJitTerminated::class,
             HandleSessionStarted::class,
             HandleSessionTerminated::class,
             UpdateUserLastLogin::class,

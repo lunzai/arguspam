@@ -8,33 +8,33 @@
 	const dashboardData = $derived(data.dashboard);
 </script>
 
-<h1 class="text-2xl font-medium capitalize">Dashboard</h1>
+<!-- <h1 class="text-2xl font-medium capitalize">Dashboard</h1> -->
 
 <div class="grid grid-cols-2 gap-4 lg:grid-cols-4 xl:grid-cols-5">
-	<Card.Root class="@container/card rounded-md py-4 shadow-none">
+	<Card.Root class="@container/card rounded-2xl py-4 border border-outline-variant/10 shadow-sm">
 		<Card.Header class="px-4">
-			<Card.Description>Users</Card.Description>
-			<Card.Title class="flex pt-5 text-4xl font-semibold tabular-nums">
+			<Card.Description class="text-sm font-medium text-slate-500">Users</Card.Description>
+			<Card.Title class="flex pt-2.5 tabular-nums text-3xl font-black tracking-tight text-slate-950">
 				{dashboardData.user_count}
 			</Card.Title>
 			<Card.Action></Card.Action>
 		</Card.Header>
 	</Card.Root>
 
-	<Card.Root class="@container/card hidden rounded-md py-4 shadow-none xl:block">
+	<Card.Root class="@container/card hidden rounded-2xl py-4 border border-outline-variant/10 shadow-sm xl:block">
 		<Card.Header class="px-4">
-			<Card.Description>User Groups</Card.Description>
-			<Card.Title class="pt-5 text-4xl font-semibold tabular-nums">
+			<Card.Description class="text-sm font-medium text-slate-500">User Groups</Card.Description>
+			<Card.Title class="flex pt-2.5 tabular-nums text-3xl font-black tracking-tight text-slate-950">
 				{dashboardData.user_group_count}
 			</Card.Title>
 			<Card.Action></Card.Action>
 		</Card.Header>
 	</Card.Root>
 
-	<Card.Root class="@container/card rounded-md py-4 shadow-none">
+	<Card.Root class="@container/card rounded-2xl py-4 border border-outline-variant/10 shadow-sm">
 		<Card.Header class="px-4">
-			<Card.Description>Assets</Card.Description>
-			<Card.Title class="pt-5 text-4xl font-semibold tabular-nums">
+			<Card.Description class="text-sm font-medium text-slate-500">Assets</Card.Description>
+			<Card.Title class="flex pt-2.5 tabular-nums text-3xl font-black tracking-tight text-slate-950">
 				{dashboardData.asset_count}
 			</Card.Title>
 			<Card.Action></Card.Action>
@@ -50,20 +50,20 @@
 		</Card.Content> -->
 	</Card.Root>
 
-	<Card.Root class="@container/card rounded-md py-4 shadow-none">
+	<Card.Root class="@container/card rounded-2xl py-4 border border-outline-variant/10 shadow-sm">
 		<Card.Header class="px-4">
-			<Card.Description>Requests</Card.Description>
-			<Card.Title class="pt-5 text-4xl font-semibold tabular-nums">
+			<Card.Description class="text-sm font-medium text-slate-500">Requests</Card.Description>
+			<Card.Title class="flex pt-2.5 tabular-nums text-3xl font-black tracking-tight text-slate-950">
 				{dashboardData.request_count}
 			</Card.Title>
 			<Card.Action></Card.Action>
 		</Card.Header>
 	</Card.Root>
 
-	<Card.Root class="@container/card rounded-md py-4 shadow-none">
+	<Card.Root class="@container/card rounded-2xl py-4 border border-outline-variant/10 shadow-sm">
 		<Card.Header class="px-4">
-			<Card.Description>Sessions</Card.Description>
-			<Card.Title class="pt-5 text-4xl font-semibold tabular-nums">
+			<Card.Description class="text-sm font-medium text-slate-500">Sessions</Card.Description>
+			<Card.Title class="flex pt-2.5 tabular-nums text-3xl font-black tracking-tight text-slate-950">
 				{dashboardData.session_count}
 			</Card.Title>
 			<Card.Action></Card.Action>

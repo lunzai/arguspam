@@ -40,10 +40,10 @@
 	});
 </script>
 
-<Card.Root>
+<Card.Root class="border border-outline-variant/10 shadow-sm rounded-2xl">
 	<Card.Header class="flex items-center gap-2 space-y-0 sm:flex-row">
 		<div class="grid flex-1 gap-2">
-			<Card.Title>{title}</Card.Title>
+			<Card.Title class="text-sm font-medium text-slate-500">{title}</Card.Title>
 		</div>
 	</Card.Header>
 	<Card.Content class="pb-8">

@@ -132,7 +132,7 @@
 				</Breadcrumb.List>
 			</Breadcrumb.Root>
 		</header>
-		<div class="flex min-w-0 flex-1 flex-col gap-6 overflow-hidden px-6 pt-4 pb-8">
+		<div class="flex min-w-0 flex-1 flex-col gap-6 overflow-hidden px-6 pt-8 pb-8">
 			{@render children()}
 		</div>
         <footer class="flex justify-center items-center space-x-8 w-full mt-auto py-8 bg-transparent Inter text-[11px] uppercase tracking-wider font-medium">

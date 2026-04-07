@@ -131,11 +131,11 @@
 	});
 </script>
 
-<Card.Root>
+<Card.Root class="border border-outline-variant/10 shadow-sm rounded-2xl">
 	<Card.Header class="flex items-center gap-2 space-y-0 sm:flex-row">
 		<div class="grid flex-1 gap-2">
-			<Card.Title>{title}</Card.Title>
-			<Card.Description>{description} {selectedLabel}</Card.Description>
+			<Card.Title class="text-sm font-medium text-slate-500">{title}</Card.Title>
+			<Card.Description class="text-xs text-slate-400">{description} {selectedLabel}</Card.Description>
 		</div>
 		<Select.Root type="single" bind:value={timeRange}>
 			<Select.Trigger class="w-[160px] rounded-lg sm:ml-auto" aria-label="Select a value">

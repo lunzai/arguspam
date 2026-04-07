@@ -171,7 +171,7 @@
 
 {#snippet navGroup(title: string, items: NavItem[])}
 	<Sidebar.Group>
-		<Sidebar.GroupLabel>{title}</Sidebar.GroupLabel>
+		<Sidebar.GroupLabel class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.15em] mb-2">{title}</Sidebar.GroupLabel>
 		<Sidebar.Menu>
 			{#each items as item (item.title)}
 				{#if item.visible}
@@ -181,7 +181,10 @@
 								<Sidebar.MenuItem {...props}>
 									<Collapsible.Trigger>
 										{#snippet child({ props })}
-											<Sidebar.MenuButton {...props} tooltipContent={item.title}>
+											<Sidebar.MenuButton {...props} 
+                                                class="flex items-center gap-3 py-2.5 h-auto rounded text-slate-950 font-medium hover:bg-slate-200/50 transition-colors hover:cursor-pointer" 
+                                                tooltipContent={item.title}
+                                            >
 												{#if item.icon}
 													<item.icon />
 												{/if}
@@ -197,7 +200,7 @@
 											{#each item.items ?? [] as subItem (subItem.title)}
 												{#if subItem.visible}
 													<Sidebar.MenuSubItem>
-														<Sidebar.MenuSubButton>
+														<Sidebar.MenuSubButton class="hover:cursor-pointer py-2.5 h-auto font-medium rounded">
 															{#snippet child({ props })}
 																<a href={subItem.url} {...props}>
 																	<span>{subItem.title}</span>
@@ -214,7 +217,10 @@
 						</Collapsible.Root>
 					{:else}
 						<Sidebar.MenuItem>
-							<Sidebar.MenuButton tooltipContent={item.title}>
+							<Sidebar.MenuButton
+                                class="flex items-center gap-3 py-2.5 h-auto rounded text-slate-950 font-medium hover:bg-slate-200/50 transition-colors" 
+                                tooltipContent={item.title}
+                            >
 								{#snippet child({ props })}
 									<a href={item.url} {...props}>
 										{#if item.icon}

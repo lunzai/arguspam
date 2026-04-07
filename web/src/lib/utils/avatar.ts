@@ -4,7 +4,7 @@
  * @returns URL for the generated avatar
  */
 export function generateAvatar(seed: string): string {
-	const DICEBEAR_API = 'https://api.dicebear.com/9.x/bottts/svg';
+	const DICEBEAR_API = 'https://api.dicebear.com/9.x/bottts-neutral/svg';
 	const encodedSeed = encodeURIComponent(seed);
 	return `${DICEBEAR_API}?seed=${encodedSeed}`;
 }
@@ -18,7 +18,7 @@ export function generateAvatar(seed: string): string {
 export function generateInitials(name: string, size: number = 128): string {
 	const UI_AVATARS_API = 'https://ui-avatars.com/api';
 	const encodedName = encodeURIComponent(name);
-	return `${UI_AVATARS_API}/?size=${size}&name=${encodedName}`;
+	return `${UI_AVATARS_API}/?size=${size}&name=${encodedName}&background=0f172b&color=ffffff`;
 }
 
 /**

@@ -11,7 +11,7 @@
 	<Avatar.Image src={generateAvatar(identifier)} alt={user.name} />
 	<Avatar.Fallback class="rounded-lg">{getInitials(user.name)}</Avatar.Fallback>
 </Avatar.Root>
-<div class="grid flex-1 text-left text-sm leading-tight">
-	<span class="truncate font-medium">{user.name}</span>
-	<span class="truncate text-xs">{user.email}</span>
+<div class="grid flex-1 text-left">
+	<span class="truncate text-sm font-bold">{user.name}</span>
+	<span class="truncate text-[10px] text-slate-500 tracking-tight">{user.email}</span>
 </div>

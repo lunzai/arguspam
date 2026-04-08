@@ -3,8 +3,7 @@
     import * as Select from "$ui/select";
     import { Button } from "$ui/button";
     import { ChevronsLeftIcon, ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from "@lucide/svelte";
-    import type { ApiMeta } from "./types";
-	import { Table } from ".";
+    import type { ApiMeta } from "$lib/resources/api";
 
     type PaginationProps = {
         table: TableType<any>;
@@ -14,15 +13,15 @@
     let { table, meta }: PaginationProps = $props();
 </script>
 
-<div class="flex items-center justify-between px-2">
-    <div class="text-muted-foreground flex-1 text-sm">
+<div class="flex items-center justify-between px-4 py-4 bg-white shadow-sm rounded-lg">
+    <div class="flex-1 text-xs uppercase tracking-widest font-bold">
         {#if meta?.total > 0}
             {meta?.from} to {meta?.to} of {meta?.total} rows.
         {/if}
     </div>
     <div class="flex items-center space-x-6 lg:space-x-8">
         <div class="flex items-center space-x-2">
-            <p class="text-sm font-medium">Rows per page</p>
+            <p class="text-xs font-bold uppercase tracking-widest">Rows per page</p>
             <Select.Root
                 allowDeselect={false}
                 type="single"
@@ -46,7 +45,7 @@
                 </Select.Content>
             </Select.Root>
         </div>
-        <div class="flex w-[100px] items-center justify-center text-sm font-medium">
+        <div class="flex w-[100px] items-center justify-center text-xs font-bold uppercase tracking-widest">
             Page {table.getState().pagination.pageIndex + 1} of
             {meta?.last_page}
         </div>

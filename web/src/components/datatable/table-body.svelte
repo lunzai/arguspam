@@ -15,18 +15,18 @@
 {#each table.getRowModel().rows as row (row.id)}
     <Table.Row data-state={row.getIsSelected() && "selected"}>
     {#each row.getVisibleCells() as cell (cell.id)}
-        <Table.Cell>
-        <FlexRender
-            content={cell.column.columnDef.cell}
-            context={cell.getContext()}
-        />
+        <Table.Cell class="px-4 py-3">
+            <FlexRender
+                content={cell.column.columnDef.cell}
+                context={cell.getContext()}
+            />
         </Table.Cell>
     {/each}
     </Table.Row>
 {:else}
     <Table.Row>
-    <Table.Cell colspan={columns.length} class="h-24 text-center">
-        No results.
-    </Table.Cell>
+        <Table.Cell colspan={columns.length} class="h-24 text-center px-6 py-2">
+            No results.
+        </Table.Cell>
     </Table.Row>
 {/each}

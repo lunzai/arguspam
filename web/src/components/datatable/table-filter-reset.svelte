@@ -13,7 +13,7 @@
     <Button
         variant="ghost"
         onclick={() => table.resetColumnFilters()}
-        class="h-8 px-2 lg:px-3"
+        class="px-2 lg:px-3 text-red-500 font-semibold hover:bg-red-500/10 hover:text-red-500 transition-all"
     >
         Reset
         <XIcon />

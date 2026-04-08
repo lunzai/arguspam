@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Separator } from '$ui/separator';
 	import SidebarNav from '$components/page-sidebar/sidebar.svelte';
+	import { PageTitle } from '$components/page-title';
 
 	let { children, data } = $props();
 
@@ -22,7 +23,12 @@
 </script>
 
 <div class="flex flex-col space-y-4">
-	<h1 class="text-xl font-medium capitalize">Settings</h1>
+
+    <PageTitle 
+        title="Settings" 
+        description="Manage your account and security settings." 
+    />
+
 	<Separator />
 	<div class="mt-2 flex flex-col gap-8 lg:flex-row">
 		<aside class="w-48">

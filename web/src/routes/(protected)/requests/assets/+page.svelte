@@ -8,6 +8,7 @@
 	import type { Request } from '$models/request';
 	import { goto } from '$app/navigation';
 	import { SquareArrowOutUpRight, Database, Network } from '@lucide/svelte';
+	import { PageTitle } from '$components/page-title';
 
 	let { data }: { data: any } = $props();
 	let assetCollection = $derived(data.assetCollection as ApiAssetCollection);
@@ -20,7 +21,10 @@
 	}
 </script>
 
-<h1 class="text-2xl font-medium capitalize">Create Request</h1>
+<PageTitle 
+    title="Request Access" 
+    description="Submit a time-bound privileged access request for a database asset. AI risk scoring is applied automatically before approval." 
+/>
 
 <FormDialog
 	bind:isOpen={addRequestDialogIsOpen}

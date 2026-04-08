@@ -17,18 +17,20 @@
 	const chartOptions = $derived({
 		series: [data],
 		legend: {
-			position: 'bottom',
+			position: 'bottom' as const,
 			floating: true,
 			offsetY: 40
 		},
 		chart: {
-			type: 'pie'
+			type: 'pie' as const
 		}
 	});
 
 	onMount(async () => {
+		const el = document.getElementById(`chart-${id}`);
+		if (!el) return;
 		const apexCharts = (await import('apexcharts')).default;
-		chart = new apexCharts(document.querySelector('#chart-' + id), chartOptions);
+		chart = new apexCharts(el, chartOptions);
 		chart.render();
 	});
 
@@ -40,7 +42,7 @@
 	});
 </script>
 
-<Card.Root class="border border-outline-variant/10 shadow-sm rounded-2xl">
+<Card.Root class="border border-outline-variant/10 shadow-sm rounded-xl">
 	<Card.Header class="flex items-center gap-2 space-y-0 sm:flex-row">
 		<div class="grid flex-1 gap-2">
 			<Card.Title class="text-sm font-medium text-slate-500">{title}</Card.Title>

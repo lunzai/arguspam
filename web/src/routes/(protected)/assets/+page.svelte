@@ -21,6 +21,7 @@
     import { getInitialStateFromUrlParams } from '$components/datatable/helper';
     import type { AssetResource as ModelResource } from '$lib/resources/asset';
     import { HoverCardCell } from '$components/datatable';
+    import { PageTitle } from '$components/page-title';
 
     const { data } = $props();
     const list = $derived(data?.list as ModelResource[]);
@@ -116,19 +117,21 @@
     }
 </script>
 
-<div class="flex items-center justify-between">
-	<h1 class="text-2xl font-medium capitalize">Assets</h1>
-	<Button
-		variant="outline"
-		class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
-		onclick={() => {
-			addAssetDialogIsOpen = true;
-		}}
-	>
-		<PlusIcon class="h-4 w-4" />
-		<span>Add Asset</span>
-	</Button>
-</div>
+<PageTitle 
+    title="Assets" 
+    description="Manage your database assets and their configurations." 
+>
+    <Button
+        variant="outline"
+        class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500 bg-white"
+        onclick={() => {
+            addAssetDialogIsOpen = true;
+        }}
+    >
+        <PlusIcon class="h-4 w-4" />
+        <span>Add Asset</span>
+    </Button>
+</PageTitle>
 
 <FormDialog
 	bind:isOpen={addAssetDialogIsOpen}

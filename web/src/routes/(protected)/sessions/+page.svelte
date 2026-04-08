@@ -20,6 +20,7 @@
     import type { Asset } from '$lib/models/asset';
     import type { User } from '$lib/models/user';
     import { page } from '$app/state';
+    import { PageTitle } from '$components/page-title';
 
     const { data } = $props();
     const list = $derived(data?.list as ModelResource[]);
@@ -118,7 +119,12 @@
     }
 </script>
 
-<h1 class="text-2xl font-medium capitalize">Sessions</h1>
+<PageTitle 
+    title="Sessions" 
+    description="Monitor all active and historical privileged access sessions across database assets." 
+/>
+
+
 
 <Table 
     columns={columns} 

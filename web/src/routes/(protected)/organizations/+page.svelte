@@ -16,6 +16,7 @@
     import { Table, tableStateToUrlParams, ButtonCell } from '$components/datatable';
     import { Filter, FilterReset, Search } from '$components/datatable';
     import type { ColumnDef } from "@tanstack/table-core";
+    import { PageTitle } from '$components/page-title';
 
 	let { data } = $props();
     const list = $derived(data?.list as ModelResource[]);
@@ -104,21 +105,23 @@
     }
 </script>
 
-<div class="flex items-center justify-between">
-	<h1 class="text-2xl font-medium capitalize">Organizations</h1>
-	{#if canCreate}
-		<Button
-			variant="outline"
-			class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
-			onclick={() => {
-				addOrgDialogIsOpen = true;
-			}}
-		>
-			<PlusIcon class="h-4 w-4" />
-			<span>Add Organization</span>
-		</Button>
-	{/if}
-</div>
+<PageTitle 
+    title="Organizations" 
+    description="Manage your organizations and their configurations."
+>
+    {#if canCreate}
+        <Button
+            variant="outline"
+            class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500 bg-white"
+            onclick={() => {
+                addOrgDialogIsOpen = true;
+            }}
+        >
+            <PlusIcon class="h-4 w-4" />
+            <span>Add Organization</span>
+        </Button>
+    {/if}
+</PageTitle>
 
 <FormDialog
 	bind:isOpen={addOrgDialogIsOpen}

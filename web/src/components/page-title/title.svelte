@@ -18,7 +18,7 @@
     } = $props();
 </script>
 
-<div class="{cn('flex items-center justify-between', className)}" {...restProps}>
+<div class="{cn('flex items-center justify-between pb-3', className)}" {...restProps}>
     <div class="space-y-2">
         <h1 class="{cn('text-3xl font-extrabold tracking-tight', titleClassName)}">{title}</h1>
         {#if description}

@@ -11,7 +11,7 @@
 <!-- <h1 class="text-2xl font-medium capitalize">Dashboard</h1> -->
 
 <div class="grid grid-cols-2 gap-4 lg:grid-cols-4 xl:grid-cols-5">
-	<Card.Root class="@container/card rounded-2xl py-4 border border-outline-variant/10 shadow-sm">
+	<Card.Root class="@container/card rounded-xl py-4 border border-outline-variant/10 shadow-sm">
 		<Card.Header class="px-4">
 			<Card.Description class="text-sm font-medium text-slate-500">Users</Card.Description>
 			<Card.Title class="flex pt-2.5 tabular-nums text-3xl font-black tracking-tight text-slate-950">
@@ -21,7 +21,7 @@
 		</Card.Header>
 	</Card.Root>
 
-	<Card.Root class="@container/card hidden rounded-2xl py-4 border border-outline-variant/10 shadow-sm xl:block">
+	<Card.Root class="@container/card hidden rounded-xl py-4 border border-outline-variant/10 shadow-sm xl:block">
 		<Card.Header class="px-4">
 			<Card.Description class="text-sm font-medium text-slate-500">User Groups</Card.Description>
 			<Card.Title class="flex pt-2.5 tabular-nums text-3xl font-black tracking-tight text-slate-950">
@@ -31,7 +31,7 @@
 		</Card.Header>
 	</Card.Root>
 
-	<Card.Root class="@container/card rounded-2xl py-4 border border-outline-variant/10 shadow-sm">
+	<Card.Root class="@container/card rounded-xl py-4 border border-outline-variant/10 shadow-sm">
 		<Card.Header class="px-4">
 			<Card.Description class="text-sm font-medium text-slate-500">Assets</Card.Description>
 			<Card.Title class="flex pt-2.5 tabular-nums text-3xl font-black tracking-tight text-slate-950">
@@ -50,7 +50,7 @@
 		</Card.Content> -->
 	</Card.Root>
 
-	<Card.Root class="@container/card rounded-2xl py-4 border border-outline-variant/10 shadow-sm">
+	<Card.Root class="@container/card rounded-xl py-4 border border-outline-variant/10 shadow-sm">
 		<Card.Header class="px-4">
 			<Card.Description class="text-sm font-medium text-slate-500">Requests</Card.Description>
 			<Card.Title class="flex pt-2.5 tabular-nums text-3xl font-black tracking-tight text-slate-950">
@@ -60,7 +60,7 @@
 		</Card.Header>
 	</Card.Root>
 
-	<Card.Root class="@container/card rounded-2xl py-4 border border-outline-variant/10 shadow-sm">
+	<Card.Root class="@container/card rounded-xl py-4 border border-outline-variant/10 shadow-sm">
 		<Card.Header class="px-4">
 			<Card.Description class="text-sm font-medium text-slate-500">Sessions</Card.Description>
 			<Card.Title class="flex pt-2.5 tabular-nums text-3xl font-black tracking-tight text-slate-950">

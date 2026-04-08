@@ -1,14 +1,12 @@
 <script lang="ts">
-	import type { ApiAssetCollection } from '$lib/resources/asset.js';
-	import * as Card from '$ui/card';
+	import type { ApiAssetCollection, AssetResource } from '$lib/resources/asset.js';
 	import { Button } from '$ui/button';
-	import { Separator } from '$ui/separator';
 	import FormDialog from './form-dialog.svelte';
 	import type { Asset } from '$models/asset';
 	import type { Request } from '$models/request';
 	import { goto } from '$app/navigation';
-	import { SquareArrowOutUpRight, Database, Network } from '@lucide/svelte';
 	import { PageTitle } from '$components/page-title';
+	import GridView from './grid-view.svelte';
 
 	let { data }: { data: any } = $props();
 	let assetCollection = $derived(data.assetCollection as ApiAssetCollection);
@@ -19,6 +17,7 @@
 		selectedAsset = asset;
 		addRequestDialogIsOpen = true;
 	}
+    let list = $derived(assetCollection.data.map((item) => item.attributes) as Asset[]);
 </script>
 
 <PageTitle 
@@ -37,6 +36,15 @@
 	}}
 />
 
+{#if list.length > 0}
+	<GridView list={list} onRequestAccess={handleCreateRequest} />
+{:else}
+	<div class="flex items-center justify-center h-full">
+		<p class="text-slate-300 text-sm font-bold uppercase tracking-widest">No asset assigned to you.</p>
+	</div>
+{/if}
+
+<!-- 
 <Card.Root class="w-full">
 	<Card.Header>
 		<Card.Title class="text-lg">Your Assets</Card.Title>
@@ -88,4 +96,4 @@
 			</div>
 		</Card.Content>
 	{/if}
-</Card.Root>
+</Card.Root> -->

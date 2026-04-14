@@ -2,348 +2,192 @@
 
 namespace Tests\Integration\Filters;
 
-use App\Http\Filters\AssetFilter;
+use App\Enums\Status;
 use App\Models\Asset;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\Org;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
 use Tests\TestCase;
 
 class AssetFilterTest extends TestCase
 {
     use RefreshDatabase;
 
-    private AssetFilter $filter;
-    private Builder $builder;
+    private User $user;
+    private Org $org;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->builder = Asset::query();
+        $this->org = Org::factory()->create();
+        $this->user = User::factory()->create();
+        $this->org->users()->attach($this->user->id);
+        $this->giveUserPermission($this->user, 'asset:view');
     }
 
-    private function createFilter(array $params = []): AssetFilter
+    public function test_filter_by_name(): void
     {
-        $request = new Request($params);
-        return new AssetFilter($request);
+        Asset::factory()->create(['org_id' => $this->org->id, 'name' => 'Alpha Server']);
+        Asset::factory()->create(['org_id' => $this->org->id, 'name' => 'Beta Server']);
+
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/assets?name=Alpha')
+            ->assertStatus(200);
+
+        $names = collect($response->json('data'))->pluck('attributes.name');
+        $this->assertTrue($names->contains('Alpha Server'));
+        $this->assertFalse($names->contains('Beta Server'));
     }
 
-    public function test_sortable_fields_are_defined(): void
+    public function test_filter_by_status(): void
     {
-        $filter = $this->createFilter();
+        Asset::factory()->create(['org_id' => $this->org->id, 'status' => Status::ACTIVE->value]);
+        Asset::factory()->create(['org_id' => $this->org->id, 'status' => Status::INACTIVE->value]);
 
-        $reflection = new \ReflectionClass($filter);
-        $property = $reflection->getProperty('sortable');
-        $property->setAccessible(true);
-        $sortable = $property->getValue($filter);
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/assets?status=active')
+            ->assertStatus(200);
 
-        $expectedSortable = [
-            'org_id',
-            'name',
-            'description',
-            'status',
-            'host',
-            'port',
-            'dbms',
-            'created_at',
-            'updated_at',
-        ];
-
-        $this->assertEquals($expectedSortable, $sortable);
+        $statuses = collect($response->json('data'))->pluck('attributes.status');
+        $this->assertTrue($statuses->every(fn ($s) => $s === 'active'));
     }
 
-    public function test_org_id_single_value(): void
+    public function test_no_filter_returns_all_org_assets(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->orgId('123');
+        Asset::factory()->count(3)->create(['org_id' => $this->org->id]);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/assets')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('org_id', $sql);
-        $this->assertStringContainsString('=', $sql);
-        $this->assertContains('123', $bindings);
+        $this->assertCount(3, $response->json('data'));
     }
 
-    public function test_org_id_multiple_values(): void
+    public function test_filter_by_host_partial_match(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->orgId('123,456,789');
+        Asset::factory()->create(['org_id' => $this->org->id, 'host' => '192.168.1.10']);
+        Asset::factory()->create(['org_id' => $this->org->id, 'host' => '10.0.0.5']);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/assets?host=192.168')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('org_id', $sql);
-        $this->assertStringContainsString('in', strtolower($sql));
-        $this->assertContains('123', $bindings);
-        $this->assertContains('456', $bindings);
-        $this->assertContains('789', $bindings);
+        $hosts = collect($response->json('data'))->pluck('attributes.host');
+        $this->assertTrue($hosts->every(fn ($h) => str_contains($h, '192.168')));
+        $this->assertFalse($hosts->contains('10.0.0.5'));
     }
 
-    public function test_name_uses_like_filter(): void
+    public function test_filter_by_multiple_statuses(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->name('Database');
+        Asset::factory()->create(['org_id' => $this->org->id, 'status' => Status::ACTIVE->value]);
+        Asset::factory()->create(['org_id' => $this->org->id, 'status' => Status::INACTIVE->value]);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/assets?filter[status]=active,inactive')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('name', $sql);
-        $this->assertStringContainsString('like', strtolower($sql));
-        $this->assertContains('%Database%', $bindings);
+        $this->assertCount(2, $response->json('data'));
     }
 
-    public function test_description_uses_like_filter(): void
+    public function test_sort_by_name(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->description('production database');
+        Asset::factory()->create(['org_id' => $this->org->id, 'name' => 'Zebra Server']);
+        Asset::factory()->create(['org_id' => $this->org->id, 'name' => 'Alpha Server']);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/assets?sort=name')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('description', $sql);
-        $this->assertStringContainsString('like', strtolower($sql));
-        $this->assertContains('%production database%', $bindings);
+        $names = collect($response->json('data'))->pluck('attributes.name');
+        $this->assertEquals('Alpha Server', $names->first());
     }
 
-    public function test_status_single_value(): void
+    public function test_sort_by_name_desc(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->status('active');
+        Asset::factory()->create(['org_id' => $this->org->id, 'name' => 'Zebra Server']);
+        Asset::factory()->create(['org_id' => $this->org->id, 'name' => 'Alpha Server']);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/assets?sort=-name')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('status', $sql);
-        $this->assertStringContainsString('=', $sql);
-        $this->assertContains('active', $bindings);
+        $names = collect($response->json('data'))->pluck('attributes.name');
+        $this->assertEquals('Zebra Server', $names->first());
     }
 
-    public function test_status_multiple_values(): void
+    public function test_filter_by_created_at_range(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->status('active,inactive,maintenance');
+        Asset::factory()->create(['org_id' => $this->org->id]);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $from = now()->subDay()->toDateTimeString();
+        $to = now()->addDay()->toDateTimeString();
 
-        $this->assertStringContainsString('status', $sql);
-        $this->assertStringContainsString('in', strtolower($sql));
-        $this->assertContains('active', $bindings);
-        $this->assertContains('inactive', $bindings);
-        $this->assertContains('maintenance', $bindings);
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson("/assets?filter[created_at]={$from},{$to}")
+            ->assertStatus(200);
+
+        $this->assertNotEmpty($response->json('data'));
     }
 
-    public function test_host_uses_like_filter(): void
+    public function test_filter_by_org_id(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->host('localhost');
+        Asset::factory()->create(['org_id' => $this->org->id]);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson("/assets?filter[org_id]={$this->org->id}")
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('host', $sql);
-        $this->assertStringContainsString('like', strtolower($sql));
-        $this->assertContains('%localhost%', $bindings);
+        $this->assertNotEmpty($response->json('data'));
     }
 
-    public function test_port_uses_equal_filter(): void
+    public function test_filter_by_description(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->port('5432');
+        Asset::factory()->create(['org_id' => $this->org->id, 'description' => 'Production database']);
+        Asset::factory()->create(['org_id' => $this->org->id, 'description' => 'Dev environment']);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/assets?description=Production')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('port', $sql);
-        $this->assertStringContainsString('=', $sql);
-        $this->assertContains('5432', $bindings);
+        $descriptions = collect($response->json('data'))->pluck('attributes.description');
+        $this->assertTrue($descriptions->every(fn ($d) => str_contains($d ?? '', 'Production')));
     }
 
-    public function test_dbms_single_value(): void
+    public function test_filter_by_port(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->dbms('postgresql');
+        Asset::factory()->create(['org_id' => $this->org->id, 'port' => 5432]);
+        Asset::factory()->create(['org_id' => $this->org->id, 'port' => 3306]);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/assets?port=5432')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('dbms', $sql);
-        $this->assertStringContainsString('=', $sql);
-        $this->assertContains('postgresql', $bindings);
+        $ports = collect($response->json('data'))->pluck('attributes.port');
+        $this->assertTrue($ports->every(fn ($p) => $p == 5432));
     }
 
-    public function test_dbms_multiple_values(): void
+    public function test_filter_by_dbms(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->dbms('postgresql,mysql,oracle');
+        Asset::factory()->create(['org_id' => $this->org->id, 'dbms' => 'postgresql']);
+        Asset::factory()->create(['org_id' => $this->org->id, 'dbms' => 'mysql']);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/assets?filter[dbms]=postgresql')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('dbms', $sql);
-        $this->assertStringContainsString('in', strtolower($sql));
-        $this->assertContains('postgresql', $bindings);
-        $this->assertContains('mysql', $bindings);
-        $this->assertContains('oracle', $bindings);
+        $this->assertCount(1, $response->json('data'));
     }
 
-    public function test_created_at_range(): void
+    public function test_filter_by_updated_at_range(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->createdAt('2023-01-01,2023-12-31');
+        Asset::factory()->create(['org_id' => $this->org->id]);
+        $from = now()->subDay()->toDateTimeString();
+        $to = now()->addDay()->toDateTimeString();
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson("/assets?filter[updated_at]={$from},{$to}")
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('created_at', $sql);
-        $this->assertStringContainsString('between', strtolower($sql));
-        $this->assertContains('2023-01-01', $bindings);
-        $this->assertContains('2023-12-31', $bindings);
-    }
-
-    public function test_updated_at_greater_than(): void
-    {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->updatedAt('2023-06-01');
-
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
-
-        $this->assertStringContainsString('updated_at', $sql);
-        $this->assertStringContainsString('>=', $sql);
-        $this->assertContains('2023-06-01', $bindings);
-    }
-
-    public function test_apply_with_all_filters(): void
-    {
-        $filter = $this->createFilter([
-            'orgId' => '123',
-            'name' => 'Database',
-            'description' => 'production',
-            'status' => 'active,maintenance',
-            'host' => 'localhost',
-            'port' => '5432',
-            'dbms' => 'postgresql,mysql',
-            'createdAt' => '2023-01-01,2023-12-31',
-            'updatedAt' => '2023-06-01',
-        ]);
-
-        $result = $filter->apply($this->builder);
-
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
-
-        // Check that all filters are applied
-        $this->assertStringContainsString('org_id', $sql);
-        $this->assertStringContainsString('name', $sql);
-        $this->assertStringContainsString('description', $sql);
-        $this->assertStringContainsString('status', $sql);
-        $this->assertStringContainsString('host', $sql);
-        $this->assertStringContainsString('port', $sql);
-        $this->assertStringContainsString('dbms', $sql);
-        $this->assertStringContainsString('created_at', $sql);
-        $this->assertStringContainsString('updated_at', $sql);
-
-        // Check bindings contain expected values
-        $this->assertContains('123', $bindings);
-        $this->assertContains('%Database%', $bindings);
-        $this->assertContains('%production%', $bindings);
-        $this->assertContains('active', $bindings);
-        $this->assertContains('maintenance', $bindings);
-        $this->assertContains('%localhost%', $bindings);
-        $this->assertContains('5432', $bindings);
-        $this->assertContains('postgresql', $bindings);
-        $this->assertContains('mysql', $bindings);
-    }
-
-    public function test_methods_return_builder_instance(): void
-    {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-
-        $this->assertInstanceOf(Builder::class, $filter->orgId('123'));
-        $this->assertInstanceOf(Builder::class, $filter->name('Database'));
-        $this->assertInstanceOf(Builder::class, $filter->description('Production'));
-        $this->assertInstanceOf(Builder::class, $filter->status('active'));
-        $this->assertInstanceOf(Builder::class, $filter->host('localhost'));
-        $this->assertInstanceOf(Builder::class, $filter->port('5432'));
-        $this->assertInstanceOf(Builder::class, $filter->dbms('postgresql'));
-        $this->assertInstanceOf(Builder::class, $filter->createdAt('2023-01-01'));
-        $this->assertInstanceOf(Builder::class, $filter->updatedAt('2023-01-01'));
-    }
-
-    public function test_inheritance_from_query_filter(): void
-    {
-        $filter = $this->createFilter();
-
-        $this->assertInstanceOf(\App\Http\Filters\QueryFilter::class, $filter);
-    }
-
-    public function test_sort_functionality(): void
-    {
-        $filter = $this->createFilter(['sort' => 'name,-status,created_at']);
-        $result = $filter->apply($this->builder);
-
-        $sql = strtolower($result->toSql());
-        $this->assertStringContainsString('order by `name` asc', $sql);
-        $this->assertStringContainsString('`status` desc', $sql);
-        $this->assertStringContainsString('`created_at` asc', $sql);
-    }
-
-    public function test_port_with_different_values(): void
-    {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-
-        // Test common database ports
-        $commonPorts = ['3306', '5432', '1521', '1433'];
-
-        foreach ($commonPorts as $port) {
-            $result = $filter->port($port);
-            $bindings = $result->getBindings();
-            $this->assertContains($port, $bindings);
-        }
-    }
-
-    public function test_host_with_ip_addresses(): void
-    {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->host('192.168.1.100');
-
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
-
-        $this->assertStringContainsString('host', $sql);
-        $this->assertStringContainsString('like', strtolower($sql));
-        $this->assertContains('%192.168.1.100%', $bindings);
-    }
-
-    public function test_dbms_case_insensitive(): void
-    {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->dbms('PostgreSQL,MySQL,Oracle');
-
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
-
-        $this->assertStringContainsString('dbms', $sql);
-        $this->assertContains('PostgreSQL', $bindings);
-        $this->assertContains('MySQL', $bindings);
-        $this->assertContains('Oracle', $bindings);
+        $this->assertNotEmpty($response->json('data'));
     }
 }

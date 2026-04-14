@@ -5,10 +5,11 @@ namespace Database\Factories;
 use App\Enums\Status;
 use App\Models\Org;
 use App\Models\User;
+use App\Models\UserGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\UserGroup>
+ * @extends Factory<UserGroup>
  */
 class UserGroupFactory extends Factory
 {
@@ -22,7 +23,7 @@ class UserGroupFactory extends Factory
         return [
             'org_id' => Org::factory(),
             'name' => fake()->sentence(3),
-            'description' => fake()->optional()->paragraph(),
+            'description' => fake()->optional()->sentence(),
             'status' => Status::ACTIVE->value,
             'created_by' => User::first()?->id ?? User::factory(),
             'updated_by' => User::first()?->id ?? User::factory(),

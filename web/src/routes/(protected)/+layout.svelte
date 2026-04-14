@@ -112,7 +112,7 @@
 <Sidebar.Provider>
 	<AppSidebar class="group-data-[side=left]:border-r-0 group-data-[side=right]:border-l-0" />
 	<Sidebar.Inset class="min-w-0 relative">
-        <header class="sticky top-0 z-30 flex justify-start items-center w-full px-8 h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/50 shadow-sm">
+        <header class="sticky top-0 z-30 flex justify-start items-center w-full px-8 h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/50 shadow-xs">
 			<Sidebar.Trigger class="-ml-2 mr-4" />
 			<Separator orientation="vertical" class="mr-6 h-full" />
 			<Breadcrumb.Root>

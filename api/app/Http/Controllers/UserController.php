@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Status;
 use App\Http\Filters\UserFilter;
 use App\Http\Requests\User\StoreUserRequest;
 use App\Http\Requests\User\UpdateUserRequest;
@@ -30,7 +31,7 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
         $validated = $request->validated();
-        $user = User::create($validated);
+        $user = User::create(array_merge(['status' => Status::ACTIVE->value], $validated));
 
         return new UserResource($user);
     }

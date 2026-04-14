@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\AssetAccount;
 use App\Services\Jit\Secrets\SecretsManager;
 use Illuminate\Console\Command;
 
@@ -19,7 +20,7 @@ class CleanupExpiredJitAccounts extends Command
         if ($this->option('dry-run')) {
             $this->warn('Running in dry-run mode. No accounts will be terminated.');
 
-            $expiredCount = \App\Models\AssetAccount::where('type', 'jit')
+            $expiredCount = AssetAccount::where('type', 'jit')
                 ->where('expires_at', '<', now())
                 ->where('is_active', true)
                 ->count();

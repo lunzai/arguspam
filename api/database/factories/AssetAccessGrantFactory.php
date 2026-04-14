@@ -4,12 +4,13 @@ namespace Database\Factories;
 
 use App\Enums\AssetAccessRole;
 use App\Models\Asset;
+use App\Models\AssetAccessGrant;
 use App\Models\User;
 use App\Models\UserGroup;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AssetAccessGrant>
+ * @extends Factory<AssetAccessGrant>
  */
 class AssetAccessGrantFactory extends Factory
 {

@@ -42,7 +42,7 @@
 	});
 </script>
 
-<Card.Root class="border border-outline-variant/10 shadow-sm rounded-xl">
+<Card.Root class="border-0 shadow-xs rounded-xl">
 	<Card.Header class="flex items-center gap-2 space-y-0 sm:flex-row">
 		<div class="grid flex-1 gap-2">
 			<Card.Title class="text-sm font-medium text-slate-500">{title}</Card.Title>

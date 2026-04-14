@@ -13,7 +13,7 @@
     let { table, meta }: PaginationProps = $props();
 </script>
 
-<div class="flex items-center justify-between px-4 py-4 bg-white shadow-sm rounded-lg">
+<div class="flex items-center justify-between px-4 py-4 bg-white shadow-xs rounded-lg">
     <div class="flex-1 text-xs uppercase tracking-widest font-bold">
         {#if meta?.total > 0}
             {meta?.from} to {meta?.to} of {meta?.total} rows.

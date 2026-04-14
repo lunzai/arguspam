@@ -4,6 +4,7 @@ namespace App\Http\Requests\AccessRestriction;
 
 use App\Enums\AccessRestrictionType;
 use App\Enums\Status;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rules\Enum;
 
 class StoreAccessRestrictionRequest extends BaseAccessRestrictionRequest
@@ -19,7 +20,7 @@ class StoreAccessRestrictionRequest extends BaseAccessRestrictionRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {

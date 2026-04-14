@@ -4,12 +4,13 @@ namespace App\Models;
 
 use App\Enums\AssetAccessRole;
 use App\Traits\HasBlamable;
+use Database\Factories\AssetAccessGrantFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AssetAccessGrant extends Model
 {
-    /** @use HasFactory<\Database\Factories\AssetAccessGrantFactory> */
+    /** @use HasFactory<AssetAccessGrantFactory> */
     use HasBlamable, HasFactory;
 
     protected $fillable = [

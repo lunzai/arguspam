@@ -48,18 +48,21 @@ Route::prefix('utils')->group(function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
+
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::get('/users/me', [AuthController::class, 'me']); // Alias for /auth/me
     Route::get('/users/me/orgs', [UserOrgController::class, 'index']);
     Route::get('/users/me/orgs/{org}', [UserOrgController::class, 'show']);
     Route::put('/users/me/change-password', [PasswordController::class, 'update']);
-    Route::get('/users/me/assets', [UserAssetController::class, 'index']);
 
     Route::middleware(EnsureOrganizationIdIsValid::class)->group(function () {
         Route::apiResources([
             'assets' => AssetController::class,
             'user-groups' => UserGroupController::class,
         ]);
+
+        Route::get('/users/me/assets', [UserAssetController::class, 'index']);
+        Route::get('/users/me/assets/{asset}', [UserAssetController::class, 'show']);
 
         Route::apiResource('requests', RequestController::class)
             ->except(['destroy']);

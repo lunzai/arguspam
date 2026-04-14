@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\AuditAction;
+use Database\Factories\ActionAuditFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\MassPrunable;
@@ -10,8 +11,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ActionAudit extends Model
 {
-    /** @use HasFactory<\Database\Factories\ActionAuditFactory> */
+    /** @use HasFactory<ActionAuditFactory> */
     use HasFactory, MassPrunable;
+
+    const UPDATED_AT = null;
 
     // protected $fillable = [
     //     'org_id',

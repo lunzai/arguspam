@@ -7,6 +7,7 @@ use App\Enums\RiskRating;
 use App\Models\Asset;
 use App\Models\Request;
 use Carbon\Carbon;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
@@ -37,7 +38,7 @@ class StoreRequestRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -111,7 +112,7 @@ class StoreRequestRequest extends FormRequest
                 $start = Carbon::parse($this->start_datetime);
                 $end = Carbon::parse($this->end_datetime);
                 $this->merge([
-                    'duration' => $start->diffInMinutes($end),
+                    'duration' => (int) $start->diffInMinutes($end),
                 ]);
             } catch (\Exception $e) {
                 // do nothing

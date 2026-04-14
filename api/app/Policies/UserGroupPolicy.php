@@ -7,7 +7,7 @@ use App\Models\UserGroup;
 
 class UserGroupPolicy
 {
-    public function view(User $user, UserGroup $userGroup): bool
+    public function view(User $user, ?UserGroup $userGroup = null): bool
     {
         return $user->hasAnyPermission('usergroup:view');
     }

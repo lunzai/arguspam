@@ -54,7 +54,7 @@
 					<Sidebar.MenuButton
 						{...props}
 						size="lg"
-						class="bg-white rounded-lg shadow-sm flex items-center gap-3 px-3 py-2 border-outline-variant/10 cursor-pointer hover:bg-slate-50 transition-colors"
+						class="bg-white rounded-lg shadow-xs flex items-center gap-3 px-3 py-2 border-outline-variant/10 cursor-pointer hover:bg-slate-50 transition-colors"
 					>
 						<div
 							class="text-sidebar-primary-foreground flex aspect-square size-8 rounded-lg items-center justify-center"

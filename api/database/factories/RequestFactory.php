@@ -7,12 +7,13 @@ use App\Enums\RequestStatus;
 use App\Enums\RiskRating;
 use App\Models\Asset;
 use App\Models\Org;
+use App\Models\Request;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Request>
+ * @extends Factory<Request>
  */
 class RequestFactory extends Factory
 {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\User;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ChangePasswordRequest extends FormRequest
@@ -17,11 +18,11 @@ class ChangePasswordRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
-        $minPasswordLength = config('pam.password.min');
+        $minPasswordLength = config('pam.password.min_length', 8);
 
         return [
             'current_password' => ['required', 'string', 'min:'.$minPasswordLength, 'current_password:api'],

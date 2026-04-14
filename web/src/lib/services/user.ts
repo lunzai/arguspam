@@ -25,6 +25,11 @@ export class UserService extends BaseService<BaseModel> {
 		return await this.api.get<ApiAssetCollection>(`${this.meEndpoint}/assets?${queryString}`);
 	}
 
+    async canRequestAsset(assetId: number): Promise<boolean> {
+        await this.api.get<boolean>(`${this.meEndpoint}/assets/${assetId}`);
+        return true;
+    }
+
 	async checkOrgAccess(orgId: number): Promise<boolean> {
 		await this.api.get<boolean>(`${this.meEndpoint}/orgs/${orgId}`);
 		return true;

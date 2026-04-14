@@ -61,8 +61,8 @@
 			visible: rbac.canRequestView(),
 			items: [
 				{
-					title: 'Create Request',
-					url: '/requests/assets',
+					title: 'Request Access',
+					url: '/requests/request-access',
 					visible: rbac.canRequestCreate()
 				},
 				// {

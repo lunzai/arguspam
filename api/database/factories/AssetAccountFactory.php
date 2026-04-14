@@ -4,11 +4,12 @@ namespace Database\Factories;
 
 use App\Enums\AssetAccountType;
 use App\Models\Asset;
+use App\Models\AssetAccount;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AssetAccount>
+ * @extends Factory<AssetAccount>
  */
 class AssetAccountFactory extends Factory
 {

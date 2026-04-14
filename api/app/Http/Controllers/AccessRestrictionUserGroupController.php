@@ -18,7 +18,7 @@ class AccessRestrictionUserGroupController extends Controller
         return new UserCollection($users);
     }
 
-    public function addUserGroup(Request $request, AccessRestriction $accessRestriction): Response
+    public function store(Request $request, AccessRestriction $accessRestriction): Response
     {
         $this->authorize('addUserGroup', $accessRestriction);
         $validated = $request->validate([
@@ -29,7 +29,7 @@ class AccessRestrictionUserGroupController extends Controller
         return $this->created();
     }
 
-    public function removeUserGroup(AccessRestriction $accessRestriction, Request $request): Response
+    public function destroy(AccessRestriction $accessRestriction, Request $request): Response
     {
         $this->authorize('removeUserGroup', $accessRestriction);
         $validated = $request->validate([

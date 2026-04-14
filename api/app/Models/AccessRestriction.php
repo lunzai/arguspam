@@ -6,12 +6,13 @@ use App\Enums\AccessRestrictionType;
 use App\Enums\Status;
 use App\Traits\HasBlamable;
 use App\Traits\HasStatus;
+use Database\Factories\AccessRestrictionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class AccessRestriction extends Model
 {
-    /** @use HasFactory<\Database\Factories\AccessRestrictionFactory> */
+    /** @use HasFactory<AccessRestrictionFactory> */
     use HasBlamable, HasFactory, HasStatus;
 
     protected $fillable = [

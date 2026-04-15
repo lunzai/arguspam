@@ -130,5 +130,10 @@
 	}
 }
 
-.sidebar-scroll::-webkit-scrollbar { width: 4px; }
-.sidebar-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+.sidebar-scroll::-webkit-scrollbar {
+	width: 4px;
+}
+.sidebar-scroll::-webkit-scrollbar-thumb {
+	background: rgba(0, 0, 0, 0.1);
+	border-radius: 10px;
+}

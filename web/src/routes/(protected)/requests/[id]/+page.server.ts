@@ -15,7 +15,16 @@ export const load = async ({ params, locals, depends }) => {
 	const { authToken, currentOrgId } = locals;
 	const modelService = new RequestService(authToken as string, currentOrgId as number);
 	const model = (await modelService.findById(id, {
-		include: ['account', 'accessGrants', 'asset', 'requester', 'approver', 'rejecter', 'session', 'cancelledBy']
+		include: [
+			'account',
+			'accessGrants',
+			'asset',
+			'requester',
+			'approver',
+			'rejecter',
+			'session',
+			'cancelledBy'
+		]
 	})) as ApiRequestResource;
 	const permissions = await modelService.permission(Number(id));
 	const approveForm = await superValidate(

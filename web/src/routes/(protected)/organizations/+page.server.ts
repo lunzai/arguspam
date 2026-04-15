@@ -12,26 +12,31 @@ import type { ApiMeta } from '$lib/resources/api';
 
 export const load: PageServerLoad = async ({ locals, depends, url }) => {
 	depends('organizations:list');
-    const { authToken, currentOrgId, me } = locals;
-    const rbac = new Rbac(me);
-    rbac.orgView();
+	const { authToken, currentOrgId, me } = locals;
+	const rbac = new Rbac(me);
+	rbac.orgView();
 	const model: Partial<Org> = {
 		name: '',
 		description: '',
 		status: 'active'
 	};
 	const form = await superValidate(zod4(OrgSchema));
-    const modelService = new OrgService(authToken as string, currentOrgId as number);
-    const response = await modelService.findAll(mergeParams({
-        perPage: 20,
-    }, url));
+	const modelService = new OrgService(authToken as string, currentOrgId as number);
+	const response = await modelService.findAll(
+		mergeParams(
+			{
+				perPage: 20
+			},
+			url
+		)
+	);
 	return {
 		form,
 		model,
 		title: 'Organizations',
 		canCreate: rbac.canOrgCreate(),
-        list: response.data,
-        meta: response.meta as ApiMeta,
+		list: response.data,
+		meta: response.meta as ApiMeta
 	};
 };
 

@@ -12,22 +12,27 @@ import type { ApiMeta } from '$lib/resources/api';
 
 export const load: PageServerLoad = async ({ locals, depends, url }) => {
 	depends('assets:list');
-    const { authToken, currentOrgId, me } = locals;
-    new Rbac(me).assetView();
+	const { authToken, currentOrgId, me } = locals;
+	new Rbac(me).assetView();
 	const model: Partial<AssetCreateRequest> = {
 		org_id: Number(currentOrgId),
 		status: 'active'
 	};
 	const form = await superValidate(zod4(AssetSchema));
-    const modelService = new ModelService(authToken as string, currentOrgId as number);
-    const response = await modelService.findAll(mergeParams({
-        perPage: 20,
-        sort: ['-created_at']
-    }, url));
+	const modelService = new ModelService(authToken as string, currentOrgId as number);
+	const response = await modelService.findAll(
+		mergeParams(
+			{
+				perPage: 20,
+				sort: ['-created_at']
+			},
+			url
+		)
+	);
 	return {
 		title: 'Assets',
-        list: response.data,
-        meta: response.meta as ApiMeta,
+		list: response.data,
+		meta: response.meta as ApiMeta,
 		form,
 		model
 	};

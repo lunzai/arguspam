@@ -16,9 +16,9 @@ export const load = async ({ params, locals, depends }) => {
 	new Rbac(locals.me).assetViewRequestable();
 	const { authToken, currentOrgId } = locals;
 	const assetService = new AssetService(authToken as string, currentOrgId as number);
-    const userService = new UserService(authToken as string, currentOrgId as number);
-    await userService.canRequestAsset(Number(id));
-    const asset = (await assetService.findById(id)) as ApiAssetResource;
+	const userService = new UserService(authToken as string, currentOrgId as number);
+	await userService.canRequestAsset(Number(id));
+	const asset = (await assetService.findById(id)) as ApiAssetResource;
 	const form = await superValidate(zod4(RequesterSchema));
 	return {
 		asset,
@@ -37,8 +37,8 @@ export const actions = {
 			return fail(422, { form });
 		}
 		const data = form.data;
-        data.org_id = Number(currentOrgId);
-        data.asset_id = Number(id);
+		data.org_id = Number(currentOrgId);
+		data.asset_id = Number(id);
 		try {
 			const requestService = new RequestService(authToken as string, currentOrgId as number);
 			const response = await requestService.create(data);

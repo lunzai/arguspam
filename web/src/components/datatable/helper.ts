@@ -2,12 +2,12 @@ import type { ColumnFiltersState, SortingState, Table } from '@tanstack/table-co
 import type { BaseFilterParams } from '$lib/services/base';
 
 export interface ListUrlParams {
-    page?: number;
-    perPage?: number;
-    sort?: string[];
-    include?: string[];
-    filter?: Record<string, string | string[]>;
-    count?: string[];
+	page?: number;
+	perPage?: number;
+	sort?: string[];
+	include?: string[];
+	filter?: Record<string, string | string[]>;
+	count?: string[];
 }
 
 /**
@@ -31,7 +31,10 @@ export function parseListParams(url: URL): Partial<BaseFilterParams> {
 	return result;
 }
 
-export function tableStateToUrlParams(table: Table<any>, base: Partial<ListUrlParams> = {}): URLSearchParams {
+export function tableStateToUrlParams(
+	table: Table<any>,
+	base: Partial<ListUrlParams> = {}
+): URLSearchParams {
 	const sort = table.getState().sorting.map((s) => (s.desc ? `-${s.id}` : s.id));
 	const filter: Record<string, string> = {};
 	for (const f of table.getState().columnFilters) {
@@ -48,7 +51,10 @@ export function tableStateToUrlParams(table: Table<any>, base: Partial<ListUrlPa
 		? filter
 		: base.filter
 			? Object.fromEntries(
-					Object.entries(base.filter).map(([k, v]) => [k, String(Array.isArray(v) ? v.join(',') : v)])
+					Object.entries(base.filter).map(([k, v]) => [
+						k,
+						String(Array.isArray(v) ? v.join(',') : v)
+					])
 				)
 			: {};
 	for (const [key, value] of Object.entries(filterToUse)) {
@@ -58,29 +64,37 @@ export function tableStateToUrlParams(table: Table<any>, base: Partial<ListUrlPa
 	return params;
 }
 
-export function getInitialStateFromUrlParams(url: URL, arrayFilters: string[]): { initialSorting: SortingState, initialFilters: ColumnFiltersState } {
-    const urlParams = parseListParams(url);
-    const initialFilters = Object
-        .entries(urlParams.filter ?? {})
-        .map(([id, value]) => ({ 
-            id, 
-            value: arrayFilters.includes(id) ? value.split(',') : value
-        }));
-    const initialSorting = urlParams.sort?.map((s) => ({ id: s.startsWith('-') ? s.slice(1) : s, desc: s.startsWith('-') })) ?? [];
-    return {
-        initialSorting,
-        initialFilters,
-    };
+export function getInitialStateFromUrlParams(
+	url: URL,
+	arrayFilters: string[]
+): { initialSorting: SortingState; initialFilters: ColumnFiltersState } {
+	const urlParams = parseListParams(url);
+	const initialFilters = Object.entries(urlParams.filter ?? {}).map(([id, value]) => ({
+		id,
+		value: arrayFilters.includes(id) ? value.split(',') : value
+	}));
+	const initialSorting =
+		urlParams.sort?.map((s) => ({
+			id: s.startsWith('-') ? s.slice(1) : s,
+			desc: s.startsWith('-')
+		})) ?? [];
+	return {
+		initialSorting,
+		initialFilters
+	};
 }
 
-export function mergeParams(defaultParams: Partial<BaseFilterParams>, url: URL): Partial<BaseFilterParams> {
-    const urlParams = parseListParams(url);
-    return {
-        ...defaultParams,
-        ...urlParams,
-        filter: {
-            ...(defaultParams.filter ?? {}),
-            ...(urlParams.filter ?? {})
-        }
-    };
+export function mergeParams(
+	defaultParams: Partial<BaseFilterParams>,
+	url: URL
+): Partial<BaseFilterParams> {
+	const urlParams = parseListParams(url);
+	return {
+		...defaultParams,
+		...urlParams,
+		filter: {
+			...(defaultParams.filter ?? {}),
+			...(urlParams.filter ?? {})
+		}
+	};
 }

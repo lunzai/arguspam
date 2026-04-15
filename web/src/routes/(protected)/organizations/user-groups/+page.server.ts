@@ -12,8 +12,8 @@ import type { ApiMeta } from '$lib/resources/api';
 
 export const load: PageServerLoad = async ({ locals, depends, url }) => {
 	depends('user-groups:list');
-    const { authToken, currentOrgId, me } = locals;
-    const rbac = new Rbac(me);
+	const { authToken, currentOrgId, me } = locals;
+	const rbac = new Rbac(me);
 	rbac.userGroupView();
 	const model: Partial<UserGroup> = {
 		org_id: Number(currentOrgId),
@@ -22,18 +22,23 @@ export const load: PageServerLoad = async ({ locals, depends, url }) => {
 		status: 'active'
 	};
 	const form = await superValidate(zod4(UserGroupSchema));
-    const modelService = new ModelService(authToken as string, currentOrgId as number);
-    const response = await modelService.findAll(mergeParams({
-        perPage: 20,
-        count: ['users'],
-    }, url));
+	const modelService = new ModelService(authToken as string, currentOrgId as number);
+	const response = await modelService.findAll(
+		mergeParams(
+			{
+				perPage: 20,
+				count: ['users']
+			},
+			url
+		)
+	);
 	return {
 		form,
 		model,
 		title: 'User Groups',
 		canCreate: rbac.canUserGroupCreate(),
-        list: response.data,
-        meta: response.meta as ApiMeta,
+		list: response.data,
+		meta: response.meta as ApiMeta
 	};
 };
 

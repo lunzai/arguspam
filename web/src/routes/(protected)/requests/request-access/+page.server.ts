@@ -10,6 +10,6 @@ export const load = async ({ params, locals, depends }) => {
 	const assetCollection = (await userService.getRequesterAssets()) as ApiAssetCollection;
 	return {
 		assetCollection,
-		title: `Request Access`,
+		title: `Request Access`
 	};
 };

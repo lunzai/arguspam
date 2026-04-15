@@ -49,6 +49,6 @@
 	});
 </script>
 
-<Badge variant="outline" class={cn('capitalize', badgeClass, className)} {...restProps}>
+<Badge variant="outline" class={cn('uppercase font-bold text-xs rounded', badgeClass, className)} {...restProps}>
 	{label || status}
 </Badge>

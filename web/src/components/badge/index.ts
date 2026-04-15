@@ -6,8 +6,9 @@ import BlueBadge from './blue.svelte';
 import YellowBadge from './yellow.svelte';
 import MultipleBadge from './multiple.svelte';
 import DbmsBadge from './dbms.svelte';
+import RiskBadge from './risk.svelte';
 
 export { 
     StatusBadge, RedBadge, GrayBadge, GreenBadge, BlueBadge, YellowBadge, MultipleBadge,
-    DbmsBadge
+    DbmsBadge, RiskBadge
 };

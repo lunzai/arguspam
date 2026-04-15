@@ -58,6 +58,11 @@
 		<form class="min-w-0 space-y-6" method="POST" action="?/reject" use:enhance>
 			<Dialog.Header>
 				<Dialog.Title>Reject Request</Dialog.Title>
+                <Dialog.Description>
+                    <p>
+                        Please provide a reason for rejecting this request. This will be visible to the requester.
+                    </p>
+                </Dialog.Description>
 			</Dialog.Header>
 			<div class="space-y-6">
 				<Form.Field {form} name="approver_note">

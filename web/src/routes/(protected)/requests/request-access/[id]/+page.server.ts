@@ -1,13 +1,12 @@
 import { RequestService } from '$services/request';
 import { UserService } from '$services/user';
 import { AssetService } from '$services/asset';
-import type { ApiRequestResource } from '$resources/request';
 import type { ApiAssetResource } from '$resources/asset';
 import { superValidate } from 'sveltekit-superforms';
 import { zod4 } from 'sveltekit-superforms/adapters';
 import { RequesterSchema } from '$lib/validations/request';
 import type { Actions } from '@sveltejs/kit';
-import { fail, redirect } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import { setFormErrors } from '$lib/utils/form';
 import { Rbac } from '$lib/rbac';
 

@@ -14,7 +14,7 @@
 
     let baseClass: string[] = [];
     if (captialize) {
-        baseClass.push('capitalize');
+        baseClass.push('uppercase');
     }
 
     switch (dbms.toLowerCase()) {
@@ -45,5 +45,5 @@
 </script>
 
 <Badge 
-    class={cn(baseClass.join(' '), className)}
+    class={cn('font-black', baseClass.join(' '), className)}
 >{dbms}</Badge>

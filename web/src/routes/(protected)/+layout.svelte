@@ -7,6 +7,7 @@
 	import { toast } from 'svelte-sonner';
 	import { afterNavigate } from '$app/navigation';
 	import { layoutStore } from '$lib/stores/layout';
+	import Footer from '$components/footer';
 
 	let { children } = $props();
 
@@ -135,18 +136,7 @@
 		<div class="flex min-w-0 flex-1 flex-col gap-6 overflow-hidden px-6 pt-8 pb-8">
 			{@render children()}
 		</div>
-        <footer class="flex justify-center items-center space-x-8 w-full mt-auto py-8 bg-transparent Inter text-[11px] uppercase tracking-wider font-medium">
-            <div class="flex items-center gap-10 text-slate-400">
-                <div>
-                    &copy; {new Date().getFullYear()} {import.meta.env.VITE_APP_NAME} - All rights reserved.
-                </div>
-                <div>
-                    <a href="https://www.google.com" target="_blank" class="hover:text-slate-900 transition-all">Privacy Policy</a>
-                </div>
-                <div>
-                    <a href="https://www.google.com" target="_blank" class="hover:text-slate-900 transition-all">Terms of Service</a>
-                </div>
-            </div>
-        </footer>
+        
+        <Footer />
 	</Sidebar.Inset>
 </Sidebar.Provider>

@@ -45,8 +45,8 @@
 			<h1 class="text-2xl font-extrabold tracking-wide text-on-surface uppercase">ArgusPAM</h1>
 		</div>
 
-        <Card.Root class="@container/card rounded-xl py-6 border-0 shadow-[0_20px_50px_-12px_rgba(23,28,35,0.08)]">
-            <Card.Header>
+        <Card.Root class="@container/card rounded-xl py-8 border-0 shadow-[0_20px_50px_-12px_rgba(23,28,35,0.08)]">
+            <Card.Header class="px-8">
                 <Card.Title class="text-xl font-bold tracking-tight">Welcome Back</Card.Title>
                 <Card.Description>Sign in to your account</Card.Description>
             </Card.Header>

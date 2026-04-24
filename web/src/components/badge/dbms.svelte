@@ -4,11 +4,11 @@
 
     let { 
         dbms,
-        class: className,
+        class: className = '',
         captialize = true,
     }: { 
         dbms: string,
-        class: string,
+        class?: string,
         captialize?: boolean
     } = $props();
 

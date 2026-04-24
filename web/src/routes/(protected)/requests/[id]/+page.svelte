@@ -36,7 +36,7 @@
     import { StatusBadge } from '$components/badge';
     import { RiskBadge } from '$components/badge';
     import { nl2br } from '$lib/utils/string';
-    import { formatDistance } from 'date-fns';
+    import { formatDistanceStrict } from 'date-fns';
 	import { Progress } from '$components/progress';
     import * as Alert from '$ui/alert';
     import * as ButtonGroup from '$ui/button-group';
@@ -261,7 +261,7 @@
                             </DL.Row>
                             <DL.Row class="grid-cols-3!">
                                 <DL.Label>Duration</DL.Label>
-                                <DL.Content class="col-span-2!">{formatDistance(model.start_datetime, model.end_datetime)}</DL.Content>
+                                <DL.Content class="col-span-2!">{formatDistanceStrict(model.start_datetime, model.end_datetime)}</DL.Content>
                             </DL.Row>
                             <DL.Row class="grid-cols-3!">
                                 <DL.Label>Scope</DL.Label>
@@ -349,7 +349,7 @@
                         {/if}
                     </Card.Header>
                     <Card.Content class="relative">
-                        <div class="bg-slate-50 rounded-xl p-6 border-l-4 text-slate-600">
+                        <div class="bg-slate-50 rounded p-4 border-l-4 text-slate-600 text-sm">
                             {@html nl2br(model.approver_note)}
                         </div>
                     </Card.Content>
@@ -365,7 +365,7 @@
                     <RiskBadge risk={model.ai_risk_rating} class="uppercase" />
                 </Card.Header>
                 <Card.Content class="relative">
-                    <div class="bg-slate-50 rounded-xl p-6 border-l-4 text-slate-600">
+                    <div class="bg-slate-50 rounded p-4 border-l-4 text-slate-600 text-sm">
                         {@html nl2br(model.ai_note)}
                     </div>
                 </Card.Content>
@@ -379,7 +379,7 @@
                             <Siren class="h-4 w-4 text-red-500" />
                         </div>
                     </Card.Header>
-                    <Card.Content class="relative text-red-400">
+                    <Card.Content class="relative text-red-400 text-sm">
                         {@html nl2br(model.sensitive_data_note)}
                     </Card.Content>
                 </Card.Root>
@@ -389,7 +389,7 @@
                 <Card.Header>
                     <Card.Title class="text-xl font-bold tracking-tight">Request Reason</Card.Title>
                 </Card.Header>
-                <Card.Content class="relative">
+                <Card.Content class="relative text-sm">
                     {@html nl2br(model.reason)}
                 </Card.Content>
             </Card.Root>
@@ -399,7 +399,9 @@
                     <Card.Title class="text-xl font-bold tracking-tight">Intended Query</Card.Title>
                 </Card.Header>
                 <Card.Content class="relative">
-                    {@html nl2br(model.intended_query)}
+                    <div class="bg-slate-50 rounded p-4 text-slate-500 font-mono text-sm">
+                        {@html nl2br(model.intended_query)}
+                    </div>
                 </Card.Content>
             </Card.Root>
         </div>

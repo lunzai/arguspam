@@ -26,10 +26,10 @@
             dotClass = 'bg-green-500';
             break;
         case 'medium':
-            textClass = 'text-yellow-500';
-            borderClass = 'border-yellow-200';
-            bgClass = 'bg-yellow-100';
-            dotClass = 'bg-yellow-500';
+            textClass = 'text-blue-500';
+            borderClass = 'border-blue-200';
+            bgClass = 'bg-blue-100';
+            dotClass = 'bg-blue-500';
             break;
         case 'high':
             textClass = 'text-orange-500';

@@ -22,12 +22,12 @@
 			case 'active':
 			case 'approved':
 			case 'started':
+            case 'low':
 				badgeClass = 'text-green-500 bg-green-50 border-green-200';
 				break;
 			case 'inactive':
 			case 'expired':
 			case 'cancelled':
-			case 'low':
 				badgeClass = 'text-gray-500 bg-gray-50 border-gray-200';
 				break;
 			case 'rejected':

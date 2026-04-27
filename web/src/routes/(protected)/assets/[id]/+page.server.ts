@@ -10,24 +10,72 @@ import {
 	AssetUpdateSchema,
 	AssetCredentialsSchema,
 	AssetRemoveAccessSchema,
-	AssetAddAccessSchema
+	AssetAddAccessSchema,
 } from '$validations/asset';
 import type { ApiAssetResource } from '$resources/asset';
+import type { AssetAccountCollection, AssetAccountResource } from '$lib/resources/asset-account';
+import type { Asset } from '$lib/models/asset';
 import { Rbac } from '$lib/rbac';
 
 export const load: PageServerLoad = async ({ params, locals, parent, depends }) => {
 	depends('asset:view');
-	new Rbac(locals.me).assetView();
+    const rbac = new Rbac(locals.me);
 	const { authToken, currentOrgId } = locals;
-	const { model, asset } = await parent();
+    const { id } = params;
+    rbac.assetView();
 
 	const orgService = new OrgService(authToken as string, currentOrgId as number);
 	const userCollection = await orgService.getUsers(currentOrgId as number);
 	const userGroupCollection = await orgService.getUserGroups(currentOrgId as number);
+    const assetService = new AssetService(authToken as string, currentOrgId as number);
+    const model = (await assetService.findById(id, {
+		include: [
+			'activeAccounts',
+			'approverUserGroups',
+			'requesterUserGroups',
+			'approverUsers',
+			'requesterUsers'
+		]
+	})) as ApiAssetResource;
+	const asset = model.data.attributes as Asset;
+	const assetAccounts = model.data.relationships?.activeAccounts as AssetAccountCollection;
+	const adminAccount = assetAccounts.find(
+		(account) => account.attributes.type === 'admin'
+	) as AssetAccountResource;
+	const editForm = await superValidate(
+		{
+			name: model.data.attributes.name,
+			description: model.data.attributes.description,
+			status: model.data.attributes.status
+		},
+		zod4(AssetUpdateSchema)
+	);
+	const credentialsForm = await superValidate(
+		{
+			host: asset.host,
+			port: asset.port,
+			dbms: asset.dbms,
+			username: adminAccount?.attributes?.username,
+			password: ''
+		},
+		zod4(AssetCredentialsSchema),
+		{ errors: false }
+	);
+
+
 	return {
 		model,
 		userCollection,
 		userGroupCollection,
+        asset,
+		editForm,
+		credentialsForm,
+		canUpdate: rbac.canAssetUpdate(),
+		canUpdateAdminAccount: rbac.canAssetUpdateAdminAccount(),
+		canDelete: rbac.canAssetDelete(),
+		canAddAccessGrant: rbac.canAssetAddAccessGrant(),
+		canRemoveAccessGrant: rbac.canAssetRemoveAccessGrant(),
+		canTestConnection: rbac.canAssetUpdateAdminAccount(),
 		title: `Asset - #${asset.id} - ${asset.name}`
 	};
 };

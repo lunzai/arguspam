@@ -62,13 +62,13 @@
 	</AlertDialog.Content>
 </AlertDialog.Root>
 
-<Card.Root class="w-full">
-	<Card.Header>
-		<Card.Title class="text-lg">Accounts</Card.Title>
-		<Card.Description>Asset's accounts.</Card.Description>
-		<Card.Action></Card.Action>
-	</Card.Header>
-	<Card.Content>
+<Card.Root class="w-full border-0 shadow-xs">
+    <Card.Header>
+        <Card.Title class="text-xl font-bold tracking-tight">Accounts</Card.Title>
+        <Card.Description>Asset's accounts.</Card.Description>
+        <Card.Action></Card.Action>
+    </Card.Header>
+    <Card.Content class="relative">
 		<div class="flex flex-col gap-6">
 			{#each list as { attributes: row }, index (row.id)}
 				<div class="flex items-center gap-4 align-middle">
@@ -98,7 +98,7 @@
 						{#if row.type == 'admin' && canTestConnection}
 							<Button
 								variant="outline"
-								class="transition-all duration-200 hover:cursor-pointer {testConnectionIsSuccess
+								class="transition-all duration-200 hover:cursor-pointer bg-white {testConnectionIsSuccess
 									? 'border-green-300 bg-green-50 text-green-500 hover:border-green-300 hover:bg-green-100 hover:text-green-500'
 									: ''}"
 								onclick={handleTestConnection}

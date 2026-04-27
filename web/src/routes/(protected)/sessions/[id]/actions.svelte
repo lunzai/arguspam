@@ -1,9 +1,5 @@
 <script lang="ts">
-	import * as Card from '$ui/card';
-	import * as DL from '$components/description-list';
-	import { StatusBadge } from '$components/badge';
-	import { AssetToolTips } from '$components/tooltip';
-	import { relativeDateTime, shortDateTime, shortDateTimeRange } from '$utils/date';
+	import { shortDateTimeRange } from '$utils/date';
 	import { Separator } from '$ui/separator';
 	import { Button } from '$ui/button';
 	import {
@@ -38,14 +34,11 @@
 	interface Props {
 		model: Session;
 		permissions: SessionPermission;
-		requester: User;
 		asset: Asset;
-		request: Request;
-		approver: User;
 		me: Me;
 	}
 
-	let { model, permissions, requester, asset, request, approver, me }: Props = $props();
+	let { model, permissions, asset, me }: Props = $props();
 
     const hostclipboard = new UseClipboard();
     const portclipboard = new UseClipboard();
@@ -60,7 +53,6 @@
 	const canRetrieveSecret = $derived(
 		permissions.canRetrieveSecret && model.status == 'started' && me.id == model.requester_id
 	);
-	const showActions = $derived(canStart || canCancel || canEnd || canTerminate);
 
 	let startDialogIsOpen = $state(false);
 	let startDialogIsLoading = $state(false);
@@ -73,8 +65,8 @@
 	let retrieveSecretDialogIsOpen = $state(false);
 	let retrieveSecretDialogIsLoading = $state(false);
 	let secret = $state({
-		username: 'heanluen',
-		password: 'password'
+		username: '',
+		password: ''
 	});
 	let showSecretPassword = $state(false);
 

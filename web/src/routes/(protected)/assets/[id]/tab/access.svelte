@@ -153,15 +153,15 @@
 	}
 </script>
 
-<Card.Root class="w-full">
-	<Card.Header>
-		<Card.Title class="text-lg">{capitalizeWords(rolePural)}</Card.Title>
-		<Card.Description>Asset's {rolePural}.</Card.Description>
-		<Card.Action>
+<Card.Root class="w-full border-0 shadow-xs">
+    <Card.Header>
+        <Card.Title class="text-xl font-bold tracking-tight">{capitalizeWords(rolePural)}</Card.Title>
+        <Card.Description>Asset's {rolePural}.</Card.Description>
+        <Card.Action>
 			{#if canAddAccessGrant}
 				<Button
 					variant="outline"
-					class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
+					class="transition-all hover:bg-blue-50 hover:text-blue-500 bg-white"
 					onclick={() => {
 						addDialogIsOpen = true;
 					}}
@@ -171,8 +171,8 @@
 				</Button>
 			{/if}
 		</Card.Action>
-	</Card.Header>
-	<Card.Content>
+    </Card.Header>
+    <Card.Content class="relative">
 		<div class="flex flex-col gap-6">
 			{#each rowList as item}
 				<div class="flex items-center gap-4">
@@ -187,7 +187,7 @@
 						{/if}
 					</Avatar.Root>
 					<div class="flex flex-1 flex-col gap-0.5 truncate">
-						<span class="truncate font-medium">{item.name}</span>
+						<span class="truncate font-medium text-sm">{item.name}</span>
 						<span class="text-muted-foreground truncate text-xs">
 							{item.isGroup ? 'User Group' : 'User'} #{item.id}
 							{item.email ? `| ${item.email}` : ''}{item.description ? `| ${item.description}` : ''}
@@ -196,7 +196,7 @@
 					<div class="flex items-center gap-2">
 						<Button
 							variant="outline"
-							class="transition-all duration-200"
+							class="transition-all bg-white"
 							href={item.isGroup ? `/organizations/user-groups/${item.id}` : `/users/${item.id}`}
 							target="_blank"
 						>
@@ -205,7 +205,7 @@
 						{#if canRemoveAccessGrant}
 							<Button
 								variant="outline"
-								class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
+								class="text-destructive bg-white border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
 								onclick={() => {
 									handleDelete(item);
 								}}

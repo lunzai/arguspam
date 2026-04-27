@@ -28,11 +28,11 @@
 	);
 </script>
 
-<Card.Root class="w-full">
-	<Card.Header>
-		<Card.Title class="text-lg">#{model.id} - {model.name}</Card.Title>
-	</Card.Header>
-	<Card.Content class="space-y-4">
+<Card.Root class="w-full border-0 shadow-xs">
+    <Card.Header>
+        <Card.Title class="text-xl font-bold tracking-tight">Asset Details</Card.Title>
+    </Card.Header>
+    <Card.Content class="relative space-y-4">
 		<div class="flex gap-1.5">
 			<BlueBadge class="text-sm">
 				{model.dbms}
@@ -67,7 +67,7 @@
 		{#if canUpdate}
 			<Button
 				variant="outline"
-				class="w-full transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
+				class="w-full transition-all duration-200 hover:bg-blue-50 hover:text-blue-500 bg-white"
 				onclick={() => (editAssetDialogIsOpen = true)}
 			>
 				<Pencil class="h-4 w-4" />
@@ -77,7 +77,7 @@
 		{#if canUpdateAdminAccount}
 			<Button
 				variant="outline"
-				class="w-full transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
+				class="w-full transition-all duration-200 hover:bg-blue-50 hover:text-blue-500 bg-white"
 				onclick={() => (editCredentialsDialogIsOpen = true)}
 			>
 				<RotateCcwKey class="h-4 w-4" />
@@ -87,7 +87,7 @@
 		{#if canDelete}
 			<Button
 				variant="outline"
-				class="text-destructive w-full border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
+				class="text-destructive w-full border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500 bg-white"
 				onclick={() => (deleteAssetDialogIsOpen = true)}
 			>
 				<Trash2 class="h-4 w-4" />

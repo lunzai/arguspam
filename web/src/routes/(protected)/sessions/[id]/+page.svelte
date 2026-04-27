@@ -97,7 +97,7 @@
     description={subTitle}
     class="-mt-4"
 >
-    <Actions {model} {asset} {requester} {permissions} {request} {approver} {me} />
+    <Actions {model} {asset} {permissions} {me} />
 </PageTitle>
 
 {#if model.status == 'expired'}

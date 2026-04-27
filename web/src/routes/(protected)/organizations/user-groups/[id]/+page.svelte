@@ -21,13 +21,14 @@
 	import { enhance } from '$app/forms';
 	import FormDialog from '../form-dialog.svelte';
 	import Loader from '$components/loader.svelte';
+	import { PageTitle } from '$components/page-title';
+	import * as ButtonGroup from '$ui/button-group';
 
 	let { data } = $props();
 	const canUpdate = $derived(data.canUpdate);
 	const canDelete = $derived(data.canDelete);
 	const canAddUser = $derived(data.canAddUser);
 	const canRemoveUser = $derived(data.canRemoveUser);
-	const modelTitle = 'User Group';
 	const userCollection = $derived(data.userCollection as ApiUserCollection);
 	const modelResource = $derived(data.model as ApiUserGroupResource);
 	const model = $derived(modelResource.data.attributes as UserGroup);
@@ -117,104 +118,117 @@
 	);
 </script>
 
-<h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.name}</h1>
-<Card.Root class="w-full">
-	<Card.Header>
-		<Card.Title class="text-lg">{modelTitle}</Card.Title>
-		<Card.Description>View {modelTitle.toLowerCase()} details.</Card.Description>
-		<Card.Action>
-			{#if canUpdate}
-				<Button
-					variant="outline"
-					size="sm"
-					class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-					onclick={() => (editUserGroupDialogIsOpen = true)}
-				>
-					<Pencil class="h-4 w-4" />
-					Edit
-				</Button>
-			{/if}
-			{#if canDelete}
-				<Button
-					variant="outline"
-					size="sm"
-					class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
-					onclick={() => (deleteUserGroupDialogIsOpen = true)}
-				>
-					<Trash2 class="h-4 w-4" />
-					Delete
-				</Button>
-			{/if}
-		</Card.Action>
-	</Card.Header>
-	<Card.Content>
-		<DL.Root divider={null}>
-			<DL.Row>
-				<DL.Label>ID</DL.Label>
-				<DL.Content>{model.id}</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Name</DL.Label>
-				<DL.Content>{model.name}</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Description</DL.Label>
-				<DL.Content>{model.description}</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Status</DL.Label>
-				<DL.Content>
-					<StatusBadge bind:status={model.status} class="text-sm" />
-				</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Users Count</DL.Label>
-				<DL.Content>{groupUsers.length}</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Created At</DL.Label>
-				<DL.Content>
-					{relativeDateTime(model.created_at)}
-				</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Updated At</DL.Label>
-				<DL.Content>
-					{relativeDateTime(model.updated_at)}
-				</DL.Content>
-			</DL.Row>
-		</DL.Root>
-	</Card.Content>
-</Card.Root>
+<div class="flex flex-row space-x-2 items-center">
+    <StatusBadge status={model.status} />
+    <div class="text-sm text-slate-500 uppercase tracking-wider font-semibold">
+        USER GROUP #{model.id}
+    </div>
+</div>
+<PageTitle
+    title={model.name}
+    class="-mt-4"
+>
+    <div class="flex justify-between gap-2">
+        <ButtonGroup.Root>
+            {#if canUpdate}
+                <Button
+                    variant="outline"
+                    class="transition-all duration-200 h-auto py-2.5 px-4! bg-white hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
+                    onclick={() => (editUserGroupDialogIsOpen = true)}
+                >
+                    <Pencil class="h-4 w-4" />
+                    Edit
+                </Button>
+            {/if}
+            {#if canDelete}
+                <Button
+                    variant="outline"
+                    class="transition-all duration-200 h-auto py-2.5 px-4! bg-white hover:border-red-200 hover:bg-red-50 hover:text-red-500"
+                    onclick={() => (deleteUserGroupDialogIsOpen = true)}
+                >
+                    <Trash2 class="h-4 w-4" />
+                    Delete
+                </Button>
+            {/if}
+        </ButtonGroup.Root>
+    </div>
+</PageTitle>
 
-<Card.Root class="w-full">
-	<Card.Header>
-		<Card.Title>Users</Card.Title>
-		<Card.Description>View {modelTitle.toLowerCase()} users.</Card.Description>
-		<Card.Action>
-			{#if canAddUser}
-				<Button
-					variant="outline"
-					size="sm"
-					class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-					onclick={() => (addUserDialogIsOpen = true)}
-				>
-					<UserPlus class="h-4 w-4" />
-					Add User
-				</Button>
-			{/if}
-		</Card.Action>
-	</Card.Header>
-	<Card.Content>
-		{#if hasUsers}
-			<SimpleDataTable data={groupUsers.map((user) => user.attributes)} columns={usersColumns} />
-		{:else}
-			<div class="flex h-full items-center justify-center">
-				<p class="text-sm text-gray-500">No users found</p>
-			</div>
-		{/if}
-	</Card.Content>
-</Card.Root>
+<div class="flex flex-col space-y-4">
+    <div class="mt-2 flex flex-col gap-6 lg:flex-row"> 
+        <aside class="flex w-full flex-col gap-6 lg:w-80">
+            <Card.Root class="w-full border-0 shadow-xs">
+                <Card.Header>
+                    <Card.Title class="text-xl font-bold tracking-tight">User Group Details</Card.Title>
+                </Card.Header>
+                <Card.Content class="relative">
+                    <DL.Root divider={null} dlClass="space-y-4">
+                        <DL.Row orientation="vertical">
+                            <DL.Label>Name</DL.Label>
+                            <DL.Content>{model.name}</DL.Content>
+                        </DL.Row>
+                        <DL.Row orientation="vertical">
+                            <DL.Label>Description</DL.Label>
+                            <DL.Content>{model.description}</DL.Content>
+                        </DL.Row>
+                        <DL.Row orientation="vertical">
+                            <DL.Label>Status</DL.Label>
+                            <DL.Content>
+                                <StatusBadge bind:status={model.status} class="text-sm" />
+                            </DL.Content>
+                        </DL.Row>
+                        <DL.Row orientation="vertical">
+                            <DL.Label>Users Count</DL.Label>
+                            <DL.Content>{groupUsers.length}</DL.Content>
+                        </DL.Row>
+                        <DL.Row orientation="vertical">
+                            <DL.Label>Created At</DL.Label>
+                            <DL.Content>
+                                {relativeDateTime(model.created_at)}
+                            </DL.Content>
+                        </DL.Row>
+                        <DL.Row orientation="vertical">
+                            <DL.Label>Updated At</DL.Label>
+                            <DL.Content>
+                                {relativeDateTime(model.updated_at)}
+                            </DL.Content>
+                        </DL.Row>
+                    </DL.Root>
+                </Card.Content>
+            </Card.Root>
+        </aside>
+        <div class="min-w-0 flex-1 flex flex-col space-y-6">
+            <Card.Root class="w-full border-0 shadow-xs">
+                <Card.Header>
+                    <Card.Title>Members</Card.Title>
+                    <Card.Description>Add or remove members from this user group.</Card.Description>
+                    <Card.Action>
+                        {#if canAddUser}
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500 bg-white"
+                                onclick={() => (addUserDialogIsOpen = true)}
+                            >
+                                <UserPlus class="h-4 w-4" />
+                                Add User
+                            </Button>
+                        {/if}
+                    </Card.Action>
+                </Card.Header>
+                <Card.Content>
+                    {#if hasUsers}
+                        <SimpleDataTable data={groupUsers.map((user) => user.attributes)} columns={usersColumns} />
+                    {:else}
+                        <div class="flex h-full items-center justify-center">
+                            <p class="text-sm text-gray-500">No users found</p>
+                        </div>
+                    {/if}
+                </Card.Content>
+            </Card.Root>
+        </div>
+    </div>
+</div>
 
 <FormDialog
 	bind:isOpen={editUserGroupDialogIsOpen}
@@ -229,7 +243,7 @@
 	<div class="flex justify-end">
 		<Button
 			variant="outline"
-			class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
+			class="text-destructive bg-white border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
 			onclick={() => {
 				deleteUserDialogRelatedId = RelatedId;
 				deleteUserDialogIsOpen = true;

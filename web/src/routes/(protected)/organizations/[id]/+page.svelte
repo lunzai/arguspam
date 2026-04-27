@@ -27,7 +27,6 @@
 	const canDelete = $derived(data.canDelete);
 	const canAddUser = $derived(data.canAddUser);
 	const canRemoveUser = $derived(data.canRemoveUser);
-	const modelTitle = 'Organization';
 	const allUsers = $derived(data.userCollection.data.map((user) => user.attributes) as User[]);
 	const modelResource = $derived(data.model as ApiOrgResource);
 	const model = $derived(modelResource.data.attributes as Org);
@@ -200,10 +199,10 @@
             </Card.Root>
         </aside>
         <div class="min-w-0 flex-1 flex flex-col space-y-6">
-            <Card.Root class="w-full">
+            <Card.Root class="w-full border-0 shadow-xs">
                 <Card.Header>
-                    <Card.Title>Users</Card.Title>
-                    <Card.Description>View {modelTitle.toLowerCase()} users.</Card.Description>
+                    <Card.Title>Members</Card.Title>
+                    <Card.Description>Add or remove members to control who can access this organization.</Card.Description>
                     <Card.Action>
                         {#if canAddUser}
                             <Button

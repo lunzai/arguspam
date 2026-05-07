@@ -31,10 +31,6 @@
 	<Card.Content>
 		<DL.Root divider={null}>
 			<DL.Row>
-				<DL.Label>ID</DL.Label>
-				<DL.Content>{model.id}</DL.Content>
-			</DL.Row>
-			<DL.Row>
 				<DL.Label>Name</DL.Label>
 				<DL.Content>{model.name}</DL.Content>
 			</DL.Row>
@@ -42,18 +38,6 @@
 				<DL.Label>Description</DL.Label>
 				<DL.Content>{model.description || '-'}</DL.Content>
 			</DL.Row>
-			<!-- <DL.Row>
-				<DL.Label>Created At</DL.Label>
-				<DL.Content>
-					{relativeDateTime(model.created_at)}
-				</DL.Content>
-			</DL.Row>
-			<DL.Row>
-				<DL.Label>Updated At</DL.Label>
-				<DL.Content>
-					{relativeDateTime(model.updated_at)}
-				</DL.Content>
-			</DL.Row> -->
 		</DL.Root>
 	</Card.Content>
 </Card.Root>

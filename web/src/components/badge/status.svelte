@@ -45,6 +45,7 @@
 			case 'medium':
 			case 'ended':
             case 'mysql':
+            case 'default':
 				badgeClass = 'text-blue-500 bg-blue-50 border-blue-200';
 				break;
             case 'oracle':

@@ -160,10 +160,6 @@
                 </Card.Header>
                 <Card.Content class="relative">
                     <DL.Root divider={null} dlClass="space-y-4">
-                        <!-- <DL.Row orientation="vertical">
-                            <DL.Label>ID</DL.Label>
-                            <DL.Content>{model.id}</DL.Content>
-                        </DL.Row> -->
                         <DL.Row orientation="vertical">
                             <DL.Label>Name</DL.Label>
                             <DL.Content>{model.name}</DL.Content>

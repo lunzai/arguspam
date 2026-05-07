@@ -6,12 +6,15 @@ use App\Enums\Status;
 use App\Models\Org;
 use App\Models\Permission;
 use App\Models\Role;
+use App\Models\User;
 use App\Services\PolicyPermissionService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Schema;
 
 use function Laravel\Prompts\error;
 use function Laravel\Prompts\note;
 use function Laravel\Prompts\progress;
+use function Laravel\Prompts\select;
 
 class PamInstall extends Command
 {
@@ -39,16 +42,23 @@ class PamInstall extends Command
      */
     public function handle()
     {
-        if (Role::count() > 0) {
+        if ($this->isAlreadyInstalled()) {
             error('It looks like ArgusPAM is already installed.');
             note('If you want to create a new user, you can run the following command:');
             note('php artisan user:create');
             return;
         }
 
+        $environment = select(
+            label: 'Installation type?',
+            options: ['development' => 'Development', 'production' => 'Production'],
+            default: 'development',
+        );
+        $isProduction = $environment === 'production';
+
         $progress = progress(
             label: 'Setting up ArgusPAM...',
-            steps: 10,
+            steps: $isProduction ? 9 : 5,
         );
         $progress->start();
 
@@ -69,8 +79,8 @@ class PamInstall extends Command
             ]);
             $adminRole->is_default = true;
             $adminRole->save();
-            $progress->advance();
         }
+        $progress->advance();
 
         if (!$existingRoles->firstWhere('name', config('pam.rbac.default_user_role'))) {
             $userRole = new Role([
@@ -95,25 +105,37 @@ class PamInstall extends Command
         }
         $progress->advance();
 
-        $progress->label('Optimizing application for performance...');
-        $this->call('config:cache');
-        $progress->advance();
-        $this->call('route:cache');
-        $progress->advance();
-        $this->call('view:cache');
-        $progress->advance();
-        $this->call('event:cache');
-        $progress->advance();
-        $this->call('optimize');
+        if ($isProduction) {
+            $progress->label('Optimizing application for performance...');
+            $this->call('config:cache');
+            $progress->advance();
+            $this->call('route:cache');
+            $progress->advance();
+            $this->call('view:cache');
+            $progress->advance();
+            $this->call('event:cache');
+            $progress->advance();
+            $this->call('optimize');
+        }
 
         $progress->finish();
 
         info('Creating default user...');
 
+        $this->line('Create default user...');
         $this->call(UserCreate::class);
 
         $this->line('');
         info('✅ ArgusPAM installation completed successfully!');
         note('You can now access your application and log in with the credentials you created.');
+    }
+
+    private function isAlreadyInstalled(): bool
+    {
+        if (!Schema::hasTable('orgs') || !Schema::hasTable('users')) {
+            return false;
+        }
+
+        return Org::query()->exists() && User::query()->exists();
     }
 }

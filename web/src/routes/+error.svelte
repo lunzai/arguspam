@@ -43,7 +43,7 @@
                 inline-flex h-9 items-center justify-center
                 gap-2 rounded-md px-4
                 py-2 text-sm font-medium whitespace-nowrap
-                shadow-sm transition-colors focus-visible:ring-1 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
+                shadow-xs transition-colors focus-visible:ring-1 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
 				href="/"
 			>
 				Back to Home

@@ -11,6 +11,7 @@
     import { Search, FilterReset } from '$components/datatable';
     import { getInitialStateFromUrlParams } from '$components/datatable';
     import { page } from '$app/state';
+    import { PageTitle } from '$components/page-title';
 
     const { data } = $props();
     const list = $derived(data?.list as ModelResource[]);
@@ -79,7 +80,10 @@
     }
 </script>
 
-<h1 class="text-2xl font-medium capitalize">Permissions</h1>
+<PageTitle 
+    title="Permissions" 
+    description="Manage your permissions and their configurations." 
+/>
 
 <Table 
     columns={columns} 

@@ -7,7 +7,7 @@ use App\Models\User;
 
 class AccessRestrictionPolicy
 {
-    public function view(User $user, AccessRestriction $accessRestriction): bool
+    public function view(User $user, ?AccessRestriction $accessRestriction = null): bool
     {
         return $user->hasAnyPermission('accessrestriction:view');
     }

@@ -3,84 +3,135 @@
 namespace Tests\Unit\Notifications;
 
 use App\Models\Asset;
+use App\Models\Org;
 use App\Models\Request;
+use App\Models\User;
+use App\Notifications\RequestApprovedNotifyApprover;
 use App\Notifications\RequestApprovedNotifyRequester;
+use App\Notifications\RequestCancelledNotifyApprover;
+use App\Notifications\RequestCancelledNotifyRequester;
+use App\Notifications\RequestExpiredNotification;
+use App\Notifications\RequestRejectedNotifyApprover;
+use App\Notifications\RequestRejectedNotifyRequester;
 use App\Notifications\RequestSubmittedNotifyApprover;
+use App\Notifications\RequestSubmittedNotifyRequester;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class RequestNotificationsTest extends TestCase
 {
-    public function test_request_submitted_notify_approver_via_mail(): void
+    use RefreshDatabase;
+
+    private User $user;
+    private Request $request;
+
+    protected function setUp(): void
     {
-        $request = $this->fakeRequest();
-        $notif = new RequestSubmittedNotifyApprover($request);
+        parent::setUp();
+        Queue::fake();
 
-        $via = $notif->via($this->fakeNotifiable());
-        $this->assertSame(['mail'], $via);
+        $org = Org::factory()->create();
+        $this->user = User::factory()->create();
+        $asset = Asset::factory()->create(['org_id' => $org->id]);
+        $this->request = Request::factory()->create([
+            'org_id' => $org->id,
+            'asset_id' => $asset->id,
+            'requester_id' => $this->user->id,
+        ]);
+    }
 
-        $mail = $notif->toMail($this->fakeNotifiable());
+    public function test_request_approved_notify_requester_has_mail_channel(): void
+    {
+        $notification = new RequestApprovedNotifyRequester($this->request);
+        $this->assertContains('mail', $notification->via($this->user));
+    }
+
+    public function test_request_approved_notify_requester_has_subject_with_asset_name(): void
+    {
+        $notification = new RequestApprovedNotifyRequester($this->request);
+        $mail = $notification->toMail($this->user);
+
         $this->assertInstanceOf(MailMessage::class, $mail);
-        $this->assertStringContainsString('Request Awaiting Approval', $this->extractSubject($mail));
-        $this->assertStringContainsString((string) $request->asset->name, $this->extractSubject($mail));
-        $this->assertStringContainsString('/requests/'.$request->id, $this->extractMarkdownViewDataUrl($mail));
-
-        // Test toArray method for 100% coverage
-        $array = $notif->toArray($this->fakeNotifiable());
-        $this->assertIsArray($array);
-        $this->assertEmpty($array);
+        $this->assertStringContainsString($this->request->asset->name, $mail->subject);
     }
 
-    public function test_request_approved_notify_requester_via_mail(): void
+    public function test_request_approved_notify_approver_has_mail_channel(): void
     {
-        $request = $this->fakeRequest();
-        $notif = new RequestApprovedNotifyRequester($request);
+        $notification = new RequestApprovedNotifyApprover($this->request);
+        $this->assertContains('mail', $notification->via($this->user));
+    }
 
-        $via = $notif->via($this->fakeNotifiable());
-        $this->assertSame(['mail'], $via);
+    public function test_request_approved_notify_approver_has_subject_with_asset_name(): void
+    {
+        $notification = new RequestApprovedNotifyApprover($this->request);
+        $mail = $notification->toMail($this->user);
 
-        $mail = $notif->toMail($this->fakeNotifiable());
         $this->assertInstanceOf(MailMessage::class, $mail);
-        $this->assertStringContainsString('Request Approved', $this->extractSubject($mail));
-        $this->assertStringContainsString((string) $request->asset->name, $this->extractSubject($mail));
-        $this->assertStringContainsString('/requests/'.$request->id, $this->extractMarkdownViewDataUrl($mail));
-
-        // Test toArray method for 100% coverage
-        $array = $notif->toArray($this->fakeNotifiable());
-        $this->assertIsArray($array);
-        $this->assertEmpty($array);
+        $this->assertStringContainsString($this->request->asset->name, $mail->subject);
     }
 
-    private function fakeRequest(): Request
+    public function test_request_rejected_notify_requester_has_subject_with_asset_name(): void
     {
-        $asset = new Asset;
-        $asset->name = 'Test Asset';
+        $notification = new RequestRejectedNotifyRequester($this->request);
+        $mail = $notification->toMail($this->user);
 
-        $request = new Request;
-        $request->id = 123;
-        $request->org_id = 1;
-        $request->asset_id = 2;
-        $request->setRelation('asset', $asset);
-
-        return $request;
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->request->asset->name, $mail->subject);
     }
 
-    private function fakeNotifiable(): object
+    public function test_request_rejected_notify_approver_has_subject_with_asset_name(): void
     {
-        // Minimal notifiable with name used by some notifications
-        return (object) ['name' => 'Jane Doe'];
+        $notification = new RequestRejectedNotifyApprover($this->request);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->request->asset->name, $mail->subject);
     }
 
-    private function extractSubject(MailMessage $mail): string
+    public function test_request_cancelled_notify_requester_has_subject_with_asset_name(): void
     {
-        // MailMessage stores subject on public property
-        return (string) ($mail->subject ?? '');
+        $notification = new RequestCancelledNotifyRequester($this->request);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->request->asset->name, $mail->subject);
     }
 
-    private function extractMarkdownViewDataUrl(MailMessage $mail): string
+    public function test_request_cancelled_notify_approver_has_subject_with_asset_name(): void
     {
-        // When using markdown(), MailMessage keeps viewData with provided array
-        $viewData = $mail->viewData ?? [];
-        return (string) ($viewData['url'] ?? '');
+        $notification = new RequestCancelledNotifyApprover($this->request);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->request->asset->name, $mail->subject);
+    }
+
+    public function test_request_submitted_notify_requester_has_subject_with_asset_name(): void
+    {
+        $notification = new RequestSubmittedNotifyRequester($this->request);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->request->asset->name, $mail->subject);
+    }
+
+    public function test_request_submitted_notify_approver_has_subject_with_asset_name(): void
+    {
+        $notification = new RequestSubmittedNotifyApprover($this->request);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->request->asset->name, $mail->subject);
+    }
+
+    public function test_request_expired_notification_has_subject_with_asset_name(): void
+    {
+        $notification = new RequestExpiredNotification($this->request);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->request->asset->name, $mail->subject);
     }
 }

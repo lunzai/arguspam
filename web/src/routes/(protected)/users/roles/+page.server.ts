@@ -12,7 +12,7 @@ import type { ApiMeta } from '$lib/resources/api';
 
 export const load: PageServerLoad = async ({ depends, locals, url }) => {
 	depends('roles:list');
-    const { authToken, currentOrgId, me } = locals;
+	const { authToken, currentOrgId, me } = locals;
 	new Rbac(me).roleView();
 	const model: Partial<Role> = {
 		name: '',
@@ -20,16 +20,21 @@ export const load: PageServerLoad = async ({ depends, locals, url }) => {
 		is_default: false
 	};
 	const form = await superValidate(zod4(RoleSchema));
-    const modelService = new ModelService(authToken as string, currentOrgId as number);
-    const response = await modelService.findAll(mergeParams({
-        perPage: 20,
-    }, url));
+	const modelService = new ModelService(authToken as string, currentOrgId as number);
+	const response = await modelService.findAll(
+		mergeParams(
+			{
+				perPage: 20
+			},
+			url
+		)
+	);
 	return {
 		form,
 		model,
 		title: 'Roles',
-        list: response.data,
-        meta: response.meta as ApiMeta
+		list: response.data,
+		meta: response.meta as ApiMeta
 	};
 };
 

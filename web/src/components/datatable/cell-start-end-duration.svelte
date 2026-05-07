@@ -10,5 +10,5 @@
     let { startDatetime, endDatetime }: Props = $props();
 </script>
 
-<div>{shortDateTime(startDatetime)} - {shortDateTime(endDatetime)}</div>
+<div>{shortDateTime(startDatetime)} - <br />{shortDateTime(endDatetime)}</div>
 <div class="text-muted-foreground text-xs">{formatDistanceStrict(startDatetime, endDatetime)}</div>

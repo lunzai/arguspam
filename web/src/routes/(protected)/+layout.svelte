@@ -7,6 +7,7 @@
 	import { toast } from 'svelte-sonner';
 	import { afterNavigate } from '$app/navigation';
 	import { layoutStore } from '$lib/stores/layout';
+	import Footer from '$components/footer';
 
 	let { children } = $props();
 
@@ -110,30 +111,32 @@
 </script>
 
 <Sidebar.Provider>
-	<AppSidebar />
-	<Sidebar.Inset class="min-w-0 overflow-hidden">
-		<header class="flex h-16 shrink-0 items-center gap-2 border-b px-4">
-			<Sidebar.Trigger class="-ml-1" />
-			<Separator orientation="vertical" class="mr-2 h-4" />
+	<AppSidebar class="group-data-[side=left]:border-r-0 group-data-[side=right]:border-l-0" />
+	<Sidebar.Inset class="min-w-0 relative">
+        <header class="sticky top-0 z-30 flex justify-start items-center w-full px-8 h-16 bg-white/80 backdrop-blur-md border-b border-slate-200/50 shadow-xs">
+			<Sidebar.Trigger class="-ml-2 mr-4" />
+			<Separator orientation="vertical" class="mr-6 h-full" />
 			<Breadcrumb.Root>
 				<Breadcrumb.List>
 					{#each breadcrumbs as item, index (item.label)}
 						{#if index > 0}
-							<Breadcrumb.Separator class="hidden md:block" />
+							<Breadcrumb.Separator class="hidden md:block text-slate-300 mx-1 text-base" />
 						{/if}
 						<Breadcrumb.Item class="hidden md:block">
 							{#if item.href && !item.isActive}
-								<Breadcrumb.Link href={item.href}>{item.label}</Breadcrumb.Link>
+								<Breadcrumb.Link class="text-slate-500 hover:text-slate-950 transition-all" href={item.href}>{item.label}</Breadcrumb.Link>
 							{:else}
-								<Breadcrumb.Page>{item.label}</Breadcrumb.Page>
+								<Breadcrumb.Page class="text-slate-950 font-bold">{item.label}</Breadcrumb.Page>
 							{/if}
 						</Breadcrumb.Item>
 					{/each}
 				</Breadcrumb.List>
 			</Breadcrumb.Root>
 		</header>
-		<div class="flex min-w-0 flex-1 flex-col gap-6 overflow-hidden px-6 py-4">
+		<div class="flex min-w-0 flex-1 flex-col gap-6 overflow-hidden px-6 pt-8 pb-8">
 			{@render children()}
 		</div>
+        
+        <Footer />
 	</Sidebar.Inset>
 </Sidebar.Provider>

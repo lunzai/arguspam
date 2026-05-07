@@ -13,6 +13,9 @@
 	import { replaceState } from '$app/navigation';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
+	import { StatusBadge } from '$components/badge';
+	import { PageTitle } from '$components/page-title';
+	import Sidebar from './sidebar.svelte';
 
 	let { data } = $props();
 	let defaultTab = $state('accounts');
@@ -31,9 +34,15 @@
 	let requesterUsers = $derived(modelResource.data.relationships?.requesterUsers as UserCollection);
 	let allUserGroups = $derived(data.userGroupCollection?.data as UserGroupCollection);
 	let allUsers = $derived(data.userCollection?.data as UserCollection);
+    const editForm = $derived(data.editForm);
+	const credentialsForm = $derived(data.credentialsForm);
+	const canUpdate = $derived(data.canUpdate);
+	const canUpdateAdminAccount = $derived(data.canUpdateAdminAccount);
+	const canDelete = $derived(data.canDelete);
 	const canAddAccessGrant = $derived(data.canAddAccessGrant);
 	const canRemoveAccessGrant = $derived(data.canRemoveAccessGrant);
 	const canTestConnection = $derived(data.canTestConnection);
+
 	onMount(() => {
 		if (page.url.hash !== '') {
 			defaultTab = page.url.hash.replace('#', '');
@@ -48,49 +57,83 @@
 	}
 </script>
 
-<Tabs.Root bind:value={defaultTab} onValueChange={handleTabChange} class="gap-6">
-	<Tabs.List class="h-auto p-[4px]">
-		<Tabs.Trigger value="accounts" class="cursor-pointer px-5 py-1.5">Accounts</Tabs.Trigger>
-		<Tabs.Trigger value="requesters" class="cursor-pointer px-5 py-1.5">Requesters</Tabs.Trigger>
-		<Tabs.Trigger value="approvers" class="cursor-pointer px-5 py-1.5">Approvers</Tabs.Trigger>
-		<!-- <Tabs.Trigger disabled value="requests" class="px-5 py-1.5 hover:cursor-not-allowed"
-			>Requests</Tabs.Trigger
-		>
-		<Tabs.Trigger disabled value="sessions" class="cursor-not-allowed px-5 py-1.5"
-			>Sessions</Tabs.Trigger
-		> -->
-	</Tabs.List>
-	<Tabs.Content value="accounts">
-		<AccountsTab list={accounts} {canTestConnection} />
-	</Tabs.Content>
-	<Tabs.Content value="requesters">
-		<AccessTab
-			bind:currentUserGroups={requesterUserGroups}
-			bind:currentUsers={requesterUsers}
-			bind:allUserGroups
-			bind:allUsers
-			role="requester"
-			rolePural="requesters"
-			{canAddAccessGrant}
-			{canRemoveAccessGrant}
-		/>
-	</Tabs.Content>
-	<Tabs.Content value="approvers">
-		<AccessTab
-			bind:currentUserGroups={approverUserGroups}
-			bind:currentUsers={approverUsers}
-			bind:allUserGroups
-			bind:allUsers
-			role="approver"
-			rolePural="approvers"
-			{canAddAccessGrant}
-			{canRemoveAccessGrant}
-		/>
-	</Tabs.Content>
-	<Tabs.Content value="requests">
-		<RequestsTab />
-	</Tabs.Content>
-	<Tabs.Content value="sessions">
-		<SessionsTab />
-	</Tabs.Content>
-</Tabs.Root>
+<div class="flex flex-row space-x-2 items-center">
+    <StatusBadge status={model.status} />
+    <StatusBadge status={model.dbms} />
+    <div class="text-sm text-slate-500 uppercase tracking-wider font-semibold">
+        ASSET #{model.id}
+    </div>
+</div>
+<PageTitle
+    title={model.name}
+    class="-mt-4"
+>
+</PageTitle>
+
+<div class="flex flex-col space-y-4">
+    <div class="mt-2 flex flex-col gap-6 lg:flex-row"> 
+        <aside class="flex w-full flex-col gap-6 lg:w-80">
+            <Sidebar
+				{model}
+				{accounts}
+				{editForm}
+				{credentialsForm}
+				{canUpdate}
+				{canUpdateAdminAccount}
+				{canDelete}
+			/>
+        </aside>
+        <div class="min-w-0 flex-1 flex flex-col space-y-6  h-full">
+            {@render content()}
+        </div>
+    </div>
+</div>
+
+{#snippet content()}
+    <Tabs.Root bind:value={defaultTab} onValueChange={handleTabChange} class="gap-6">
+        <Tabs.List class="h-auto p-[4px]">
+            <Tabs.Trigger value="accounts" class="cursor-pointer px-5 py-1.5 data-[state=active]:bg-white">Accounts</Tabs.Trigger>
+            <Tabs.Trigger value="requesters" class="cursor-pointer px-5 py-1.5 data-[state=active]:bg-white">Requesters</Tabs.Trigger>
+            <Tabs.Trigger value="approvers" class="cursor-pointer px-5 py-1.5 data-[state=active]:bg-white">Approvers</Tabs.Trigger>
+            <!-- <Tabs.Trigger disabled value="requests" class="px-5 py-1.5 hover:cursor-not-allowed"
+                >Requests</Tabs.Trigger
+            >
+            <Tabs.Trigger disabled value="sessions" class="cursor-not-allowed px-5 py-1.5"
+                >Sessions</Tabs.Trigger
+            > -->
+        </Tabs.List>
+        <Tabs.Content value="accounts">
+            <AccountsTab list={accounts} {canTestConnection} />
+        </Tabs.Content>
+        <Tabs.Content value="requesters">
+            <AccessTab
+                bind:currentUserGroups={requesterUserGroups}
+                bind:currentUsers={requesterUsers}
+                bind:allUserGroups
+                bind:allUsers
+                role="requester"
+                rolePural="requesters"
+                {canAddAccessGrant}
+                {canRemoveAccessGrant}
+            />
+        </Tabs.Content>
+        <Tabs.Content value="approvers">
+            <AccessTab
+                bind:currentUserGroups={approverUserGroups}
+                bind:currentUsers={approverUsers}
+                bind:allUserGroups
+                bind:allUsers
+                role="approver"
+                rolePural="approvers"
+                {canAddAccessGrant}
+                {canRemoveAccessGrant}
+            />
+        </Tabs.Content>
+        <Tabs.Content value="requests">
+            <RequestsTab />
+        </Tabs.Content>
+        <Tabs.Content value="sessions">
+            <SessionsTab />
+        </Tabs.Content>
+    </Tabs.Root>
+{/snippet}

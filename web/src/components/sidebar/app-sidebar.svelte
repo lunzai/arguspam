@@ -13,7 +13,7 @@
 </script>
 
 <Sidebar.Root {collapsible} {...restProps}>
-	<Sidebar.Header>
+	<Sidebar.Header class="pt-6 group-data-[state=expanded]:px-4">
 		<OrgSwitcher />
 	</Sidebar.Header>
 	<Sidebar.Content>

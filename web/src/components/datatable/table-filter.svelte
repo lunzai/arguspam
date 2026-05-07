@@ -52,22 +52,22 @@
 <Popover.Root>
 	<Popover.Trigger>
 		{#snippet child({ props })}
-			<Button {...props} variant="outline" size="sm" class="h-8 border-dashed">
+			<Button {...props} variant="outline" size="lg" class="border-dashed bg-white hover:bg-slate-50">
 				<CirclePlusIcon />
 				{title}
 				{#if selectedValues.size > 0 && displayMaxSelected > 0}
-					<Separator orientation="vertical" class="mx-2 h-4" />
+					<Separator orientation="vertical" class="mx-1.5" />
 					<Badge variant="secondary" class="rounded-sm px-1 font-normal lg:hidden">
 						{selectedValues.size}
 					</Badge>
-					<div class="hidden space-x-1 lg:flex">
+					<div class="hidden space-x-1.5 lg:flex p-0">
 						{#if selectedValues.size > displayMaxSelected}
-							<Badge variant="secondary" class="rounded-sm px-1 font-normal">
+							<Badge variant="secondary" class="rounded-sm px-1.5 font-normal">
 								{selectedValues.size} selected
 							</Badge>
 						{:else}
 							{#each options?.filter( (opt) => selectedValues.has(opt.value) ) as option (option)}
-								<Badge variant="secondary" class="rounded-sm px-1 font-normal">
+								<Badge variant="secondary" class="rounded-sm px-1.5">
 									{option.label}
 								</Badge>
 							{/each}
@@ -86,6 +86,7 @@
 					{#each options as option (option)}
 						{@const isSelected = selectedValues.has(option.value)}
 						<Command.Item
+                            class="py-1.5"
 							onSelect={() => {
 								if (isSelected) {
 									selectedValues.delete(option.value);

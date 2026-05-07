@@ -19,6 +19,7 @@
 </script>
 
 <Input
+    class="bg-white py-1 h-auto min-h-10"
     type="text"
     placeholder={placeholder ?? title}
     bind:value={query}

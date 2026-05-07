@@ -4,106 +4,147 @@ namespace Tests\Unit\Policies;
 
 use App\Models\User;
 use App\Policies\UserPolicy;
-use Mockery;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class UserPolicyTest extends TestCase
 {
-    protected function tearDown(): void
+    use RefreshDatabase;
+
+    private UserPolicy $policy;
+    private User $user;
+
+    protected function setUp(): void
     {
-        Mockery::close();
-        parent::tearDown();
+        parent::setUp();
+        $this->policy = new UserPolicy;
+        $this->user = User::factory()->create();
     }
 
-    public function test_view_any_returns_true_when_user_has_permission(): void
-    {
-        $user = Mockery::mock(User::class);
-        $user->shouldReceive('hasAnyPermission')
-            ->once()
-            ->with('user:viewany')
-            ->andReturn(true);
+    // -------------------------------------------------------------------------
+    // viewAny
+    // -------------------------------------------------------------------------
 
-        $policy = new UserPolicy;
-        $this->assertTrue($policy->viewAny($user));
+    public function test_view_any_returns_true_with_permission(): void
+    {
+        $this->giveUserPermission($this->user, 'user:viewany');
+        $this->assertTrue($this->policy->viewAny($this->user));
     }
 
-    public function test_view_any_returns_false_when_user_lacks_permission(): void
+    public function test_view_any_returns_false_without_permission(): void
     {
-        $user = Mockery::mock(User::class);
-        $user->shouldReceive('hasAnyPermission')
-            ->once()
-            ->with('user:viewany')
-            ->andReturn(false);
-
-        $policy = new UserPolicy;
-        $this->assertFalse($policy->viewAny($user));
+        $this->assertFalse($this->policy->viewAny($this->user));
     }
 
-    public function test_view_returns_true_when_user_has_view_any_permission(): void
-    {
-        $user = Mockery::mock(User::class);
-        $model = Mockery::mock(User::class);
-        $user->shouldReceive('hasAnyPermission')
-            ->with('user:viewany')
-            ->andReturn(true);
+    // -------------------------------------------------------------------------
+    // view
+    // -------------------------------------------------------------------------
 
-        $policy = new UserPolicy;
-        $this->assertTrue($policy->view($user, $model));
+    public function test_view_returns_true_via_view_any_shortcircuit(): void
+    {
+        $this->giveUserPermission($this->user, 'user:viewany');
+        $other = User::factory()->create();
+        $this->assertTrue($this->policy->view($this->user, $other));
     }
 
-    public function test_view_returns_true_when_user_views_own_profile(): void
+    public function test_view_returns_true_for_own_record_with_view_permission(): void
     {
-        $user = Mockery::mock(User::class);
-        $model = Mockery::mock(User::class);
-        // Eloquent magic: access id via getAttribute
-        $user->shouldReceive('getAttribute')->with('id')->andReturn(1);
-        $model->shouldReceive('getAttribute')->with('id')->andReturn(1);
-
-        $user->shouldReceive('hasAnyPermission')
-            ->with('user:viewany')
-            ->andReturn(false);
-        $user->shouldReceive('hasAnyPermission')
-            ->with('user:view')
-            ->andReturn(true);
-
-        $policy = new UserPolicy;
-        $this->assertTrue($policy->view($user, $model));
+        $this->giveUserPermission($this->user, 'user:view');
+        $this->assertTrue($this->policy->view($this->user, $this->user));
     }
 
-    public function test_create_returns_true_when_user_has_permission(): void
+    public function test_view_returns_false_for_other_user_with_view_permission(): void
     {
-        $user = Mockery::mock(User::class);
-        $user->shouldReceive('hasAnyPermission')
-            ->once()
-            ->with('user:create')
-            ->andReturn(true);
-
-        $policy = new UserPolicy;
-        $this->assertTrue($policy->create($user));
+        $this->giveUserPermission($this->user, 'user:view');
+        $other = User::factory()->create();
+        $this->assertFalse($this->policy->view($this->user, $other));
     }
 
-    public function test_update_returns_true_when_user_has_update_any_permission(): void
+    public function test_view_returns_false_without_any_permission(): void
     {
-        $user = Mockery::mock(User::class);
-        $model = Mockery::mock(User::class);
-        $user->shouldReceive('hasAnyPermission')
-            ->with('user:updateany')
-            ->andReturn(true);
-
-        $policy = new UserPolicy;
-        $this->assertTrue($policy->update($user, $model));
+        $other = User::factory()->create();
+        $this->assertFalse($this->policy->view($this->user, $other));
     }
 
-    public function test_delete_any_returns_true_when_user_has_permission(): void
-    {
-        $user = Mockery::mock(User::class);
-        $model = Mockery::mock(User::class);
-        $user->shouldReceive('hasAnyPermission')
-            ->once()
-            ->with('user:deleteany')
-            ->andReturn(true);
+    // -------------------------------------------------------------------------
+    // create
+    // -------------------------------------------------------------------------
 
-        $policy = new UserPolicy;
-        $this->assertTrue($policy->deleteAny($user, $model));
+    public function test_create_returns_true_with_permission(): void
+    {
+        $this->giveUserPermission($this->user, 'user:create');
+        $this->assertTrue($this->policy->create($this->user));
+    }
+
+    // -------------------------------------------------------------------------
+    // updateAny
+    // -------------------------------------------------------------------------
+
+    public function test_update_any_returns_true_with_permission(): void
+    {
+        $this->giveUserPermission($this->user, 'user:updateany');
+        $this->assertTrue($this->policy->updateAny($this->user));
+    }
+
+    // -------------------------------------------------------------------------
+    // update
+    // -------------------------------------------------------------------------
+
+    public function test_update_returns_true_via_updateany_shortcircuit(): void
+    {
+        $this->giveUserPermission($this->user, 'user:updateany');
+        $other = User::factory()->create();
+        $this->assertTrue($this->policy->update($this->user, $other));
+    }
+
+    public function test_update_returns_true_for_self_with_update_permission(): void
+    {
+        $this->giveUserPermission($this->user, 'user:update');
+        $this->assertTrue($this->policy->update($this->user, $this->user));
+    }
+
+    public function test_update_returns_false_for_other_with_update_permission(): void
+    {
+        $this->giveUserPermission($this->user, 'user:update');
+        $other = User::factory()->create();
+        $this->assertFalse($this->policy->update($this->user, $other));
+    }
+
+    // -------------------------------------------------------------------------
+    // deleteAny
+    // -------------------------------------------------------------------------
+
+    public function test_delete_any_returns_true_with_permission(): void
+    {
+        $this->giveUserPermission($this->user, 'user:deleteany');
+        $other = User::factory()->create();
+        $this->assertTrue($this->policy->deleteAny($this->user, $other));
+    }
+
+    // -------------------------------------------------------------------------
+    // changePassword
+    // -------------------------------------------------------------------------
+
+    public function test_change_password_returns_true_for_self_with_permission(): void
+    {
+        $this->giveUserPermission($this->user, 'user:changepassword');
+        $this->assertTrue($this->policy->changePassword($this->user, $this->user));
+    }
+
+    public function test_change_password_returns_false_for_other_with_permission(): void
+    {
+        $this->giveUserPermission($this->user, 'user:changepassword');
+        $other = User::factory()->create();
+        $this->assertFalse($this->policy->changePassword($this->user, $other));
+    }
+
+    // -------------------------------------------------------------------------
+    // resetPasswordAny
+    // -------------------------------------------------------------------------
+
+    public function test_reset_password_any_returns_true_with_permission(): void
+    {
+        $this->giveUserPermission($this->user, 'user:resetpasswordany');
+        $this->assertTrue($this->policy->resetPasswordAny($this->user));
     }
 }

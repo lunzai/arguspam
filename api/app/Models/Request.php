@@ -150,6 +150,8 @@ class Request extends Model implements ShouldHandleEventsAfterCommit
         $this->expired_at = null;
         $this->approver_risk_rating = null;
         $this->approver_note = null;
+        $this->cancelled_at = null;
+        $this->cancelled_by = null;
     }
 
     public function submit(): void

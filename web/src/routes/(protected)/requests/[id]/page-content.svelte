@@ -107,7 +107,7 @@
 					<DL.Row>
 						<DL.Label>Approval Status</DL.Label>
 						<DL.Content>
-							<StatusBadge bind:status={model.status} class="text-sm" />
+							<StatusBadge bind:status={model.status} />
 						</DL.Content>
 					</DL.Row>
 					{#if model.approver_risk_rating}
@@ -117,7 +117,7 @@
 								<RiskRatingToolTips />
 							</DL.Label>
 							<DL.Content>
-								<StatusBadge bind:status={model.approver_risk_rating} class="text-sm" />
+								<StatusBadge bind:status={model.approver_risk_rating} />
 							</DL.Content>
 						</DL.Row>
 					{/if}
@@ -167,7 +167,7 @@
 								<RiskRatingToolTips />
 							</DL.Label>
 							<DL.Content>
-								<StatusBadge bind:status={model.ai_risk_rating} class="text-sm" />
+								<StatusBadge bind:status={model.ai_risk_rating} />
 							</DL.Content>
 						</DL.Row>
 					{/if}

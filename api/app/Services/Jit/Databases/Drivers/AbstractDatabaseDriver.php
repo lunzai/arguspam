@@ -74,6 +74,14 @@ abstract class AbstractDatabaseDriver implements DatabaseDriverInterface
         return Str::password($length, $letters, $numbers, $symbols, $spaces);
     }
 
+    public function generateSecureCredentials(): array
+    {
+        return [
+            'username' => $this->generateUsername(),
+            'password' => $this->generatePassword(),
+        ];
+    }
+
     public function validateScope(DatabaseScope $scope): bool
     {
         return in_array($scope, $this->supportedScopes);

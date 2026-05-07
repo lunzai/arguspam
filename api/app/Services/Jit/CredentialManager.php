@@ -4,6 +4,7 @@ namespace App\Services\Jit;
 
 use App\Exceptions\CredentialNotFoundException;
 use App\Models\Asset;
+use App\Services\Jit\Database\DatabaseDriverFactory;
 use App\Services\Jit\Repositories\Contracts\AssetRepositoryInterface;
 
 class CredentialManager
@@ -11,7 +12,7 @@ class CredentialManager
     public function __construct(
         private AssetRepositoryInterface $assetRepository,
         private UserCreationValidator $validator,
-        private \App\Services\Jit\Database\DatabaseDriverFactory $driverFactory,
+        private DatabaseDriverFactory $driverFactory,
         private array $config = []
     ) {}
 

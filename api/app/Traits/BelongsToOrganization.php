@@ -74,14 +74,14 @@ trait BelongsToOrganization
     /**
      * Get the current organization ID from the request.
      */
-    protected static function getCurrentOrganizationId()
+    public static function getCurrentOrganizationId()
     {
         $request = request();
         if (!$request) {
             return null;
         }
         // Get from request attribute (set by middleware)
-        $orgId = $request->get(config('pam.org.request_attribute'));
+        $orgId = $request->input(config('pam.org.request_attribute'));
         if ($orgId) {
             return $orgId;
         }

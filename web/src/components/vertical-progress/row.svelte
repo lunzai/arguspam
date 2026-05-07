@@ -41,12 +41,12 @@
 	</span>
 	{#if title}
 		<h3
-			class="leading-tight font-medium {disabled ? 'text-gray-200 line-through' : 'text-gray-800'}"
+			class="leading-tight text-sm font-medium {disabled ? 'text-gray-200 line-through' : 'text-gray-800'}"
 		>
 			{title}
 		</h3>
 	{/if}
 	{#if description}
-		<p class="text-sm {disabled ? 'text-gray-200 line-through' : 'text-gray-500'}">{description}</p>
+		<p class="text-xs {disabled ? 'text-gray-200 line-through' : 'text-gray-500'}">{description}</p>
 	{/if}
 </li>

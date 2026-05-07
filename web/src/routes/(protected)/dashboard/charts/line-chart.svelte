@@ -71,7 +71,7 @@
 	const chartOptions = $derived({
 		series: filteredData,
 		chart: {
-			type: 'line',
+			type: 'line' as const,
 			height: height,
 			toolbar: {
 				tools: {
@@ -100,7 +100,7 @@
 			}
 		},
 		xaxis: {
-			type: 'datetime',
+			type: 'datetime' as const,
 			labels: {
 				datetimeFormatter: {
 					year: 'yyyy',
@@ -118,8 +118,10 @@
 	});
 
 	onMount(async () => {
+		const el = document.getElementById(`chart-${id}`);
+		if (!el) return;
 		const apexCharts = (await import('apexcharts')).default;
-		chart = new apexCharts(document.querySelector('#chart-' + id), chartOptions);
+		chart = new apexCharts(el, chartOptions);
 		chart.render();
 	});
 
@@ -131,11 +133,11 @@
 	});
 </script>
 
-<Card.Root>
+<Card.Root class="border-0 shadow-xs rounded-xl">
 	<Card.Header class="flex items-center gap-2 space-y-0 sm:flex-row">
 		<div class="grid flex-1 gap-2">
-			<Card.Title>{title}</Card.Title>
-			<Card.Description>{description} {selectedLabel}</Card.Description>
+			<Card.Title class="text-sm font-medium text-slate-500">{title}</Card.Title>
+			<Card.Description class="text-xs text-slate-400">{description} {selectedLabel}</Card.Description>
 		</div>
 		<Select.Root type="single" bind:value={timeRange}>
 			<Select.Trigger class="w-[160px] rounded-lg sm:ml-auto" aria-label="Select a value">

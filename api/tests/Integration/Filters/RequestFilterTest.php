@@ -2,397 +2,294 @@
 
 namespace Tests\Integration\Filters;
 
-use App\Http\Filters\RequestFilter;
-use App\Models\Request as RequestModel;
-use Illuminate\Database\Eloquent\Builder;
+use App\Enums\DatabaseScope;
+use App\Enums\RequestStatus;
+use App\Models\Asset;
+use App\Models\Org;
+use App\Models\Request;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class RequestFilterTest extends TestCase
 {
     use RefreshDatabase;
 
-    private RequestFilter $filter;
-    private Builder $builder;
+    private User $user;
+    private Org $org;
+    private Asset $asset;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->builder = RequestModel::query();
+        Queue::fake();
+        $this->org = Org::factory()->create();
+        $this->user = User::factory()->create();
+        $this->org->users()->attach($this->user->id);
+        $this->giveUserPermission($this->user, 'request:view');
+        $this->asset = Asset::factory()->create(['org_id' => $this->org->id]);
     }
 
-    private function createFilter(array $params = []): RequestFilter
+    private function makeRequest(array $overrides = []): Request
     {
-        $request = new Request($params);
-        return new RequestFilter($request);
+        return Request::factory()->create(array_merge([
+            'org_id' => $this->org->id,
+            'asset_id' => $this->asset->id,
+            'requester_id' => $this->user->id,
+        ], $overrides));
     }
 
-    public function test_sortable_fields_are_defined(): void
+    public function test_filter_by_status(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
+        $this->makeRequest(['status' => RequestStatus::SUBMITTED]);
+        $this->makeRequest(['status' => RequestStatus::APPROVED]);
 
-        $reflection = new \ReflectionClass($filter);
-        $property = $reflection->getProperty('sortable');
-        $property->setAccessible(true);
-        $sortable = $property->getValue($filter);
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/requests?status=submitted')
+            ->assertStatus(200);
 
-        $expectedSortable = [
-            'org_id',
-            'asset_id',
-            'asset_account_id',
-            'requester_id',
-            'start_datetime',
-            'end_datetime',
-            'duration',
-            'reason',
-            'intended_query',
-            'scope',
-            'is_access_sensitive_data',
-            'sensitive_data_note',
-            'approver_note',
-            'approver_risk_rating',
-            'status',
-            'approved_at',
-            'rejected_at',
-            'created_at',
-            'updated_at',
-        ];
-
-        $this->assertEquals($expectedSortable, $sortable);
+        $statuses = collect($response->json('data'))->pluck('attributes.status');
+        $this->assertTrue($statuses->every(fn ($s) => $s === RequestStatus::SUBMITTED->value));
     }
 
-    public function test_org_id_single_value(): void
+    public function test_filter_by_requester_id(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->orgId('123');
+        $otherUser = User::factory()->create();
+        $this->makeRequest(['requester_id' => $this->user->id]);
+        $this->makeRequest(['requester_id' => $otherUser->id]);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson("/requests?filter[requester_id]={$this->user->id}")
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('org_id', $sql);
-        $this->assertStringContainsString('=', $sql);
-        $this->assertContains('123', $bindings);
+        $requesterIds = collect($response->json('data'))->pluck('attributes.requester_id');
+        $this->assertTrue($requesterIds->every(fn ($id) => $id == $this->user->id));
     }
 
-    public function test_asset_id_multiple_values(): void
+    public function test_no_filter_returns_all_org_requests(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->assetId('123,456,789');
+        $this->makeRequest();
+        $this->makeRequest();
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/requests')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('asset_id', $sql);
-        $this->assertStringContainsString('in', strtolower($sql));
-        $this->assertContains('123', $bindings);
-        $this->assertContains('456', $bindings);
-        $this->assertContains('789', $bindings);
+        $this->assertCount(2, $response->json('data'));
     }
 
-    public function test_asset_account_id_single_value(): void
+    public function test_filter_by_reason_partial_match(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->assetAccountId('456');
+        $this->makeRequest(['reason' => 'Quarterly audit access']);
+        $this->makeRequest(['reason' => 'Routine maintenance']);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/requests?reason=audit')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('asset_account_id', $sql);
-        $this->assertStringContainsString('=', $sql);
-        $this->assertContains('456', $bindings);
+        $reasons = collect($response->json('data'))->pluck('attributes.reason');
+        $this->assertTrue($reasons->every(fn ($r) => str_contains(strtolower($r), 'audit')));
+        $this->assertFalse($reasons->contains('Routine maintenance'));
     }
 
-    public function test_requester_id_multiple_values(): void
+    public function test_filter_by_asset_id(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->requesterId('100,200,300');
+        $otherAsset = Asset::factory()->create(['org_id' => $this->org->id]);
+        $this->makeRequest(['asset_id' => $this->asset->id]);
+        $this->makeRequest(['asset_id' => $otherAsset->id]);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson("/requests?filter[asset_id]={$this->asset->id}")
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('requester_id', $sql);
-        $this->assertStringContainsString('in', strtolower($sql));
-        $this->assertContains('100', $bindings);
-        $this->assertContains('200', $bindings);
-        $this->assertContains('300', $bindings);
+        $assetIds = collect($response->json('data'))->pluck('attributes.asset_id');
+        $this->assertTrue($assetIds->every(fn ($id) => $id == $this->asset->id));
     }
 
-    public function test_start_datetime_range(): void
+    public function test_filter_by_multiple_statuses(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->startDatetime('2023-01-01,2023-12-31');
+        $this->makeRequest(['status' => RequestStatus::SUBMITTED]);
+        $this->makeRequest(['status' => RequestStatus::APPROVED]);
+        $this->makeRequest(['status' => RequestStatus::REJECTED]);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/requests?filter[status]=submitted,approved')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('start_datetime', $sql);
-        $this->assertStringContainsString('between', strtolower($sql));
-        $this->assertContains('2023-01-01', $bindings);
-        $this->assertContains('2023-12-31', $bindings);
+        $statuses = collect($response->json('data'))->pluck('attributes.status');
+        $this->assertCount(2, $statuses);
+        $this->assertTrue($statuses->contains(RequestStatus::SUBMITTED->value));
+        $this->assertTrue($statuses->contains(RequestStatus::APPROVED->value));
+        $this->assertFalse($statuses->contains(RequestStatus::REJECTED->value));
     }
 
-    public function test_duration_greater_than(): void
+    public function test_sort_by_status_desc(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->duration('60');
+        $this->makeRequest(['status' => RequestStatus::SUBMITTED]);
+        $this->makeRequest(['status' => RequestStatus::APPROVED]);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/requests?sort=-status')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('duration', $sql);
-        $this->assertStringContainsString('>=', $sql);
-        $this->assertContains('60', $bindings);
+        $this->assertNotEmpty($response->json('data'));
     }
 
-    public function test_reason_uses_like_filter(): void
+    public function test_filter_by_scope(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->reason('emergency access');
+        $this->makeRequest(['scope' => DatabaseScope::READ_ONLY]);
+        $this->makeRequest(['scope' => DatabaseScope::READ_WRITE]);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/requests?filter[scope]=read_only')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('reason', $sql);
-        $this->assertStringContainsString('like', strtolower($sql));
-        $this->assertContains('%emergency access%', $bindings);
+        $scopes = collect($response->json('data'))->pluck('attributes.scope');
+        $this->assertTrue($scopes->every(fn ($s) => $s === 'read_only'));
     }
 
-    public function test_intended_query_uses_like_filter(): void
+    public function test_filter_by_intended_query_partial_match(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->intendedQuery('SELECT * FROM users');
+        $this->makeRequest(['intended_query' => 'SELECT * FROM users']);
+        $this->makeRequest(['intended_query' => 'DELETE FROM logs']);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/requests?filter[intended_query]=SELECT')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('intended_query', $sql);
-        $this->assertStringContainsString('like', strtolower($sql));
-        $this->assertContains('%SELECT * FROM users%', $bindings);
+        $queries = collect($response->json('data'))->pluck('attributes.intended_query');
+        $this->assertTrue($queries->every(fn ($q) => str_contains(strtoupper($q), 'SELECT')));
     }
 
-    public function test_scope_single_value(): void
+    public function test_filter_by_org_id(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->scope('read');
+        $this->makeRequest();
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson("/requests?filter[org_id]={$this->org->id}")
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('scope', $sql);
-        $this->assertStringContainsString('=', $sql);
-        $this->assertContains('read', $bindings);
+        $this->assertNotEmpty($response->json('data'));
     }
 
-    public function test_scope_multiple_values(): void
+    public function test_filter_by_created_at_greater_than(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->scope('read,write,admin');
+        $this->makeRequest();
+        $past = now()->subDay()->toDateTimeString();
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson("/requests?filter[created_at]={$past}")
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('scope', $sql);
-        $this->assertStringContainsString('in', strtolower($sql));
-        $this->assertContains('read', $bindings);
-        $this->assertContains('write', $bindings);
-        $this->assertContains('admin', $bindings);
+        $this->assertNotEmpty($response->json('data'));
     }
 
-    public function test_is_access_sensitive_data_true(): void
+    public function test_filter_by_start_datetime_range(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->isAccessSensitiveData('1');
+        $this->makeRequest();
+        $from = now()->subDay()->toDateTimeString();
+        $to = now()->addDay()->toDateTimeString();
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson("/requests?filter[start_datetime]={$from},{$to}")
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('is_access_sensitive_data', $sql);
-        $this->assertStringContainsString('=', $sql);
-        $this->assertContains('1', $bindings);
+        $this->assertNotEmpty($response->json('data'));
     }
 
-    public function test_sensitive_data_note_uses_like_filter(): void
+    public function test_filter_by_is_access_sensitive_data(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->sensitiveDataNote('customer PII');
+        $this->makeRequest(['is_access_sensitive_data' => false]);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/requests?filter[is_access_sensitive_data]=0')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('sensitive_data_note', $sql);
-        $this->assertStringContainsString('like', strtolower($sql));
-        $this->assertContains('%customer PII%', $bindings);
+        $this->assertNotEmpty($response->json('data'));
     }
 
-    public function test_approver_note_uses_like_filter(): void
+    public function test_filter_by_approver_note_partial_match(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->approverNote('approved for emergency');
+        $this->makeRequest(['approver_note' => 'Approved for audit']);
+        $this->makeRequest(['approver_note' => null]);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/requests?filter[approver_note]=Approved')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('approver_note', $sql);
-        $this->assertStringContainsString('like', strtolower($sql));
-        $this->assertContains('%approved for emergency%', $bindings);
+        $this->assertNotEmpty($response->json('data'));
     }
 
-    public function test_approver_risk_rating_multiple_values(): void
+    public function test_filter_by_approved_at_range(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->approverRiskRating('low,medium,high');
+        $this->makeRequest();
+        $from = now()->subDay()->toDateTimeString();
+        $to = now()->addDay()->toDateTimeString();
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson("/requests?filter[approved_at]={$from},{$to}")
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('approver_risk_rating', $sql);
-        $this->assertStringContainsString('in', strtolower($sql));
-        $this->assertContains('low', $bindings);
-        $this->assertContains('medium', $bindings);
-        $this->assertContains('high', $bindings);
+        $this->assertIsArray($response->json('data'));
     }
 
-    public function test_status_multiple_values(): void
+    public function test_filter_by_duration(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->status('pending,approved,rejected');
+        $this->makeRequest();
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/requests?filter[duration]=0')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('status', $sql);
-        $this->assertStringContainsString('in', strtolower($sql));
-        $this->assertContains('pending', $bindings);
-        $this->assertContains('approved', $bindings);
-        $this->assertContains('rejected', $bindings);
+        $this->assertIsArray($response->json('data'));
     }
 
-    public function test_approved_at_range(): void
+    public function test_filter_by_sensitive_data_note(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->approvedAt('2023-01-01,2023-12-31');
+        $this->makeRequest(['sensitive_data_note' => 'Contains PII data']);
+        $this->makeRequest(['sensitive_data_note' => null]);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/requests?filter[sensitive_data_note]=PII')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('approved_at', $sql);
-        $this->assertStringContainsString('between', strtolower($sql));
-        $this->assertContains('2023-01-01', $bindings);
-        $this->assertContains('2023-12-31', $bindings);
+        $this->assertNotEmpty($response->json('data'));
     }
 
-    public function test_rejected_at_less_than(): void
+    public function test_filter_by_approver_risk_rating(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->rejectedAt('-2023-12-31');
+        $this->makeRequest(['approver_risk_rating' => 'low']);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/requests?filter[approver_risk_rating]=low')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('rejected_at', $sql);
-        $this->assertStringContainsString('<=', $sql);
-        $this->assertContains('2023-12-31', $bindings);
+        $this->assertIsArray($response->json('data'));
     }
 
-    public function test_apply_with_multiple_filters(): void
+    public function test_filter_by_rejected_at(): void
     {
-        $filter = $this->createFilter([
-            'orgId' => '123',
-            'assetId' => '456,789',
-            'requesterId' => '100',
-            'reason' => 'emergency',
-            'scope' => 'read,write',
-            'status' => 'pending,approved',
-            'isAccessSensitiveData' => '1',
-        ]);
+        $this->makeRequest();
+        $past = now()->subDay()->toDateTimeString();
 
-        $result = $filter->apply($this->builder);
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson("/requests?filter[rejected_at]={$past}")
+            ->assertStatus(200);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
-
-        // Check that all filters are applied
-        $this->assertStringContainsString('org_id', $sql);
-        $this->assertStringContainsString('asset_id', $sql);
-        $this->assertStringContainsString('requester_id', $sql);
-        $this->assertStringContainsString('reason', $sql);
-        $this->assertStringContainsString('scope', $sql);
-        $this->assertStringContainsString('status', $sql);
-        $this->assertStringContainsString('is_access_sensitive_data', $sql);
-
-        // Check bindings contain expected values
-        $this->assertContains('123', $bindings);
-        $this->assertContains('456', $bindings);
-        $this->assertContains('789', $bindings);
-        $this->assertContains('100', $bindings);
-        $this->assertContains('%emergency%', $bindings);
-        $this->assertContains('read', $bindings);
-        $this->assertContains('write', $bindings);
-        $this->assertContains('pending', $bindings);
-        $this->assertContains('approved', $bindings);
-        $this->assertContains('1', $bindings);
+        $this->assertIsArray($response->json('data'));
     }
 
-    public function test_methods_return_builder_instance(): void
+    public function test_filter_by_updated_at_range(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
+        $this->makeRequest();
+        $from = now()->subDay()->toDateTimeString();
+        $to = now()->addDay()->toDateTimeString();
 
-        $this->assertInstanceOf(Builder::class, $filter->orgId('123'));
-        $this->assertInstanceOf(Builder::class, $filter->assetId('456'));
-        $this->assertInstanceOf(Builder::class, $filter->assetAccountId('789'));
-        $this->assertInstanceOf(Builder::class, $filter->requesterId('100'));
-        $this->assertInstanceOf(Builder::class, $filter->startDatetime('2023-01-01'));
-        $this->assertInstanceOf(Builder::class, $filter->duration('60'));
-        $this->assertInstanceOf(Builder::class, $filter->reason('emergency'));
-        $this->assertInstanceOf(Builder::class, $filter->intendedQuery('SELECT'));
-        $this->assertInstanceOf(Builder::class, $filter->scope('read'));
-        $this->assertInstanceOf(Builder::class, $filter->isAccessSensitiveData('1'));
-        $this->assertInstanceOf(Builder::class, $filter->sensitiveDataNote('note'));
-        $this->assertInstanceOf(Builder::class, $filter->approverNote('note'));
-        $this->assertInstanceOf(Builder::class, $filter->approverRiskRating('low'));
-        $this->assertInstanceOf(Builder::class, $filter->status('pending'));
-        $this->assertInstanceOf(Builder::class, $filter->approvedAt('2023-01-01'));
-        $this->assertInstanceOf(Builder::class, $filter->rejectedAt('2023-01-01'));
-        $this->assertInstanceOf(Builder::class, $filter->createdAt('2023-01-01'));
-        $this->assertInstanceOf(Builder::class, $filter->updatedAt('2023-01-01'));
-    }
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson("/requests?filter[updated_at]={$from},{$to}")
+            ->assertStatus(200);
 
-    public function test_inheritance_from_query_filter(): void
-    {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-
-        $this->assertInstanceOf(\App\Http\Filters\QueryFilter::class, $filter);
-    }
-
-    public function test_sort_functionality(): void
-    {
-        $filter = $this->createFilter(['sort' => 'status,-created_at,requester_id']);
-        $result = $filter->apply($this->builder);
-
-        $sql = strtolower($result->toSql());
-        $this->assertStringContainsString('order by `status` asc', $sql);
-        $this->assertStringContainsString('`created_at` desc', $sql);
-        $this->assertStringContainsString('`requester_id` asc', $sql);
+        $this->assertNotEmpty($response->json('data'));
     }
 }

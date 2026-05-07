@@ -128,7 +128,7 @@
 </div>
 
 <div class="rounded-md border">
-    <Table.Root>
+    <Table.Root class="bg-white rounded-lg shadow-xs">
         <Table.Header>
             <DataTable.TableHeader table={table} />
         </Table.Header>

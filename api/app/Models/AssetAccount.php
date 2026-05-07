@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\AssetAccountType;
 use App\Traits\HasBlamable;
+use Database\Factories\AssetAccountFactory;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class AssetAccount extends Model
 {
-    /** @use HasFactory<\Database\Factories\AssetAccountFactory> */
+    /** @use HasFactory<AssetAccountFactory> */
     use HasBlamable, HasFactory;
 
     protected $fillable = [

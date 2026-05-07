@@ -3,171 +3,49 @@
 namespace Tests\Unit\Traits;
 
 use App\Enums\Status;
-use App\Traits\HasStatus;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Org;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class HasStatusTest extends TestCase
 {
-    private TestStatusModel $model;
+    use RefreshDatabase;
 
-    protected function setUp(): void
+    public function test_is_active_returns_true_for_active_org(): void
     {
-        parent::setUp();
-        $this->model = new TestStatusModel;
+        $org = Org::factory()->create(['status' => Status::ACTIVE->value]);
+
+        $this->assertTrue($org->isActive());
     }
 
-    public function test_is_active_returns_true_when_status_enum_is_active(): void
+    public function test_is_active_returns_false_for_inactive_org(): void
     {
-        $this->model->status = Status::ACTIVE;
+        $org = Org::factory()->create(['status' => Status::INACTIVE->value]);
 
-        $this->assertTrue($this->model->isActive());
-        $this->assertFalse($this->model->isInactive());
+        $this->assertFalse($org->isActive());
     }
 
-    public function test_is_active_returns_false_when_status_enum_is_inactive(): void
+    public function test_is_inactive_returns_true_for_inactive_org(): void
     {
-        $this->model->status = Status::INACTIVE;
+        $org = Org::factory()->create(['status' => Status::INACTIVE->value]);
 
-        $this->assertFalse($this->model->isActive());
-        $this->assertTrue($this->model->isInactive());
+        $this->assertTrue($org->isInactive());
     }
 
-    public function test_is_active_returns_true_when_status_string_is_active(): void
+    public function test_is_inactive_returns_false_for_active_org(): void
     {
-        $this->model->status = Status::ACTIVE->value; // String value: 'active'
+        $org = Org::factory()->create(['status' => Status::ACTIVE->value]);
 
-        $this->assertTrue($this->model->isActive());
-        $this->assertFalse($this->model->isInactive());
+        $this->assertFalse($org->isInactive());
     }
 
-    public function test_is_active_returns_false_when_status_string_is_inactive(): void
+    public function test_active_scope_filters_to_active_orgs(): void
     {
-        $this->model->status = Status::INACTIVE->value; // String value: 'inactive'
+        Org::factory()->create(['status' => Status::ACTIVE->value]);
+        Org::factory()->create(['status' => Status::INACTIVE->value]);
 
-        $this->assertFalse($this->model->isActive());
-        $this->assertTrue($this->model->isInactive());
-    }
+        $activeOrgs = Org::query()->active()->get();
 
-    public function test_is_inactive_returns_true_when_status_enum_is_inactive(): void
-    {
-        $this->model->status = Status::INACTIVE;
-
-        $this->assertTrue($this->model->isInactive());
-        $this->assertFalse($this->model->isActive());
-    }
-
-    public function test_is_inactive_returns_false_when_status_enum_is_active(): void
-    {
-        $this->model->status = Status::ACTIVE;
-
-        $this->assertFalse($this->model->isInactive());
-        $this->assertTrue($this->model->isActive());
-    }
-
-    public function test_is_inactive_returns_true_when_status_string_is_inactive(): void
-    {
-        $this->model->status = Status::INACTIVE->value; // String value: 'inactive'
-
-        $this->assertTrue($this->model->isInactive());
-        $this->assertFalse($this->model->isActive());
-    }
-
-    public function test_is_inactive_returns_false_when_status_string_is_active(): void
-    {
-        $this->model->status = Status::ACTIVE->value; // String value: 'active'
-
-        $this->assertFalse($this->model->isInactive());
-        $this->assertTrue($this->model->isActive());
-    }
-
-    public function test_trait_uses_default_status_column(): void
-    {
-        $this->model->status = Status::ACTIVE;
-
-        $this->assertTrue($this->model->isActive());
-    }
-
-    public function test_trait_works_with_custom_status_column(): void
-    {
-        $customModel = new TestStatusModelWithCustomColumn;
-        $customModel->setStatusColumn('custom_status');
-        $customModel->custom_status = Status::ACTIVE;
-
-        // isInactive() uses statusColumn, so it should work with custom column
-        $this->assertFalse($customModel->isInactive());
-
-        // isActive() is hardcoded to use 'status' property, so we need to set that
-        $customModel->status = Status::ACTIVE;
-        $this->assertTrue($customModel->isActive());
-    }
-
-    public function test_trait_works_with_custom_status_column_string_values(): void
-    {
-        $customModel = new TestStatusModelWithCustomColumn;
-        $customModel->setStatusColumn('custom_status');
-        $customModel->custom_status = Status::INACTIVE->value;
-
-        $this->assertTrue($customModel->isInactive());
-        $this->assertFalse($customModel->isActive());
-    }
-
-    public function test_trait_handles_null_status(): void
-    {
-        $this->model->status = null;
-
-        $this->assertFalse($this->model->isActive());
-        $this->assertFalse($this->model->isInactive());
-    }
-
-    public function test_trait_handles_invalid_status_values(): void
-    {
-        $this->model->status = 'invalid_status';
-
-        $this->assertFalse($this->model->isActive());
-        $this->assertFalse($this->model->isInactive());
-    }
-
-    public function test_trait_methods_return_boolean(): void
-    {
-        $this->model->status = Status::ACTIVE;
-
-        $this->assertIsBool($this->model->isActive());
-        $this->assertIsBool($this->model->isInactive());
-    }
-}
-
-// Test model using the HasStatus trait
-class TestStatusModel extends Model
-{
-    use HasStatus;
-
-    protected $table = 'test_status_models';
-    public $timestamps = false;
-
-    // Make status accessible for testing
-    public $status;
-
-    // Default status column for the trait
-    protected $statusColumn = 'status';
-}
-
-// Test model with custom status column
-class TestStatusModelWithCustomColumn extends Model
-{
-    use HasStatus;
-
-    protected $table = 'test_status_models_custom';
-    public $timestamps = false;
-
-    // Make custom_status accessible for testing
-    public $custom_status;
-
-    // Default status column
-    protected $statusColumn = 'status';
-
-    public function setStatusColumn(string $column): void
-    {
-        $this->statusColumn = $column;
+        $this->assertTrue($activeOrgs->every(fn ($o) => $o->isActive()));
     }
 }

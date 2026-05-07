@@ -39,7 +39,7 @@ class ProcessExpiredSessions implements ShouldQueue
                 $session->update([
                     'status' => 'expired',
                     'end_datetime' => $session->scheduled_end_datetime,
-                    'actual_duration' => $session->scheduled_end_datetime->diffInMinutes($session->start_datetime),
+                    'actual_duration' => $session->start_datetime->diffInMinutes($session->scheduled_end_datetime),
                 ]);
 
                 Log::info('Processed expired session', [

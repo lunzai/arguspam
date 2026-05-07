@@ -2,125 +2,41 @@
 
 namespace Tests;
 
-use App\Models\Asset;
-use App\Models\AssetAccount;
-use App\Models\Request;
-use App\Models\Session;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Org;
+use App\Models\Permission;
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Testing\TestResponse;
 
 abstract class TestCase extends BaseTestCase
 {
     /**
-     * Creates the application.
+     * Authenticate as the given user and set the org context header.
      */
-    public function createApplication()
+    protected function actingAsWithOrg(User $user, Org $org): static
     {
-        $app = require __DIR__.'/../bootstrap/app.php';
-        $app->make(\Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-        return $app;
-    }
-
-    protected function setUp(): void
-    {
-        // For pure unit tests that do not rely on the container/DB, skip Laravel bootstrap
-        if (preg_match('/^Tests\\\\Unit\\\\(Enums|Events|Rules)\\\\/', static::class) === 1) {
-            return;
-        }
-
-        // Map legacy namespaces used by tests to current implementation namespaces
-        $aliases = [
-            'App\\Services\\Jit\\Database\\Drivers\\AbstractDatabaseDriver' => 'App\\Services\\Jit\\Databases\\Drivers\\AbstractDatabaseDriver',
-            'App\\Services\\Jit\\Database\\Drivers\\MySQLDriver' => 'App\\Services\\Jit\\Databases\\Drivers\\MySQLDriver',
-            'App\\Services\\Jit\\Database\\Drivers\\PostgreSQLDriver' => 'App\\Services\\Jit\\Databases\\Drivers\\PostgreSQLDriver',
-            'App\\Services\\Jit\\Database\\DatabaseDriverFactory' => 'App\\Services\\Jit\\Databases\\DatabaseDriverFactory',
-            'App\\Services\\Jit\\Database\\Contracts\\DatabaseDriverInterface' => 'App\\Services\\Jit\\Databases\\Contracts\\DatabaseDriverInterface',
-        ];
-        foreach ($aliases as $alias => $original) {
-            if (class_exists($original) && !class_exists($alias)) {
-                class_alias($original, $alias);
-            }
-            if (interface_exists($original) && !interface_exists($alias)) {
-                class_alias($original, $alias);
-            }
-        }
-
-        parent::setUp();
-
-        // Only switch DB default for tests that use RefreshDatabase (Integration tests)
-        $uses = class_uses_recursive(static::class);
-        if (in_array(RefreshDatabase::class, $uses, true) && config('database.connections.testing_mysql')) {
-            config(['database.default' => 'testing_mysql']);
-        }
+        return $this->actingAs($user, 'sanctum')
+            ->withHeader(config('pam.org.request_header', 'x-organization-id'), (string) $org->id);
     }
 
     /**
-     * Create a test asset with admin account
+     * Give a user a named permission via a temporary role.
      */
-    protected function createTestAsset(array $attributes = []): Asset
+    protected function giveUserPermission(User $user, string $permissionName): void
     {
-        $asset = Asset::factory()->create(array_merge([
-            'dbms' => \App\Enums\Dbms::MYSQL,
-            'host' => '127.0.0.1',
-            'port' => 3306,
-        ], $attributes));
-
-        AssetAccount::factory()->create([
-            'asset_id' => $asset->id,
-            'type' => \App\Enums\AssetAccountType::ADMIN,
-            'is_active' => true,
-            'username' => 'test_admin',
-            'password' => 'test_password',
-            'databases' => ['test_db'],
-        ]);
-
-        return $asset;
+        $permission = Permission::firstOrCreate(['name' => $permissionName]);
+        $role = Role::factory()->create();
+        $role->permissions()->sync([$permission->id]);
+        $user->roles()->attach($role->id);
+        $user->clearUserRolePermissionCache();
     }
 
     /**
-     * Create a test session with request
+     * Assert a JSON API response has the standard envelope shape.
      */
-    protected function createTestSession(array $attributes = []): Session
+    protected function assertApiSuccess(TestResponse $response, int $status = 200): void
     {
-        $request = Request::factory()->create(array_merge([
-            'databases' => ['test_db'],
-            'scope' => \App\Enums\DatabaseScope::READ_ONLY,
-        ], $attributes['request'] ?? []));
-
-        return Session::factory()->create(array_merge([
-            'request_id' => $request->id,
-            'asset_id' => $request->asset_id,
-            'scheduled_end_datetime' => now()->addHours(2),
-        ], $attributes));
-    }
-
-    /**
-     * Assert that a JIT account was created correctly
-     */
-    protected function assertJitAccountCreated(Session $session, ?array $expectedDatabases = null): AssetAccount
-    {
-        $session->refresh();
-        $this->assertNotNull($session->asset_account_id);
-
-        $jitAccount = AssetAccount::find($session->asset_account_id);
-        $this->assertNotNull($jitAccount);
-        $this->assertEquals(\App\Enums\AssetAccountType::JIT, $jitAccount->type);
-        $this->assertTrue($jitAccount->is_active);
-
-        if ($expectedDatabases !== null) {
-            $this->assertEquals($expectedDatabases, $jitAccount->databases);
-        }
-
-        return $jitAccount;
-    }
-
-    /**
-     * Assert that a JIT account was terminated correctly
-     */
-    protected function assertJitAccountTerminated(AssetAccount $jitAccount): void
-    {
-        $this->assertDatabaseMissing('asset_accounts', [
-            'id' => $jitAccount->id,
-        ]);
+        $response->assertStatus($status)->assertJsonStructure(['data']);
     }
 }

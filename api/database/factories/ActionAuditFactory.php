@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\AuditAction as AuditActionEnum;
+use App\Models\ActionAudit;
 use App\Models\Org;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -10,7 +11,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ActionAudit>
+ * @extends Factory<ActionAudit>
  */
 class ActionAuditFactory extends Factory
 {

@@ -6,6 +6,7 @@ use App\Enums\Dbms;
 use App\Models\Asset;
 use App\Models\AssetAccount;
 use App\Services\Jit\JitManager;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
@@ -29,7 +30,7 @@ class UpdateAssetCredentialRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {

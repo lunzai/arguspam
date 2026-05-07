@@ -26,6 +26,11 @@ trait ApiResponses
         return response()->noContent();
     }
 
+    protected function error($message, $code = 400)
+    {
+        return abort($code, $message);
+    }
+
     protected function unprocessableEntity($message)
     {
         return abort(Response::HTTP_UNPROCESSABLE_ENTITY, $message);

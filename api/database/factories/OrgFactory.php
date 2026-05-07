@@ -3,11 +3,12 @@
 namespace Database\Factories;
 
 use App\Enums\Status;
+use App\Models\Org;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Org>
+ * @extends Factory<Org>
  */
 class OrgFactory extends Factory
 {
@@ -22,7 +23,7 @@ class OrgFactory extends Factory
 
         return [
             'name' => fake()->sentence(3),
-            'description' => fake()->optional()->paragraph(),
+            'description' => fake()->optional()->sentence(),
             'status' => Status::ACTIVE->value,
             'created_by' => $userId,
             'updated_by' => $userId,

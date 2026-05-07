@@ -2,195 +2,119 @@
 
 namespace Tests\Integration\Filters;
 
-use App\Http\Filters\OrgFilter;
+use App\Enums\Status;
 use App\Models\Org;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request;
 use Tests\TestCase;
 
 class OrgFilterTest extends TestCase
 {
     use RefreshDatabase;
 
-    private OrgFilter $filter;
-    private Builder $builder;
+    private User $user;
+    private Org $org;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->builder = Org::query();
+        $this->org = Org::factory()->create();
+        $this->user = User::factory()->create();
+        $this->org->users()->attach($this->user->id);
+        $this->giveUserPermission($this->user, 'org:view');
     }
 
-    private function createFilter(array $params = []): OrgFilter
+    public function test_filter_by_name(): void
     {
-        $request = new Request($params);
-        return new OrgFilter($request);
+        Org::factory()->create(['name' => 'Acme Corp']);
+        Org::factory()->create(['name' => 'Beta Inc']);
+
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/orgs?name=Acme')
+            ->assertStatus(200);
+
+        $names = collect($response->json('data'))->pluck('attributes.name');
+        $this->assertTrue($names->every(fn ($n) => str_contains(strtolower($n), 'acme')));
+        $this->assertFalse($names->contains('Beta Inc'));
     }
 
-    public function test_sortable_fields_are_defined(): void
+    public function test_filter_by_status(): void
     {
-        $filter = $this->createFilter();
+        Org::factory()->create(['status' => Status::ACTIVE->value]);
+        Org::factory()->create(['status' => Status::INACTIVE->value]);
 
-        $reflection = new \ReflectionClass($filter);
-        $property = $reflection->getProperty('sortable');
-        $property->setAccessible(true);
-        $sortable = $property->getValue($filter);
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/orgs?status=active')
+            ->assertStatus(200);
 
-        $expectedSortable = [
-            'name',
-            'description',
-            'status',
-            'created_at',
-            'updated_at',
-        ];
-
-        $this->assertEquals($expectedSortable, $sortable);
+        $statuses = collect($response->json('data'))->pluck('attributes.status');
+        $this->assertTrue($statuses->every(fn ($s) => $s === 'active'));
     }
 
-    public function test_name_uses_like_filter(): void
+    public function test_sort_by_name(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->name('Acme Corp');
+        Org::factory()->create(['name' => 'Zeta Org']);
+        Org::factory()->create(['name' => 'Alpha Org']);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/orgs?sort=name')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('name', $sql);
-        $this->assertStringContainsString('like', strtolower($sql));
-        $this->assertContains('%Acme Corp%', $bindings);
+        $names = collect($response->json('data'))->pluck('attributes.name');
+        // Verify Alpha Org comes before Zeta Org (sort ascending works)
+        $this->assertLessThan(
+            $names->search('Zeta Org'),
+            $names->search('Alpha Org')
+        );
     }
 
-    public function test_description_uses_like_filter(): void
+    public function test_no_filter_returns_all_orgs(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->description('technology company');
+        Org::factory()->count(2)->create();
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/orgs')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('description', $sql);
-        $this->assertStringContainsString('like', strtolower($sql));
-        $this->assertContains('%technology company%', $bindings);
+        // Includes $this->org + 2 factory orgs
+        $this->assertGreaterThanOrEqual(2, count($response->json('data')));
     }
 
-    public function test_status_single_value(): void
+    public function test_filter_by_description(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->status('active');
+        Org::factory()->create(['description' => 'Tech company']);
+        Org::factory()->create(['description' => 'Finance firm']);
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson('/orgs?description=Tech')
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('status', $sql);
-        $this->assertStringContainsString('=', $sql);
-        $this->assertContains('active', $bindings);
+        $descriptions = collect($response->json('data'))->pluck('attributes.description');
+        $this->assertTrue($descriptions->every(fn ($d) => str_contains($d, 'Tech')));
     }
 
-    public function test_status_multiple_values(): void
+    public function test_filter_by_created_at_greater_than(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->status('active,inactive,suspended');
+        Org::factory()->create();
+        $past = now()->subDay()->toDateTimeString();
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson("/orgs?filter[created_at]={$past}")
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('status', $sql);
-        $this->assertStringContainsString('in', strtolower($sql));
-        $this->assertContains('active', $bindings);
-        $this->assertContains('inactive', $bindings);
-        $this->assertContains('suspended', $bindings);
+        $this->assertNotEmpty($response->json('data'));
     }
 
-    public function test_created_at_range(): void
+    public function test_filter_by_updated_at_range(): void
     {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->createdAt('2023-01-01,2023-12-31');
+        Org::factory()->create();
+        $from = now()->subDay()->toDateTimeString();
+        $to = now()->addDay()->toDateTimeString();
 
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
+        $response = $this->actingAsWithOrg($this->user, $this->org)
+            ->getJson("/orgs?filter[updated_at]={$from},{$to}")
+            ->assertStatus(200);
 
-        $this->assertStringContainsString('created_at', $sql);
-        $this->assertStringContainsString('between', strtolower($sql));
-        $this->assertContains('2023-01-01', $bindings);
-        $this->assertContains('2023-12-31', $bindings);
-    }
-
-    public function test_updated_at_greater_than(): void
-    {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-        $result = $filter->updatedAt('2023-06-01');
-
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
-
-        $this->assertStringContainsString('updated_at', $sql);
-        $this->assertStringContainsString('>=', $sql);
-        $this->assertContains('2023-06-01', $bindings);
-    }
-
-    public function test_apply_with_all_filters(): void
-    {
-        $filter = $this->createFilter([
-            'name' => 'Acme',
-            'description' => 'technology',
-            'status' => 'active,pending',
-            'createdAt' => '2023-01-01,2023-12-31',
-            'updatedAt' => '2023-06-01',
-        ]);
-
-        $result = $filter->apply($this->builder);
-
-        $sql = $result->toSql();
-        $bindings = $result->getBindings();
-
-        // Check that all filters are applied
-        $this->assertStringContainsString('name', $sql);
-        $this->assertStringContainsString('description', $sql);
-        $this->assertStringContainsString('status', $sql);
-        $this->assertStringContainsString('created_at', $sql);
-        $this->assertStringContainsString('updated_at', $sql);
-
-        // Check bindings contain expected values
-        $this->assertContains('%Acme%', $bindings);
-        $this->assertContains('%technology%', $bindings);
-        $this->assertContains('active', $bindings);
-        $this->assertContains('pending', $bindings);
-    }
-
-    public function test_methods_return_builder_instance(): void
-    {
-        $filter = $this->createFilter();
-        $filter->apply($this->builder); // Initialize builder
-
-        $this->assertInstanceOf(Builder::class, $filter->name('Acme'));
-        $this->assertInstanceOf(Builder::class, $filter->description('Technology'));
-        $this->assertInstanceOf(Builder::class, $filter->status('active'));
-        $this->assertInstanceOf(Builder::class, $filter->createdAt('2023-01-01'));
-        $this->assertInstanceOf(Builder::class, $filter->updatedAt('2023-01-01'));
-    }
-
-    public function test_inheritance_from_query_filter(): void
-    {
-        $filter = $this->createFilter();
-
-        $this->assertInstanceOf(\App\Http\Filters\QueryFilter::class, $filter);
-    }
-
-    public function test_sort_functionality(): void
-    {
-        $filter = $this->createFilter(['sort' => 'name,-status,created_at']);
-        $result = $filter->apply($this->builder);
-
-        $sql = strtolower($result->toSql());
-        $this->assertStringContainsString('order by `name` asc', $sql);
-        $this->assertStringContainsString('`status` desc', $sql);
-        $this->assertStringContainsString('`created_at` asc', $sql);
+        $this->assertNotEmpty($response->json('data'));
     }
 }

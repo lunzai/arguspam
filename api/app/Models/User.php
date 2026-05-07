@@ -8,6 +8,7 @@ use App\Enums\RequestStatus;
 use App\Enums\SessionStatus;
 use App\Enums\Status;
 use App\Http\Filters\QueryFilter;
+use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
 use App\Traits\HasRbac;
 use App\Traits\HasStatus;
@@ -15,6 +16,7 @@ use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
+use Database\Factories\UserFactory;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Database\Eloquent\Builder;
@@ -33,7 +35,7 @@ use Staudenmeir\EloquentHasManyDeep\HasRelationships;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasApiTokens, HasBlamable, HasFactory,
         HasRbac, HasRelationships, HasStatus, Notifiable,
         SoftDeletes;
@@ -41,6 +43,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'password',
         'status',
         'default_timezone',
     ];
@@ -142,7 +145,7 @@ class User extends Authenticatable
                 if (!$this->twoFactorPendingConfirmation) {
                     return null;
                 }
-                $google2fa = new Google2FA();
+                $google2fa = new Google2FA;
                 $qrCodeUrl = $google2fa->getQRCodeUrl(
                     $appName,
                     $this->email,
@@ -252,12 +255,14 @@ class User extends Authenticatable
 
     public function allRequesterAssets(): Builder
     {
-        return $this->getAssetByRole(AssetAccessRole::REQUESTER);
+        return $this->getAssetByRole(AssetAccessRole::REQUESTER)
+            ->where('assets.org_id', BelongsToOrganization::getCurrentOrganizationId());
     }
 
     public function allApproverAssets(): Builder
     {
-        return $this->getAssetByRole(AssetAccessRole::APPROVER);
+        return $this->getAssetByRole(AssetAccessRole::APPROVER)
+            ->where('assets.org_id', BelongsToOrganization::getCurrentOrganizationId());
     }
 
     public function allAssets(): Builder

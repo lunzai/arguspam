@@ -105,6 +105,15 @@
 		<form class="min-w-0 space-y-6" method="POST" action="?/approve" use:enhance>
 			<Dialog.Header>
 				<Dialog.Title>Approve Request</Dialog.Title>
+				<Dialog.Description>
+					<p class="mb-3">
+						Your note is visible to the requester. Adjust times, scope, or risk if needed.
+					</p>
+					<p>
+						A session will be created. They can start only during the approved window. You can
+						terminate or cancel it later.
+					</p>
+				</Dialog.Description>
 			</Dialog.Header>
 			<div class="space-y-6">
 				<div class="grid gap-6 md:grid-cols-2">

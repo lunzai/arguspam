@@ -54,5 +54,5 @@
 
 <span class="inline-flex items-center gap-2" {...restProps}>
     <span class={cn('inline-block w-2 h-2 rounded-full', color)}></span>
-    <span class="text-sm text-gray-700 font-medium capitalize">{label || status}</span>
+    <span class="text-sm text-gray-700 font-black capitalize">{label || status}</span>
 </span>

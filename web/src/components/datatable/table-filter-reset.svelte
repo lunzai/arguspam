@@ -6,14 +6,17 @@
     import XIcon from "@lucide/svelte/icons/x";
 
     let { table }: { table: TableType<TData> } = $props();
-    const isFiltered = $derived(table.getState().columnFilters.length > 0);
+    const isFiltered = $derived(table.getState().columnFilters.length > 0 || table.getState().globalFilter !== undefined);
 </script>
 
 {#if isFiltered}
     <Button
         variant="ghost"
-        onclick={() => table.resetColumnFilters()}
-        class="h-8 px-2 lg:px-3"
+        onclick={() => {
+            table.resetColumnFilters();
+            table.resetGlobalFilter();
+        }}
+        class="px-2 lg:px-3 text-red-500 font-semibold hover:bg-red-500/10 hover:text-red-500 transition-all"
     >
         Reset
         <XIcon />

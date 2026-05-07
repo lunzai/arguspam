@@ -14,24 +14,24 @@
 <DropdownMenu.Root>
     <DropdownMenu.Trigger>
         {#snippet child({ props })}
-            <Button {...props} variant="outline" class="ms-auto">
-                <Settings2 class="h-4 w-4" />
+            <Button {...props} variant="outline" size="lg" class="ms-auto bg-white">
+                <Settings2 />
                 Columns
             </Button>
         {/snippet}
     </DropdownMenu.Trigger>
-    <DropdownMenu.Content align="end" class="min-w-56">
+    <DropdownMenu.Content align="end" class="min-w-56 p-3">
         {#each table
             .getAllColumns()
             .filter((col) => col.getCanHide()) as column (column.id)}
             <DropdownMenu.CheckboxItem
-            closeOnSelect={false}
-            class="capitalize"
-            bind:checked={
-                () => column.getIsVisible(), (v) => column.toggleVisibility(!!v)
-            }
+                closeOnSelect={false}
+                class="capitalize py-1.5"
+                bind:checked={
+                    () => column.getIsVisible(), (v) => column.toggleVisibility(!!v)
+                }
             >
-            {column.columnDef.header}
+                {column.columnDef.header}
             </DropdownMenu.CheckboxItem>
         {/each}
     </DropdownMenu.Content>

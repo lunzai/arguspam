@@ -142,7 +142,7 @@ class SecretsManager
                 ]);
                 // Continue with termination even if audit log retrieval fails
             }
-            return $databaseDriver->terminateUser($jitAccount->username, $session->request->databases);
+            return $databaseDriver->terminateUser($jitAccount->username, $session->request->databases ?? []);
         } catch (Exception $e) {
             Log::error('Failed to terminate JIT account', [
                 'session_id' => $session->id,

@@ -16,6 +16,7 @@
     import { Filter, FilterReset, Search } from '$components/datatable';
     import type { ColumnDef } from "@tanstack/table-core";
     import { shortDateTime } from '$utils/date';
+    import { PageTitle } from '$components/page-title';
 
 	let { data }: { data: any } = $props();
     const list = $derived(data?.list as ModelResource[]);
@@ -113,21 +114,23 @@
     }
 </script>
 
-<div class="flex items-center justify-between">
-	<h1 class="text-2xl font-medium capitalize">User Groups</h1>
-	{#if canCreate}
-		<Button
-			variant="outline"
-			class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
-			onclick={() => {
-				addUserGroupDialogIsOpen = true;
-			}}
-		>
-			<PlusIcon class="h-4 w-4" />
-			<span>Add User Group</span>
-		</Button>
-	{/if}
-</div>
+<PageTitle 
+    title="User Groups" 
+    description="Manage your user groups and their configurations." 
+>
+    {#if canCreate}
+        <Button
+            variant="outline"
+            class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500 bg-white"
+            onclick={() => {
+                addUserGroupDialogIsOpen = true;
+            }}
+        >
+            <PlusIcon class="h-4 w-4" />
+            <span>Add User Group</span>
+        </Button>
+    {/if}
+</PageTitle>
 
 <FormDialog
 	bind:isOpen={addUserGroupDialogIsOpen}

@@ -22,6 +22,7 @@
     import type { RequestResource as ModelResource } from '$lib/resources/request';
     import type { Asset } from '$lib/models/asset';
     import type { User } from '$lib/models/user';
+    import { PageTitle } from '$components/page-title';
 
     const { data } = $props();
     const list = $derived(data?.list as ModelResource[]);
@@ -142,7 +143,10 @@
     }
 </script>
 
-<h1 class="text-2xl font-medium capitalize">Requests</h1>
+<PageTitle 
+    title="Requests" 
+    description="Review and manage privileged access windows across all production environments. Automated risk scoring is applied to every request." 
+/>
 
 <Table 
     columns={columns} 
@@ -156,7 +160,7 @@
     {initialSorting}
 >
     {#snippet filters(table: TableType<ModelResource>)}
-        <div class="flex gap-2">
+        <div class="flex gap-2 items-center">
             <Filter 
                 table={table}
                 attribute="status"

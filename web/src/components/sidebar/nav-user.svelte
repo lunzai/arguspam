@@ -17,22 +17,22 @@
 				{#snippet child({ props })}
 					<Sidebar.MenuButton
 						size="lg"
-						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground py-2 hover:bg-slate-50 transition-colors gap-3"
 						{...props}
 					>
 						<UserBlock />
-						<ChevronsUpDown class="ml-auto size-4" />
+						<ChevronsUpDown class="ml-auto size-4 text-slate-400" />
 					</Sidebar.MenuButton>
 				{/snippet}
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content
-				class="w-(--bits-dropdown-menu-anchor-width) min-w-56 rounded-lg"
+				class="w-(--bits-dropdown-menu-anchor-width) min-w-62 rounded-lg"
 				side={sidebar.isMobile ? 'bottom' : 'right'}
 				align="end"
 				sideOffset={4}
 			>
 				<DropdownMenu.Label class="p-0 font-normal">
-					<div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+					<div class="flex items-center gap-3 text-left text-sm pt-3 pb-2.5 px-3">
 						<UserBlock />
 					</div>
 				</DropdownMenu.Label>
@@ -42,6 +42,7 @@
 						onSelect={() => {
 							goto('/settings/account');
 						}}
+						class="gap-3 px-3 py-2.5"
 					>
 						<IdCard />
 						Account
@@ -56,7 +57,7 @@
 					</DropdownMenu.Item> -->
 				</DropdownMenu.Group>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item>
+				<DropdownMenu.Item class="gap-3 px-3 py-2.5">
 					<form action="/auth/logout" method="post">
 						<button class="flex w-full items-center gap-2" type="submit">
 							<LogOut /> Logout

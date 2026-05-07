@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\AccessRestriction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\AccessRestriction>
+ * @extends Factory<AccessRestriction>
  */
 class AccessRestrictionFactory extends Factory
 {

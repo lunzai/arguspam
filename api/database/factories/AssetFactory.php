@@ -4,12 +4,13 @@ namespace Database\Factories;
 
 use App\Enums\Dbms;
 use App\Enums\Status;
+use App\Models\Asset;
 use App\Models\Org;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Asset>
+ * @extends Factory<Asset>
  */
 class AssetFactory extends Factory
 {
@@ -33,7 +34,7 @@ class AssetFactory extends Factory
         return [
             'org_id' => Org::factory(),
             'name' => fake()->bothify('?????-###').' - '.fake()->randomElement($dbSuffix),
-            'description' => fake()->optional()->paragraph(),
+            'description' => fake()->optional()->sentence(),
             'status' => Status::ACTIVE->value,
             'host' => '127.0.0.1', // fake()->ipv4(),
             'port' => 3306,

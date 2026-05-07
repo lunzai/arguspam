@@ -5,10 +5,11 @@ namespace Database\Factories;
 use App\Enums\AccessRestrictionType;
 use App\Enums\Status;
 use App\Models\User;
+use App\Models\UserAccessRestriction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\UserAccessRestriction>
+ * @extends Factory<UserAccessRestriction>
  */
 class UserAccessRestrictionFactory extends Factory
 {

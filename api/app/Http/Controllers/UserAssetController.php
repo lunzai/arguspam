@@ -17,4 +17,15 @@ class UserAssetController extends Controller
             ->paginate($pagination);
         return new AssetCollection($assets);
     }
+
+    public function show(Asset $asset)
+    {
+        $this->authorize('viewRequestable', Asset::class);
+        $canRequest = Auth::user()->canRequestAsset(Auth::user(), $asset);
+
+        if (!$canRequest) {
+            return $this->unauthorized('You are not authorized to request access to this asset');
+        }
+        return $this->ok();
+    }
 }

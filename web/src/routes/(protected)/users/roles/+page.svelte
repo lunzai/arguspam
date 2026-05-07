@@ -16,6 +16,7 @@
     import { getInitialStateFromUrlParams } from '$components/datatable/helper';
     import type { RoleResource as ModelResource } from '$lib/resources/role';
     import type { ApiMeta } from '$lib/resources/api';
+    import { PageTitle } from '$components/page-title';
 
 	let { data }: { data: any } = $props();
     const list = $derived(data?.list as ModelResource[]);
@@ -103,19 +104,21 @@
     }
 </script>
 
-<div class="flex items-center justify-between">
-	<h1 class="text-2xl font-medium capitalize">Roles</h1>
-	<Button
-		variant="outline"
-		class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500"
-		onclick={() => {
-			addRoleDialogIsOpen = true;
-		}}
-	>
-		<PlusIcon class="h-4 w-4" />
-		<span>Add Role</span>
-	</Button>
-</div>
+<PageTitle 
+    title="Roles" 
+    description="Manage your roles and their configurations." 
+>
+    <Button
+        variant="outline"
+        class="gap-2 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-500 bg-white"
+        onclick={() => {
+            addRoleDialogIsOpen = true;
+        }}
+    >
+        <PlusIcon class="h-4 w-4" />
+        <span>Add Role</span>
+    </Button>
+</PageTitle>
 
 <FormDialog
 	bind:isOpen={addRoleDialogIsOpen}

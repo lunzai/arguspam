@@ -3,91 +3,167 @@
 namespace Tests\Unit\Notifications;
 
 use App\Models\Asset;
+use App\Models\Org;
+use App\Models\Request;
 use App\Models\Session;
-use App\Notifications\SessionEndedNotification;
-use App\Notifications\SessionStartedNotification;
+use App\Models\User;
+use App\Notifications\SessionCancelledNotifyApprover;
+use App\Notifications\SessionCancelledNotifyRequester;
+use App\Notifications\SessionCreatedNotifyApprover;
+use App\Notifications\SessionCreatedNotifyRequester;
+use App\Notifications\SessionEndedNotifyApprover;
+use App\Notifications\SessionEndedNotifyRequester;
+use App\Notifications\SessionExpiredNotifyApprover;
+use App\Notifications\SessionExpiredNotifyRequester;
+use App\Notifications\SessionStartedNotifyApprover;
+use App\Notifications\SessionStartedNotifyRequester;
+use App\Notifications\SessionTerminatedNotifyApprover;
+use App\Notifications\SessionTerminatedNotifyRequester;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 class SessionNotificationsTest extends TestCase
 {
-    public function test_session_started_via_mail_and_database(): void
+    use RefreshDatabase;
+
+    private User $user;
+    private Session $session;
+
+    protected function setUp(): void
     {
-        $notifiable = $this->fakeNotifiable();
-        $session = $this->fakeSession($notifiable);
-        $notif = new SessionStartedNotification($session);
+        parent::setUp();
+        Queue::fake();
 
-        $via = $notif->via($notifiable);
-        $this->assertSame(['mail', 'database'], $via);
+        $org = Org::factory()->create();
+        $this->user = User::factory()->create();
+        $asset = Asset::factory()->create(['org_id' => $org->id]);
+        $request = Request::factory()->create([
+            'org_id' => $org->id,
+            'asset_id' => $asset->id,
+            'requester_id' => $this->user->id,
+        ]);
+        $this->session = Session::factory()->create([
+            'org_id' => $org->id,
+            'asset_id' => $asset->id,
+            'request_id' => $request->id,
+            'requester_id' => $this->user->id,
+            'approver_id' => $this->user->id,
+        ]);
+    }
 
-        $mail = $notif->toMail($notifiable);
+    public function test_session_created_notify_requester_has_mail_channel(): void
+    {
+        $notification = new SessionCreatedNotifyRequester($this->session);
+        $this->assertContains('mail', $notification->via($this->user));
+    }
+
+    public function test_session_created_notify_requester_has_subject_with_asset_name(): void
+    {
+        $notification = new SessionCreatedNotifyRequester($this->session);
+        $mail = $notification->toMail($this->user);
+
         $this->assertInstanceOf(MailMessage::class, $mail);
-        $this->assertStringContainsString('Session Started', $this->extractSubject($mail));
-
-        $array = $notif->toArray($notifiable);
-        $this->assertSame('session_started', $array['type']);
-        $this->assertSame($session->id, $array['session_id']);
+        $this->assertStringContainsString($this->session->asset->name, $mail->subject);
     }
 
-    public function test_session_ended_via_mail_and_database(): void
+    public function test_session_created_notify_approver_has_subject_with_asset_name(): void
     {
-        $notifiable = $this->fakeNotifiable();
-        $session = $this->fakeSession($notifiable);
-        $terminationResults = ['audit_log_count' => 5];
-        $notif = new SessionEndedNotification($session, $terminationResults);
+        $notification = new SessionCreatedNotifyApprover($this->session);
+        $mail = $notification->toMail($this->user);
 
-        $via = $notif->via($notifiable);
-        $this->assertSame(['mail', 'database'], $via);
-
-        $mail = $notif->toMail($notifiable);
         $this->assertInstanceOf(MailMessage::class, $mail);
-        $this->assertStringContainsString('Session Ended', $this->extractSubject($mail));
-
-        $array = $notif->toArray($notifiable);
-        $this->assertSame('session_ended', $array['type']);
-        $this->assertSame($session->id, $array['session_id']);
-        $this->assertSame(5, $array['audit_logs_count']);
+        $this->assertStringContainsString($this->session->asset->name, $mail->subject);
     }
 
-    private function fakeSession(object $notifiable): Session
+    public function test_session_started_notify_requester_has_subject_with_asset_name(): void
     {
-        $asset = new Asset;
-        $asset->name = 'DB Prod';
+        $notification = new SessionStartedNotifyRequester($this->session);
+        $mail = $notification->toMail($this->user);
 
-        // Lightweight concrete subclass to provide getRemainingDuration()
-        $session = new class extends Session
-        {
-            public function getRemainingDuration(): int
-            {
-                return 1800;
-            }
-        };
-        $session->id = 321;
-        $session->setRelation('asset', $asset);
-        $session->setRelation('requester', $notifiable);
-        $session->checked_in_at = now();
-        $session->scheduled_end_datetime = now()->addHour();
-        $session->actual_duration = 42;
-        $session->is_terminated = false;
-
-        return $session;
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->session->asset->name, $mail->subject);
     }
 
-    private function fakeNotifiable(): object
+    public function test_session_started_notify_approver_has_subject_with_asset_name(): void
     {
-        return new class
-        {
-            public int $id = 10;
-            public string $name = 'John Doe';
-            public function is($other): bool
-            {
-                return $other === $this || (isset($other->id) && $other->id === $this->id);
-            }
-        };
+        $notification = new SessionStartedNotifyApprover($this->session);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->session->asset->name, $mail->subject);
     }
 
-    private function extractSubject(MailMessage $mail): string
+    public function test_session_ended_notify_requester_has_subject_with_asset_name(): void
     {
-        return (string) ($mail->subject ?? '');
+        $notification = new SessionEndedNotifyRequester($this->session);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->session->asset->name, $mail->subject);
+    }
+
+    public function test_session_ended_notify_approver_has_subject_with_asset_name(): void
+    {
+        $notification = new SessionEndedNotifyApprover($this->session);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->session->asset->name, $mail->subject);
+    }
+
+    public function test_session_cancelled_notify_requester_has_subject_with_asset_name(): void
+    {
+        $notification = new SessionCancelledNotifyRequester($this->session);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->session->asset->name, $mail->subject);
+    }
+
+    public function test_session_cancelled_notify_approver_has_subject_with_asset_name(): void
+    {
+        $notification = new SessionCancelledNotifyApprover($this->session);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->session->asset->name, $mail->subject);
+    }
+
+    public function test_session_terminated_notify_requester_has_subject_with_asset_name(): void
+    {
+        $notification = new SessionTerminatedNotifyRequester($this->session);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->session->asset->name, $mail->subject);
+    }
+
+    public function test_session_terminated_notify_approver_has_subject_with_asset_name(): void
+    {
+        $notification = new SessionTerminatedNotifyApprover($this->session);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->session->asset->name, $mail->subject);
+    }
+
+    public function test_session_expired_notify_requester_has_subject_with_asset_name(): void
+    {
+        $notification = new SessionExpiredNotifyRequester($this->session);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->session->asset->name, $mail->subject);
+    }
+
+    public function test_session_expired_notify_approver_has_subject_with_asset_name(): void
+    {
+        $notification = new SessionExpiredNotifyApprover($this->session);
+        $mail = $notification->toMail($this->user);
+
+        $this->assertInstanceOf(MailMessage::class, $mail);
+        $this->assertStringContainsString($this->session->asset->name, $mail->subject);
     }
 }

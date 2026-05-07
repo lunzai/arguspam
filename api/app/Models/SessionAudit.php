@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\SessionAuditFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\MassPrunable;
@@ -10,7 +11,7 @@ use Illuminate\Support\Collection;
 
 class SessionAudit extends Model
 {
-    /** @use HasFactory<\Database\Factories\SessionAuditFactory> */
+    /** @use HasFactory<SessionAuditFactory> */
     use HasFactory, MassPrunable;
 
     public $timestamps = false;

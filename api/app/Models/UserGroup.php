@@ -7,6 +7,7 @@ use App\Enums\Status;
 use App\Traits\BelongsToOrganization;
 use App\Traits\HasBlamable;
 use App\Traits\HasStatus;
+use Database\Factories\UserGroupFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -15,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserGroup extends Model
 {
-    /** @use HasFactory<\Database\Factories\UserGroupFactory> */
+    /** @use HasFactory<UserGroupFactory> */
     use BelongsToOrganization, HasBlamable, HasFactory, HasStatus, SoftDeletes;
 
     protected $fillable = [

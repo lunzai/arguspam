@@ -14,6 +14,7 @@
     import { Filter, Search, FilterReset } from '$components/datatable';
     import { page } from '$app/state';
     import { getInitialStateFromUrlParams } from '$components/datatable/helper';
+    import { PageTitle } from '$components/page-title';
 
     const { data } = $props();
     const list = $derived(data?.list as ModelResource[]);
@@ -120,7 +121,10 @@
     }
 </script>
 
-<h1 class="text-2xl font-medium capitalize">Users</h1>
+<PageTitle 
+    title="Users" 
+    description="Manage your users and their configurations." 
+/>
 
 <Table 
     columns={columns} 

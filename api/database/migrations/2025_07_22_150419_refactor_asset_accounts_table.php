@@ -40,8 +40,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('asset_accounts', function (Blueprint $table) {
-            // Drop unique constraint
-            $table->dropUnique('unique_admin_per_asset');
+            // Drop unique constraint if it exists
+            if (Schema::hasIndex('asset_accounts', 'unique_admin_per_asset')) {
+                $table->dropUnique('unique_admin_per_asset');
+            }
 
             // Drop new columns
             $table->dropColumn(['username', 'password', 'type', 'expires_at', 'is_active']);

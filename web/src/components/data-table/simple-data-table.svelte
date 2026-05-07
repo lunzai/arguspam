@@ -109,7 +109,7 @@
 </script>
 
 <div class="flex flex-col gap-6">
-	<Input placeholder="Search..." onkeyup={handleKeyUp} bind:value={globalFilter} />
+	<Input class="bg-white" placeholder="Search..." onkeyup={handleKeyUp} bind:value={globalFilter} />
 
 	{#if table.getPageCount() > 1}
 		<div>

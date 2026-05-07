@@ -10,7 +10,7 @@ import {
 	AssetUpdateSchema,
 	AssetCredentialsSchema,
 	AssetRemoveAccessSchema,
-	AssetAddAccessSchema,
+	AssetAddAccessSchema
 } from '$validations/asset';
 import type { ApiAssetResource } from '$resources/asset';
 import type { AssetAccountCollection, AssetAccountResource } from '$lib/resources/asset-account';
@@ -19,16 +19,16 @@ import { Rbac } from '$lib/rbac';
 
 export const load: PageServerLoad = async ({ params, locals, parent, depends }) => {
 	depends('asset:view');
-    const rbac = new Rbac(locals.me);
+	const rbac = new Rbac(locals.me);
 	const { authToken, currentOrgId } = locals;
-    const { id } = params;
-    rbac.assetView();
+	const { id } = params;
+	rbac.assetView();
 
 	const orgService = new OrgService(authToken as string, currentOrgId as number);
 	const userCollection = await orgService.getUsers(currentOrgId as number);
 	const userGroupCollection = await orgService.getUserGroups(currentOrgId as number);
-    const assetService = new AssetService(authToken as string, currentOrgId as number);
-    const model = (await assetService.findById(id, {
+	const assetService = new AssetService(authToken as string, currentOrgId as number);
+	const model = (await assetService.findById(id, {
 		include: [
 			'activeAccounts',
 			'approverUserGroups',
@@ -62,12 +62,11 @@ export const load: PageServerLoad = async ({ params, locals, parent, depends }) 
 		{ errors: false }
 	);
 
-
 	return {
 		model,
 		userCollection,
 		userGroupCollection,
-        asset,
+		asset,
 		editForm,
 		credentialsForm,
 		canUpdate: rbac.canAssetUpdate(),

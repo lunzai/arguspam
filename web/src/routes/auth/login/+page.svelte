@@ -9,7 +9,6 @@
 	import { LoaderCircle } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
 	import * as Card from '$ui/card';
-    import { Separator } from '$ui/separator';
 
 	let { data } = $props();
 

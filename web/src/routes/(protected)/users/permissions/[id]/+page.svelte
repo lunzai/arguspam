@@ -3,6 +3,7 @@
 	import * as DL from '$components/description-list';
 	import type { ApiPermissionResource } from '$resources/permission';
 	import type { Permission } from '$models/permission';
+	import { PageTitle } from '$components/page-title';
 
 	let { data } = $props();
 	const modelResource = $derived(data.model as ApiPermissionResource);
@@ -11,29 +12,21 @@
 	const modelTitle = 'Permission';
 </script>
 
-<h1 class="text-2xl font-medium capitalize">{modelTitle} - #{model.id} - {model.name}</h1>
-<Card.Root class="w-full">
+<div class="flex flex-row space-x-2 items-center">  
+    <div class="text-sm text-slate-500 uppercase tracking-wider font-semibold">
+        PERMISSION #{model.id}
+    </div>
+</div>
+<PageTitle
+    title={model.description}
+    class="-mt-4"
+/>
+
+
+<Card.Root class="w-full border-0 shadow-xs">
 	<Card.Header>
-		<Card.Title class="text-lg">{modelTitle}</Card.Title>
+		<Card.Title class="text-xl font-bold tracking-tight">{modelTitle}</Card.Title>
 		<Card.Description>View {modelTitle.toLowerCase()} details.</Card.Description>
-		<Card.Action>
-			<!-- <Button
-				variant="outline"
-				class="transition-all duration-200 hover:bg-blue-50 hover:text-blue-500"
-				href={`/${modelName}/${model.id}/edit`}
-			>
-				<Pencil class="h-4 w-4" />
-				Edit
-			</Button>
-			<Button
-				variant="outline"
-				class="text-destructive border-red-200 transition-all duration-200 hover:bg-red-50 hover:text-red-500"
-				href={`/${modelName}/${model.id}/delete`}
-			>
-				<Trash2 class="h-4 w-4" />
-				Delete
-			</Button> -->
-		</Card.Action>
 	</Card.Header>
 	<Card.Content>
 		<DL.Root divider={null}>

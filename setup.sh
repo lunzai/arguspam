@@ -45,6 +45,15 @@ generate_app_key() {
     echo "base64:$(openssl rand -base64 32)"
 }
 
+# Strip protocol and path from a domain or URL input
+normalize_host() {
+    local value="$1"
+    value="${value#https://}"
+    value="${value#http://}"
+    value="${value%%/*}"
+    echo "$value"
+}
+
 # Function to prompt for input with default
 prompt_with_default() {
     local prompt="$1"
@@ -86,7 +95,7 @@ echo "This script will help you configure and deploy ArgusPAM."
 echo "The setup process will take about 5-10 minutes."
 echo ""
 echo "You will need:"
-echo "  • A domain name (e.g., arguspam.com)"
+echo "  • Frontend and API domain names (e.g., demo.arguspam.com and demoapi.arguspam.com)"
 echo "  • SMTP email credentials (for notifications)"
 echo "  • OpenAI API key (for AI features)"
 echo ""
@@ -256,14 +265,22 @@ print_success "Selected: $SIZE_NAME deployment"
 
 # Get domain information
 print_header "Domain Configuration"
-echo "Your domain should already be pointing to this server's IP address."
-echo "Example: if your domain is arguspam.com, make sure:"
-echo "  • arguspam.com points to this server"
-echo "  • api.arguspam.com points to this server"
+echo "Your domains should already be pointing to this server's IP address."
+echo "Example:"
+echo "  • demo.arguspam.com      → Web frontend"
+echo "  • demoapi.arguspam.com   → API backend"
 echo ""
-DOMAIN=$(prompt_with_default "Enter your domain name (e.g., arguspam.com)" "localhost")
+echo "Enter hostnames only (no https://). Use 'localhost' for local testing."
+echo ""
+WEB_DOMAIN=$(normalize_host "$(prompt_with_default "Enter frontend (Web) domain" "localhost")")
 
-if [ "$DOMAIN" = "localhost" ]; then
+if [ "$WEB_DOMAIN" = "localhost" ]; then
+    API_DOMAIN=$(normalize_host "$(prompt_with_default "Enter API domain" "localhost")")
+else
+    API_DOMAIN=$(normalize_host "$(prompt_with_default "Enter API domain" "")")
+fi
+
+if [ "$WEB_DOMAIN" = "localhost" ] && [ "$API_DOMAIN" = "localhost" ]; then
     print_warning "Using localhost. This is only suitable for local testing."
     APP_URL="http://localhost:8000"
     APP_WEB_URL="http://localhost:3000"
@@ -272,12 +289,12 @@ if [ "$DOMAIN" = "localhost" ]; then
     SANCTUM_STATEFUL_DOMAINS="localhost:3000"
     CORS_ALLOWED_ORIGINS="http://localhost:3000"
 else
-    APP_URL="https://api.$DOMAIN"
-    APP_WEB_URL="https://$DOMAIN"
-    WEB_ORIGIN="https://$DOMAIN"
-    PUBLIC_API_URL="https://api.$DOMAIN"
-    SANCTUM_STATEFUL_DOMAINS="$DOMAIN"
-    CORS_ALLOWED_ORIGINS="https://$DOMAIN"
+    APP_URL="https://$API_DOMAIN"
+    APP_WEB_URL="https://$WEB_DOMAIN"
+    WEB_ORIGIN="https://$WEB_DOMAIN"
+    PUBLIC_API_URL="https://$API_DOMAIN"
+    SANCTUM_STATEFUL_DOMAINS="$WEB_DOMAIN"
+    CORS_ALLOWED_ORIGINS="https://$WEB_DOMAIN"
 fi
 
 # Get email configuration
@@ -290,7 +307,7 @@ MAIL_PORT=$(prompt_with_default "SMTP Port (e.g., 587)" "587")
 MAIL_USERNAME=$(prompt_with_default "SMTP Username (email address)" "")
 MAIL_PASSWORD=$(prompt_password "SMTP Password")
 echo ""
-MAIL_FROM_ADDRESS=$(prompt_with_default "From Email Address" "noreply@$DOMAIN")
+MAIL_FROM_ADDRESS=$(prompt_with_default "From Email Address" "noreply@$WEB_DOMAIN")
 MAIL_FROM_NAME=$(prompt_with_default "From Name" "ArgusPAM")
 
 # Get OpenAI configuration
@@ -304,8 +321,8 @@ OPENAI_MODEL=$(prompt_with_default "OpenAI Model" "gpt-5-nano")
 
 # Get admin email
 print_header "Administrator Configuration"
-EMAIL_DEFAULT=$(prompt_with_default "Admin Email Address" "admin@$DOMAIN")
-EMAIL_SUPPORT=$(prompt_with_default "Support Email Address" "support@$DOMAIN")
+EMAIL_DEFAULT=$(prompt_with_default "Admin Email Address" "admin@$WEB_DOMAIN")
+EMAIL_SUPPORT=$(prompt_with_default "Support Email Address" "support@$WEB_DOMAIN")
 
 # Create .env file
 print_header "Creating Configuration File"
@@ -445,12 +462,12 @@ echo "4. View logs:"
 echo -e "   ${BLUE}docker compose logs -f${NC}"
 echo ""
 echo "5. Access your application:"
-if [ "$DOMAIN" = "localhost" ]; then
+if [ "$WEB_DOMAIN" = "localhost" ] && [ "$API_DOMAIN" = "localhost" ]; then
     echo -e "   Web: ${BLUE}http://localhost:3000${NC}"
     echo -e "   API: ${BLUE}http://localhost:8000${NC}"
 else
-    echo -e "   Web: ${BLUE}https://$DOMAIN${NC}"
-    echo -e "   API: ${BLUE}https://api.$DOMAIN${NC}"
+    echo -e "   Web: ${BLUE}https://$WEB_DOMAIN${NC}"
+    echo -e "   API: ${BLUE}https://$API_DOMAIN${NC}"
     echo ""
     print_warning "Note: You'll need to set up SSL/TLS certificates for HTTPS."
     echo "   See docs/DEPLOYMENT.md for SSL setup instructions."

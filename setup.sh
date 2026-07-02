@@ -321,8 +321,8 @@ OPENAI_MODEL=$(prompt_with_default "OpenAI Model" "gpt-5-nano")
 
 # Get admin email
 print_header "Administrator Configuration"
-EMAIL_DEFAULT=$(prompt_with_default "Admin Email Address" "admin@$WEB_DOMAIN")
-EMAIL_SUPPORT=$(prompt_with_default "Support Email Address" "support@$WEB_DOMAIN")
+EMAIL_DEFAULT=$(prompt_with_default "Admin Email Address" "")
+EMAIL_SUPPORT=$(prompt_with_default "Support Email Address" "")
 
 # Create .env file
 print_header "Creating Configuration File"

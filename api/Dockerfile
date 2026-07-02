@@ -45,6 +45,7 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     xml \
     mbstring \
     pcntl \
+    posix \
     bcmath \
     exif
 

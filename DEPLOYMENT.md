@@ -272,6 +272,30 @@ git --version
 
 All commands should show version numbers (e.g., Docker 24.0.5).
 
+### Grant Docker Access to Your User
+
+If you are logged in as a non-root user (e.g., `ubuntu` on AWS), Docker installs successfully but your user cannot access the daemon until it is added to the `docker` group:
+
+```bash
+# Add your user to the docker group
+sudo usermod -aG docker $USER
+
+# Apply the new group membership (pick one)
+newgrp docker
+# OR disconnect SSH and reconnect
+```
+
+Verify Docker is accessible without `sudo`:
+
+```bash
+docker info
+docker ps
+```
+
+Both commands should succeed. If `docker info` shows the Client section but fails on Server with `permission denied while trying to connect to the docker API at unix:///var/run/docker.sock`, your user is not in the `docker` group yet — re-run `usermod`, then log out and back in.
+
+> **Note:** If you connected as `root` (as shown in the SSH example above), you can skip this step.
+
 ---
 
 ## Step 4: Run Setup
@@ -863,6 +887,44 @@ Contact support for enterprise architecture guidance.
 ---
 
 ## Troubleshooting
+
+### Docker Permission Denied
+
+**Error:** `permission denied while trying to connect to the docker API at unix:///var/run/docker.sock`
+
+**Symptoms:**
+- `systemctl status docker` shows Docker is active (running)
+- `docker info` prints Client details but fails on Server
+- `docker compose up` fails with `unable to get image 'arguspam-api'`
+
+**Cause:** Your user can run the Docker CLI but is not in the `docker` group, so it cannot access `/var/run/docker.sock`.
+
+**Solution:**
+
+```bash
+# Confirm Docker is running
+sudo systemctl status docker
+
+# Add your user to the docker group
+sudo usermod -aG docker $USER
+
+# Apply the new group membership (pick one)
+newgrp docker
+# OR disconnect SSH and reconnect
+
+# Verify access
+docker info
+docker ps
+```
+
+If it still fails, check socket permissions:
+
+```bash
+ls -la /var/run/docker.sock
+# Expected: srw-rw---- 1 root docker ... /var/run/docker.sock
+```
+
+**Temporary workaround:** Prefix commands with `sudo` (e.g., `sudo docker compose ...`). Fixing group membership is preferred for day-to-day use.
 
 ### Services Won't Start
 
